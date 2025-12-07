@@ -6,7 +6,9 @@ public abstract class PlayerBaseState : State
 {
    protected PlayerStateMachine stateMachine;
 
-   
+    private Vector3 _currentMovementVelocity;
+    private Vector3 _movementVelocitySmoothRef;
+    
 
     public PlayerBaseState(PlayerStateMachine stateMachine)
     {
@@ -16,9 +18,35 @@ public abstract class PlayerBaseState : State
     
     protected void Move(Vector3 motion, float deltaTime)
     {
+        
+        Vector3 horizontalMotion = new Vector3(motion.x, 0, motion.z);
+        Vector3 verticalMotion = new Vector3(0, motion.y, 0);
+
+        
+        float smoothTime = horizontalMotion.magnitude > 0.01f ? stateMachine.AccelerationTime : stateMachine.DecelerationTime;
+
+        _currentMovementVelocity = Vector3.SmoothDamp(
+            _currentMovementVelocity,
+            horizontalMotion,
+            ref _movementVelocitySmoothRef,
+            smoothTime
+        );
+
+        
+        Vector3 finalMovement = _currentMovementVelocity + verticalMotion + stateMachine.ForceReceiver.Movement;
+        stateMachine.Controller.Move(finalMovement * deltaTime);
+    }
+
+
+    
+    protected void MoveNoInertia(Vector3 motion, float deltaTime)
+    {
+        _currentMovementVelocity = motion;
+        _movementVelocitySmoothRef = Vector3.zero;
+
         stateMachine.Controller.Move((motion + stateMachine.ForceReceiver.Movement) * deltaTime);
     }
-    
+
     protected void Move(float deltaTime)
     {
         Move(Vector3.zero, deltaTime);

@@ -9,7 +9,6 @@ public class PlayerStateMachine : StateMachine
 
     [field: SerializeField] public CharacterController Controller { get; private set; }
     [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
-
     [field: SerializeField] public Animator Animator { get; private set; }
 
     [field: SerializeField] public CinemachineCamera camera_CM { get; private set; }
@@ -26,7 +25,11 @@ public class PlayerStateMachine : StateMachine
 
     [field: SerializeField] public float JumpForce { get; private set; }
 
-  
+    [field: SerializeField] public float AccelerationTime { get; private set; } = 0.1f;
+
+    [field: SerializeField] public float DecelerationTime { get; private set; } = 0.2f;
+
+
 
     private void Start()
     {
