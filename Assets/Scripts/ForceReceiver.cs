@@ -40,4 +40,9 @@ public class ForceReceiver : MonoBehaviour
         verticalVelocity += jumpForce;
     }
 
+    public void AddForce(Vector3 force)
+    {
+        impact += force;
+    }
+
 }
