@@ -5,10 +5,13 @@ public class PlayerSwimState : PlayerBaseState
     private float originalHeight;
     private Vector3 originalCenter;
     private Vector3 swimVelocity;
+    private float timeWithoutInk = 0f;
 
     public PlayerSwimState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
     }
+
+
 
     public override void Enter()
     {
@@ -28,23 +31,28 @@ public class PlayerSwimState : PlayerBaseState
     public override void Tick(float deltaTime)
     {
         stateMachine.CheckForInk();
-        // --- 1. ANULAR GRAVEDAD EXTERNA ---
-        // Llamamos a Reset() CADA FRAME. Esto pone la verticalVelocity del ForceReceiver a 0.
-        // Así el player no se cae de la pared.
         stateMachine.ForceReceiver.enabled = false;
 
-        // --- 2. CHEQUEOS DE SALIDA ---
-        if (!Input.GetKeyDown(KeyCode.N) || !stateMachine.IsOnInk)
+        // --- LÓGICA DE SALIDA CON MARGEN DE ERROR ---
+        if (!stateMachine.IsOnInk)
         {
-            // Pequeño empujón para no quedarse atrapado
-            stateMachine.ForceReceiver.AddForce(stateMachine.transform.up * 2f);
-            stateMachine.SwitchState(typeof(PlayerFreeLookState));
-            return;
+            timeWithoutInk += deltaTime;
+            // Solo salimos si llevamos más de 0.1 o 0.2 segundos sin detectar tinta
+            if (timeWithoutInk > 0.15f)
+            {
+                stateMachine.SwitchState(typeof(PlayerFreeLookState));
+                return;
+            }
+        }
+        else
+        {
+            // Si detectamos tinta, reseteamos el contador
+            timeWithoutInk = 0f;
         }
 
-        if (Input.GetButtonDown("Jump"))
+        // Chequeo de tecla (este sí es inmediato)
+        if (Input.GetKeyDown(KeyCode.N))
         {
-            PerformInkJump();
             stateMachine.SwitchState(typeof(PlayerFreeLookState));
             return;
         }
