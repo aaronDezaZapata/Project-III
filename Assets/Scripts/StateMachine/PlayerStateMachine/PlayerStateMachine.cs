@@ -31,10 +31,10 @@ public class PlayerStateMachine : StateMachine
 
 
     [field: Header("Splatoon Mechanics")]
-    [field: SerializeField] public float SwimSpeed { get; private set; } = 12f; // Velocidad al nadar
-    [field: SerializeField] public GameObject InkDecalPrefab; // Arrastra tu prefab aquí
-    [field: SerializeField] public LayerMask InkLayer;        // Selecciona la layer "Ink"
-    [field: SerializeField] public Transform GunOrigin;       // Opcional: si quieres un punto exacto, si no usaremos la cámara
+    [field: SerializeField] public float SwimSpeed { get; private set; } = 12f; 
+    [field: SerializeField] public GameObject InkDecalPrefab; 
+    [field: SerializeField] public LayerMask InkLayer;        
+    [field: SerializeField] public Transform GunOrigin;       // si hay un punto exacto, si no usar la cámara
 
     // Estado compartido para saber si estamos sobre tinta
     public bool IsOnInk;
@@ -104,8 +104,8 @@ public class PlayerStateMachine : StateMachine
 
     public void CheckForInk()
     {
-        // 1. CLAVE: Usamos el centro real del CharacterController en el mundo, no los pies.
-        // TransformPoint convierte el centro local (0, 0.25, 0) a una posición real en el mundo 3D.
+        //  Usamos el centro real del CharacterController en el mundo, no los pies.
+        
         Vector3 detectionOrigin = transform.TransformPoint(Controller.center);
 
         // 2. RADIO: 0.7f u 0.8f está bien.
@@ -147,20 +147,17 @@ public class PlayerStateMachine : StateMachine
 
         if (Physics.Raycast(ray, out hit, 100f, layerMask))
         {
-            // --- CÁLCULO DE ROTACIÓN PARA EL DECAL ---
-
-            // 1. Obtener la rotación necesaria para alinear el Eje Y del objeto con la Normal de impacto
-            // Esto es correcto: el Eje Y apunta "hacia afuera" de la superficie
+           
             Quaternion alignmentRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
-            // 2. Aplicar una rotación adicional de 180° en el Eje X
+            
             // Esto voltea el objeto para que su Eje Z (el de proyección) mire hacia la superficie
             Quaternion fixRotation = Quaternion.Euler(90f, 0f, 0f);
 
-            // Rotación final: Primero alinear, luego voltear el eje de proyección
+            //Primero alinear, luego voltear el eje de proyección
             Quaternion finalRotation = alignmentRotation * fixRotation;
 
-            // Instanciar el Decal
+            
             GameObject splat = Instantiate(InkDecalPrefab, hit.point, finalRotation);
 
             // Pequeño offset para evitar Z-Fighting visual
