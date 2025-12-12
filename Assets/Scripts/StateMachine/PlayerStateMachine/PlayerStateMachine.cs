@@ -6,7 +6,8 @@ using UnityEngine;
 public class PlayerStateMachine : StateMachine
 {
     #region Variables
-
+    
+    [field: Header("Getters and Setters")]
     [field: SerializeField] public InputHandler InputReader { get; private set; }
 
     [field: SerializeField] public CharacterController Controller { get; private set; }
@@ -16,7 +17,8 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public CinemachineCamera camera_CM { get; private set; }
 
     [field: SerializeField] public Health Health { get; private set; }
-
+    
+    [field: Header("Movement Variables")]
     [field: SerializeField] public float FreeLookMovementSpeed { get; private set; }
 
     [field: SerializeField] public float RotationSpeed { get; private set; } = 3f;
@@ -30,6 +32,8 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public float AccelerationTime { get; private set; } = 0.1f;
 
     [field: SerializeField] public float DecelerationTime { get; private set; } = 0.2f;
+    
+    [field: SerializeField] public bool isJumping { get; private set; }
 
 
     [field: Header("Splatoon Mechanics")]
@@ -170,4 +174,8 @@ public class PlayerStateMachine : StateMachine
         }
     }
 
+    private void JumpAction()
+    {
+        
+    }
 }

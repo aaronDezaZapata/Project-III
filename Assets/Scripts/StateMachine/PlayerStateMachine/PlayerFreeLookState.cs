@@ -46,8 +46,6 @@ public class PlayerFreeLookState : PlayerBaseState
             FaceMovementDirection(movement, deltaTime);
         }
 
-        
-
         Move(movement * stateMachine.FreeLookMovementSpeed, deltaTime);
     }
 
