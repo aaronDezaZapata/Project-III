@@ -15,7 +15,9 @@ public abstract class PlayerBaseState : State
         this.stateMachine = stateMachine;
 
     }
-    
+
+    #region Movement
+
     protected void Move(Vector3 motion, float deltaTime)
     {
         
@@ -36,8 +38,6 @@ public abstract class PlayerBaseState : State
         Vector3 finalMovement = _currentMovementVelocity + verticalMotion + stateMachine.ForceReceiver.Movement;
         stateMachine.Controller.Move(finalMovement * deltaTime);
     }
-
-
     
     protected void MoveNoInertia(Vector3 motion, float deltaTime)
     {
@@ -52,7 +52,6 @@ public abstract class PlayerBaseState : State
         Move(Vector3.zero, deltaTime);
     }
     
-    
     protected void FaceTarget(Transform target)
     {
         if(target == null) { return; }
@@ -63,8 +62,7 @@ public abstract class PlayerBaseState : State
 
         stateMachine.transform.rotation = Quaternion.LookRotation(enemyDirection * stateMachine.RotationSpeed);
     }
-
-
+    
     protected void FaceTargetInstant(EnemyStateMachine enemy)
     {
 
@@ -77,6 +75,5 @@ public abstract class PlayerBaseState : State
 
     }
 
-
-
+    #endregion
 }

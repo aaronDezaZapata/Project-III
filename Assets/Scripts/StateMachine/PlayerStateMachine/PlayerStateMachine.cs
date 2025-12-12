@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class PlayerStateMachine : StateMachine
 {
+    #region Variables
+
     [field: SerializeField] public InputHandler InputReader { get; private set; }
 
     [field: SerializeField] public CharacterController Controller { get; private set; }
@@ -34,11 +36,14 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public float SwimSpeed { get; private set; } = 12f; 
     [field: SerializeField] public GameObject InkDecalPrefab; 
     [field: SerializeField] public LayerMask InkLayer;        
-    [field: SerializeField] public Transform GunOrigin;       // si hay un punto exacto, si no usar la cámara
+    [field: SerializeField] public Transform GunOrigin;       // si hay un punto exacto, si no usar la cï¿½mara
 
     // Estado compartido para saber si estamos sobre tinta
     public bool IsOnInk;
     public Vector3 CurrentInkNormal = Vector3.up;
+
+    #endregion
+    
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -108,7 +113,7 @@ public class PlayerStateMachine : StateMachine
         
         Vector3 detectionOrigin = transform.TransformPoint(Controller.center);
 
-        // 2. RADIO: 0.7f u 0.8f está bien.
+        // 2. RADIO: 0.7f u 0.8f estï¿½ bien.
         Collider[] hitColliders = Physics.OverlapSphere(detectionOrigin, 0.7f, InkLayer);
 
         if (hitColliders.Length > 0)
@@ -117,7 +122,7 @@ public class PlayerStateMachine : StateMachine
 
             RaycastHit hit;
 
-            // Lanzamos el rayo también desde el centro para mayor precisión
+            // Lanzamos el rayo tambiï¿½n desde el centro para mayor precisiï¿½n
             // "detectionOrigin" es el centro del cuerpo.
             // "-transform.up" busca la superficie bajo nuestros pies/ventosa.
             if (Physics.Raycast(detectionOrigin, -transform.up, out hit, 1.5f, InkLayer))
@@ -126,7 +131,7 @@ public class PlayerStateMachine : StateMachine
             }
             else
             {
-                // Si el rayo falla (común en esquinas raras), usamos tu truco del forward del decal
+                // Si el rayo falla (comï¿½n en esquinas raras), usamos tu truco del forward del decal
                 CurrentInkNormal = hitColliders[0].transform.forward * -1f;
             }
         }
@@ -151,16 +156,16 @@ public class PlayerStateMachine : StateMachine
             Quaternion alignmentRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
             
-            // Esto voltea el objeto para que su Eje Z (el de proyección) mire hacia la superficie
+            // Esto voltea el objeto para que su Eje Z (el de proyecciï¿½n) mire hacia la superficie
             Quaternion fixRotation = Quaternion.Euler(90f, 0f, 0f);
 
-            //Primero alinear, luego voltear el eje de proyección
+            //Primero alinear, luego voltear el eje de proyecciï¿½n
             Quaternion finalRotation = alignmentRotation * fixRotation;
 
             
             GameObject splat = Instantiate(InkDecalPrefab, hit.point, finalRotation);
 
-            // Pequeño offset para evitar Z-Fighting visual
+            // Pequeï¿½o offset para evitar Z-Fighting visual
             splat.transform.position += hit.normal * 0.01f;
         }
     }
