@@ -32,8 +32,6 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public float AccelerationTime { get; private set; } = 0.1f;
 
     [field: SerializeField] public float DecelerationTime { get; private set; } = 0.2f;
-    
-    [field: SerializeField] public bool isJumping { get; private set; }
 
 
     [field: Header("Splatoon Mechanics")]
@@ -172,10 +170,5 @@ public class PlayerStateMachine : StateMachine
             // Peque�o offset para evitar Z-Fighting visual
             splat.transform.position += hit.normal * 0.01f;
         }
-    }
-
-    private void JumpAction()
-    {
-        
     }
 }

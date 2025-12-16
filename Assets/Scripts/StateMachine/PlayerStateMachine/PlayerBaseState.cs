@@ -88,8 +88,7 @@ public abstract class PlayerBaseState : State
 
     protected void Jump()
     {
-        if (!stateMachine.Controller.isGrounded)
-            return;
+        if (!stateMachine.Controller.isGrounded) return;
         
         stateMachine.ForceReceiver.Jump(stateMachine.JumpForce);
     }
