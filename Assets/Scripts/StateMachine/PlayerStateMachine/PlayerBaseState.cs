@@ -13,7 +13,6 @@ public abstract class PlayerBaseState : State
     public PlayerBaseState(PlayerStateMachine stateMachine)
     {
         this.stateMachine = stateMachine;
-
     }
 
     #region Movement
@@ -25,7 +24,9 @@ public abstract class PlayerBaseState : State
         Vector3 verticalMotion = new Vector3(0, motion.y, 0);
 
         
-        float smoothTime = horizontalMotion.magnitude > 0.01f ? stateMachine.AccelerationTime : stateMachine.DecelerationTime;
+        float smoothTime = horizontalMotion.magnitude > 0.01f 
+            ? stateMachine.AccelerationTime
+            : stateMachine.DecelerationTime;
 
         _currentMovementVelocity = Vector3.SmoothDamp(
             _currentMovementVelocity,
@@ -36,7 +37,13 @@ public abstract class PlayerBaseState : State
 
         
         Vector3 finalMovement = _currentMovementVelocity + verticalMotion + stateMachine.ForceReceiver.Movement;
-        stateMachine.Controller.Move(finalMovement * deltaTime);
+        
+        CollisionFlags flags = stateMachine.Controller.Move(finalMovement * deltaTime);
+
+        if ((flags & CollisionFlags.Above) != 0)
+        {
+            stateMachine.ForceReceiver.ResetVerticalVelocity();
+        }
     }
     
     protected void MoveNoInertia(Vector3 motion, float deltaTime)
@@ -73,6 +80,18 @@ public abstract class PlayerBaseState : State
         Quaternion rotation = Quaternion.LookRotation(lookPos);
         stateMachine.transform.rotation = rotation;
 
+    }
+
+    #endregion
+
+    #region Jump
+
+    protected void Jump()
+    {
+        if (!stateMachine.Controller.isGrounded)
+            return;
+        
+        stateMachine.ForceReceiver.Jump(stateMachine.JumpForce);
     }
 
     #endregion
