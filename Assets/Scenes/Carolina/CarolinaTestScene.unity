@@ -258,6 +258,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6052489448859817048, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       insertIndex: -1
       addedObject: {fileID: 848873697}
+    - targetCorrespondingSourceObject: {fileID: 6052489448859817048, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1591885252}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
 --- !u!4 &244996167 stripped
@@ -447,6 +450,8 @@ GameObject:
   - component: {fileID: 630113969}
   - component: {fileID: 630113970}
   - component: {fileID: 630113971}
+  - component: {fileID: 630113972}
+  - component: {fileID: 630113973}
   m_Layer: 0
   m_Name: AimSystem
   m_TagString: Untagged
@@ -513,6 +518,45 @@ MonoBehaviour:
   aimCam: {fileID: 2078770811}
   normalPriority: 10
   aimPriority: 20
+--- !u!114 &630113972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 630113968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1be5ca3769743b41ace15c71522b997, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aimReticle: {fileID: 630113970}
+  firePoint: {fileID: 1591885252}
+  projectilePrefab: {fileID: 4575993021514827145, guid: eec7e630600ae6641b068a12bafbd620, type: 3}
+  arcHeight: 2
+  fireCooldown: 0.15
+  onlyFireWhileAiming: 1
+  flightTime: 0.3
+  painter: {fileID: 630113973}
+  paintableMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  ignoreCollidersRoot: {fileID: 863948747}
+--- !u!114 &630113973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 630113968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06a1e953b6cf01f4aa793671f62e0d1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inkDecalPrefab: {fileID: 6003062172566789636, guid: 4936e89ea5ec69143bb964a143f192b9, type: 3}
+  surfaceOffset: 0.01
+  decalFixEuler: {x: 90, y: 0, z: 0}
 --- !u!1 &848873696
 GameObject:
   m_ObjectHideFlags: 0
@@ -647,7 +691,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1117081015}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.15212339, y: 0, z: 0, w: 0.98836154}
+  m_LocalRotation: {x: 0.15212339, y: -0.0000000034767558, z: 5.3512395e-10, w: 0.98836154}
   m_LocalPosition: {x: -4.993719, y: -0.17482042, z: -3.0112936}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -730,6 +774,37 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!1 &1591885251
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1591885252}
+  m_Layer: 8
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1591885252
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1591885251}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.46, y: 0, z: 0.71}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 863948747}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1722378349
 PrefabInstance:
   m_ObjectHideFlags: 0
