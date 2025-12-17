@@ -24,10 +24,10 @@ public class PlayerFreeLookState : PlayerBaseState
     public override void Tick(float deltaTime)
     {
         stateMachine.CheckForInk();
-        if (Input.GetMouseButton(0))
-        {
-            stateMachine.ShootInk();
-        }
+        //if (Input.GetMouseButton(0))
+        //{
+        //    stateMachine.ShootInk();
+        //}
 
       
         if (Input.GetKeyDown(KeyCode.B) && stateMachine.IsOnInk)
