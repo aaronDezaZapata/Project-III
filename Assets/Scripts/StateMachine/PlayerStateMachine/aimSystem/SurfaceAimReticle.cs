@@ -25,7 +25,9 @@ public class SurfaceAimReticle : MonoBehaviour
     public bool IsAiming { get; private set; }
     public event Action<bool> OnAimChanged;
 
-
+    private bool hasAimHit;
+    private Vector3 lastAimPoint;
+    private Vector3 lastAimNormal;
 
     private void Awake()
     {
@@ -41,7 +43,11 @@ public class SurfaceAimReticle : MonoBehaviour
         {
             IsAiming = aimingNow;
             OnAimChanged?.Invoke(IsAiming);
-            if (!IsAiming) SetVisible(false);
+            if (!IsAiming)
+            {
+                hasAimHit = false;
+                SetVisible(false);
+            }
         }
 
         if (!IsAiming) return;
@@ -55,6 +61,7 @@ public class SurfaceAimReticle : MonoBehaviour
 
         if (!hitSomething)
         {
+            hasAimHit = false;
             if (hideIfNoHit) SetVisible(false);
             return;
         }
@@ -73,6 +80,10 @@ public class SurfaceAimReticle : MonoBehaviour
 
     private void PlaceReticle(RaycastHit hit)
     {
+        hasAimHit = true;
+        lastAimPoint = hit.point;
+        lastAimNormal = hit.normal;
+
         SetVisible(true);
 
         Vector3 normal = hit.normal;
@@ -101,5 +112,12 @@ public class SurfaceAimReticle : MonoBehaviour
     {
         if (reticle != null && reticle.gameObject.activeSelf != visible)
             reticle.gameObject.SetActive(visible);
+    }
+
+    public bool TryGetAimHit(out Vector3 point, out Vector3 normal)
+    {
+        point = lastAimPoint;
+        normal = lastAimNormal;
+        return hasAimHit;
     }
 }
