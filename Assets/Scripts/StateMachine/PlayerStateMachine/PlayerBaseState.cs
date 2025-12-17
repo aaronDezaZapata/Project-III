@@ -13,9 +13,10 @@ public abstract class PlayerBaseState : State
     public PlayerBaseState(PlayerStateMachine stateMachine)
     {
         this.stateMachine = stateMachine;
-
     }
-    
+
+    #region Movement
+
     protected void Move(Vector3 motion, float deltaTime)
     {
         
@@ -23,7 +24,9 @@ public abstract class PlayerBaseState : State
         Vector3 verticalMotion = new Vector3(0, motion.y, 0);
 
         
-        float smoothTime = horizontalMotion.magnitude > 0.01f ? stateMachine.AccelerationTime : stateMachine.DecelerationTime;
+        float smoothTime = horizontalMotion.magnitude > 0.01f 
+            ? stateMachine.AccelerationTime
+            : stateMachine.DecelerationTime;
 
         _currentMovementVelocity = Vector3.SmoothDamp(
             _currentMovementVelocity,
@@ -34,10 +37,14 @@ public abstract class PlayerBaseState : State
 
         
         Vector3 finalMovement = _currentMovementVelocity + verticalMotion + stateMachine.ForceReceiver.Movement;
-        stateMachine.Controller.Move(finalMovement * deltaTime);
+        
+        CollisionFlags flags = stateMachine.Controller.Move(finalMovement * deltaTime);
+
+        if ((flags & CollisionFlags.Above) != 0)
+        {
+            stateMachine.ForceReceiver.ResetVerticalVelocity();
+        }
     }
-
-
     
     protected void MoveNoInertia(Vector3 motion, float deltaTime)
     {
@@ -52,7 +59,6 @@ public abstract class PlayerBaseState : State
         Move(Vector3.zero, deltaTime);
     }
     
-    
     protected void FaceTarget(Transform target)
     {
         if(target == null) { return; }
@@ -63,8 +69,7 @@ public abstract class PlayerBaseState : State
 
         stateMachine.transform.rotation = Quaternion.LookRotation(enemyDirection * stateMachine.RotationSpeed);
     }
-
-
+    
     protected void FaceTargetInstant(EnemyStateMachine enemy)
     {
 
@@ -77,6 +82,16 @@ public abstract class PlayerBaseState : State
 
     }
 
+    #endregion
 
+    #region Jump
 
+    protected void Jump()
+    {
+        if (!stateMachine.Controller.isGrounded) return;
+        
+        stateMachine.ForceReceiver.Jump(stateMachine.JumpForce);
+    }
+
+    #endregion
 }

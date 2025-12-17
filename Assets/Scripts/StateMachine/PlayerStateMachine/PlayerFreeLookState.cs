@@ -23,7 +23,7 @@ public class PlayerFreeLookState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
-        stateMachine.CheckForInk();
+        /*stateMachine.CheckForInk();
         if (Input.GetMouseButton(0))
         {
             stateMachine.ShootInk();
@@ -34,19 +34,17 @@ public class PlayerFreeLookState : PlayerBaseState
         {
             stateMachine.SwitchState(typeof(PlayerSwimState));
             return;
-        }
+        }*/
 
 
         Vector3 movement = CalculateMovement();
 
 
        
-        if (!Vector3.Equals(movement, Vector3.zero))
+        if (!Equals(movement, Vector3.zero))
         {
             FaceMovementDirection(movement, deltaTime);
         }
-
-        
 
         Move(movement * stateMachine.FreeLookMovementSpeed, deltaTime);
     }
@@ -101,11 +99,6 @@ public class PlayerFreeLookState : PlayerBaseState
 
     private void OnJump()
     {
-        //stateMachine.SwitchState(PlayerJumpingState);
+        Jump();
     }
-
-
-
-  
-
 }

@@ -33,7 +33,7 @@ Transform:
   m_GameObject: {fileID: 453968334896795462}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.993719, y: 4.5916505, z: 1.7572911}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -159,13 +159,21 @@ MonoBehaviour:
   <Animator>k__BackingField: {fileID: 0}
   <camera_CM>k__BackingField: {fileID: 0}
   <Health>k__BackingField: {fileID: 2416829624496613863}
-  <FreeLookMovementSpeed>k__BackingField: 29.91
+  <FreeLookMovementSpeed>k__BackingField: 12
   <RotationSpeed>k__BackingField: 3
   <DashDuration>k__BackingField: 0.22
   <DashLength>k__BackingField: 0.63
   <JumpForce>k__BackingField: 9.57
   <AccelerationTime>k__BackingField: 0.1
-  <DecelerationTime>k__BackingField: 0.2
+  <DecelerationTime>k__BackingField: 0.1
+  <SwimSpeed>k__BackingField: 12
+  InkDecalPrefab: {fileID: 0}
+  InkLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  GunOrigin: {fileID: 0}
+  IsOnInk: 0
+  CurrentInkNormal: {x: 0, y: 1, z: 0}
 --- !u!114 &5816333734058023856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,7 +259,6 @@ GameObject:
   - component: {fileID: 2303076394716410090}
   - component: {fileID: 5670274455229051706}
   - component: {fileID: 3774170085100831284}
-  - component: {fileID: 7262994936031598377}
   - component: {fileID: 9192665371801441111}
   m_Layer: 0
   m_Name: Cinemachine
@@ -268,8 +275,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7575750637447163079}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.25340134, y: 0.000000028829616, z: -0.000000007551949, w: 0.9673613}
-  m_LocalPosition: {x: 0, y: 2.25, z: -4}
+  m_LocalRotation: {x: -0.10149126, y: 0.6997853, z: 0.10149124, w: 0.6997854}
+  m_LocalPosition: {x: -2.6999998, y: -0.8000001, z: -0.00000016093254}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -330,7 +337,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b5d7c088409d9a40b7b09aa707777f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TargetOffset: {x: 0, y: 0, z: 0}
+  TargetOffset: {x: 0, y: 1.9, z: 0}
   TrackerSettings:
     BindingMode: 4
     PositionDamping: {x: 0.2, y: 0.2, z: 0.2}
@@ -341,18 +348,18 @@ MonoBehaviour:
   Radius: 5
   Orbits:
     Top:
-      Radius: 2
-      Height: 5
+      Radius: 4.2
+      Height: 2.7
     Center:
-      Radius: 4
-      Height: 2.25
+      Radius: 9.03
+      Height: 2.22
     Bottom:
-      Radius: 2.5
-      Height: 0.1
-    SplineCurvature: 0.5
+      Radius: 2.7
+      Height: -2.7
+    SplineCurvature: 0
   RecenteringTarget: 2
   HorizontalAxis:
-    Value: 0
+    Value: 90
     Center: 0
     Range: {x: -180, y: 180}
     Wrap: 1
@@ -362,7 +369,7 @@ MonoBehaviour:
       Time: 2
     Restrictions: 0
   VerticalAxis:
-    Value: 17.5
+    Value: -10
     Center: 17.5
     Range: {x: -10, y: 45}
     Wrap: 0
@@ -410,23 +417,6 @@ MonoBehaviour:
     Time: 0
     Smoothing: 0
     IgnoreY: 0
---- !u!114 &7262994936031598377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7575750637447163079}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a076c17fe76165e4f8ed21498b877bf9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Easing: 0
-  Modifiers: []
-  references:
-    version: 2
-    RefIds: []
 --- !u!114 &9192665371801441111
 MonoBehaviour:
   m_ObjectHideFlags: 0
