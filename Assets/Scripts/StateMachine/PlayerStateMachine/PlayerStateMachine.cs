@@ -16,6 +16,8 @@ public class PlayerStateMachine : StateMachine
 
     [field: SerializeField] public CinemachineCamera camera_CM { get; private set; }
 
+    [field: SerializeField] public CinemachineCamera aimCamera { get; private set; }
+
     [field: SerializeField] public Health Health { get; private set; }
     
     [field: Header("Movement Variables")]
@@ -38,14 +40,38 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public float SwimSpeed { get; private set; } = 12f; 
     [field: SerializeField] public GameObject InkDecalPrefab; 
     [field: SerializeField] public LayerMask InkLayer;        
-    [field: SerializeField] public Transform GunOrigin;       // si hay un punto exacto, si no usar la c�mara
+    [field: SerializeField] public Transform GunOrigin;       
+    [SerializeField] public Transform reticle { get; private set; } // Quad o Canvas
 
     // Estado compartido para saber si estamos sobre tinta
     public bool IsOnInk;
     public Vector3 CurrentInkNormal = Vector3.up;
 
     #endregion
+
+
+    //Variables CarolMonty
+    [Header("ADD SLOWLY")]
+
+    [Header("References")]
+
     
+
+    [Header("Raycast")]
+    [SerializeField] public float maxDistance = 80f;
+    [SerializeField] public LayerMask aimMask = ~0;
+    [SerializeField] public bool useScreenCenter = true; //cursor looked
+    [SerializeField] public bool useSphereCast = true;
+    [SerializeField] public float sphereRadius = 0.08f;
+    [SerializeField] public float surfaceOffset = 0.01f;
+    [SerializeField] public bool hideIfNoHit = true;
+
+    [Header("Visual")]
+    [SerializeField] public bool scaleWithDistance = true;
+    [SerializeField] public float worldSizeAt1m = 0.08f;
+    [SerializeField] public bool flipForward = false;
+    [SerializeField] public Vector3 extraEulerRotation = Vector3.zero;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;

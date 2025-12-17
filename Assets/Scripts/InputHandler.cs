@@ -8,6 +8,8 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public Vector2 MoveVector { get; private set; }
     public Vector2 LookVector { get; private set; }
 
+    public bool isAiming { get; private set; }
+
     public event Action JumpEvent;
     public event Action DashEvent;
     public event Action InteractionEvent;
@@ -73,5 +75,14 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     {
         if (!context.performed) { return; }
         DashEvent?.Invoke();
+    }
+
+    public void OnAim(InputAction.CallbackContext context)
+    {
+        if (context.performed) { isAiming = true; }
+        
+
+        if (!context.canceled) { isAiming = false; }
+        
     }
 }
