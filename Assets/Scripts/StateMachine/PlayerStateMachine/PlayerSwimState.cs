@@ -9,12 +9,15 @@ public class PlayerSwimState : PlayerBaseState
 
     public PlayerSwimState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
+        
     }
 
 
 
     public override void Enter()
     {
+        stateMachine.InputReader.DiveEvent += OnDiveExit;
+        
         originalHeight = stateMachine.Controller.height;
         originalCenter = stateMachine.Controller.center;
 
@@ -68,6 +71,9 @@ public class PlayerSwimState : PlayerBaseState
 
     public override void Exit()
     {
+        // Input Events
+        stateMachine.InputReader.DiveEvent -= OnDiveExit;
+        
         stateMachine.Controller.height = originalHeight;
         stateMachine.Controller.center = originalCenter;
 
@@ -125,5 +131,10 @@ public class PlayerSwimState : PlayerBaseState
         }
 
         stateMachine.ForceReceiver.AddForce(jumpDir * stateMachine.JumpForce * 1.5f);
+    }
+
+    private void OnDiveExit()
+    {
+        stateMachine.SwitchState(typeof(PlayerFreeLookState));
     }
 }
