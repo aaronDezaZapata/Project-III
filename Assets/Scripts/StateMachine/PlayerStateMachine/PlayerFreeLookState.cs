@@ -14,6 +14,7 @@ public class PlayerFreeLookState : PlayerBaseState
 
     public override void Enter()
     {
+        Debug.Log("Entered PlayerFreeLookState");
         stateMachine.InputReader.JumpEvent += OnJump;
 
         //stateMachine.InputReader.DashEvent += OnDash;
@@ -103,6 +104,7 @@ public class PlayerFreeLookState : PlayerBaseState
 
     private void OnJump()
     {
+        if (!stateMachine.Controller.isGrounded) return;
         Jump();
     }
 

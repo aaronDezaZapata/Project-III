@@ -16,7 +16,9 @@ public class PlayerSwimState : PlayerBaseState
 
     public override void Enter()
     {
+        Debug.Log("Entered PlayerSwimState");
         stateMachine.InputReader.DiveEvent += OnDiveExit;
+        stateMachine.InputReader.JumpEvent += PerformInkJump;
         
         originalHeight = stateMachine.Controller.height;
         originalCenter = stateMachine.Controller.center;
@@ -53,12 +55,6 @@ public class PlayerSwimState : PlayerBaseState
             timeWithoutInk = 0f;
         }
 
-        
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            stateMachine.SwitchState(typeof(PlayerFreeLookState));
-            return;
-        }
 
         if(Input.GetKeyDown(KeyCode.Space))
         {
@@ -73,6 +69,7 @@ public class PlayerSwimState : PlayerBaseState
     {
         // Input Events
         stateMachine.InputReader.DiveEvent -= OnDiveExit;
+        stateMachine.InputReader.JumpEvent -= PerformInkJump;
         
         stateMachine.Controller.height = originalHeight;
         stateMachine.Controller.center = originalCenter;
@@ -124,13 +121,15 @@ public class PlayerSwimState : PlayerBaseState
 
     private void PerformInkJump()
     {
-        Vector3 jumpDir = stateMachine.CurrentInkNormal + (stateMachine.transform.forward * 0.5f);
+        Vector3 jumpDir = stateMachine.CurrentInkNormal + (stateMachine.transform.forward * 0.25f);
         if(!stateMachine.ForceReceiver.isActiveAndEnabled)
         {
             stateMachine.ForceReceiver.enabled = true;
         }
 
         stateMachine.ForceReceiver.AddForce(jumpDir * stateMachine.JumpForce * 1.5f);
+        
+        OnDiveExit();
     }
 
     private void OnDiveExit()
