@@ -13,6 +13,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public event Action JumpEvent;
     public event Action DashEvent;
+    public event Action DiveEvent;
     public event Action InteractionEvent;
 
     void Start()
@@ -43,6 +44,12 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public void OnInteract(InputAction.CallbackContext context)
     {
         if (!context.performed) { InteractionEvent?.Invoke(); }
+    }
+
+    public void OnDive(InputAction.CallbackContext context)
+    {
+        if (!context.performed) { return; }
+        DiveEvent?.Invoke();
     }
 
     public void OnJump(InputAction.CallbackContext context)
