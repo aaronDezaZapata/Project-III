@@ -5,11 +5,14 @@ using UnityEngine.InputSystem;
 public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 {
     InputSystem_Actions controls;
+    
+
     public Vector2 MoveVector { get; private set; }
     public Vector2 LookVector { get; private set; }
 
     public bool isAiming { get; private set; }
     public bool IsFiring { get; private set; }
+    public bool isHeiser { get; private set; }
 
     public event Action JumpEvent;
     public event Action DashEvent;
@@ -101,5 +104,14 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
         Debug.Log("isAiming");
 
+    }
+
+    public void OnHeiser(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        { isHeiser = true; }
+
+        else if (context.canceled)
+        { isHeiser = false; }
     }
 }

@@ -64,6 +64,13 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public LayerMask AimLayerMask { get; private set; } = ~0;
     [field: SerializeField] public float ReticleSurfaceOffset { get; private set; } = 0.02f;
 
+    [field: Header("Heiser")]
+    [field: SerializeField] public float HoverForce { get; private set; } = 15f; // subir mas/menos rapido
+    [field: SerializeField] public float aerialMoveSpeed { get; private set; } = 10f;
+
+    // Esta variable controla que solo se use una vez por aire
+    public bool CanHeiser { get; set; } = true;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -72,6 +79,7 @@ public class PlayerStateMachine : StateMachine
         AddState(new PlayerFreeLookState(this));
         AddState(new PlayerSwimState(this));
         AddState(new PlayerShootingState(this));
+        AddState(new PlayerHeiserState(this));
         SwitchState(typeof(PlayerFreeLookState));
     }
 

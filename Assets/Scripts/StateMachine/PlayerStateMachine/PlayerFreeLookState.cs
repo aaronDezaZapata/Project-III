@@ -42,7 +42,16 @@ public class PlayerFreeLookState : PlayerBaseState
         if(stateMachine.InputReader.isAiming)
         {
             stateMachine.SwitchState(typeof(PlayerShootingState));
+            return;
         }
+
+        if (stateMachine.InputReader.isHeiser)
+        {
+            
+            stateMachine.SwitchState(typeof(PlayerHeiserState));
+            return;
+        }
+
 
         Vector3 movement = CalculateMovement();
 
