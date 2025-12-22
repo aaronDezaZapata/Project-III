@@ -121,13 +121,29 @@ public class PlayerSwimState : PlayerBaseState
 
     private void PerformInkJump()
     {
-        Vector3 jumpDir = stateMachine.CurrentInkNormal + (stateMachine.transform.forward * 0.25f);
-        if(!stateMachine.ForceReceiver.isActiveAndEnabled)
+        Vector2 input = stateMachine.InputReader.MoveVector;
+        Vector3 jumpDir;
+        
+        if (input.magnitude > 0.1f)
         {
-            stateMachine.ForceReceiver.enabled = true;
+            Vector3 surfaceNormal = stateMachine.CurrentInkNormal;
+            Vector3 cameraRight = Camera.main.transform.right;
+            Vector3 rightProjected = Vector3.ProjectOnPlane(cameraRight, surfaceNormal).normalized;
+            Vector3 forwardProjected = Vector3.Cross(rightProjected, surfaceNormal);
+            Vector3 moveDir = (forwardProjected * input.y + rightProjected * input.x).normalized;
+            
+            jumpDir = (stateMachine.CurrentInkNormal + moveDir * 0.5f).normalized;
         }
+        else
+        {
+            jumpDir = stateMachine.CurrentInkNormal;
+        }
+        
+        if(!stateMachine.ForceReceiver.isActiveAndEnabled)
+            stateMachine.ForceReceiver.enabled = true;
+        
 
-        stateMachine.ForceReceiver.AddForce(jumpDir * stateMachine.JumpForce * 1.5f);
+        stateMachine.ForceReceiver.AddForce(jumpDir * (stateMachine.JumpForce * 1.5f));
         
         OnDiveExit();
     }
