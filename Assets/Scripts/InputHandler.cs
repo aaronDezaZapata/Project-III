@@ -13,6 +13,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public event Action JumpEvent;
     public event Action DashEvent;
+    public event Action DiveEvent;
     public event Action InteractionEvent;
 
     void Start()
@@ -45,6 +46,12 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         if (!context.performed) { InteractionEvent?.Invoke(); }
     }
 
+    public void OnDive(InputAction.CallbackContext context)
+    {
+        if (!context.performed) { return; }
+        DiveEvent?.Invoke();
+    }
+
     public void OnJump(InputAction.CallbackContext context)
     {
         if (!context.performed) { return; }
@@ -74,25 +81,5 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public void OnSprint(InputAction.CallbackContext context)
     {
         
-    }
-
-    public void OnDash(InputAction.CallbackContext context)
-    {
-        if (!context.performed) { return; }
-        DashEvent?.Invoke();
-    }
-
-    public void OnAim(InputAction.CallbackContext context)
-    {
-
-        if (context.performed)
-            {isAiming = true;}
-        
-        else if (context.canceled)
-            {isAiming = false;}
-
-
-        Debug.Log("isAiming");
-
     }
 }

@@ -14,9 +14,12 @@ public class PlayerFreeLookState : PlayerBaseState
 
     public override void Enter()
     {
+        Debug.Log("Entered PlayerFreeLookState");
         stateMachine.InputReader.JumpEvent += OnJump;
 
-        stateMachine.InputReader.DashEvent += OnDash;
+        //stateMachine.InputReader.DashEvent += OnDash;
+
+        stateMachine.InputReader.DiveEvent += OnDiveEnter;
     }
 
   
@@ -58,7 +61,9 @@ public class PlayerFreeLookState : PlayerBaseState
 
         stateMachine.InputReader.JumpEvent -= OnJump;
 
-        stateMachine.InputReader.DashEvent -= OnDash;
+        // stateMachine.InputReader.DashEvent -= OnDash;
+        
+        stateMachine.InputReader.DiveEvent -= OnDiveEnter;
     }
 
     private void FaceMovementDirection(Vector3 movement, float deltaTime)
@@ -93,16 +98,22 @@ public class PlayerFreeLookState : PlayerBaseState
 
 
 
-    private void OnDash()
+    /*private void OnDash()
     {
         if (stateMachine.InputReader.MoveVector == Vector2.zero) { return; }
 
        //stateMachine.SwitchState(PlayerDashingState);
-    }
+    }*/
 
 
     private void OnJump()
     {
+        if (!stateMachine.Controller.isGrounded) return;
         Jump();
+    }
+
+    private void OnDiveEnter()
+    {
+        stateMachine.SwitchState(typeof(PlayerSwimState));
     }
 }
