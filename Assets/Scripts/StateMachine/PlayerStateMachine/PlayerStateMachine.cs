@@ -43,34 +43,26 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public Transform GunOrigin;       
     [SerializeField] public Transform reticle { get; private set; } // Quad o Canvas
 
-    // Estado compartido para saber si estamos sobre tinta
+
     public bool IsOnInk;
     public Vector3 CurrentInkNormal = Vector3.up;
 
     #endregion
 
 
-    //Variables CarolMonty
-    [Header("ADD SLOWLY")]
-
     [Header("References")]
 
-    
+    [field: SerializeField] public Transform FirePoint { get; private set; }
+    [field: SerializeField] public Rigidbody ProjectilePrefab { get; private set; }
+    [field: SerializeField] public float FireCooldown { get; private set; } = 0.15f;
+    [field: SerializeField] public float ProjectileFlightTime { get; private set; } = 0.6f;
+    [field: SerializeField] public LayerMask PaintableLayer { get; private set; } = ~0;
 
-    [Header("Raycast")]
-    [SerializeField] public float maxDistance = 80f;
-    [SerializeField] public LayerMask aimMask = ~0;
-    [SerializeField] public bool useScreenCenter = true; //cursor looked
-    [SerializeField] public bool useSphereCast = true;
-    [SerializeField] public float sphereRadius = 0.08f;
-    [SerializeField] public float surfaceOffset = 0.01f;
-    [SerializeField] public bool hideIfNoHit = true;
-
-    [Header("Visual")]
-    [SerializeField] public bool scaleWithDistance = true;
-    [SerializeField] public float worldSizeAt1m = 0.08f;
-    [SerializeField] public bool flipForward = false;
-    [SerializeField] public Vector3 extraEulerRotation = Vector3.zero;
+    [field: Header("Reticle Config")]
+    [field: SerializeField] public Transform ReticleTransform { get; private set; } // El objeto visual de la mira
+    [field: SerializeField] public float MaxAimDistance { get; private set; } = 80f;
+    [field: SerializeField] public LayerMask AimLayerMask { get; private set; } = ~0;
+    [field: SerializeField] public float ReticleSurfaceOffset { get; private set; } = 0.02f;
 
     private void Start()
     {
@@ -79,6 +71,7 @@ public class PlayerStateMachine : StateMachine
 
         AddState(new PlayerFreeLookState(this));
         AddState(new PlayerSwimState(this));
+        AddState(new PlayerShootingState(this));
         SwitchState(typeof(PlayerFreeLookState));
     }
 
@@ -87,12 +80,6 @@ public class PlayerStateMachine : StateMachine
         StartCoroutine(ShakeRoutine(duration));
     }
 
-    /*
-    private void Update()
-    {
-        
-    }
-    */
     public IEnumerator ShakeRoutine(float duration)
     {
         camera_CM.GetComponent<CinemachineBasicMultiChannelPerlin>().AmplitudeGain = 5f;
@@ -168,6 +155,20 @@ public class PlayerStateMachine : StateMachine
             IsOnInk = false;
             CurrentInkNormal = Vector3.up;
         }
+    }
+
+
+    public void PaintSurface(Vector3 point, Vector3 normal)
+    {
+        if (InkDecalPrefab == null) return;
+
+        // Lógica traída de InkDecalPainter
+        Quaternion alignmentRotation = Quaternion.FromToRotation(Vector3.up, normal);
+        Quaternion fixRotation = Quaternion.Euler(90f, 0f, 0f); // Ajuste si tu decal está rotado
+        Quaternion finalRotation = alignmentRotation * fixRotation;
+
+        GameObject splat = Instantiate(InkDecalPrefab, point, finalRotation);
+        splat.transform.position += normal * ReticleSurfaceOffset;
     }
 
     // Helper para instanciar tinta (llamado desde los estados)

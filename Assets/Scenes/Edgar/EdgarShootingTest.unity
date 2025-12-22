@@ -479,7 +479,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 349530082}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.048119377, y: 0.79016054, z: -0.0625571, w: 0.6077973}
+  m_LocalRotation: {x: 0.04398677, y: 0.82769674, z: -0.065528855, w: 0.55559814}
   m_LocalPosition: {x: -4.7699995, y: 1.14, z: -0.00000039041043}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -543,23 +543,23 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 428468277}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d1be5ca3769743b41ace15c71522b997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aimReticle: {fileID: 428468282}
-  firePoint: {fileID: 918574487}
-  projectilePrefab: {fileID: 4575993021514827145, guid: eec7e630600ae6641b068a12bafbd620, type: 3}
+  aimReticle: {fileID: 0}
+  firePoint: {fileID: 0}
+  projectilePrefab: {fileID: 0}
   arcHeight: 2
   fireCooldown: 0.15
   onlyFireWhileAiming: 1
-  flightTime: 0.3
-  painter: {fileID: 428468279}
+  flightTime: 0.6
+  painter: {fileID: 0}
   paintableMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  ignoreCollidersRoot: {fileID: 1440174008}
+  ignoreCollidersRoot: {fileID: 0}
 --- !u!114 &428468281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -567,7 +567,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 428468277}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f30acad75dd9df14e90c82e77474d721, type: 3}
   m_Name: 
@@ -584,7 +584,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 428468277}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a961f424082c7ed44ad424ffa04cca0c, type: 3}
   m_Name: 
@@ -1007,9 +1007,33 @@ PrefabInstance:
       value: 128
       objectReference: {fileID: 0}
     - target: {fileID: 8526194884507870142, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: useScreenCenter
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8526194884507870142, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: <FirePoint>k__BackingField
+      value: 
+      objectReference: {fileID: 918574487}
+    - target: {fileID: 8526194884507870142, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: <SwimSpeed>k__BackingField
       value: 16.2
       objectReference: {fileID: 0}
+    - target: {fileID: 8526194884507870142, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: <aimCamera>k__BackingField
+      value: 
+      objectReference: {fileID: 349530083}
+    - target: {fileID: 8526194884507870142, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: <camera_CM>k__BackingField
+      value: 
+      objectReference: {fileID: 1440174007}
+    - target: {fileID: 8526194884507870142, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: <ProjectilePrefab>k__BackingField
+      value: 
+      objectReference: {fileID: 4575993021514827145, guid: eec7e630600ae6641b068a12bafbd620, type: 3}
+    - target: {fileID: 8526194884507870142, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: <ReticleTransform>k__BackingField
+      value: 
+      objectReference: {fileID: 1546158291}
     - target: {fileID: 8526194884507870142, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: <FreeLookMovementSpeed>k__BackingField
       value: 10.8
@@ -1347,8 +1371,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2025636904}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.048119377, y: 0.79016054, z: -0.0625571, w: 0.60779727}
-  m_LocalPosition: {x: -4.7699995, y: -0.64, z: -0.00000039041043}
+  m_LocalRotation: {x: 0.072895646, y: 0.7033394, z: -0.072895646, w: 0.70333934}
+  m_LocalPosition: {x: -4.924039, y: -0.7482408, z: 0.00000023515895}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

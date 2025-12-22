@@ -9,6 +9,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public Vector2 LookVector { get; private set; }
 
     public bool isAiming { get; private set; }
+    public bool IsFiring { get; private set; }
 
     public event Action JumpEvent;
     public event Action DashEvent;
@@ -32,7 +33,11 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public void OnAttack(InputAction.CallbackContext context)
     {
-       
+        if (context.performed)
+        { IsFiring = true; }
+
+        else if (context.canceled)
+        { IsFiring = false; }
     }
 
     public void OnInteract(InputAction.CallbackContext context)
@@ -79,10 +84,15 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public void OnAim(InputAction.CallbackContext context)
     {
-        if (context.performed) { isAiming = true; }
-        
 
-        if (!context.canceled) { isAiming = false; }
+        if (context.performed)
+            {isAiming = true;}
         
+        else if (context.canceled)
+            {isAiming = false;}
+
+
+        Debug.Log("isAiming");
+
     }
 }
