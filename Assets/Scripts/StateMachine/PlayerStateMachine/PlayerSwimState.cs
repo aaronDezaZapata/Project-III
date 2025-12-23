@@ -56,10 +56,10 @@ public class PlayerSwimState : PlayerBaseState
         }
 
 
-        if(Input.GetKeyDown(KeyCode.Space))
+        /*if(Input.GetKeyDown(KeyCode.Space))
         {
             PerformInkJump();
-        }
+        }*/
 
         
         HandleSwimMovement(deltaTime);
