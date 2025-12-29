@@ -39,7 +39,14 @@ public class PlayerFreeLookState : PlayerBaseState
             return;
         }*/
 
-        if(stateMachine.InputReader.isAiming)
+        if (stateMachine.InputReader.isGreen && stateMachine.HasGreenAbility)
+        {
+            // Intentar transición a estado verde
+            stateMachine.SwitchState(typeof(PlayerGreenState));
+            return;
+        }
+
+        if (stateMachine.InputReader.isAiming)
         {
             stateMachine.SwitchState(typeof(PlayerShootingState));
             return;
@@ -54,8 +61,6 @@ public class PlayerFreeLookState : PlayerBaseState
 
 
         Vector3 movement = CalculateMovement();
-
-
        
         if (!Equals(movement, Vector3.zero))
         {
@@ -124,5 +129,13 @@ public class PlayerFreeLookState : PlayerBaseState
     private void OnDiveEnter()
     {
         stateMachine.SwitchState(typeof(PlayerSwimState));
+    }
+
+    private void OnGreenActivated()
+    {
+        if (stateMachine.HasGreenAbility)
+        {
+            stateMachine.SwitchState(typeof(PlayerGreenState));
+        }
     }
 }
