@@ -41,12 +41,9 @@ public class EnemyStateMachine : StateMachine
 
     void OnParticleCollision(GameObject other)
     {
-        // Verificamos que sea el chorro de agua del jugador (por si hay otras partículas)
+        
         if (other.CompareTag("WaterJet"))
-        {
-            // Llamamos a la función de inflar manualmente
-            // (Tendrías que hacer pública la función Inflate() o usar una variable)
-            
+        { 
             isGettingAttacked = true;
 
             _sprayResetTimer = _sprayCooldown;
@@ -56,8 +53,6 @@ public class EnemyStateMachine : StateMachine
                 SwitchState(typeof(EnemyInflatableState));
                 return;
             }
-            
-
         }
     }
 }
