@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.InputSystem;  // ← AÑADIR ESTA LÍNEA
+using UnityEngine.InputSystem;
 
 public class PlayerStateMachine : StateMachine
 {
@@ -48,7 +48,7 @@ public class PlayerStateMachine : StateMachine
     public bool IsOnInk;
     public Vector3 CurrentInkNormal = Vector3.up;
 
-    [Header("Green Grapple Mechanics")]
+    [field: Header("Green Grapple Mechanics")]
     [Tooltip("¿El jugador tiene habilitado el color verde? (Dejar en true para pruebas)")]
     [field: SerializeField] public bool HasGreenAbility { get; private set; } = true;
 
@@ -76,6 +76,39 @@ public class PlayerStateMachine : StateMachine
 
     [Tooltip("Punto desde donde sale la cuerda (mano del jugador)")]
     [field: SerializeField] public Transform GrappleRopeOrigin { get; private set; }
+
+    [Header("Green Whip Mechanics (Enemy Attack)")]
+    [Tooltip("Capa de los enemigos que pueden ser capturados")]
+    [field: SerializeField] public LayerMask EnemyLayer { get; private set; }
+
+    [Tooltip("Fuerza mínima de lanzamiento (cuando gira lento)")]
+    [field: SerializeField] public float WhipThrowForceMin { get; private set; } = 15f;
+
+    [Tooltip("Fuerza máxima de lanzamiento (cuando gira rápido)")]
+    [field: SerializeField] public float WhipThrowForceMax { get; private set; } = 40f;
+
+    [Tooltip("Distancia máxima para detectar enemigos")]
+    [field: SerializeField] public float EnemyDetectionRange { get; private set; } = 15f;
+
+    [Header("Green Whip Spin Settings")]
+    [Tooltip("Velocidad inicial de giro del enemigo (grados/segundo)")]
+    [field: SerializeField] public float WhipStartSpinSpeed { get; private set; } = 180f;
+
+    [Tooltip("Aceleración del giro cuando usas WASD (grados/segundo²)")]
+    [field: SerializeField] public float WhipSpinAcceleration { get; private set; } = 360f;
+
+    [Tooltip("Velocidad máxima de giro del enemigo (grados/segundo)")]
+    [field: SerializeField] public float WhipMaxSpinSpeed { get; private set; } = 720f;
+
+    [Tooltip("Radio del círculo en el que gira el enemigo")]
+    [field: SerializeField] public float WhipHoldRadius { get; private set; } = 2.5f;
+
+    [Tooltip("Altura sobre el jugador a la que se mantiene el enemigo")]
+    [field: SerializeField] public float WhipHoldHeight { get; private set; } = 2f;
+
+    [Tooltip("Velocidad a la que el enemigo es capturado")]
+    [field: SerializeField] public float WhipCaptureSpeed { get; private set; } = 20f;
+
 
     #endregion
 
@@ -111,6 +144,7 @@ public class PlayerStateMachine : StateMachine
         AddState(new PlayerShootingState(this));
         AddState(new PlayerHeiserState(this));
         AddState(new PlayerGreenState(this));
+        AddState(new PlayerGreenWhipState(this));
 
         SwitchState(typeof(PlayerFreeLookState));
     }

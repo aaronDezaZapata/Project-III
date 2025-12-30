@@ -73,13 +73,13 @@ public class GrappleRopeSetup : MonoBehaviour
             Material defaultMat = new Material(Shader.Find("Sprites/Default"));
             defaultMat.color = ropeColor;
             lineRenderer.material = defaultMat;
-            Debug.Log("✓ Material por defecto creado");
+            Debug.Log("Material por defecto creado");
         }
 
         lineRenderer.startColor = ropeColor;
         lineRenderer.endColor = ropeColor;
 
-        Debug.Log("✓ LineRenderer configurado correctamente");
+        Debug.Log("LineRenderer configurado correctamente");
 
         Transform originTransform = transform.Find("GrappleRopeOrigin");
         GameObject originObject;
@@ -106,28 +106,17 @@ public class GrappleRopeSetup : MonoBehaviour
 
             if (grappleRopeProp != null && grappleOriginProp != null)
             {
-                Debug.Log("✓ Referencias asignadas. Verifica en el Inspector de PlayerStateMachine.");
+                Debug.Log("Referencias asignadas.");
             }
             else
             {
-                Debug.LogWarning("No se encontraron las propiedades GrappleRope/GrappleRopeOrigin. " +
-                                "Asígnalas manualmente en el Inspector de PlayerStateMachine.");
+                Debug.LogWarning("No se encontraron. " + "Asígnalas manualmente.");
             }
         }
         catch
         {
             Debug.LogWarning("Asigna manualmente el LineRenderer y el Origin en PlayerStateMachine.");
         }
-
-        Debug.Log("====================================");
-        Debug.Log("SETUP COMPLETO!");
-        Debug.Log("====================================");
-        Debug.Log("PASOS SIGUIENTES:");
-        Debug.Log("1. Arrastra el GameObject 'GrappleRope' al campo 'Grapple Rope' en PlayerStateMachine");
-        Debug.Log("2. Arrastra el GameObject 'GrappleRopeOrigin' al campo 'Grapple Rope Origin'");
-        Debug.Log("3. Ajusta la posición de 'GrappleRopeOrigin' para que coincida con la mano de tu personaje");
-        Debug.Log("4. (Opcional) Asigna un material personalizado al LineRenderer");
-        Debug.Log("====================================");
 
         setupComplete = true;
     }
