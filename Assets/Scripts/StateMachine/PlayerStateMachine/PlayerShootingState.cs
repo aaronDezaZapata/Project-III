@@ -14,17 +14,26 @@ public class PlayerShootingState : PlayerBaseState
 
     private const float AimMovementSpeed = 3f;
 
+    private float _rotationX;
+    private float _rotationY;
+    
+    [SerializeField] private float horizontalSensitivity = 150f;
+    [SerializeField] private float verticalSensitivity = 100f;
+    [SerializeField] private float minVerticalAngle = -30f;
+    [SerializeField] private float maxVerticalAngle = 60f;
+
     public override void Enter()
     {
 
         if (stateMachine.aimCamera != null)
-            stateMachine.aimCamera.gameObject.SetActive(true);
+            stateMachine.aimCamera.Priority.Value = 10;
 
 
         if (stateMachine.ReticleTransform != null)
             stateMachine.ReticleTransform.gameObject.SetActive(true);
 
-
+        _rotationX = stateMachine.transform.eulerAngles.y;
+        _rotationY = 0f;
     }
 
     public override void Tick(float deltaTime)
@@ -34,10 +43,10 @@ public class PlayerShootingState : PlayerBaseState
             stateMachine.SwitchState(typeof(PlayerFreeLookState));
             return;
         }
-
+        
+        HandleLookRotation(deltaTime);
         
         UpdateReticlePosition();
-
         
         HandleAimMovement(deltaTime);
 
@@ -53,7 +62,7 @@ public class PlayerShootingState : PlayerBaseState
     {
 
         if (stateMachine.aimCamera != null)
-            stateMachine.aimCamera.gameObject.SetActive(false);
+            stateMachine.aimCamera.Priority.Value = -1;
 
         if (stateMachine.ReticleTransform != null)
             stateMachine.ReticleTransform.gameObject.SetActive(false);
@@ -128,6 +137,26 @@ public class PlayerShootingState : PlayerBaseState
         velocity = vXZ + Vector3.up * vY;
         return true;
     }
+    
+    private void HandleLookRotation(float deltaTime)
+    {
+        Vector2 lookInput = stateMachine.InputReader.LookVector;
+
+        // Sensibilidad (ajusta estos valores en PlayerStateMachine si quieres)
+        float hSens = 150f;
+        float vSens = 100f;
+
+        // Rotación horizontal - rota al jugador
+        _rotationX += lookInput.x * hSens * deltaTime;
+
+        // Aplicar rotación al jugador
+        stateMachine.transform.rotation = Quaternion.Euler(0f, _rotationX, 0f);
+
+        // Rotación vertical (opcional) - para inclinar la cámara
+        _rotationY -= lookInput.y * vSens * deltaTime;
+        _rotationY = Mathf.Clamp(_rotationY, -30f, 60f);
+        // Aquí aplicarías _rotationY a un pivot de cámara si lo necesitas
+    }
 
     private void HandleAimMovement(float deltaTime)
     {
@@ -135,14 +164,16 @@ public class PlayerShootingState : PlayerBaseState
 
         Vector3 forward = Camera.main.transform.forward;
         Vector3 right = Camera.main.transform.right;
-        forward.y = 0; right.y = 0;
-        forward.Normalize(); right.Normalize();
+        forward.y = 0;
+        right.y = 0;
+        forward.Normalize();
+        right.Normalize();
 
         Vector3 moveDir = (forward * movementInput.z + right * movementInput.x);
 
         Move(moveDir * AimMovementSpeed, deltaTime);
 
-        Vector3 lookDir = forward;
+        /*Vector3 lookDir = forward;
         if (lookDir != Vector3.zero)
         {
             stateMachine.transform.rotation = Quaternion.Slerp(
@@ -150,6 +181,6 @@ public class PlayerShootingState : PlayerBaseState
                 Quaternion.LookRotation(lookDir),
                 stateMachine.RotationSpeed * deltaTime
             );
-        }
+        }*/
     }
 }
