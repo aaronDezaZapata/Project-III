@@ -3,23 +3,33 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody), typeof(Collider))]
 public class InkProjectile : MonoBehaviour
 {
-    private InkDecalPainter painter;
+    
+    private PlayerStateMachine stateMachine;
     private LayerMask mask;
     private bool done;
 
-    public void Init(InkDecalPainter painterRef, LayerMask paintableMask)
+    
+    public void Initialize(PlayerStateMachine machineRef)
     {
-        painter = painterRef;
-        mask = paintableMask;
+        stateMachine = machineRef;
+        
+        mask = machineRef.PaintableLayer;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (done) return;
+
+        
         if (((1 << collision.gameObject.layer) & mask) == 0) return;
 
         ContactPoint cp = collision.GetContact(0);
-        painter?.Paint(cp.point, cp.normal);
+
+        
+        if (stateMachine != null)
+        {
+            stateMachine.PaintSurface(cp.point, cp.normal);
+        }
 
         done = true;
         Destroy(gameObject);

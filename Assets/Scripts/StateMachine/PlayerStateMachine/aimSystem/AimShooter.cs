@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public class AimShooter : MonoBehaviour
 {
+    
     [Header("Refs")]
     [SerializeField] private SurfaceAimReticle aimReticle;
     [SerializeField] private Transform firePoint;
@@ -79,7 +80,7 @@ public class AimShooter : MonoBehaviour
         InkProjectile inkProj = rb.GetComponent<InkProjectile>();
         if (inkProj != null)
         {
-            inkProj.Init(painter, paintableMask);
+            
         }
         if (selfColliders != null)
         {
@@ -126,4 +127,5 @@ public class AimShooter : MonoBehaviour
         return held;
     }
 
+    
 }

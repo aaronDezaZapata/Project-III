@@ -5,11 +5,19 @@ using UnityEngine.InputSystem;
 public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 {
     InputSystem_Actions controls;
+    
+
     public Vector2 MoveVector { get; private set; }
     public Vector2 LookVector { get; private set; }
 
+    public bool isAiming { get; private set; }
+    public bool IsFiring { get; private set; }
+    public bool isHeiser { get; private set; }
+    public bool isGreen { get; set; }
+
     public event Action JumpEvent;
     public event Action DashEvent;
+    public event Action DiveEvent;
     public event Action InteractionEvent;
 
     void Start()
@@ -30,12 +38,22 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public void OnAttack(InputAction.CallbackContext context)
     {
-       
+        if (context.performed)
+        { IsFiring = true; }
+
+        else if (context.canceled)
+        { IsFiring = false; }
     }
 
     public void OnInteract(InputAction.CallbackContext context)
     {
         if (!context.performed) { InteractionEvent?.Invoke(); }
+    }
+
+    public void OnDive(InputAction.CallbackContext context)
+    {
+        if (!context.performed) { return; }
+        DiveEvent?.Invoke();
     }
 
     public void OnJump(InputAction.CallbackContext context)
@@ -74,4 +92,43 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         if (!context.performed) { return; }
         DashEvent?.Invoke();
     }
+
+    public void OnAim(InputAction.CallbackContext context)
+    {
+
+        if (context.performed)
+            {isAiming = true;}
+        
+        else if (context.canceled)
+            {isAiming = false;}
+
+
+        Debug.Log("isAiming");
+
+    }
+
+    public void OnHeiser(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        { isHeiser = true; }
+
+        else if (context.canceled)
+        { isHeiser = false; }
+    }
+
+    public void OnGreen(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            isGreen = true;
+            Debug.Log("Green State Activated");
+        }
+        else if (context.canceled)
+        {
+            isGreen = false;
+            Debug.Log("Green State Deactivated");
+        }
+    }
+
+
 }
