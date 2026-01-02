@@ -13,6 +13,9 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public bool isAiming { get; private set; }
     public bool IsFiring { get; private set; }
     public bool isHeiser { get; private set; }
+    public bool isGreen { get; set; }
+    public bool isGray { get; set; }
+
 
     public event Action JumpEvent;
     public event Action DashEvent;
@@ -113,5 +116,32 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
         else if (context.canceled)
         { isHeiser = false; }
+    }
+
+    public void OnGreen(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            isGreen = true;
+            Debug.Log("Green State Activated");
+        }
+        else if (context.canceled)
+        {
+            isGreen = false;
+            Debug.Log("Green State Deactivated");
+        }
+    }
+    public void OnGray(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            isGray = true;
+            Debug.Log("Gray State Activated");
+        }
+        else if (context.canceled)
+        {
+            isGray = false;
+            Debug.Log("Gray State Deactivated");
+        }
     }
 }
