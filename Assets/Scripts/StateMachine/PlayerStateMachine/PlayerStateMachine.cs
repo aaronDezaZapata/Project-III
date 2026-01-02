@@ -110,6 +110,43 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public float WhipCaptureSpeed { get; private set; } = 20f;
 
 
+    [Header("Gray Vacuum Mechanics")]
+    [Tooltip("¿El jugador tiene habilitada la habilidad gris?")]
+    [field: SerializeField] public bool HasGrayAbility { get; private set; } = true;
+
+    [Tooltip("Capa de objetos que pueden ser absorbidos")]
+    [field: SerializeField] public LayerMask AbsorbableLayer { get; private set; }
+
+    [Header("Gray Absorption Settings")]
+    [Tooltip("Rango de absorción (metros)")]
+    [field: SerializeField] public float GrayAbsorbRange { get; private set; } = 8f;
+
+    [Tooltip("Ángulo del cono de absorción (grados)")]
+    [Range(30f, 180f)]
+    [field: SerializeField] public float GrayAbsorbAngle { get; private set; } = 90f;
+
+    [Tooltip("Velocidad de absorción base")]
+    [field: SerializeField] public float GrayAbsorbSpeed { get; private set; } = 5f;
+
+    [Tooltip("Máximo de objetos absorbiendo simultáneamente")]
+    [Range(1, 10)]
+    [field: SerializeField] public int GrayMaxSimultaneousAbsorb { get; private set; } = 3;
+
+    [Header("Gray Holding Settings")]
+    [Tooltip("Altura a la que se sostienen objetos grandes")]
+    [field: SerializeField] public float GrayHoldHeight { get; private set; } = 1.5f;
+
+    [Tooltip("Distancia desde el jugador de objetos grandes")]
+    [field: SerializeField] public float GrayHoldDistance { get; private set; } = 2f;
+
+    [Header("Gray Projectile Settings")]
+    [Tooltip("Multiplicador de velocidad de proyectiles")]
+    [field: SerializeField] public float GrayProjectileSpeedMultiplier { get; private set; } = 1.5f;
+
+    [Header("Gray Visual")]
+    [Tooltip("Sistema de partículas de absorción")]
+    [field: SerializeField] public ParticleSystem GrayAbsorbParticles { get; private set; }
+
     #endregion
 
 
@@ -145,6 +182,7 @@ public class PlayerStateMachine : StateMachine
         AddState(new PlayerHeiserState(this));
         AddState(new PlayerGreenState(this));
         AddState(new PlayerGreenWhipState(this));
+        AddState(new PlayerGrayState(this));
 
         SwitchState(typeof(PlayerFreeLookState));
     }
@@ -157,6 +195,8 @@ public class PlayerStateMachine : StateMachine
         if (InputReader != null && Keyboard.current != null)
         {
             InputReader.isGreen = Keyboard.current.gKey.isPressed;
+            InputReader.isGray = Keyboard.current.fKey.isPressed;
+            //InputReader.isBlue = Keyboard.current.eKey.isPressed;
         }
 
         // Llamar al Tick del estado actual

@@ -44,6 +44,12 @@ public class PlayerFreeLookState : PlayerBaseState
             return;
         }*/
 
+        if (stateMachine.InputReader.isGray && stateMachine.HasGrayAbility)
+        {
+            stateMachine.SwitchState(typeof(PlayerGrayState));
+            return;
+        }
+
         // Enemigos latigo
         if (stateMachine.InputReader.isGreen && stateMachine.HasGreenAbility)
         {
