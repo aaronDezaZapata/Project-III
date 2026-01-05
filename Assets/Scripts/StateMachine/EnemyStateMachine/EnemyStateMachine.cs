@@ -55,4 +55,18 @@ public class EnemyStateMachine : StateMachine
             }
         }
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.transform.CompareTag("Enemy"))
+        {
+            if(collision.transform.TryGetComponent<CharacterController>(out var cc))
+            {
+                if(cc.velocity.magnitude > 5)
+                {
+
+                }
+            }
+        }
+    }
 }
