@@ -72,15 +72,17 @@ public class EnemyInflatableState : EnemyBaseState
         {
             Inflate();
         }
+        /*
         else
         {
             Deflate();
         }
+        */
 
-        
-        if (_currentProgress <= 0.0f && !stateMachine.isGettingAttacked)
+        // If we want deflate _currentProgress <= 0.0f &&
+        if (!stateMachine.isGettingAttacked)
         {
-            _currentProgress = 0f;
+            //_currentProgress = 0f;
             UpdateShaderValues();
 
             
