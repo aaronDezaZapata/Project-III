@@ -30,12 +30,33 @@ public class EnemyStateMachine : StateMachine
         AddState(new EnemyAttackState(this));
         AddState(new EnemyStunnedState(this));
         AddState(new EnemyInflatableState(this));
+        AddState(new EnemyDeathState(this));
     }
 
 
     private void Start()
     {
+       
         SwitchState(typeof(EnemyIdleState));
+    }
+
+    public void GoToDeath()
+    {
+        float velocityDeath = 5f;
+        EnemyDeathState deathState = states[typeof(EnemyDeathState)] as EnemyDeathState;
+
+        if (deathState != null)
+        {
+            
+            deathState.ConfigureDeath(velocityDeath); // Velocidad
+
+            
+            SwitchState(typeof(EnemyDeathState));
+        }
+        else
+        {
+            Debug.LogError("No has añadido EnemyDeathState en el Awake");
+        }
     }
 
 
@@ -62,9 +83,36 @@ public class EnemyStateMachine : StateMachine
         {
             if(collision.transform.TryGetComponent<CharacterController>(out var cc))
             {
-                if(cc.velocity.magnitude > 5)
+                if(cc.velocity.magnitude > 5f)
                 {
+                    //Death
+                    collision.transform.GetComponent<EnemyStateMachine>().GoToDeath();
+                    GoToDeath();
+                    return;
+                    
+                }
+            }
+        }
 
+        if (collision.transform.CompareTag("Obstacle"))
+        {
+            if (Controller.velocity.magnitude > 5f)
+            {
+                //Death
+                GoToDeath();
+                return;
+            }
+        }
+
+        if (collision.transform.CompareTag("Object"))
+        {
+            if (collision.transform.TryGetComponent<Rigidbody>(out var cc))
+            {
+                if (cc.linearVelocity.magnitude > 5)
+                {
+                    //Death
+                    GoToDeath();
+                    return;
                 }
             }
         }
