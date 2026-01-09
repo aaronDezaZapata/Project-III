@@ -150,7 +150,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""name"": ""Previous"",
                     ""type"": ""Button"",
                     ""id"": ""2776c80d-3c14-4091-8c56-d04ced07a2b0"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -183,9 +183,18 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Heiser"",
+                    ""name"": ""ColorAction"",
                     ""type"": ""Button"",
                     ""id"": ""5018216c-267d-4104-b4d4-257c5394cfd4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DColorChange"",
+                    ""type"": ""Button"",
+                    ""id"": ""cb5df801-d6ab-4d40-8f0f-9f7e5f4d8b78"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -603,11 +612,11 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""dc44780a-125c-4b57-9110-262845968e0d"",
-                    ""path"": ""<Keyboard>/v"",
+                    ""path"": ""<Keyboard>/shift"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Heiser"",
+                    ""action"": ""ColorAction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -618,7 +627,18 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
-                    ""action"": ""Heiser"",
+                    ""action"": ""ColorAction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0771eb0e-3533-4ea0-aaec-7b06e260960a"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DColorChange"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1216,7 +1236,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_Next = m_Player.FindAction("Next", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
-        m_Player_Heiser = m_Player.FindAction("Heiser", throwIfNotFound: true);
+        m_Player_ColorAction = m_Player.FindAction("ColorAction", throwIfNotFound: true);
+        m_Player_DColorChange = m_Player.FindAction("DColorChange", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1320,7 +1341,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Next;
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_Aim;
-    private readonly InputAction m_Player_Heiser;
+    private readonly InputAction m_Player_ColorAction;
+    private readonly InputAction m_Player_DColorChange;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1373,9 +1395,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Aim => m_Wrapper.m_Player_Aim;
         /// <summary>
-        /// Provides access to the underlying input action "Player/Heiser".
+        /// Provides access to the underlying input action "Player/ColorAction".
         /// </summary>
-        public InputAction @Heiser => m_Wrapper.m_Player_Heiser;
+        public InputAction @ColorAction => m_Wrapper.m_Player_ColorAction;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/DColorChange".
+        /// </summary>
+        public InputAction @DColorChange => m_Wrapper.m_Player_DColorChange;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1432,9 +1458,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Aim.started += instance.OnAim;
             @Aim.performed += instance.OnAim;
             @Aim.canceled += instance.OnAim;
-            @Heiser.started += instance.OnHeiser;
-            @Heiser.performed += instance.OnHeiser;
-            @Heiser.canceled += instance.OnHeiser;
+            @ColorAction.started += instance.OnColorAction;
+            @ColorAction.performed += instance.OnColorAction;
+            @ColorAction.canceled += instance.OnColorAction;
+            @DColorChange.started += instance.OnDColorChange;
+            @DColorChange.performed += instance.OnDColorChange;
+            @DColorChange.canceled += instance.OnDColorChange;
         }
 
         /// <summary>
@@ -1476,9 +1505,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Aim.started -= instance.OnAim;
             @Aim.performed -= instance.OnAim;
             @Aim.canceled -= instance.OnAim;
-            @Heiser.started -= instance.OnHeiser;
-            @Heiser.performed -= instance.OnHeiser;
-            @Heiser.canceled -= instance.OnHeiser;
+            @ColorAction.started -= instance.OnColorAction;
+            @ColorAction.performed -= instance.OnColorAction;
+            @ColorAction.canceled -= instance.OnColorAction;
+            @DColorChange.started -= instance.OnDColorChange;
+            @DColorChange.performed -= instance.OnDColorChange;
+            @DColorChange.canceled -= instance.OnDColorChange;
         }
 
         /// <summary>
@@ -1850,12 +1882,19 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnAim(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Heiser" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "ColorAction" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnHeiser(InputAction.CallbackContext context);
+        void OnColorAction(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DColorChange" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDColorChange(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

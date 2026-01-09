@@ -109,6 +109,16 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     }
 
+    public void OnColorAction(InputAction.CallbackContext context)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnDColorChange(InputAction.CallbackContext context)
+    {
+        throw new NotImplementedException();
+    }
+
     public void OnHeiser(InputAction.CallbackContext context)
     {
         if (context.performed)
