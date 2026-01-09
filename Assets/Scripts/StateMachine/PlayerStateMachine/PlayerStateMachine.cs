@@ -187,23 +187,6 @@ public class PlayerStateMachine : StateMachine
         SwitchState(typeof(PlayerFreeLookState));
     }
 
-    // ============================================
-    // TEMPORAL - probar balanceo
-    // ============================================
-    private new void Update()
-    {
-        if (InputReader != null && Keyboard.current != null)
-        {
-            InputReader.isGreen = Keyboard.current.gKey.isPressed;
-            InputReader.isGray = Keyboard.current.fKey.isPressed;
-            //InputReader.isBlue = Keyboard.current.eKey.isPressed;
-        }
-
-        // Llamar al Tick del estado actual
-        currentState?.Tick(Time.deltaTime);
-    }
-    // ============================================
-
     public void StartCameraShake(float duration)
     {
         StartCoroutine(ShakeRoutine(duration));
@@ -228,16 +211,6 @@ public class PlayerStateMachine : StateMachine
 
         camera_CM.GetComponent<CinemachineBasicMultiChannelPerlin>().AmplitudeGain = 0f;
         camera_CM.GetComponent<CinemachineBasicMultiChannelPerlin>().FrequencyGain = 0f;
-    }
-
-    private void OnEnable()
-    {
-
-    }
-
-    private void OnDisable()
-    {
-
     }
 
     void HandleTakeDamage()
@@ -338,6 +311,4 @@ public class PlayerStateMachine : StateMachine
             SwitchState(typeof(PlayerFreeLookState));
         }
     }
-
-
 }

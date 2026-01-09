@@ -13,12 +13,14 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public bool isAiming { get; private set; }
     public bool IsFiring { get; private set; }
     public bool isHeiser { get; private set; }
+    public bool isColorAction { get; private set; }
+    public bool isDColorChange { get; private set; }
     public bool isGreen { get; set; }
     public bool isGray { get; set; }
 
 
     public event Action JumpEvent;
-    public event Action DashEvent;
+    public event Action ColorActionEvent;
     public event Action DiveEvent;
     public event Action InteractionEvent;
 
@@ -89,12 +91,6 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         
     }
 
-    public void OnDash(InputAction.CallbackContext context)
-    {
-        if (!context.performed) { return; }
-        DashEvent?.Invoke();
-    }
-
     public void OnAim(InputAction.CallbackContext context)
     {
 
@@ -111,12 +107,20 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public void OnColorAction(InputAction.CallbackContext context)
     {
-        throw new NotImplementedException();
+        if (context.performed)
+        { isColorAction = true; }
+
+        else if (context.canceled)
+        { isColorAction = false; }
     }
 
     public void OnDColorChange(InputAction.CallbackContext context)
     {
-        throw new NotImplementedException();
+        if (context.performed)
+        { isDColorChange = true; }
+
+        else if (context.canceled)
+        { isDColorChange = false; }
     }
 
     public void OnHeiser(InputAction.CallbackContext context)
