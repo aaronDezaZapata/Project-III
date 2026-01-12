@@ -311,4 +311,32 @@ public class PlayerStateMachine : StateMachine
             SwitchState(typeof(PlayerFreeLookState));
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+
+        switch (other.tag)
+        {
+            case "CharcoAzul":
+                // SwitchState(typeof(EstadoAzul));
+                break;
+
+            case "CharcoRojo":
+                // SwitchState(typeof(EstadoRojo));
+                break;
+
+            case "CharcoGris":
+                // SwitchState(typeof(EstadoGris));
+                break;
+
+            case "CharcoVerde":
+                // SwitchState(typeof(EstadoVerde));
+                break;
+
+            default:
+                
+                break;
+        }
+    }
+
 }
