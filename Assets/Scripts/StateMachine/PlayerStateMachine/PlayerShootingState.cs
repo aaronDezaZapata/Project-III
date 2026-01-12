@@ -12,15 +12,8 @@ public class PlayerShootingState : PlayerBaseState
     private Vector3 _currentHitPoint;
     private bool _hasHitTarget;
 
-    private const float AimMovementSpeed = 3f;
-
     private float _rotationX;
     private float _rotationY;
-    
-    [SerializeField] private float horizontalSensitivity = 150f;
-    [SerializeField] private float verticalSensitivity = 100f;
-    [SerializeField] private float minVerticalAngle = -30f;
-    [SerializeField] private float maxVerticalAngle = 60f;
 
     public override void Enter()
     {
@@ -171,7 +164,7 @@ public class PlayerShootingState : PlayerBaseState
 
         Vector3 moveDir = (forward * movementInput.z + right * movementInput.x);
 
-        Move(moveDir * AimMovementSpeed, deltaTime);
+        Move(moveDir * stateMachine.AimMovementSpeed, deltaTime);
 
         /*Vector3 lookDir = forward;
         if (lookDir != Vector3.zero)
