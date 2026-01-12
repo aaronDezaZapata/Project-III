@@ -157,6 +157,13 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public float FireCooldown { get; private set; } = 0.15f;
     [field: SerializeField] public float ProjectileFlightTime { get; private set; } = 0.6f;
     [field: SerializeField] public LayerMask PaintableLayer { get; private set; } = ~0;
+    
+    [field: Header("Shooting Config")]
+    [field: SerializeField] public float AimMovementSpeed = 3f;
+    [field: SerializeField] public float HorizontalSensitivity = 150f;
+    [field: SerializeField] public float VerticalSensitivity = 100f;
+    [field: SerializeField] public float MinVerticalAngle = -60f;
+    [field: SerializeField] public float MaxVerticalAngle = 60f;
 
     [field: Header("Reticle Config")]
     [field: SerializeField] public Transform ReticleTransform { get; private set; } // El objeto visual de la mira
