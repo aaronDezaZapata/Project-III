@@ -1192,6 +1192,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4936e89ea5ec69143bb964a143f192b9, type: 3}
+--- !u!114 &1369648656 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2303076394716410090, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+  m_PrefabInstance: {fileID: 1884805547}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1375130816
 GameObject:
   m_ObjectHideFlags: 0
@@ -1548,7 +1559,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Priority:
-    Enabled: 0
+    Enabled: 1
     m_Value: 0
   OutputChannel: 1
   StandbyUpdate: 2
@@ -1783,6 +1794,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2303076394716410090, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: Priority.m_Value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3507489766504415788, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -1923,6 +1938,10 @@ PrefabInstance:
       propertyPath: <aimCamera>k__BackingField
       value: 
       objectReference: {fileID: 1621082320}
+    - target: {fileID: 8526194884507870142, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: <mainCamera>k__BackingField
+      value: 
+      objectReference: {fileID: 1369648656}
     - target: {fileID: 8526194884507870142, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: <GrappleRope>k__BackingField
       value: 

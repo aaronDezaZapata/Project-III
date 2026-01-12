@@ -15,7 +15,7 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
     [field: SerializeField] public Animator Animator { get; private set; }
 
-    [field: SerializeField] public CinemachineCamera camera_CM { get; private set; }
+    [field: SerializeField] public CinemachineCamera mainCamera { get; private set; }
 
     [field: SerializeField] public CinemachineCamera aimCamera { get; private set; }
 
@@ -218,8 +218,8 @@ public class PlayerStateMachine : StateMachine
 
     public IEnumerator ShakeRoutine(float duration)
     {
-        camera_CM.GetComponent<CinemachineBasicMultiChannelPerlin>().AmplitudeGain = 5f;
-        camera_CM.GetComponent<CinemachineBasicMultiChannelPerlin>().FrequencyGain = 2f;
+        mainCamera.GetComponent<CinemachineBasicMultiChannelPerlin>().AmplitudeGain = 5f;
+        mainCamera.GetComponent<CinemachineBasicMultiChannelPerlin>().FrequencyGain = 2f;
         float elapsed = 0f;
 
 
@@ -233,8 +233,8 @@ public class PlayerStateMachine : StateMachine
             yield return null;
         }
 
-        camera_CM.GetComponent<CinemachineBasicMultiChannelPerlin>().AmplitudeGain = 0f;
-        camera_CM.GetComponent<CinemachineBasicMultiChannelPerlin>().FrequencyGain = 0f;
+        mainCamera.GetComponent<CinemachineBasicMultiChannelPerlin>().AmplitudeGain = 0f;
+        mainCamera.GetComponent<CinemachineBasicMultiChannelPerlin>().FrequencyGain = 0f;
     }
 
     private void OnEnable()
