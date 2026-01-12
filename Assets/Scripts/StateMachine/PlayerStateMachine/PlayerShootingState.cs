@@ -1,4 +1,5 @@
 using System;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -17,9 +18,8 @@ public class PlayerShootingState : PlayerBaseState
 
     public override void Enter()
     {
-
-        if (stateMachine.aimCamera != null)
-            stateMachine.aimCamera.Priority.Value = 10;
+        // CAMERA IN
+        stateMachine.aimCamera.Priority = 10;
 
 
         if (stateMachine.ReticleTransform != null)
@@ -53,10 +53,8 @@ public class PlayerShootingState : PlayerBaseState
 
     public override void Exit()
     {
-
-        if (stateMachine.aimCamera != null)
-            stateMachine.aimCamera.Priority.Value = -1;
-
+        stateMachine.aimCamera.Priority = -1;
+        
         if (stateMachine.ReticleTransform != null)
             stateMachine.ReticleTransform.gameObject.SetActive(false);
     }

@@ -26,8 +26,13 @@ public class PlayerFreeLookState : PlayerBaseState
         //stateMachine.InputReader.DashEvent += OnDash;
 
         stateMachine.InputReader.DiveEvent += OnDiveEnter;
-
-        CameraRecenter();
+        
+        // Camera Settings
+        if (stateMachine.mainCamera.Priority <= 9)
+        {
+            CameraRecenter();
+            stateMachine.mainCamera.Priority = 10;
+        }
     }
 
   
@@ -101,12 +106,12 @@ public class PlayerFreeLookState : PlayerBaseState
 
     public override void Exit()
     {
-
         stateMachine.InputReader.JumpEvent -= OnJump;
-
         // stateMachine.InputReader.DashEvent -= OnDash;
-        
         stateMachine.InputReader.DiveEvent -= OnDiveEnter;
+        
+        // Camera Out
+        stateMachine.mainCamera.Priority = -1;
     }
 
     #region Green Ability Detection
@@ -189,11 +194,12 @@ public class PlayerFreeLookState : PlayerBaseState
             deltaTime * stateMachine.RotationSpeed);
         
     }
-
-    private void FaceMovementDirectionInstant(Vector3 movement)
+    
+    //TODO: Remove :3
+    /*private void FaceMovementDirectionInstant(Vector3 movement)
     {
         stateMachine.transform.rotation = Quaternion.LookRotation(movement);
-    }
+    }*/
 
     Vector3 CalculateMovement()
     {

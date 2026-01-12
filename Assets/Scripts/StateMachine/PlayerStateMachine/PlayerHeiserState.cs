@@ -14,7 +14,7 @@ public class PlayerHeiserState : PlayerBaseState
         stateMachine.CanHeiser = true;
         stateMachine.CanHeiser = false;
         //Si tuvieramos particulas se ponen aqui
-
+        stateMachine.mainCamera.Priority = 10;
     }
 
     public override void Tick(float deltaTime)
