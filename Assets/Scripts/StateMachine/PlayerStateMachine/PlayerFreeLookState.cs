@@ -52,7 +52,6 @@ public class PlayerFreeLookState : PlayerBaseState
         {
             if (HasNearbyPaintedEnemy())
             {
-                Debug.Log("SD;FLIMJHSDRO;ICGHMSDLKRHWETSLVBKJSCDUGKJSADCH");
                 stateMachine.SwitchState(typeof(PlayerDashAttackState));
                 return;
             }
@@ -170,56 +169,10 @@ public class PlayerFreeLookState : PlayerBaseState
         return false;
     }
     
+    // CHECKER IF WE HAVE A PAINTED ENEMY
     private bool HasNearbyPaintedEnemy()
     {
-        List<PaintableEnemy> allPaintableEnemies = GameManager.Instance.enemiesPainted;
-    
-        Debug.Log($"Checking painted enemies. Total in list: {allPaintableEnemies.Count}");
-
-        foreach (PaintableEnemy paintable in allPaintableEnemies)
-        {
-            if (paintable == null)
-            {
-                Debug.LogWarning("Null paintable enemy in list!");
-                continue;
-            }
-        
-            Debug.Log($"Checking enemy: {paintable.gameObject.name}, IsPainted: {paintable.IsPainted}");
-        
-            if (!paintable.IsPainted) continue;
-            if (!paintable.gameObject.activeInHierarchy) continue;
-
-            float distance = Vector3.Distance(stateMachine.transform.position, paintable.transform.position);
-        
-            Debug.Log($"Enemy {paintable.gameObject.name} distance: {distance:F2}, Max Range: {stateMachine.DashAttackMaxRange}");
-            
-            return true;
-
-            if (distance <= stateMachine.DashAttackMaxRange)
-            {
-                Vector3 dirToEnemy = paintable.transform.position - stateMachine.transform.position;
-
-                // Raycast para verificar línea de visión
-                bool hasObstacle = Physics.Raycast(
-                    stateMachine.transform.position + Vector3.up,
-                    dirToEnemy.normalized,
-                    distance,
-                    stateMachine.GrappleObstacleLayer);
-            
-                Debug.Log($"Enemy {paintable.gameObject.name} - HasObstacle: {hasObstacle}");
-                
-                
-
-                if (!hasObstacle)
-                {
-                    Debug.Log($"Found valid painted enemy: {paintable.gameObject.name}");
-                    
-                }
-            }
-        }
-
-        Debug.Log("No valid painted enemies found");
-        return false;
+        return GameManager.Instance.enemiesPainted.Count > 0;
     }
 
     #endregion
