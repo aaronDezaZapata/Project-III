@@ -32,21 +32,22 @@ public class EnemyInflatableState : EnemyBaseState
     {
         if (stateMachine.agent != null && stateMachine.agent.isOnNavMesh) stateMachine.agent.isStopped = true;
         
-        if (_enemyMat == null)
+        if (stateMachine.Mat == null)
         {
             
-            Renderer r = stateMachine.GetComponentInChildren<SkinnedMeshRenderer>();
+            SkinnedMeshRenderer r = stateMachine.GetComponentInChildren<SkinnedMeshRenderer>();
 
             if (r != null)
             {
                 
-                _enemyMat = r.material;
+                stateMachine.Mat = r;
             }
             else
             {
                 Debug.LogError("No se encontró ningún Renderer en el enemigo El shader no funcionara.");
             }
         }
+    
 
         _deathProgressID = Shader.PropertyToID("_DeathProgress");
         _inflationAmountID = Shader.PropertyToID("_InflationAmount");
@@ -131,10 +132,10 @@ public class EnemyInflatableState : EnemyBaseState
 
     void UpdateShaderValues()
     {
-        if (_enemyMat!= null)
+        if (stateMachine.Mat != null)
         {
-            _enemyMat.SetFloat(_deathProgressID, _currentProgress);
-            _enemyMat.SetFloat(_inflationAmountID, _currentFatness);
+            stateMachine.Mat.sharedMaterial.SetFloat(_deathProgressID, _currentProgress);
+            stateMachine.Mat.sharedMaterial.SetFloat(_inflationAmountID, _currentFatness);
         }
     }
 

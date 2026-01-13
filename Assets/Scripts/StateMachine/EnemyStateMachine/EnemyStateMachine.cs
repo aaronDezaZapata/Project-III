@@ -11,6 +11,7 @@ public class EnemyStateMachine : StateMachine
     [field: SerializeField] public float RotationSpeed { get; private set; } = 3f;
     [field: SerializeField] public float AttackRange { get; private set; } = 2f;
     [field: SerializeField] public float DetectionRange { get; private set; } = 6f;
+    [field: SerializeField] public SkinnedMeshRenderer Mat { get; set; }
     [field: SerializeField] public int Health { get; private set; } = 3;
     [field: SerializeField] public bool isGettingAttacked = false;
     [field: SerializeField] public NavMeshAgent agent { get; private set; }
