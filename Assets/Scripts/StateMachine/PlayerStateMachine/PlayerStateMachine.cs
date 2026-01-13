@@ -321,8 +321,8 @@ public class PlayerStateMachine : StateMachine
                  SwitchState(typeof(PlayerBlueState));
                 break;
 
-            case "CharcoRojo":
-                 //SwitchState(typeof(PlayerGreenState));
+            case "CharcoNegro":
+                 SwitchState(typeof(PlayerFreeLookState));
                 break;
 
             case "CharcoGris":
