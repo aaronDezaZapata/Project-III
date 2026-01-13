@@ -13,7 +13,7 @@ public class PlayerHeiserState : PlayerBaseState
         //stateMachine.ForceReceiver.ResetVerticalVelocity();
         stateMachine.CanHeiser = true;
         stateMachine.CanHeiser = false;
-        //Si tuvieramos particulas se ponen aqui
+        
         stateMachine.mainCamera.Priority = 10;
     }
 
