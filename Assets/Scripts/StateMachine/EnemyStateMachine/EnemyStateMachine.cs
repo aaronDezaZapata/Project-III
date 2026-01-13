@@ -7,8 +7,6 @@ public class EnemyStateMachine : StateMachine
 {
     [field: SerializeField] public CharacterController Controller { get; private set; }
     [field: SerializeField] public float MovementSpeed { get; private set; } = 3f;
-    [field: SerializeField] public float AccelerationTime { get; private set; } = 3f;
-    [field: SerializeField] public float DecelerationTime { get; private set; } = 3f;
     [field: SerializeField] public float MovementAttackSpeed { get; private set; } = 20f;
     [field: SerializeField] public float RotationSpeed { get; private set; } = 3f;
     [field: SerializeField] public float AttackRange { get; private set; } = 2f;
@@ -16,7 +14,7 @@ public class EnemyStateMachine : StateMachine
     [field: SerializeField] public int Health { get; private set; } = 3;
     [field: SerializeField] public bool isGettingAttacked = false;
     [field: SerializeField] public NavMeshAgent agent { get; private set; }
-    [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
+    [field: SerializeField] public ForceReceiver ForceReceiver;
 
 
     //NonSerialized
@@ -24,9 +22,6 @@ public class EnemyStateMachine : StateMachine
     [NonSerialized] public float _sprayCooldown = 0.2f;
     [NonSerialized] public bool isBeingThrown = false; // Trackea si el enemigo fue lanzado por el jugador
     [NonSerialized] public float thrownVelocityMagnitude = 0f; // Magnitud de la velocidad al ser lanzado
-    
-    private Vector3 _currentMovementVelocity;
-    private Vector3 _movementVelocitySmoothRef;
 
     void Awake()
     {
@@ -42,6 +37,7 @@ public class EnemyStateMachine : StateMachine
 
     private void Start()
     {
+       
         SwitchState(typeof(EnemyIdleState));
     }
 
@@ -82,13 +78,35 @@ public class EnemyStateMachine : StateMachine
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    /// <summary>
+    /// OnControllerColliderHit se llama cuando el CharacterController choca con algo
+    /// Este es el método correcto para detectar colisiones de CharacterControllers
+    /// </summary>
+    private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        // Colisión con otro enemigo
-        if(collision.gameObject.CompareTag("Enemy"))
+        // Colisión con otro enemigo (CharacterController)
+        if (hit.gameObject.CompareTag("Enemy"))
         {
-            EnemyStateMachine otherEnemy = collision.gameObject.GetComponent<EnemyStateMachine>();
-            if (otherEnemy == null) return;
+            // Buscar EnemyStateMachine en el objeto golpeado, en sus hijos o en su padre
+            EnemyStateMachine otherEnemy = hit.gameObject.GetComponent<EnemyStateMachine>();
+            
+            // Si no está en el objeto golpeado, buscar en el padre
+            if (otherEnemy == null)
+            {
+                otherEnemy = hit.gameObject.GetComponentInParent<EnemyStateMachine>();
+            }
+            
+            // Si aún no lo encuentra, buscar en los hijos
+            if (otherEnemy == null)
+            {
+                otherEnemy = hit.gameObject.GetComponentInChildren<EnemyStateMachine>();
+            }
+            
+            if (otherEnemy == null)
+            {
+                Debug.LogWarning($"[OnControllerColliderHit] Objeto con tag 'Enemy' pero sin EnemyStateMachine: {hit.gameObject.name}");
+                return;
+            }
 
             bool thisEnemyThrown = isBeingThrown;
             bool otherEnemyThrown = otherEnemy.isBeingThrown;
@@ -100,7 +118,7 @@ public class EnemyStateMachine : StateMachine
             // Si alguno de los dos fue lanzado y va rápido, ambos mueren
             if ((thisEnemyThrown && thisVelocity > 5f) || (otherEnemyThrown && otherVelocity > 5f))
             {
-                Debug.Log($"Colisión mortal entre enemigos - Este: {thisVelocity:F2} m/s (lanzado: {thisEnemyThrown}), Otro: {otherVelocity:F2} m/s (lanzado: {otherEnemyThrown})");
+                Debug.Log($"[OnControllerColliderHit] Colisión mortal entre enemigos - Este: {thisVelocity:F2} m/s (lanzado: {thisEnemyThrown}), Otro: {otherVelocity:F2} m/s (lanzado: {otherEnemyThrown})");
                 otherEnemy.GoToDeath();
                 GoToDeath();
                 return;
@@ -109,7 +127,78 @@ public class EnemyStateMachine : StateMachine
             // Lógica original: si alguno va muy rápido (sin importar si fue lanzado), ambos mueren
             if (thisVelocity > 5f || otherVelocity > 5f)
             {
-                Debug.Log($"Colisión a alta velocidad entre enemigos - Este: {thisVelocity:F2} m/s, Otro: {otherVelocity:F2} m/s");
+                Debug.Log($"[OnControllerColliderHit] Colisión a alta velocidad entre enemigos - Este: {thisVelocity:F2} m/s, Otro: {otherVelocity:F2} m/s");
+                otherEnemy.GoToDeath();
+                GoToDeath();
+                return;
+            }
+            
+            Debug.Log($"[OnControllerColliderHit] Colisión entre enemigos sin suficiente velocidad - Este: {thisVelocity:F2} m/s, Otro: {otherVelocity:F2} m/s");
+        }
+
+        // Colisión con obstáculo
+        if (hit.gameObject.CompareTag("Obstacle"))
+        {
+            float velocity = GetCurrentVelocityMagnitude();
+            
+            if (velocity > 5f)
+            {
+                Debug.Log($"[OnControllerColliderHit] Enemigo golpeó obstáculo a {velocity:F2} m/s - Muerte");
+                GoToDeath();
+                return;
+            }
+        }
+    }
+
+    /// <summary>
+    /// OnCollisionEnter para Rigidbodies (objetos dinámicos)
+    /// </summary>
+    private void OnCollisionEnter(Collision collision)
+    {
+        // Colisión con otro enemigo (si tiene Rigidbody)
+        if(collision.gameObject.CompareTag("Enemy"))
+        {
+            // Buscar EnemyStateMachine en el objeto golpeado, en sus hijos o en su padre
+            EnemyStateMachine otherEnemy = collision.gameObject.GetComponent<EnemyStateMachine>();
+            
+            // Si no está en el objeto golpeado, buscar en el padre
+            if (otherEnemy == null)
+            {
+                otherEnemy = collision.gameObject.GetComponentInParent<EnemyStateMachine>();
+            }
+            
+            // Si aún no lo encuentra, buscar en los hijos
+            if (otherEnemy == null)
+            {
+                otherEnemy = collision.gameObject.GetComponentInChildren<EnemyStateMachine>();
+            }
+            
+            if (otherEnemy == null)
+            {
+                Debug.LogWarning($"[OnCollisionEnter] Objeto con tag 'Enemy' pero sin EnemyStateMachine: {collision.gameObject.name}");
+                return;
+            }
+
+            bool thisEnemyThrown = isBeingThrown;
+            bool otherEnemyThrown = otherEnemy.isBeingThrown;
+
+            // Velocidades
+            float thisVelocity = GetCurrentVelocityMagnitude();
+            float otherVelocity = otherEnemy.GetCurrentVelocityMagnitude();
+
+            // Si alguno de los dos fue lanzado y va rápido, ambos mueren
+            if ((thisEnemyThrown && thisVelocity > 5f) || (otherEnemyThrown && otherVelocity > 5f))
+            {
+                Debug.Log($"[OnCollisionEnter] Colisión mortal entre enemigos - Este: {thisVelocity:F2} m/s (lanzado: {thisEnemyThrown}), Otro: {otherVelocity:F2} m/s (lanzado: {otherEnemyThrown})");
+                otherEnemy.GoToDeath();
+                GoToDeath();
+                return;
+            }
+            
+            // Lógica original: si alguno va muy rápido (sin importar si fue lanzado), ambos mueren
+            if (thisVelocity > 5f || otherVelocity > 5f)
+            {
+                Debug.Log($"[OnCollisionEnter] Colisión a alta velocidad entre enemigos - Este: {thisVelocity:F2} m/s, Otro: {otherVelocity:F2} m/s");
                 otherEnemy.GoToDeath();
                 GoToDeath();
                 return;
@@ -123,20 +212,20 @@ public class EnemyStateMachine : StateMachine
             
             if (velocity > 5f)
             {
-                Debug.Log($"Enemigo golpeó obstáculo a {velocity:F2} m/s - Muerte");
+                Debug.Log($"[OnCollisionEnter] Enemigo golpeó obstáculo a {velocity:F2} m/s - Muerte");
                 GoToDeath();
                 return;
             }
         }
 
-        // Colisión con objeto
+        // Colisión con objeto con Rigidbody
         if (collision.gameObject.CompareTag("Object"))
         {
             if (collision.transform.TryGetComponent<Rigidbody>(out var rb))
             {
                 if (rb.linearVelocity.magnitude > 5)
                 {
-                    Debug.Log($"Objeto golpeó enemigo a {rb.linearVelocity.magnitude:F2} m/s - Muerte");
+                    Debug.Log($"[OnCollisionEnter] Objeto golpeó enemigo a {rb.linearVelocity.magnitude:F2} m/s - Muerte");
                     GoToDeath();
                     return;
                 }
