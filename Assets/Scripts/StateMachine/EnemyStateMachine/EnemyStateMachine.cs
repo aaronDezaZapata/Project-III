@@ -19,6 +19,8 @@ public class EnemyStateMachine : StateMachine
     //NonSerialized
     [NonSerialized] public float _sprayResetTimer = 0f;
     [NonSerialized] public float _sprayCooldown = 0.2f;
+    [NonSerialized] public bool isBeingThrown = false;
+    [NonSerialized] public float thrownVelocityMagnitude = 0f;
 
     void Awake()
     {
@@ -77,18 +79,35 @@ public class EnemyStateMachine : StateMachine
 
     private void OnCollisionEnter(Collision collision)
     {
+        // Colisión con otro enemigo
         if(collision.gameObject.CompareTag("Enemy"))
         {
-            if(collision.transform.TryGetComponent<CharacterController>(out var cc))
+            EnemyStateMachine otherEnemy = collision.gameObject.GetComponent<EnemyStateMachine>();
+            if (otherEnemy == null) return;
+
+            bool thisEnemyThrown = isBeingThrown;
+            bool otherEnemyThrown = otherEnemy.isBeingThrown;
+
+            // Velocidades
+            float thisVelocity = GetCurrentVelocityMagnitude();
+            float otherVelocity = otherEnemy.GetCurrentVelocityMagnitude();
+
+            // Si alguno de los dos fue lanzado y va rápido, ambos mueren
+            if ((thisEnemyThrown && thisVelocity > 5f) || (otherEnemyThrown && otherVelocity > 5f))
             {
-                if(cc.velocity.magnitude > 5f)
-                {
-                    //Death
-                    collision.transform.GetComponent<EnemyStateMachine>().GoToDeath();
-                    GoToDeath();
-                    return;
-                    
-                }
+                Debug.Log($"Colisión mortal entre enemigos - Este: {thisVelocity:F2} m/s (lanzado: {thisEnemyThrown}), Otro: {otherVelocity:F2} m/s (lanzado: {otherEnemyThrown})");
+                otherEnemy.GoToDeath();
+                GoToDeath();
+                return;
+            }
+            
+            // Lógica original: si alguno va muy rápido (sin importar si fue lanzado), ambos mueren
+            if (thisVelocity > 5f || otherVelocity > 5f)
+            {
+                Debug.Log($"Colisión a alta velocidad entre enemigos - Este: {thisVelocity:F2} m/s, Otro: {otherVelocity:F2} m/s");
+                otherEnemy.GoToDeath();
+                GoToDeath();
+                return;
             }
         }
 
@@ -114,5 +133,51 @@ public class EnemyStateMachine : StateMachine
                 }
             }
         }
+    }
+    
+    /// <summary>
+    /// Obtiene la velocidad actual del enemigo, considerando CharacterController o Rigidbody
+    /// </summary>
+    private float GetCurrentVelocityMagnitude()
+    {
+        // Si está siendo lanzado, usar la velocidad almacenada
+        if (isBeingThrown && thrownVelocityMagnitude > 0)
+        {
+            return thrownVelocityMagnitude;
+        }
+
+        // Intentar obtener de Rigidbody
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null && !rb.isKinematic)
+        {
+            return rb.linearVelocity.magnitude;
+        }
+
+        // Intentar obtener de CharacterController
+        if (Controller != null && Controller.enabled)
+        {
+            return Controller.velocity.magnitude;
+        }
+
+        return 0f;
+    }
+    
+    /// <summary>
+    /// Marca al enemigo como lanzado con una velocidad específica
+    /// </summary>
+    public void MarkAsThrown(float velocityMagnitude)
+    {
+        isBeingThrown = true;
+        thrownVelocityMagnitude = velocityMagnitude;
+        Debug.Log($"Enemigo marcado como lanzado con velocidad {velocityMagnitude:F2} m/s");
+    }
+
+    /// <summary>
+    /// Desmarca al enemigo como lanzado (llamar cuando toca el suelo o se detiene)
+    /// </summary>
+    public void UnmarkAsThrown()
+    {
+        isBeingThrown = false;
+        thrownVelocityMagnitude = 0f;
     }
 }

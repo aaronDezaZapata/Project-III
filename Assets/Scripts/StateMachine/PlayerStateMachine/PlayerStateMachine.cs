@@ -221,7 +221,7 @@ public class PlayerStateMachine : StateMachine
         AddState(new PlayerGrayState(this));
         AddState(new PlayerDashAttackState(this));
         
-
+        // MUST BE PLAYERFREELOOK. CHANGES ONLY FOR TESTING
         SwitchState(typeof(PlayerFreeLookState));
     }
 

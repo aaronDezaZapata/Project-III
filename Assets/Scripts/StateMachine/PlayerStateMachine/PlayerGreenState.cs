@@ -54,7 +54,7 @@ public class PlayerGreenState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
-        if (!stateMachine.InputReader.isGreen)
+        if (!stateMachine.InputReader.isColorActing)
         {
             stateMachine.SwitchState(typeof(PlayerFreeLookState));
             return;

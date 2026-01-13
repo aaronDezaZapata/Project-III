@@ -68,23 +68,21 @@ public class PlayerFreeLookState : PlayerBaseState
             stateMachine.SwitchState(typeof(PlayerGrayState));
             return;
         }
-
-        if(stateMachine.InputReader.isColorActing) 
-        {
-            
-            stateMachine.SwitchState(typeof(PlayerHeiserState));
-            return;
         
+        if (stateMachine.InputReader.isColorActing)
+        {
+            stateMachine.SwitchState(typeof(PlayerGreenState));
+            return;
         }
-
-        if (stateMachine.InputReader.isColorActing && stateMachine.HasDashAttack)
+        
+        /*if (stateMachine.InputReader.isColorActing && stateMachine.HasDashAttack)
         {
             if (HasNearbyPaintedEnemy())
             {
                 stateMachine.SwitchState(typeof(PlayerDashAttackState));
                 return;
             }
-        }
+        }*/
 
         // Enemigos latigo
         if (stateMachine.InputReader.isGreen && stateMachine.HasGreenAbility)
