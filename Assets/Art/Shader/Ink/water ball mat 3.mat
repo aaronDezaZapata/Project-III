@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: water ball mat 3
-  m_Shader: {fileID: -6465566751694194690, guid: ffa0a4f28e2c90c4f9311f692356c589, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 7d94d00830b19344b800acb47de1928e, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -104,6 +104,7 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
+    - _DeathProgress: 0
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _Dissolve: 0.631
@@ -114,15 +115,16 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _InflationAmount: 0
     - _Metallic: 0
-    - _NormalStrenght: 0.2
-    - _NormalTiling: 0.3
+    - _NormalStrenght: 0.35
+    - _NormalTiling: 0.81
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 50
     - _ReceiveShadows: 1
-    - _RoughnessAmount: 60
+    - _RoughnessAmount: 3.67
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -134,6 +136,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BellyCenter: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _MainColor: {r: 0.28515485, g: 0.6792453, b: 0.6509853, a: 0}
