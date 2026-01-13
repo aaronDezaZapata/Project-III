@@ -20,6 +20,9 @@ public class PlayerSwimState : PlayerBaseState
         stateMachine.InputReader.DiveEvent += OnDiveExit;
         stateMachine.InputReader.JumpEvent += PerformInkJump;
         
+        // Camera
+        stateMachine.mainCamera.Priority = 10;
+        
         originalHeight = stateMachine.Controller.height;
         originalCenter = stateMachine.Controller.center;
 

@@ -32,6 +32,9 @@ public class PlayerGrayState : PlayerBaseState
     {
         Debug.Log("Entered PlayerGrayState - Vacuum Mode");
         
+        // CAMERA IN
+        stateMachine.mainCamera.Priority = 10;
+        
         isAbsorbing = true;
         
         // Inicializar sistema de partículas si existe

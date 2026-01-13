@@ -1,20 +1,21 @@
 using UnityEngine;
 
+/// <summary>
+/// Heiser Movement
+/// - Just a plain vertical movement
+/// </summary>
 public class PlayerHeiserState : PlayerBaseState
 {
     public PlayerHeiserState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
     }
 
-    
-
     public override void Enter()
     {
-        //stateMachine.ForceReceiver.ResetVerticalVelocity();
         stateMachine.CanHeiser = true;
         stateMachine.CanHeiser = false;
-        //Si tuvieramos particulas se ponen aqui
-
+        
+        stateMachine.mainCamera.Priority = 10;
     }
 
     public override void Tick(float deltaTime)
@@ -35,14 +36,10 @@ public class PlayerHeiserState : PlayerBaseState
         stateMachine.CanHeiser = true;
         //Se apagan aqui las particulas
     }
-
-
-
+    
     private void MoveHoverDirect(float deltaTime)
     {
-        
         Vector3 input = stateMachine.InputReader.MoveVector;
-
         
         Vector3 forward = Camera.main.transform.forward;
         Vector3 right = Camera.main.transform.right;
@@ -52,7 +49,6 @@ public class PlayerHeiserState : PlayerBaseState
         right.Normalize();
 
         Vector3 moveDir = forward * input.y + right * input.x;
-
         
         if (moveDir != Vector3.zero)
         {
@@ -62,13 +58,10 @@ public class PlayerHeiserState : PlayerBaseState
                 stateMachine.RotationSpeed * deltaTime
             );
         }
-
         
         Vector3 velocity = moveDir * stateMachine.aerialMoveSpeed;
-
         
         Vector3 finalMovement = velocity + stateMachine.ForceReceiver.Movement;
-
         
         stateMachine.Controller.Move(finalMovement * deltaTime);
     }

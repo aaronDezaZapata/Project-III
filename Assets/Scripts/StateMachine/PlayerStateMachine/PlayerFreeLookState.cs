@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Rendering.Universal.Internal;
 
 /// <summary>
-/// PlayerFreeLookState con lógica para decidir entre:
-/// - PlayerGreenState (balanceo en GrapplePoints)
-/// - PlayerGreenWhipState (látigo para enemigos)
+/// Clase Black Base
+/// - Plain Shoot
+/// - Player impulses himself into enemies as attack
 /// </summary>
 public class PlayerFreeLookState : PlayerBaseState
 {
@@ -20,30 +21,27 @@ public class PlayerFreeLookState : PlayerBaseState
     public override void Enter()
     {
         Debug.Log("Entered PlayerFreeLookState");
+
+        stateMachine.playerState = PlayerStates.BLACK;
+        
         stateMachine.InputReader.JumpEvent += OnJump;
 
         //stateMachine.InputReader.DashEvent += OnDash;
 
         stateMachine.InputReader.DiveEvent += OnDiveEnter;
+
+        // Camera Settings
+        if (stateMachine.mainCamera.Priority <= 9)
+        {
+            CameraRecenter();
+            stateMachine.mainCamera.Priority = 10;
+        }
     }
 
   
 
     public override void Tick(float deltaTime)
     {
-        /*stateMachine.CheckForInk();
-        if (Input.GetMouseButton(0))
-        {
-            stateMachine.ShootInk();
-        }
-
-      
-        if (Input.GetKeyDown(KeyCode.B) && stateMachine.IsOnInk)
-        {
-            stateMachine.SwitchState(typeof(PlayerSwimState));
-            return;
-        }*/
-
         if (stateMachine.InputReader.isGray && stateMachine.HasGrayAbility)
         {
             stateMachine.SwitchState(typeof(PlayerGrayState));
@@ -56,19 +54,19 @@ public class PlayerFreeLookState : PlayerBaseState
             // Primero buscar enemigos (mayor prioridad)
             if (HasNearbyEnemy())
             {
-                // Usar mecánica de látigo
+                // Usar mecï¿½nica de lï¿½tigo
                 stateMachine.SwitchState(typeof(PlayerGreenWhipState));
                 return;
             }
             // Si no hay enemigos, buscar GrapplePoints
             else if (HasNearbyGrapplePoint())
             {
-                // Usar mecánica de balanceo
+                // Usar mecï¿½nica de balanceo
                 stateMachine.SwitchState(typeof(PlayerGreenState));
                 return;
             }
             // Si no hay ni enemigos ni puntos, no hacer nada
-            // (el jugador puede seguir moviéndose con el botón presionado)
+            // (el jugador puede seguir moviï¿½ndose con el botï¿½n presionado)
         }
 
         // Aim
@@ -77,14 +75,6 @@ public class PlayerFreeLookState : PlayerBaseState
             stateMachine.SwitchState(typeof(PlayerShootingState));
             return;
         }
-
-        // Heiser
-        if (stateMachine.InputReader.isHeiser)
-        {
-            stateMachine.SwitchState(typeof(PlayerHeiserState));
-            return;
-        }
-
 
         Vector3 movement = CalculateMovement();
        
@@ -98,19 +88,16 @@ public class PlayerFreeLookState : PlayerBaseState
 
     public override void Exit()
     {
-
         stateMachine.InputReader.JumpEvent -= OnJump;
-
         // stateMachine.InputReader.DashEvent -= OnDash;
-        
         stateMachine.InputReader.DiveEvent -= OnDiveEnter;
+        
+        // Camera Out
+        stateMachine.mainCamera.Priority = -1;
     }
 
     #region Green Ability Detection
 
-    /// <summary>
-    /// Verifica si hay enemigos cercanos para la mecánica de látigo
-    /// </summary>
     private bool HasNearbyEnemy()
     {
         Collider[] enemies = Physics.OverlapSphere(
@@ -122,13 +109,13 @@ public class PlayerFreeLookState : PlayerBaseState
         // Si hay al menos un enemigo en rango
         if (enemies.Length > 0)
         {
-            // Verificar que al menos uno sea visible (sin obstáculos)
+            // Verificar que al menos uno sea visible (sin obstï¿½culos)
             foreach (Collider enemy in enemies)
             {
                 Vector3 dirToEnemy = enemy.transform.position - stateMachine.transform.position;
                 float distToEnemy = dirToEnemy.magnitude;
 
-                // Raycast para verificar línea de visión
+                // Raycast para verificar lï¿½nea de visiï¿½n
                 int layerMask = ~stateMachine.EnemyLayer; // Ignorar enemigos
 
                 if (!Physics.Raycast(
@@ -145,9 +132,6 @@ public class PlayerFreeLookState : PlayerBaseState
         return false;
     }
 
-    /// <summary>
-    /// Verifica si hay GrapplePoints cercanos para la mecánica de balanceo
-    /// </summary>
     private bool HasNearbyGrapplePoint()
     {
         GrapplePoint[] allPoints = Object.FindObjectsByType<GrapplePoint>(FindObjectsSortMode.None);
@@ -160,7 +144,7 @@ public class PlayerFreeLookState : PlayerBaseState
 
             if (distance <= stateMachine.MaxGrappleDistance)
             {
-                // Verificar que no haya obstáculos
+                // Verificar que no haya obstï¿½culos
                 Vector3 dirToPoint = point.Position - stateMachine.transform.position;
 
                 if (!Physics.Raycast(
@@ -186,12 +170,7 @@ public class PlayerFreeLookState : PlayerBaseState
             deltaTime * stateMachine.RotationSpeed);
         
     }
-
-    private void FaceMovementDirectionInstant(Vector3 movement)
-    {
-        stateMachine.transform.rotation = Quaternion.LookRotation(movement);
-    }
-
+    
     Vector3 CalculateMovement()
     {
         Vector3 forward = Camera.main.transform.forward;
@@ -205,17 +184,7 @@ public class PlayerFreeLookState : PlayerBaseState
 
         return forward * stateMachine.InputReader.MoveVector.y + right * stateMachine.InputReader.MoveVector.x;
     }
-
-
-
-    /*private void OnDash()
-    {
-        if (stateMachine.InputReader.MoveVector == Vector2.zero) { return; }
-
-       //stateMachine.SwitchState(PlayerDashingState);
-    }*/
-
-
+    
     private void OnJump()
     {
         if (!stateMachine.Controller.isGrounded) return;
@@ -233,5 +202,17 @@ public class PlayerFreeLookState : PlayerBaseState
         {
             stateMachine.SwitchState(typeof(PlayerGreenState));
         }
+    }
+
+    private void CameraRecenter()
+    {
+        CinemachineOrbitalFollow orbitalFollow = stateMachine.mainCamera.gameObject.GetComponent<CinemachineOrbitalFollow>();
+        
+        float playerYaw = stateMachine.transform.eulerAngles.y;
+        orbitalFollow.HorizontalAxis.Value = playerYaw;
+        
+        orbitalFollow.VerticalAxis.Value = orbitalFollow.VerticalAxis.Center;
+        
+        orbitalFollow.RadialAxis.Value = orbitalFollow.RadialAxis.Center;
     }
 }

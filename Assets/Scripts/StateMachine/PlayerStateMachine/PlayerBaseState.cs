@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public abstract class PlayerBaseState : State
 {
-   protected PlayerStateMachine stateMachine;
+    protected PlayerStateMachine stateMachine;
 
     private Vector3 _currentMovementVelocity;
     private Vector3 _movementVelocitySmoothRef;

@@ -9,13 +9,16 @@ public class PlayerStateMachine : StateMachine
     #region Variables
 
     [field: Header("Getters and Setters")]
+    [field: SerializeField] public PlayerStates playerState;
+    
+    [field: Header("Getters and Setters")]
     [field: SerializeField] public InputHandler InputReader { get; private set; }
 
     [field: SerializeField] public CharacterController Controller { get; private set; }
     [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
     [field: SerializeField] public Animator Animator { get; private set; }
 
-    [field: SerializeField] public CinemachineCamera camera_CM { get; private set; }
+    [field: SerializeField] public CinemachineCamera mainCamera { get; private set; }
 
     [field: SerializeField] public CinemachineCamera aimCamera { get; private set; }
 
@@ -148,8 +151,7 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public ParticleSystem GrayAbsorbParticles { get; private set; }
 
     #endregion
-
-
+    
     [Header("References")]
 
     [field: SerializeField] public Transform FirePoint { get; private set; }
@@ -157,6 +159,13 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public float FireCooldown { get; private set; } = 0.15f;
     [field: SerializeField] public float ProjectileFlightTime { get; private set; } = 0.6f;
     [field: SerializeField] public LayerMask PaintableLayer { get; private set; } = ~0;
+    
+    [field: Header("Shooting Config")]
+    [field: SerializeField] public float AimMovementSpeed = 3f;
+    [field: SerializeField] public float HorizontalSensitivity = 150f;
+    [field: SerializeField] public float VerticalSensitivity = 100f;
+    [field: SerializeField] public float MinVerticalAngle = -60f;
+    [field: SerializeField] public float MaxVerticalAngle = 60f;
 
     [field: Header("Reticle Config")]
     [field: SerializeField] public Transform ReticleTransform { get; private set; } // El objeto visual de la mira
@@ -211,8 +220,8 @@ public class PlayerStateMachine : StateMachine
 
     public IEnumerator ShakeRoutine(float duration)
     {
-        camera_CM.GetComponent<CinemachineBasicMultiChannelPerlin>().AmplitudeGain = 5f;
-        camera_CM.GetComponent<CinemachineBasicMultiChannelPerlin>().FrequencyGain = 2f;
+        mainCamera.GetComponent<CinemachineBasicMultiChannelPerlin>().AmplitudeGain = 5f;
+        mainCamera.GetComponent<CinemachineBasicMultiChannelPerlin>().FrequencyGain = 2f;
         float elapsed = 0f;
 
 
@@ -226,8 +235,8 @@ public class PlayerStateMachine : StateMachine
             yield return null;
         }
 
-        camera_CM.GetComponent<CinemachineBasicMultiChannelPerlin>().AmplitudeGain = 0f;
-        camera_CM.GetComponent<CinemachineBasicMultiChannelPerlin>().FrequencyGain = 0f;
+        mainCamera.GetComponent<CinemachineBasicMultiChannelPerlin>().AmplitudeGain = 0f;
+        mainCamera.GetComponent<CinemachineBasicMultiChannelPerlin>().FrequencyGain = 0f;
     }
 
     private void OnEnable()

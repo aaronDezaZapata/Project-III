@@ -5,8 +5,6 @@ using UnityEngine.Events;
 
 public class EnemyStateMachine : StateMachine
 {
-   
-
     [field: SerializeField] public CharacterController Controller { get; private set; }
     [field: SerializeField] public float MovementSpeed { get; private set; } = 3f;
     [field: SerializeField] public float MovementAttackSpeed { get; private set; } = 20f;

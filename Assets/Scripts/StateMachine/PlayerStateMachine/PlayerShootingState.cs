@@ -1,4 +1,5 @@
 using System;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -12,21 +13,13 @@ public class PlayerShootingState : PlayerBaseState
     private Vector3 _currentHitPoint;
     private bool _hasHitTarget;
 
-    private const float AimMovementSpeed = 3f;
-
     private float _rotationX;
     private float _rotationY;
-    
-    [SerializeField] private float horizontalSensitivity = 150f;
-    [SerializeField] private float verticalSensitivity = 100f;
-    [SerializeField] private float minVerticalAngle = -30f;
-    [SerializeField] private float maxVerticalAngle = 60f;
 
     public override void Enter()
     {
-
-        if (stateMachine.aimCamera != null)
-            stateMachine.aimCamera.Priority.Value = 10;
+        // CAMERA IN
+        stateMachine.aimCamera.Priority = 10;
 
 
         if (stateMachine.ReticleTransform != null)
@@ -60,10 +53,8 @@ public class PlayerShootingState : PlayerBaseState
 
     public override void Exit()
     {
-
-        if (stateMachine.aimCamera != null)
-            stateMachine.aimCamera.Priority.Value = -1;
-
+        stateMachine.aimCamera.Priority = -1;
+        
         if (stateMachine.ReticleTransform != null)
             stateMachine.ReticleTransform.gameObject.SetActive(false);
     }
@@ -171,7 +162,7 @@ public class PlayerShootingState : PlayerBaseState
 
         Vector3 moveDir = (forward * movementInput.z + right * movementInput.x);
 
-        Move(moveDir * AimMovementSpeed, deltaTime);
+        Move(moveDir * stateMachine.AimMovementSpeed, deltaTime);
 
         /*Vector3 lookDir = forward;
         if (lookDir != Vector3.zero)
