@@ -26,4 +26,7 @@ public class DecalManager : MonoBehaviour
                 break;
         }
     }
+
+
+
 }

@@ -153,13 +153,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bddc0e645e548da40bbcd861d027e531, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerState: 0
   <InputReader>k__BackingField: {fileID: 1759668436124108810}
   <Controller>k__BackingField: {fileID: 8246676737629533676}
   <ForceReceiver>k__BackingField: {fileID: 5481804579120667011}
   <Animator>k__BackingField: {fileID: 0}
-  <camera_CM>k__BackingField: {fileID: 0}
+  <mainCamera>k__BackingField: {fileID: 0}
   <aimCamera>k__BackingField: {fileID: 0}
   <Health>k__BackingField: {fileID: 5702051418911366440}
+  <Mat_Player>k__BackingField: {fileID: 0}
   <FreeLookMovementSpeed>k__BackingField: 12
   <RotationSpeed>k__BackingField: 3
   <DashDuration>k__BackingField: 0.22
@@ -217,6 +219,11 @@ MonoBehaviour:
   <PaintableLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 4294967295
+  AimMovementSpeed: 3
+  HorizontalSensitivity: 150
+  VerticalSensitivity: 100
+  MinVerticalAngle: -60
+  MaxVerticalAngle: 60
   <ReticleTransform>k__BackingField: {fileID: 0}
   <MaxAimDistance>k__BackingField: 80
   <AimLayerMask>k__BackingField:
@@ -225,6 +232,13 @@ MonoBehaviour:
   <ReticleSurfaceOffset>k__BackingField: 0.02
   <HoverForce>k__BackingField: 15
   <aerialMoveSpeed>k__BackingField: 10
+  <HasDashAttack>k__BackingField: 1
+  <DashAttackSpeed>k__BackingField: 25
+  <DashAttackMaxRange>k__BackingField: 20
+  <DashAttackCollisionRadius>k__BackingField: 1.5
+  <DashAttackKnockbackForce>k__BackingField: 8
+  <DashAttackVerticalKnockback>k__BackingField: 5
+  <DashAttackDamage>k__BackingField: 1
 --- !u!114 &5481804579120667011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -425,13 +439,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bddc0e645e548da40bbcd861d027e531, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerState: 0
   <InputReader>k__BackingField: {fileID: 7967625473166846616}
   <Controller>k__BackingField: {fileID: 6987920545998890324}
   <ForceReceiver>k__BackingField: {fileID: 5816333734058023856}
   <Animator>k__BackingField: {fileID: 0}
-  <camera_CM>k__BackingField: {fileID: 2303076394716410090}
+  <mainCamera>k__BackingField: {fileID: 0}
   <aimCamera>k__BackingField: {fileID: 2689605178304336396}
   <Health>k__BackingField: {fileID: 2416829624496613863}
+  <Mat_Player>k__BackingField: {fileID: 0}
   <FreeLookMovementSpeed>k__BackingField: 12
   <RotationSpeed>k__BackingField: 3
   <DashDuration>k__BackingField: 0.22
@@ -489,6 +505,11 @@ MonoBehaviour:
   <PaintableLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 4294967295
+  AimMovementSpeed: 3
+  HorizontalSensitivity: 150
+  VerticalSensitivity: 100
+  MinVerticalAngle: -60
+  MaxVerticalAngle: 60
   <ReticleTransform>k__BackingField: {fileID: 0}
   <MaxAimDistance>k__BackingField: 80
   <AimLayerMask>k__BackingField:
@@ -497,6 +518,13 @@ MonoBehaviour:
   <ReticleSurfaceOffset>k__BackingField: 0.02
   <HoverForce>k__BackingField: 75
   <aerialMoveSpeed>k__BackingField: 10
+  <HasDashAttack>k__BackingField: 1
+  <DashAttackSpeed>k__BackingField: 25
+  <DashAttackMaxRange>k__BackingField: 20
+  <DashAttackCollisionRadius>k__BackingField: 1.5
+  <DashAttackKnockbackForce>k__BackingField: 8
+  <DashAttackVerticalKnockback>k__BackingField: 5
+  <DashAttackDamage>k__BackingField: 1
 --- !u!114 &5816333734058023856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1241,7 +1269,8 @@ Transform:
   m_LocalPosition: {x: 0.46, y: 0, z: 0.71}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5637075819647019616}
   m_Father: {fileID: 6052489448859817048}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6536597872469769729
@@ -1497,3 +1526,65 @@ MonoBehaviour:
         DecelTime: 0
   PlayerIndex: -1
   AutoEnableInputs: 1
+--- !u!1001 &621316053056252863
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5445480121851282294}
+    m_Modifications:
+    - target: {fileID: 4650799173770180228, guid: f58ca1a978438484cb078249c2ae11c5, type: 3}
+      propertyPath: m_Name
+      value: WaterJet
+      objectReference: {fileID: 0}
+    - target: {fileID: 5090669841739366879, guid: f58ca1a978438484cb078249c2ae11c5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5090669841739366879, guid: f58ca1a978438484cb078249c2ae11c5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5090669841739366879, guid: f58ca1a978438484cb078249c2ae11c5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5090669841739366879, guid: f58ca1a978438484cb078249c2ae11c5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5090669841739366879, guid: f58ca1a978438484cb078249c2ae11c5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5090669841739366879, guid: f58ca1a978438484cb078249c2ae11c5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5090669841739366879, guid: f58ca1a978438484cb078249c2ae11c5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5090669841739366879, guid: f58ca1a978438484cb078249c2ae11c5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5090669841739366879, guid: f58ca1a978438484cb078249c2ae11c5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5090669841739366879, guid: f58ca1a978438484cb078249c2ae11c5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f58ca1a978438484cb078249c2ae11c5, type: 3}
+--- !u!4 &5637075819647019616 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5090669841739366879, guid: f58ca1a978438484cb078249c2ae11c5, type: 3}
+  m_PrefabInstance: {fileID: 621316053056252863}
+  m_PrefabAsset: {fileID: 0}
