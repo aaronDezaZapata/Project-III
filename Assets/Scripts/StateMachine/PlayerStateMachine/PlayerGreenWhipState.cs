@@ -26,6 +26,9 @@ public class PlayerGreenWhipState : PlayerBaseState
     public override void Enter()
     {
         Debug.Log("Entered PlayerGreenWhipState - Whip Mode");
+        
+        // CAMERA IN
+        stateMachine.mainCamera.Priority = 10;
 
         stateMachine.ForceReceiver.enabled = false;
 
