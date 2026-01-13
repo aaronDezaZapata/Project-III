@@ -17,6 +17,8 @@ public class PlayerFreeLookState : PlayerBaseState
 
     private readonly int StopRun = Animator.StringToHash("StopRun");
 
+    private readonly int AnimJump = Animator.StringToHash("Jump");
+
     private const float CrossFadeDuration = 0.1f;
 
     private const float AnimatorDampTime = 0.1f;
@@ -67,6 +69,23 @@ public class PlayerFreeLookState : PlayerBaseState
             return;
         }
 
+        if(stateMachine.InputReader.isColorActing) 
+        {
+            
+            stateMachine.SwitchState(typeof(PlayerHeiserState));
+            return;
+        
+        }
+
+        if (stateMachine.InputReader.isColorActing && stateMachine.HasDashAttack)
+        {
+            if (HasNearbyPaintedEnemy())
+            {
+                stateMachine.SwitchState(typeof(PlayerDashAttackState));
+                return;
+            }
+        }
+
         // Enemigos latigo
         if (stateMachine.InputReader.isGreen && stateMachine.HasGreenAbility)
         {
@@ -97,12 +116,18 @@ public class PlayerFreeLookState : PlayerBaseState
 
         Vector3 movement = CalculateMovement();
         float currentInputMagnitude = movement.magnitude;
-        lastSpeed = movement.normalized.magnitude;
-        stateMachine.Animator.SetFloat(FreeLookSpeedHash, movement.normalized.magnitude, AnimatorDampTime, deltaTime);
+        lastSpeed = movement.magnitude;
 
+        stateMachine.Animator.SetFloat(FreeLookSpeedHash, movement.magnitude, AnimatorDampTime, deltaTime);
+       
         if (currentInputMagnitude < 0.01f && lastSpeed > RunThreshold)
         {
             stateMachine.Animator.CrossFadeInFixedTime(StopRun, CrossFadeDuration);
+        }
+
+        if(GetNormalizedTime(stateMachine.Animator, "Jump") >= 1f)
+        {
+            stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
         }
 
 
@@ -175,7 +200,6 @@ public class PlayerFreeLookState : PlayerBaseState
 
             if (distance <= stateMachine.MaxGrappleDistance)
             {
-                // Verificar que no haya obst�culos
                 Vector3 dirToPoint = point.Position - stateMachine.transform.position;
 
                 if (!Physics.Raycast(
@@ -184,12 +208,18 @@ public class PlayerFreeLookState : PlayerBaseState
                     distance,
                     stateMachine.GrappleObstacleLayer))
                 {
-                    return true; // Hay al menos un punto accesible
+                    return true;
                 }
             }
         }
 
         return false;
+    }
+    
+    // CHECKER IF WE HAVE A PAINTED ENEMY
+    private bool HasNearbyPaintedEnemy()
+    {
+        return GameManager.Instance.enemiesPainted.Count > 0;
     }
 
     #endregion
@@ -220,20 +250,13 @@ public class PlayerFreeLookState : PlayerBaseState
     private void OnJump()
     {
         if (!stateMachine.Controller.isGrounded) return;
+        stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();
     }
 
     private void OnDiveEnter()
     {
         stateMachine.SwitchState(typeof(PlayerSwimState));
-    }
-
-    private void OnGreenActivated()
-    {
-        if (stateMachine.HasGreenAbility)
-        {
-            stateMachine.SwitchState(typeof(PlayerGreenState));
-        }
     }
 
     private void CameraRecenter()

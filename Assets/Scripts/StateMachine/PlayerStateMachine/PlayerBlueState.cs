@@ -8,8 +8,7 @@ using UnityEngine;
 public class PlayerBlueState : PlayerBaseState
 {
     public PlayerBlueState(PlayerStateMachine stateMachine) : base(stateMachine)
-    {
-    }
+    { }
 
     public override void Enter()
     {
@@ -19,6 +18,7 @@ public class PlayerBlueState : PlayerBaseState
     public override void Tick(float deltaTime)
     {
         // Heiser
+        
         if (stateMachine.InputReader.isHeiser)
         {
             stateMachine.SwitchState(typeof(PlayerHeiserState));

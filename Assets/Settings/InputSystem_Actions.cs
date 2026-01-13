@@ -1396,10 +1396,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/ColorAction".
         /// </summary>
         public InputAction @ColorAction => m_Wrapper.m_Player_ColorAction;
-        /// <summary>
-        /// Provides access to the underlying input action "Player/DColorChange".
-        /// </summary>
-        public InputAction @DColorChange => m_Wrapper.m_Player_DColorChange;
+    
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>

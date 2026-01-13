@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class PlayerSwimState : PlayerBaseState
 {
+    private readonly int DiveAnim = Animator.StringToHash("Diving");
+    private const float CrossFadeDuration = 0.1f;
+
     private float originalHeight;
     private Vector3 originalCenter;
     private Vector3 swimVelocity;
@@ -17,6 +20,7 @@ public class PlayerSwimState : PlayerBaseState
     public override void Enter()
     {
         Debug.Log("Entered PlayerSwimState");
+        stateMachine.Animator.CrossFadeInFixedTime(DiveAnim, CrossFadeDuration);
         stateMachine.InputReader.DiveEvent += OnDiveExit;
         stateMachine.InputReader.JumpEvent += PerformInkJump;
         

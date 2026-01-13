@@ -77,7 +77,7 @@ public class EnemyStateMachine : StateMachine
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.transform.CompareTag("Enemy"))
+        if(collision.gameObject.CompareTag("Enemy"))
         {
             if(collision.transform.TryGetComponent<CharacterController>(out var cc))
             {
@@ -92,7 +92,7 @@ public class EnemyStateMachine : StateMachine
             }
         }
 
-        if (collision.transform.CompareTag("Obstacle"))
+        if (collision.gameObject.CompareTag("Obstacle"))
         {
             if (Controller.velocity.magnitude > 5f)
             {
@@ -102,7 +102,7 @@ public class EnemyStateMachine : StateMachine
             }
         }
 
-        if (collision.transform.CompareTag("Object"))
+        if (collision.gameObject.CompareTag("Object"))
         {
             if (collision.transform.TryGetComponent<Rigidbody>(out var cc))
             {

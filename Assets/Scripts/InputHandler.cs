@@ -24,6 +24,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public event Action ColorActionEvent;
     public event Action DiveEvent;
     public event Action InteractionEvent;
+    public event Action DashAttackEvent;
 
     void Start()
     {
@@ -103,7 +104,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         Debug.Log("isAiming");
     }
 
-    public void OnColorAction(InputAction.CallbackContext context)
+    
     public void OnDColorChange(InputAction.CallbackContext context)
     {
         if (context.performed)
@@ -112,14 +113,18 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         else if (context.canceled)
         { isDColorChange = false; }
     }
+
+    public void OnColorAction(InputAction.CallbackContext context)
     {
         if (context.performed)
+        {
             isColorActing = true;
-
+            DashAttackEvent?.Invoke();
+        }
         else if (context.canceled)
+        {
             isColorActing = false;
-        
-        Debug.Log("isColorActing");
+        }
     }
 
     public void OnGreen(InputAction.CallbackContext context)

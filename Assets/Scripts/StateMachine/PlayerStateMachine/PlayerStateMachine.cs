@@ -24,6 +24,8 @@ public class PlayerStateMachine : StateMachine
 
     [field: SerializeField] public Health Health { get; private set; }
 
+    [field: SerializeField] public SkinnedMeshRenderer Mat_Player { get; private set; }
+
     [field: Header("Movement Variables")]
     [field: SerializeField] public float FreeLookMovementSpeed { get; private set; }
 
@@ -179,6 +181,30 @@ public class PlayerStateMachine : StateMachine
 
     // Esta variable controla que solo se use una vez por aire
     public bool CanHeiser { get; set; } = true;
+    
+    [field: Header("Black Dash Attack (Painted Enemy)")]
+    [Tooltip("¿El jugador tiene habilitado el dash attack a enemigos pintados?")]
+    [field: SerializeField] public bool HasDashAttack { get; private set; } = true;
+
+    [Tooltip("Velocidad del dash hacia el enemigo")]
+    [field: SerializeField] public float DashAttackSpeed { get; private set; } = 25f;
+
+    [Tooltip("Rango máximo para detectar enemigos pintados")]
+    [field: SerializeField] public float DashAttackMaxRange { get; private set; } = 20f;
+
+    [Tooltip("Radio de colisión para detectar impacto con enemigo")]
+    [field: SerializeField] public float DashAttackCollisionRadius { get; private set; } = 1.5f;
+
+    [Tooltip("Fuerza del impulso horizontal hacia atrás tras golpear")]
+    [field: SerializeField] public float DashAttackKnockbackForce { get; private set; } = 8f;
+
+    [Tooltip("Fuerza del impulso vertical tras golpear")]
+    [field: SerializeField] public float DashAttackVerticalKnockback { get; private set; } = 5f;
+
+    [Tooltip("Daño causado al enemigo")]
+    [field: SerializeField] public int DashAttackDamage { get; private set; } = 1;
+
+    
 
     private void Start()
     {
@@ -189,9 +215,12 @@ public class PlayerStateMachine : StateMachine
         AddState(new PlayerSwimState(this));
         AddState(new PlayerShootingState(this));
         AddState(new PlayerHeiserState(this));
+        AddState(new PlayerBlueState(this));
         AddState(new PlayerGreenState(this));
         AddState(new PlayerGreenWhipState(this));
         AddState(new PlayerGrayState(this));
+        AddState(new PlayerDashAttackState(this));
+        
 
         SwitchState(typeof(PlayerFreeLookState));
     }
@@ -212,8 +241,6 @@ public class PlayerStateMachine : StateMachine
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-
-
 
             yield return null;
         }
@@ -328,18 +355,35 @@ public class PlayerStateMachine : StateMachine
         {
             case "CharcoAzul":
                  SwitchState(typeof(PlayerBlueState));
+                //Mat_Player.SetColor("_Color", Color.blue);
+                if(Mat_Player != null)
+                {
+                    Mat_Player.material.SetColor("_SpecularColor", Color.blue);
+                }
                 break;
 
             case "CharcoNegro":
                  SwitchState(typeof(PlayerFreeLookState));
+                if (Mat_Player != null)
+                {
+                    Mat_Player.material.SetColor("_SpecularColor", Color.black);
+                }
                 break;
 
             case "CharcoGris":
                  SwitchState(typeof(PlayerGrayState));
+                if (Mat_Player != null)
+                {
+                    Mat_Player.material.SetColor("_SpecularColor", Color.grey);
+                }
                 break;
 
             case "CharcoVerde":
                 SwitchState(typeof(PlayerGreenState));
+                if (Mat_Player != null)
+                {
+                    Mat_Player.material.SetColor("_SpecularColor", Color.green);
+                }
                 break;
 
             default:
