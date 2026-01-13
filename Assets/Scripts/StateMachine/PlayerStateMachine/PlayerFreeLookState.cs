@@ -11,7 +11,20 @@ using UnityEngine.Rendering.Universal.Internal;
 /// </summary>
 public class PlayerFreeLookState : PlayerBaseState
 {
+    private readonly int FreeLookSpeedHash = Animator.StringToHash("Speed");
 
+    private readonly int FreeLookBlendTreeHash = Animator.StringToHash("FreeLookBlendTree");
+
+    private readonly int StopRun = Animator.StringToHash("StopRun");
+
+    private const float CrossFadeDuration = 0.1f;
+
+    private const float AnimatorDampTime = 0.1f;
+
+    private const float RunThreshold = 0.8f;
+
+    private float lastSpeed = 0f;
+    private float lastInputMagnitude = 0f;
     public PlayerFreeLookState(PlayerStateMachine stateMachine) : base(stateMachine)
     { 
        
@@ -36,6 +49,12 @@ public class PlayerFreeLookState : PlayerBaseState
             CameraRecenter();
             stateMachine.mainCamera.Priority = 10;
         }
+
+        stateMachine.Animator.SetFloat(FreeLookSpeedHash, 0);
+
+        stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
+        lastSpeed = 0f;
+        lastInputMagnitude = 0f;
     }
 
   
@@ -77,13 +96,25 @@ public class PlayerFreeLookState : PlayerBaseState
         }
 
         Vector3 movement = CalculateMovement();
-       
+        float currentInputMagnitude = movement.magnitude;
+        lastSpeed = movement.normalized.magnitude;
+        stateMachine.Animator.SetFloat(FreeLookSpeedHash, movement.normalized.magnitude, AnimatorDampTime, deltaTime);
+
+        if (currentInputMagnitude < 0.01f && lastSpeed > RunThreshold)
+        {
+            stateMachine.Animator.CrossFadeInFixedTime(StopRun, CrossFadeDuration);
+        }
+
+
         if (!Equals(movement, Vector3.zero))
         {
             FaceMovementDirection(movement, deltaTime);
+            stateMachine.Animator.SetFloat(FreeLookSpeedHash, movement.normalized.magnitude, AnimatorDampTime, deltaTime);
         }
 
         Move(movement * stateMachine.FreeLookMovementSpeed, deltaTime);
+
+        lastInputMagnitude = currentInputMagnitude;
     }
 
     public override void Exit()
