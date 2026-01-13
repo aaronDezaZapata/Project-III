@@ -17,6 +17,8 @@ public class PlayerHeiserState : PlayerBaseState
         stateMachine.CanHeiser = true;
         stateMachine.CanHeiser = false;
         stateMachine.Animator.CrossFadeInFixedTime(Heiser, CrossFadeDuration);
+        stateMachine.WaterHeiserParticle.gameObject.SetActive(true);
+        stateMachine.WaterHeiserParticleSecond.gameObject.SetActive(true);
         stateMachine.mainCamera.Priority = 10;
     }
 
@@ -45,6 +47,8 @@ public class PlayerHeiserState : PlayerBaseState
     public override void Exit()
     {
         stateMachine.CanHeiser = true;
+        stateMachine.WaterHeiserParticle.gameObject.SetActive(false);
+        stateMachine.WaterHeiserParticleSecond.gameObject.SetActive(false);
         //Se apagan aqui las particulas
     }
     

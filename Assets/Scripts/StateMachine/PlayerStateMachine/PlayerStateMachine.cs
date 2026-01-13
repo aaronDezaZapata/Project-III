@@ -158,6 +158,8 @@ public class PlayerStateMachine : StateMachine
 
     [field: SerializeField] public Transform FirePoint { get; private set; }
     [field: SerializeField] public Transform Water_JetParticle { get; private set; }
+    [field: SerializeField] public Transform WaterHeiserParticle { get; private set; }
+    [field: SerializeField] public Transform WaterHeiserParticleSecond { get; private set; }
     [field: SerializeField] public Rigidbody ProjectilePrefab { get; private set; }
     [field: SerializeField] public float FireCooldown { get; private set; } = 0.15f;
     [field: SerializeField] public float ProjectileFlightTime { get; private set; } = 0.6f;
