@@ -22,7 +22,7 @@ public class EnemyInflatableState : EnemyBaseState
     public float deflationSpeed = 1.0f;
 
     [Tooltip("Valor máximo de gordura (InflationAmount) al morir")]
-    public float maxFatness = 1.0f;
+    public float maxFatness = .02f;
 
     public EnemyInflatableState(EnemyStateMachine stateMachine) : base(stateMachine)
     {
@@ -30,12 +30,12 @@ public class EnemyInflatableState : EnemyBaseState
 
     public override void Enter()
     {
-        if (stateMachine.agent != null) stateMachine.agent.isStopped = true;
+        if (stateMachine.agent != null && stateMachine.agent.isOnNavMesh) stateMachine.agent.isStopped = true;
         
         if (_enemyMat == null)
         {
             
-            Renderer r = stateMachine.GetComponentInChildren<Renderer>();
+            Renderer r = stateMachine.GetComponentInChildren<SkinnedMeshRenderer>();
 
             if (r != null)
             {
