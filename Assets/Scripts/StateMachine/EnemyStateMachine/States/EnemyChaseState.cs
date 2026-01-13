@@ -17,7 +17,7 @@ public class EnemyChaseState : EnemyBaseState
     {
 
         //If is close enough
-        if (Vector3.Distance(GameManager.Instance.GetPlayer().position, stateMachine.transform.position) < stateMachine.AttackRange)
+        /*if (Vector3.Distance(GameManager.Instance.GetPlayer().position, stateMachine.transform.position) < stateMachine.AttackRange)
         {
             stateMachine.SwitchState(typeof(EnemyAttackState));
             return;
@@ -32,9 +32,7 @@ public class EnemyChaseState : EnemyBaseState
         {
             stateMachine.SwitchState(typeof(EnemyIdleState));
             return;
-        }
-
-       
+        }*/
     }
 
     public override void Exit()

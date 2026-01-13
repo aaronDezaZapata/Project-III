@@ -77,6 +77,15 @@ public class PlayerFreeLookState : PlayerBaseState
         
         }
 
+        if (stateMachine.InputReader.isColorActing && stateMachine.HasDashAttack)
+        {
+            if (HasNearbyPaintedEnemy())
+            {
+                stateMachine.SwitchState(typeof(PlayerDashAttackState));
+                return;
+            }
+        }
+
         // Enemigos latigo
         if (stateMachine.InputReader.isGreen && stateMachine.HasGreenAbility)
         {
@@ -191,7 +200,6 @@ public class PlayerFreeLookState : PlayerBaseState
 
             if (distance <= stateMachine.MaxGrappleDistance)
             {
-                // Verificar que no haya obst�culos
                 Vector3 dirToPoint = point.Position - stateMachine.transform.position;
 
                 if (!Physics.Raycast(
@@ -200,12 +208,18 @@ public class PlayerFreeLookState : PlayerBaseState
                     distance,
                     stateMachine.GrappleObstacleLayer))
                 {
-                    return true; // Hay al menos un punto accesible
+                    return true;
                 }
             }
         }
 
         return false;
+    }
+    
+    // CHECKER IF WE HAVE A PAINTED ENEMY
+    private bool HasNearbyPaintedEnemy()
+    {
+        return GameManager.Instance.enemiesPainted.Count > 0;
     }
 
     #endregion
@@ -242,14 +256,6 @@ public class PlayerFreeLookState : PlayerBaseState
     private void OnDiveEnter()
     {
         stateMachine.SwitchState(typeof(PlayerSwimState));
-    }
-
-    private void OnGreenActivated()
-    {
-        if (stateMachine.HasGreenAbility)
-        {
-            stateMachine.SwitchState(typeof(PlayerGreenState));
-        }
     }
 
     private void CameraRecenter()
