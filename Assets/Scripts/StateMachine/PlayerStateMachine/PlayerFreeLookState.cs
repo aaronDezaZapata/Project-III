@@ -68,15 +68,14 @@ public class PlayerFreeLookState : PlayerBaseState
             stateMachine.SwitchState(typeof(PlayerGrayState));
             return;
         }
-
-        if(stateMachine.InputReader.isColorActing) 
-        {
-            
-            stateMachine.SwitchState(typeof(PlayerHeiserState));
-            return;
         
-        }
-
+        // TESTING
+        /*if (stateMachine.InputReader.isColorActing)
+        {
+            stateMachine.SwitchState(typeof(PlayerDashAttackState));
+            return;
+        }*/
+        
         if (stateMachine.InputReader.isColorActing && stateMachine.HasDashAttack)
         {
             if (HasNearbyPaintedEnemy())
@@ -87,7 +86,7 @@ public class PlayerFreeLookState : PlayerBaseState
         }
 
         // Enemigos latigo
-        if (stateMachine.InputReader.isGreen && stateMachine.HasGreenAbility)
+        /*if (stateMachine.InputReader.isGreen && stateMachine.HasGreenAbility)
         {
             // Primero buscar enemigos (mayor prioridad)
             if (HasNearbyEnemy())
@@ -105,7 +104,7 @@ public class PlayerFreeLookState : PlayerBaseState
             }
             // Si no hay ni enemigos ni puntos, no hacer nada
             // (el jugador puede seguir movi�ndose con el bot�n presionado)
-        }
+        }*/
 
         // Aim
         if (stateMachine.InputReader.isAiming)
@@ -114,7 +113,7 @@ public class PlayerFreeLookState : PlayerBaseState
             return;
         }
 
-        Vector3 movement = CalculateMovement();
+        Vector3 movement = stateMachine.CalculateMovement();
         float currentInputMagnitude = movement.magnitude;
         lastSpeed = movement.magnitude;
 
@@ -151,78 +150,12 @@ public class PlayerFreeLookState : PlayerBaseState
         // Camera Out
         stateMachine.mainCamera.Priority = -1;
     }
-
-    #region Green Ability Detection
-
-    private bool HasNearbyEnemy()
-    {
-        Collider[] enemies = Physics.OverlapSphere(
-            stateMachine.transform.position,
-            stateMachine.EnemyDetectionRange,
-            stateMachine.EnemyLayer
-        );
-
-        // Si hay al menos un enemigo en rango
-        if (enemies.Length > 0)
-        {
-            // Verificar que al menos uno sea visible (sin obst�culos)
-            foreach (Collider enemy in enemies)
-            {
-                Vector3 dirToEnemy = enemy.transform.position - stateMachine.transform.position;
-                float distToEnemy = dirToEnemy.magnitude;
-
-                // Raycast para verificar l�nea de visi�n
-                int layerMask = ~stateMachine.EnemyLayer; // Ignorar enemigos
-
-                if (!Physics.Raycast(
-                    stateMachine.transform.position + Vector3.up,
-                    dirToEnemy.normalized,
-                    distToEnemy,
-                    layerMask))
-                {
-                    return true; // Hay al menos un enemigo visible
-                }
-            }
-        }
-
-        return false;
-    }
-
-    private bool HasNearbyGrapplePoint()
-    {
-        GrapplePoint[] allPoints = Object.FindObjectsByType<GrapplePoint>(FindObjectsSortMode.None);
-
-        foreach (var point in allPoints)
-        {
-            if (!point.IsActive) continue;
-
-            float distance = Vector3.Distance(stateMachine.transform.position, point.Position);
-
-            if (distance <= stateMachine.MaxGrappleDistance)
-            {
-                Vector3 dirToPoint = point.Position - stateMachine.transform.position;
-
-                if (!Physics.Raycast(
-                    stateMachine.transform.position + Vector3.up,
-                    dirToPoint.normalized,
-                    distance,
-                    stateMachine.GrappleObstacleLayer))
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
     
     // CHECKER IF WE HAVE A PAINTED ENEMY
     private bool HasNearbyPaintedEnemy()
     {
         return GameManager.Instance.enemiesPainted.Count > 0;
     }
-
-    #endregion
     
     private void FaceMovementDirection(Vector3 movement, float deltaTime)
     {
@@ -231,20 +164,6 @@ public class PlayerFreeLookState : PlayerBaseState
             Quaternion.LookRotation(movement),
             deltaTime * stateMachine.RotationSpeed);
         
-    }
-    
-    Vector3 CalculateMovement()
-    {
-        Vector3 forward = Camera.main.transform.forward;
-        Vector3 right = Camera.main.transform.right;
-
-        forward.y = 0f;
-        right.y = 0f;
-
-        forward.Normalize();
-        right.Normalize();
-
-        return forward * stateMachine.InputReader.MoveVector.y + right * stateMachine.InputReader.MoveVector.x;
     }
     
     private void OnJump()

@@ -7,6 +7,11 @@ using UnityEngine;
 /// </summary>
 public class PlayerGreenState : PlayerBaseState
 {
+    private readonly int FreeLookSpeedHash = Animator.StringToHash("Speed");
+    private readonly int FreeLookBlendTreeHash = Animator.StringToHash("FreeLookBlendTree");
+    private const float CrossFadeDuration = 0.1f;
+    private const float AnimatorDampTime = 0.1f;
+    
     private GrapplePoint currentGrapplePoint;
     private Vector3 grapplePosition;
 
@@ -32,8 +37,17 @@ public class PlayerGreenState : PlayerBaseState
         
         // CAMERA IN
         stateMachine.mainCamera.Priority = 10;
+        
+        stateMachine.playerState = PlayerStates.GREEN;
+        
+        stateMachine.Animator.SetFloat(FreeLookSpeedHash, 0);
+        stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
 
-        stateMachine.ForceReceiver.enabled = false;
+        // Suscribirse a eventos de input si es necesario
+        stateMachine.InputReader.JumpEvent += OnJump;
+        stateMachine.InputReader.DiveEvent += OnDiveEnter;
+
+        /*stateMachine.ForceReceiver.enabled = false;
 
         if (!TryFindGrapplePoint())
         {
@@ -49,18 +63,35 @@ public class PlayerGreenState : PlayerBaseState
             stateMachine.GrappleRope.enabled = true;
         }
 
-        stateMachine.InputReader.JumpEvent += OnDetach;
+        stateMachine.InputReader.JumpEvent += OnDetach;*/
     }
 
     public override void Tick(float deltaTime)
     {
-        if (!stateMachine.InputReader.isGreen)
+        if (stateMachine.InputReader.isColorActing)
         {
-            stateMachine.SwitchState(typeof(PlayerFreeLookState));
+            stateMachine.SwitchState(typeof(PlayerWhipState));
             return;
         }
+        
+        if (stateMachine.InputReader.isAiming)
+        {
+            stateMachine.SwitchState(typeof(PlayerShootingState));
+            return;
+        }
+        
+        Vector3 movement = stateMachine.CalculateMovement();
+        
+        stateMachine.Animator.SetFloat(FreeLookSpeedHash, movement.magnitude, AnimatorDampTime, deltaTime);
+        
+        if (!Equals(movement, Vector3.zero))
+        {
+            FaceMovementDirection(movement, deltaTime);
+        }
+        
+        Move(movement * stateMachine.FreeLookMovementSpeed, deltaTime);
 
-        if (!isAttached) return;
+        /*if (!isAttached) return;
 
         ApplyPendulumPhysics(deltaTime);
 
@@ -72,14 +103,17 @@ public class PlayerGreenState : PlayerBaseState
 
         UpdateRopeVisual();
 
-        CheckRopeIntegrity();
+        CheckRopeIntegrity();*/
     }
 
     public override void Exit()
     {
         Debug.Log("Exiting PlayerGreenState");
-
-        stateMachine.InputReader.JumpEvent -= OnDetach;
+        
+        stateMachine.InputReader.JumpEvent -= OnJump;
+        stateMachine.InputReader.DiveEvent -= OnDiveEnter;
+        
+        /*stateMachine.InputReader.JumpEvent -= OnDetach;
 
         // ENDEREZAR AL JUGADOR 
         ForcePlayerUpright();
@@ -94,9 +128,28 @@ public class PlayerGreenState : PlayerBaseState
         ApplySwingMomentum();
 
         isAttached = false;
-        currentGrapplePoint = null;
+        currentGrapplePoint = null;*/
     }
-
+    
+    private void FaceMovementDirection(Vector3 movement, float deltaTime)
+    {
+        stateMachine.transform.rotation = Quaternion.Lerp(
+            stateMachine.transform.rotation,
+            Quaternion.LookRotation(movement),
+            deltaTime * stateMachine.RotationSpeed);
+    }
+    
+    private void OnJump()
+    {
+        stateMachine.SwitchState(typeof(PlayerSwimState));
+    }
+    
+    private void OnDiveEnter()
+    {
+        stateMachine.SwitchState(typeof(PlayerSwimState));
+    }
+    
+    /*
     #region Grapple Logic
 
     private bool TryFindGrapplePoint()
@@ -321,17 +374,10 @@ public class PlayerGreenState : PlayerBaseState
         }
     }
 
-    /// <summary>
-    /// FUERZA al jugador a estar completamente recto (vertical)
-    /// </summary>
     private void ForcePlayerUpright()
     {
-        // Guardar solo la rotación en Y (horizontal)
         float currentYRotation = stateMachine.transform.eulerAngles.y;
-
-        // Crear una rotación completamente vertical (solo gira en Y)
         stateMachine.transform.rotation = Quaternion.Euler(0f, currentYRotation, 0f);
-
         Debug.Log($"Jugador enderezado - Rotación Y: {currentYRotation}°");
     }
 
@@ -387,4 +433,5 @@ public class PlayerGreenState : PlayerBaseState
     }
 
     #endregion
+    */
 }

@@ -8,7 +8,7 @@ public class PlayerStateMachine : StateMachine
 {
     #region Variables
 
-    [field: Header("Getters and Setters")]
+    [field: Header("Player State")]
     [field: SerializeField] public PlayerStates playerState;
     
     [field: Header("Getters and Setters")]
@@ -220,12 +220,12 @@ public class PlayerStateMachine : StateMachine
         AddState(new PlayerHeiserState(this));
         AddState(new PlayerBlueState(this));
         AddState(new PlayerGreenState(this));
-        AddState(new PlayerGreenWhipState(this));
+        AddState(new PlayerWhipState(this));
         AddState(new PlayerGrayState(this));
         AddState(new PlayerDashAttackState(this));
         
-
-        SwitchState(typeof(PlayerFreeLookState));
+        // MUST BE PLAYERFREELOOK. CHANGES ONLY FOR TESTING
+        SwitchState(typeof(PlayerGreenState));
     }
 
     public void StartCameraShake(float duration)
@@ -394,5 +394,18 @@ public class PlayerStateMachine : StateMachine
                 break;
         }
     }
+    
+    public Vector3 CalculateMovement()
+    {
+        Vector3 forward = Camera.main.transform.forward;
+        Vector3 right = Camera.main.transform.right;
 
+        forward.y = 0f;
+        right.y = 0f;
+
+        forward.Normalize();
+        right.Normalize();
+
+        return forward * InputReader.MoveVector.y + right * InputReader.MoveVector.x;
+    }
 }

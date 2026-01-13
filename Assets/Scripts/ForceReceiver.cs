@@ -68,6 +68,11 @@ public class ForceReceiver : MonoBehaviour
         }
     }
 
+    public void ForceMovement()
+    {
+        controller.Move(Movement * Time.deltaTime);
+    }
+
     public void Reset()
     {
         impact = Vector3.zero;
