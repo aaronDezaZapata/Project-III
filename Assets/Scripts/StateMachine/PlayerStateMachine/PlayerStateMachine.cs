@@ -318,19 +318,19 @@ public class PlayerStateMachine : StateMachine
         switch (other.tag)
         {
             case "CharcoAzul":
-                // SwitchState(typeof(EstadoAzul));
+                 SwitchState(typeof(PlayerBlueState));
                 break;
 
             case "CharcoRojo":
-                // SwitchState(typeof(EstadoRojo));
+                 //SwitchState(typeof(PlayerGreenState));
                 break;
 
             case "CharcoGris":
-                // SwitchState(typeof(EstadoGris));
+                 SwitchState(typeof(PlayerGrayState));
                 break;
 
             case "CharcoVerde":
-                // SwitchState(typeof(EstadoVerde));
+                SwitchState(typeof(PlayerGreenState));
                 break;
 
             default:
