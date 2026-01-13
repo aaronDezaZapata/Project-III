@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-
     public static GameManager Instance;
+    
+    public List<PaintableEnemy> enemiesPainted;
 
     private void Awake()
     {
@@ -26,5 +28,13 @@ public class GameManager : MonoBehaviour
         return player;
     }
 
+    public void AddPaintedEnemy(PaintableEnemy enemy)
+    {
+        enemiesPainted.Add(enemy);
+    }
 
+    public void RemovePaintedEnemy(PaintableEnemy enemy)
+    {
+        enemiesPainted.Remove(enemy);
+    }
 }

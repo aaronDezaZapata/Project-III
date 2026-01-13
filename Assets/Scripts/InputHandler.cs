@@ -22,6 +22,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public event Action DashEvent;
     public event Action DiveEvent;
     public event Action InteractionEvent;
+    public event Action DashAttackEvent;
 
     void Start()
     {
@@ -110,12 +111,14 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public void OnColorAction(InputAction.CallbackContext context)
     {
         if (context.performed)
+        {
             isColorActing = true;
-
+            DashAttackEvent?.Invoke();
+        }
         else if (context.canceled)
+        {
             isColorActing = false;
-        
-        Debug.Log("isColorActing");
+        }
     }
 
     public void OnGreen(InputAction.CallbackContext context)

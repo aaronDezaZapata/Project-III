@@ -179,6 +179,28 @@ public class PlayerStateMachine : StateMachine
 
     // Esta variable controla que solo se use una vez por aire
     public bool CanHeiser { get; set; } = true;
+    
+    [field: Header("Black Dash Attack (Painted Enemy)")]
+    [Tooltip("¿El jugador tiene habilitado el dash attack a enemigos pintados?")]
+    [field: SerializeField] public bool HasDashAttack { get; private set; } = true;
+
+    [Tooltip("Velocidad del dash hacia el enemigo")]
+    [field: SerializeField] public float DashAttackSpeed { get; private set; } = 25f;
+
+    [Tooltip("Rango máximo para detectar enemigos pintados")]
+    [field: SerializeField] public float DashAttackMaxRange { get; private set; } = 20f;
+
+    [Tooltip("Radio de colisión para detectar impacto con enemigo")]
+    [field: SerializeField] public float DashAttackCollisionRadius { get; private set; } = 1.5f;
+
+    [Tooltip("Fuerza del impulso horizontal hacia atrás tras golpear")]
+    [field: SerializeField] public float DashAttackKnockbackForce { get; private set; } = 8f;
+
+    [Tooltip("Fuerza del impulso vertical tras golpear")]
+    [field: SerializeField] public float DashAttackVerticalKnockback { get; private set; } = 5f;
+
+    [Tooltip("Daño causado al enemigo")]
+    [field: SerializeField] public int DashAttackDamage { get; private set; } = 1;
 
     private void Start()
     {
@@ -192,6 +214,7 @@ public class PlayerStateMachine : StateMachine
         AddState(new PlayerGreenState(this));
         AddState(new PlayerGreenWhipState(this));
         AddState(new PlayerGrayState(this));
+        AddState(new PlayerDashAttackState(this));
 
         SwitchState(typeof(PlayerFreeLookState));
     }

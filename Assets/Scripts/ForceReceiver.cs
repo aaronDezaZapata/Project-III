@@ -15,6 +15,8 @@ public class ForceReceiver : MonoBehaviour
 
     [SerializeField] float playerGravity;
 
+    private bool useGravity = true;
+
     public Vector3 Movement => impact + Vector3.up * verticalVelocity;
 
     private void Update()
@@ -54,5 +56,21 @@ public class ForceReceiver : MonoBehaviour
     public void AddForce(Vector3 force)
     {
         impact += force;
+    }
+    
+    public void SetUseGravity(bool value)
+    {
+        useGravity = value;
+
+        if (!value)
+        {
+            verticalVelocity = 0f;
+        }
+    }
+
+    public void Reset()
+    {
+        impact = Vector3.zero;
+        verticalVelocity = 0f;
     }
 }
