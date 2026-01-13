@@ -12,6 +12,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public bool isAiming { get; private set; }
     public bool IsFiring { get; private set; }
+    public bool isColorActing { get; private set; }
     public bool isHeiser { get; private set; }
     public bool isGreen { get; set; }
     public bool isGray { get; set; }
@@ -97,25 +98,24 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public void OnAim(InputAction.CallbackContext context)
     {
-
         if (context.performed)
             {isAiming = true;}
         
         else if (context.canceled)
             {isAiming = false;}
-
-
+        
         Debug.Log("isAiming");
-
     }
 
-    public void OnHeiser(InputAction.CallbackContext context)
+    public void OnColorAction(InputAction.CallbackContext context)
     {
         if (context.performed)
-        { isHeiser = true; }
+            isColorActing = true;
 
         else if (context.canceled)
-        { isHeiser = false; }
+            isColorActing = false;
+        
+        Debug.Log("isColorActing");
     }
 
     public void OnGreen(InputAction.CallbackContext context)

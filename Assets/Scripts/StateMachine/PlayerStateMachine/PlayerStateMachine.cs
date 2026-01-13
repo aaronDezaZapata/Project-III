@@ -9,6 +9,9 @@ public class PlayerStateMachine : StateMachine
     #region Variables
 
     [field: Header("Getters and Setters")]
+    [field: SerializeField] public PlayerStates playerState;
+    
+    [field: Header("Getters and Setters")]
     [field: SerializeField] public InputHandler InputReader { get; private set; }
 
     [field: SerializeField] public CharacterController Controller { get; private set; }
@@ -148,8 +151,7 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public ParticleSystem GrayAbsorbParticles { get; private set; }
 
     #endregion
-
-
+    
     [Header("References")]
 
     [field: SerializeField] public Transform FirePoint { get; private set; }

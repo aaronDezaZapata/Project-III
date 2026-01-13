@@ -5,9 +5,9 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal.Internal;
 
 /// <summary>
-/// PlayerFreeLookState con l�gica para decidir entre:
-/// - PlayerGreenState (balanceo en GrapplePoints)
-/// - PlayerGreenWhipState (l�tigo para enemigos)
+/// Clase Black Base
+/// - Plain Shoot
+/// - Player impulses himself into enemies as attack
 /// </summary>
 public class PlayerFreeLookState : PlayerBaseState
 {
@@ -21,12 +21,15 @@ public class PlayerFreeLookState : PlayerBaseState
     public override void Enter()
     {
         Debug.Log("Entered PlayerFreeLookState");
+
+        stateMachine.playerState = PlayerStates.BLACK;
+        
         stateMachine.InputReader.JumpEvent += OnJump;
 
         //stateMachine.InputReader.DashEvent += OnDash;
 
         stateMachine.InputReader.DiveEvent += OnDiveEnter;
-        
+
         // Camera Settings
         if (stateMachine.mainCamera.Priority <= 9)
         {
@@ -39,19 +42,6 @@ public class PlayerFreeLookState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
-        /*stateMachine.CheckForInk();
-        if (Input.GetMouseButton(0))
-        {
-            stateMachine.ShootInk();
-        }
-
-      
-        if (Input.GetKeyDown(KeyCode.B) && stateMachine.IsOnInk)
-        {
-            stateMachine.SwitchState(typeof(PlayerSwimState));
-            return;
-        }*/
-
         if (stateMachine.InputReader.isGray && stateMachine.HasGrayAbility)
         {
             stateMachine.SwitchState(typeof(PlayerGrayState));
@@ -86,14 +76,6 @@ public class PlayerFreeLookState : PlayerBaseState
             return;
         }
 
-        // Heiser
-        if (stateMachine.InputReader.isHeiser)
-        {
-            stateMachine.SwitchState(typeof(PlayerHeiserState));
-            return;
-        }
-
-
         Vector3 movement = CalculateMovement();
        
         if (!Equals(movement, Vector3.zero))
@@ -116,9 +98,6 @@ public class PlayerFreeLookState : PlayerBaseState
 
     #region Green Ability Detection
 
-    /// <summary>
-    /// Verifica si hay enemigos cercanos para la mec�nica de l�tigo
-    /// </summary>
     private bool HasNearbyEnemy()
     {
         Collider[] enemies = Physics.OverlapSphere(
@@ -153,9 +132,6 @@ public class PlayerFreeLookState : PlayerBaseState
         return false;
     }
 
-    /// <summary>
-    /// Verifica si hay GrapplePoints cercanos para la mec�nica de balanceo
-    /// </summary>
     private bool HasNearbyGrapplePoint()
     {
         GrapplePoint[] allPoints = Object.FindObjectsByType<GrapplePoint>(FindObjectsSortMode.None);
@@ -195,12 +171,6 @@ public class PlayerFreeLookState : PlayerBaseState
         
     }
     
-    //TODO: Remove :3
-    /*private void FaceMovementDirectionInstant(Vector3 movement)
-    {
-        stateMachine.transform.rotation = Quaternion.LookRotation(movement);
-    }*/
-
     Vector3 CalculateMovement()
     {
         Vector3 forward = Camera.main.transform.forward;
@@ -214,17 +184,7 @@ public class PlayerFreeLookState : PlayerBaseState
 
         return forward * stateMachine.InputReader.MoveVector.y + right * stateMachine.InputReader.MoveVector.x;
     }
-
-
-
-    /*private void OnDash()
-    {
-        if (stateMachine.InputReader.MoveVector == Vector2.zero) { return; }
-
-       //stateMachine.SwitchState(PlayerDashingState);
-    }*/
-
-
+    
     private void OnJump()
     {
         if (!stateMachine.Controller.isGrounded) return;

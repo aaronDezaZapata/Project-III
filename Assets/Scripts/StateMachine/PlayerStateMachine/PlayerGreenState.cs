@@ -29,6 +29,9 @@ public class PlayerGreenState : PlayerBaseState
     public override void Enter()
     {
         Debug.Log("Entered PlayerGreenState - Grapple Mode (CONTINUOUS)");
+        
+        // CAMERA IN
+        stateMachine.mainCamera.Priority = 10;
 
         stateMachine.ForceReceiver.enabled = false;
 
