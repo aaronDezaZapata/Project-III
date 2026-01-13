@@ -17,6 +17,8 @@ public class PlayerFreeLookState : PlayerBaseState
 
     private readonly int StopRun = Animator.StringToHash("StopRun");
 
+    private readonly int AnimJump = Animator.StringToHash("Jump");
+
     private const float CrossFadeDuration = 0.1f;
 
     private const float AnimatorDampTime = 0.1f;
@@ -67,6 +69,14 @@ public class PlayerFreeLookState : PlayerBaseState
             return;
         }
 
+        if(stateMachine.InputReader.isColorActing) 
+        {
+            
+            stateMachine.SwitchState(typeof(PlayerHeiserState));
+            return;
+        
+        }
+
         // Enemigos latigo
         if (stateMachine.InputReader.isGreen && stateMachine.HasGreenAbility)
         {
@@ -97,12 +107,18 @@ public class PlayerFreeLookState : PlayerBaseState
 
         Vector3 movement = CalculateMovement();
         float currentInputMagnitude = movement.magnitude;
-        lastSpeed = movement.normalized.magnitude;
-        stateMachine.Animator.SetFloat(FreeLookSpeedHash, movement.normalized.magnitude, AnimatorDampTime, deltaTime);
+        lastSpeed = movement.magnitude;
 
+        stateMachine.Animator.SetFloat(FreeLookSpeedHash, movement.magnitude, AnimatorDampTime, deltaTime);
+       
         if (currentInputMagnitude < 0.01f && lastSpeed > RunThreshold)
         {
             stateMachine.Animator.CrossFadeInFixedTime(StopRun, CrossFadeDuration);
+        }
+
+        if(GetNormalizedTime(stateMachine.Animator, "Jump") >= 1f)
+        {
+            stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
         }
 
 
@@ -219,6 +235,7 @@ public class PlayerFreeLookState : PlayerBaseState
     private void OnJump()
     {
         if (!stateMachine.Controller.isGrounded) return;
+        stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();
     }
 

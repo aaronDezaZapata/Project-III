@@ -6,6 +6,8 @@ using UnityEngine;
 /// </summary>
 public class PlayerHeiserState : PlayerBaseState
 {
+    private readonly int Heiser = Animator.StringToHash("GeiserCycle");
+    private const float CrossFadeDuration = 0.1f;
     public PlayerHeiserState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
     }
@@ -14,7 +16,7 @@ public class PlayerHeiserState : PlayerBaseState
     {
         stateMachine.CanHeiser = true;
         stateMachine.CanHeiser = false;
-        
+        stateMachine.Animator.CrossFadeInFixedTime(Heiser, CrossFadeDuration);
         stateMachine.mainCamera.Priority = 10;
     }
 
@@ -26,7 +28,7 @@ public class PlayerHeiserState : PlayerBaseState
             return;
         }
 
-        stateMachine.ForceReceiver.ResetVerticalVelocity();
+        //stateMachine.ForceReceiver.ResetVerticalVelocity();
         stateMachine.ForceReceiver.AddForce(Vector3.up * stateMachine.HoverForce * deltaTime);
         MoveHoverDirect(deltaTime);
     }

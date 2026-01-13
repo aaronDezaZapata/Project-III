@@ -230,8 +230,6 @@ public class PlayerStateMachine : StateMachine
         {
             elapsed += Time.deltaTime;
 
-
-
             yield return null;
         }
 
