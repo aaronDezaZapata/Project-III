@@ -211,10 +211,12 @@ public class PlayerStateMachine : StateMachine
         AddState(new PlayerSwimState(this));
         AddState(new PlayerShootingState(this));
         AddState(new PlayerHeiserState(this));
+        AddState(new PlayerBlueState(this));
         AddState(new PlayerGreenState(this));
         AddState(new PlayerGreenWhipState(this));
         AddState(new PlayerGrayState(this));
         AddState(new PlayerDashAttackState(this));
+        
 
         SwitchState(typeof(PlayerFreeLookState));
     }

@@ -5,6 +5,8 @@ using UnityEngine.Rendering.Universal;
 
 public class PlayerShootingState : PlayerBaseState
 {
+    private readonly int ShootAnim = Animator.StringToHash("Shoot");
+    private const float CrossFadeDuration = 0.1f;
     public PlayerShootingState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
     }
@@ -20,7 +22,7 @@ public class PlayerShootingState : PlayerBaseState
     {
         // CAMERA IN
         stateMachine.aimCamera.Priority = 10;
-
+        stateMachine.Animator.CrossFadeInFixedTime(ShootAnim, CrossFadeDuration);
 
         if (stateMachine.ReticleTransform != null)
             stateMachine.ReticleTransform.gameObject.SetActive(true);

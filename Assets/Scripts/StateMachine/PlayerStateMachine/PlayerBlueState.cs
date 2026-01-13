@@ -18,6 +18,7 @@ public class PlayerBlueState : PlayerBaseState
     public override void Tick(float deltaTime)
     {
         // Heiser
+        
         if (stateMachine.InputReader.isHeiser)
         {
             stateMachine.SwitchState(typeof(PlayerHeiserState));

@@ -7,6 +7,10 @@ using System.Collections.Generic;
 /// </summary>
 public class PlayerGrayState : PlayerBaseState
 {
+    private readonly int Vacuum = Animator.StringToHash("Vacuum");
+    private const float CrossFadeDuration = 0.1f;
+    private readonly int ShootEnemy = Animator.StringToHash("Shoot");
+
     // Objetos en proceso de absorción
     private List<AbsorbableObject> objectsBeingAbsorbed = new List<AbsorbableObject>();
     
@@ -34,7 +38,8 @@ public class PlayerGrayState : PlayerBaseState
         
         // CAMERA IN
         stateMachine.mainCamera.Priority = 10;
-        
+        stateMachine.Animator.CrossFadeInFixedTime(Vacuum, CrossFadeDuration);
+
         isAbsorbing = true;
         
         // Inicializar sistema de partículas si existe
@@ -306,12 +311,14 @@ public class PlayerGrayState : PlayerBaseState
         if (isHoldingLarge && heldObject != null)
         {
             ShootHeldObject();
+            stateMachine.Animator.CrossFadeInFixedTime(ShootEnemy, CrossFadeDuration);
             return;
         }
         
         // Si tiene objetos absorbidos, lanzar uno
         if (absorbedObjects.Count > 0)
         {
+            stateMachine.Animator.CrossFadeInFixedTime(ShootEnemy, CrossFadeDuration);
             ShootStoredObject();
         }
     }

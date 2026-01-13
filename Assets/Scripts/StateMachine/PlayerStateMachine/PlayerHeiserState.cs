@@ -22,7 +22,16 @@ public class PlayerHeiserState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
-        if (!stateMachine.InputReader.isHeiser)
+        if(stateMachine.InputReader.isColorActing)
+        {
+            stateMachine.CanHeiser = true;   
+        }
+        else
+        {
+            stateMachine.CanHeiser = false;
+        }
+
+        if (!stateMachine.CanHeiser)
         {
             stateMachine.SwitchState(typeof(PlayerFreeLookState));
             return;
