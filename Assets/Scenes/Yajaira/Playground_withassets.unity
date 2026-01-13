@@ -458,6 +458,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 555e0ce4c99186d498142c28759d261e, type: 3}
   m_PrefabInstance: {fileID: 337075407}
   m_PrefabAsset: {fileID: 0}
+--- !u!137 &135913711 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5018711632187048674, guid: 4db720eed5ee9d740bf7b5408ba842c0, type: 3}
+  m_PrefabInstance: {fileID: 658621114}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &148905750
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1388,11 +1393,11 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.7932056, y: 1.1959456, z: 0.38}
+  m_Size: {x: 0.7932056, y: 1.1959456, z: 1.33}
   m_Center: {x: 0.000000029802326, y: -0.000000029802326, z: -0.0000000037252808}
 --- !u!1 &267742345
 GameObject:
@@ -2128,15 +2133,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f7fdd85f6461bdb43b7eaa320a53483a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.6063576
+      value: 1.58
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f7fdd85f6461bdb43b7eaa320a53483a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -6.5499973
+      value: -6.552
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f7fdd85f6461bdb43b7eaa320a53483a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.066037655
+      value: -0.506
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f7fdd85f6461bdb43b7eaa320a53483a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2173,6 +2178,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f7fdd85f6461bdb43b7eaa320a53483a, type: 3}
       propertyPath: m_Name
       value: Color Spot 2 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f7fdd85f6461bdb43b7eaa320a53483a, type: 3}
+      propertyPath: m_TagString
+      value: CharcoGris
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2894,7 +2903,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.79320574, y: 1.1959456, z: 0.3}
+  m_Size: {x: 0.79320574, y: 1.1959456, z: 3.35}
   m_Center: {x: 0.000000029802326, y: -0.000000029802326, z: -0.000000003725264}
 --- !u!1 &438068987
 GameObject:
@@ -6289,7 +6298,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.7932057, y: 1.1959456, z: 0.6}
+  m_Size: {x: 0.7932057, y: 1.1959456, z: 3.05}
   m_Center: {x: 0.000000029802333, y: -0.0000005066395, z: -0.0000000037252903}
 --- !u!1001 &964187305
 PrefabInstance:
@@ -8106,6 +8115,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f7fdd85f6461bdb43b7eaa320a53483a, type: 3}
       propertyPath: m_Name
       value: Color Spot 2 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f7fdd85f6461bdb43b7eaa320a53483a, type: 3}
+      propertyPath: m_TagString
+      value: CharcoAzul
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10181,6 +10194,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Color Spot 2
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f7fdd85f6461bdb43b7eaa320a53483a, type: 3}
+      propertyPath: m_TagString
+      value: CharcoNegro
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11369,11 +11386,11 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.7932055, y: 1.1959453, z: 0.22}
+  m_Size: {x: 0.7932055, y: 1.1959453, z: 1.95}
   m_Center: {x: 0.000000029802322, y: -0.000000029802322, z: -0.000000003725293}
 --- !u!1001 &1749358152
 PrefabInstance:
@@ -12537,6 +12554,10 @@ PrefabInstance:
       propertyPath: <Animator>k__BackingField
       value: 
       objectReference: {fileID: 335240056}
+    - target: {fileID: 8526194884507870142, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: <Mat_Player>k__BackingField
+      value: 
+      objectReference: {fileID: 135913711}
     - target: {fileID: 8526194884507870142, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: <mainCamera>k__BackingField
       value: 
@@ -14425,6 +14446,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f7fdd85f6461bdb43b7eaa320a53483a, type: 3}
       propertyPath: m_Name
       value: Color Spot 2 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f7fdd85f6461bdb43b7eaa320a53483a, type: 3}
+      propertyPath: m_TagString
+      value: CharcoVerde
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

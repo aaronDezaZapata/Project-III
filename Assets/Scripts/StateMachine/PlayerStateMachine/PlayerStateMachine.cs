@@ -24,6 +24,8 @@ public class PlayerStateMachine : StateMachine
 
     [field: SerializeField] public Health Health { get; private set; }
 
+    [field: SerializeField] public SkinnedMeshRenderer Mat_Player { get; private set; }
+
     [field: Header("Movement Variables")]
     [field: SerializeField] public float FreeLookMovementSpeed { get; private set; }
 
@@ -202,6 +204,8 @@ public class PlayerStateMachine : StateMachine
     [Tooltip("Daño causado al enemigo")]
     [field: SerializeField] public int DashAttackDamage { get; private set; } = 1;
 
+    
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -351,18 +355,35 @@ public class PlayerStateMachine : StateMachine
         {
             case "CharcoAzul":
                  SwitchState(typeof(PlayerBlueState));
+                //Mat_Player.SetColor("_Color", Color.blue);
+                if(Mat_Player != null)
+                {
+                    Mat_Player.material.SetColor("_SpecularColor", Color.blue);
+                }
                 break;
 
             case "CharcoNegro":
                  SwitchState(typeof(PlayerFreeLookState));
+                if (Mat_Player != null)
+                {
+                    Mat_Player.material.SetColor("_SpecularColor", Color.black);
+                }
                 break;
 
             case "CharcoGris":
                  SwitchState(typeof(PlayerGrayState));
+                if (Mat_Player != null)
+                {
+                    Mat_Player.material.SetColor("_SpecularColor", Color.grey);
+                }
                 break;
 
             case "CharcoVerde":
                 SwitchState(typeof(PlayerGreenState));
+                if (Mat_Player != null)
+                {
+                    Mat_Player.material.SetColor("_SpecularColor", Color.green);
+                }
                 break;
 
             default:

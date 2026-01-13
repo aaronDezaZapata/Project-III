@@ -104,7 +104,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         Debug.Log("isAiming");
     }
 
-    public void OnColorAction(InputAction.CallbackContext context)
+    
     public void OnDColorChange(InputAction.CallbackContext context)
     {
         if (context.performed)
@@ -113,6 +113,8 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         else if (context.canceled)
         { isDColorChange = false; }
     }
+
+    public void OnColorAction(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
