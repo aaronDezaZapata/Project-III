@@ -369,7 +369,8 @@ public class PlayerStateMachine : StateMachine
                  SwitchState(typeof(PlayerFreeLookState));
                 if (Mat_Player != null)
                 {
-                    Mat_Player.material.SetColor("_SpecularColor", Color.black);
+                    Color blackColor = new Color(1 - 38f, 1 - 38f, 1 - 38f);
+                    Mat_Player.material.SetColor("_SpecularColor", blackColor);
                 }
                 break;
 

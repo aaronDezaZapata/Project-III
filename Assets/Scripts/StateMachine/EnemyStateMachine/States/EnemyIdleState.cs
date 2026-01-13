@@ -21,7 +21,7 @@ public class EnemyIdleState : EnemyBaseState
             stateMachine.SwitchState(typeof(EnemyChaseState));
         }*/
         
-        stateMachine.ForceReceiver.ForceMovement();
+        //stateMachine.ForceReceiver.ForceMovement();
     }
 
 
