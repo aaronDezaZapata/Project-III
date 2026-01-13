@@ -7,6 +7,8 @@ public class EnemyStateMachine : StateMachine
 {
     [field: SerializeField] public CharacterController Controller { get; private set; }
     [field: SerializeField] public float MovementSpeed { get; private set; } = 3f;
+    [field: SerializeField] public float AccelerationTime { get; private set; } = 3f;
+    [field: SerializeField] public float DecelerationTime { get; private set; } = 3f;
     [field: SerializeField] public float MovementAttackSpeed { get; private set; } = 20f;
     [field: SerializeField] public float RotationSpeed { get; private set; } = 3f;
     [field: SerializeField] public float AttackRange { get; private set; } = 2f;
@@ -14,13 +16,17 @@ public class EnemyStateMachine : StateMachine
     [field: SerializeField] public int Health { get; private set; } = 3;
     [field: SerializeField] public bool isGettingAttacked = false;
     [field: SerializeField] public NavMeshAgent agent { get; private set; }
+    [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
 
 
     //NonSerialized
     [NonSerialized] public float _sprayResetTimer = 0f;
     [NonSerialized] public float _sprayCooldown = 0.2f;
-    [NonSerialized] public bool isBeingThrown = false;
-    [NonSerialized] public float thrownVelocityMagnitude = 0f;
+    [NonSerialized] public bool isBeingThrown = false; // Trackea si el enemigo fue lanzado por el jugador
+    [NonSerialized] public float thrownVelocityMagnitude = 0f; // Magnitud de la velocidad al ser lanzado
+    
+    private Vector3 _currentMovementVelocity;
+    private Vector3 _movementVelocitySmoothRef;
 
     void Awake()
     {
@@ -36,7 +42,6 @@ public class EnemyStateMachine : StateMachine
 
     private void Start()
     {
-       
         SwitchState(typeof(EnemyIdleState));
     }
 
@@ -111,30 +116,34 @@ public class EnemyStateMachine : StateMachine
             }
         }
 
+        // Colisión con obstáculo
         if (collision.gameObject.CompareTag("Obstacle"))
         {
-            if (Controller.velocity.magnitude > 5f)
+            float velocity = GetCurrentVelocityMagnitude();
+            
+            if (velocity > 5f)
             {
-                //Death
+                Debug.Log($"Enemigo golpeó obstáculo a {velocity:F2} m/s - Muerte");
                 GoToDeath();
                 return;
             }
         }
 
+        // Colisión con objeto
         if (collision.gameObject.CompareTag("Object"))
         {
-            if (collision.transform.TryGetComponent<Rigidbody>(out var cc))
+            if (collision.transform.TryGetComponent<Rigidbody>(out var rb))
             {
-                if (cc.linearVelocity.magnitude > 5)
+                if (rb.linearVelocity.magnitude > 5)
                 {
-                    //Death
+                    Debug.Log($"Objeto golpeó enemigo a {rb.linearVelocity.magnitude:F2} m/s - Muerte");
                     GoToDeath();
                     return;
                 }
             }
         }
     }
-    
+
     /// <summary>
     /// Obtiene la velocidad actual del enemigo, considerando CharacterController o Rigidbody
     /// </summary>
@@ -161,7 +170,7 @@ public class EnemyStateMachine : StateMachine
 
         return 0f;
     }
-    
+
     /// <summary>
     /// Marca al enemigo como lanzado con una velocidad específica
     /// </summary>

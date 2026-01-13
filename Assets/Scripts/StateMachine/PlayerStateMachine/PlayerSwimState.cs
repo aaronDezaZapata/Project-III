@@ -52,7 +52,7 @@ public class PlayerSwimState : PlayerBaseState
             
             if (timeWithoutInk > 0.15f)
             {
-                stateMachine.SwitchState(typeof(PlayerFreeLookState));
+                OnDiveExit();
                 return;
             }
         }
@@ -157,6 +157,20 @@ public class PlayerSwimState : PlayerBaseState
 
     private void OnDiveExit()
     {
-        stateMachine.SwitchState(typeof(PlayerFreeLookState));
+        switch (stateMachine.playerState)
+        {
+            case PlayerStates.BLACK:
+                stateMachine.SwitchState(typeof(PlayerFreeLookState));
+                break;
+            case PlayerStates.GREEN:
+                stateMachine.SwitchState(typeof(PlayerGreenState));
+                break;
+            case PlayerStates.GREY:
+                stateMachine.SwitchState(typeof(PlayerGrayState));
+                break;
+            case PlayerStates.BLUE:
+                stateMachine.SwitchState(typeof(PlayerBlueState));
+                break;
+        }
     }
 }
