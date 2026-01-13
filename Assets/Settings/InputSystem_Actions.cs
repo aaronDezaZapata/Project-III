@@ -150,7 +150,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""name"": ""Previous"",
                     ""type"": ""Button"",
                     ""id"": ""2776c80d-3c14-4091-8c56-d04ced07a2b0"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -186,6 +186,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""name"": ""ColorAction"",
                     ""type"": ""Button"",
                     ""id"": ""5018216c-267d-4104-b4d4-257c5394cfd4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DColorChange"",
+                    ""type"": ""Button"",
+                    ""id"": ""cb5df801-d6ab-4d40-8f0f-9f7e5f4d8b78"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -603,7 +612,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""dc44780a-125c-4b57-9110-262845968e0d"",
-                    ""path"": ""<Keyboard>/v"",
+                    ""path"": ""<Keyboard>/shift"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
@@ -619,6 +628,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
                     ""action"": ""ColorAction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0771eb0e-3533-4ea0-aaec-7b06e260960a"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DColorChange"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1376,6 +1396,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/ColorAction".
         /// </summary>
         public InputAction @ColorAction => m_Wrapper.m_Player_ColorAction;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/DColorChange".
+        /// </summary>
+        public InputAction @DColorChange => m_Wrapper.m_Player_DColorChange;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>

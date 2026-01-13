@@ -39,7 +39,7 @@ public class PlayerFreeLookState : PlayerBaseState
         
         stateMachine.InputReader.JumpEvent += OnJump;
 
-        //stateMachine.InputReader.DashEvent += OnDash;
+        // stateMachine.InputReader.ColorActionEvent += OnHeiserEnter;
 
         stateMachine.InputReader.DiveEvent += OnDiveEnter;
 
@@ -193,6 +193,7 @@ public class PlayerFreeLookState : PlayerBaseState
     }
 
     #endregion
+    
     private void FaceMovementDirection(Vector3 movement, float deltaTime)
     {
         stateMachine.transform.rotation = Quaternion.Lerp(
