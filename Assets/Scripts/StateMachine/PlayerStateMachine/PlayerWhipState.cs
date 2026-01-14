@@ -213,31 +213,58 @@ public class PlayerWhipState : PlayerBaseState
             Vector3 dirToEnemy = enemyCollider.transform.position - stateMachine.transform.position;
             float distance = dirToEnemy.magnitude;
             
-            // Verificar línea de visión
-            int layerMask = ~stateMachine.EnemyLayer;
-            if (!Physics.Raycast(
+            // NUEVA LÓGICA: Verificar línea de visión SIN ignorar la capa Enemy
+            // Hacer raycast y verificar si golpeamos algo
+            if (Physics.Raycast(
                 stateMachine.transform.position + Vector3.up,
                 dirToEnemy.normalized,
-                distance,
-                layerMask))
+                out RaycastHit hit,
+                distance))
             {
-                if (distance < closestDistance)
+                // Buscar EnemyStateMachine en lo que golpeamos (puede estar en padre/hijo)
+                EnemyStateMachine hitEnemy = hit.collider.GetComponent<EnemyStateMachine>();
+                if (hitEnemy == null) hitEnemy = hit.collider.GetComponentInParent<EnemyStateMachine>();
+                if (hitEnemy == null) hitEnemy = hit.collider.GetComponentInChildren<EnemyStateMachine>();
+                
+                // Buscar EnemyStateMachine en el enemigo objetivo (puede estar en padre/hijo)
+                EnemyStateMachine targetEnemy = enemyCollider.GetComponent<EnemyStateMachine>();
+                if (targetEnemy == null) targetEnemy = enemyCollider.GetComponentInParent<EnemyStateMachine>();
+                if (targetEnemy == null) targetEnemy = enemyCollider.GetComponentInChildren<EnemyStateMachine>();
+                
+                // Si golpeamos algo que NO es el enemigo objetivo, línea bloqueada
+                if (hitEnemy != targetEnemy)
                 {
-                    closestDistance = distance;
-                    closestEnemy = enemyCollider.transform;
+                    continue; // Hay un obstáculo en medio
                 }
+                // Si llegamos aquí, golpeamos el enemigo objetivo directamente
+            }
+            
+            // Línea de visión clara (no golpeó nada o golpeó el enemigo objetivo)
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestEnemy = enemyCollider.transform;
             }
         }
         
         if (closestEnemy == null) return false;
         
-        // Capturar el enemigo
+        // Capturar el enemigo - Buscar EnemyStateMachine en padre/hijo
         capturedEnemy = closestEnemy;
         capturedEnemyStateMachine = closestEnemy.GetComponent<EnemyStateMachine>();
         
         if (capturedEnemyStateMachine == null)
         {
-            Debug.LogError("Enemy doesn't have EnemyStateMachine!");
+            capturedEnemyStateMachine = closestEnemy.GetComponentInParent<EnemyStateMachine>();
+        }
+        if (capturedEnemyStateMachine == null)
+        {
+            capturedEnemyStateMachine = closestEnemy.GetComponentInChildren<EnemyStateMachine>();
+        }
+        
+        if (capturedEnemyStateMachine == null)
+        {
+            Debug.LogError($"Enemy '{closestEnemy.name}' doesn't have EnemyStateMachine in object, parent or children!");
             return false;
         }
         
@@ -251,28 +278,43 @@ public class PlayerWhipState : PlayerBaseState
 
     private void DisableEnemyPhysics()
     {
+        // Buscar CharacterController en el enemigo, padres o hijos
         enemyController = capturedEnemy.GetComponent<CharacterController>();
+        if (enemyController == null) enemyController = capturedEnemy.GetComponentInParent<CharacterController>();
+        if (enemyController == null) enemyController = capturedEnemy.GetComponentInChildren<CharacterController>();
+        
         if (enemyController != null)
         {
             originalControllerEnabled = enemyController.enabled;
             enemyController.enabled = false;
         }
         
+        // Buscar ForceReceiver en el enemigo, padres o hijos
         enemyForceReceiver = capturedEnemy.GetComponent<ForceReceiver>();
+        if (enemyForceReceiver == null) enemyForceReceiver = capturedEnemy.GetComponentInParent<ForceReceiver>();
+        if (enemyForceReceiver == null) enemyForceReceiver = capturedEnemy.GetComponentInChildren<ForceReceiver>();
+        
         if (enemyForceReceiver != null)
         {
             originalForceReceiverEnabled = enemyForceReceiver.enabled;
             enemyForceReceiver.enabled = false;
         }
         
+        // Buscar NavMeshAgent en el enemigo, padres o hijos
         enemyAgent = capturedEnemy.GetComponent<NavMeshAgent>();
+        if (enemyAgent == null) enemyAgent = capturedEnemy.GetComponentInParent<NavMeshAgent>();
+        if (enemyAgent == null) enemyAgent = capturedEnemy.GetComponentInChildren<NavMeshAgent>();
+        
         if (enemyAgent != null)
         {
             originalAgentEnabled = enemyAgent.enabled;
             enemyAgent.enabled = false;
         }
         
+        // Buscar Collider en el enemigo, padres o hijos
         enemyCollider = capturedEnemy.GetComponent<Collider>();
+        if (enemyCollider == null) enemyCollider = capturedEnemy.GetComponentInParent<Collider>();
+        if (enemyCollider == null) enemyCollider = capturedEnemy.GetComponentInChildren<Collider>();
         
         Debug.Log("Enemy physics disabled");
     }

@@ -11,7 +11,7 @@ public class EnemyDeathState : EnemyBaseState
     private int _inflationAmountID;
     private Material _enemyMat;
 
-    // Configuración fija
+    // Configuraciï¿½n fija
     private float maxFatness = 1.0f;
 
     public void ConfigureDeath(float speed, float maxFatnessValue = 1.0f)
@@ -26,7 +26,7 @@ public class EnemyDeathState : EnemyBaseState
 
     public override void Enter()
     {
-        if (stateMachine.agent != null)
+        if (stateMachine.agent != null && stateMachine.agent.isActiveAndEnabled)
         {
             stateMachine.agent.isStopped = true;
             stateMachine.agent.velocity = Vector3.zero; // Frenado total
@@ -37,18 +37,18 @@ public class EnemyDeathState : EnemyBaseState
         {
             Renderer r = stateMachine.GetComponentInChildren<Renderer>();
             if (r != null) _enemyMat = r.material;
-            else Debug.LogError("EnemyDeathState: No se encontró Renderer.");
+            else Debug.LogError("EnemyDeathState: No se encontrï¿½ Renderer.");
         }
 
         // 3. Cachear IDs
         _deathProgressID = Shader.PropertyToID("_DeathProgress");
         _inflationAmountID = Shader.PropertyToID("_InflationAmount");
 
-        // 4. Asegurarnos que empezamos desde 0 (o desde donde se quedó si ya estaba medio inflado)
-        // Si quieres que siempre empiece de 0, descomenta la siguiente línea:
+        // 4. Asegurarnos que empezamos desde 0 (o desde donde se quedï¿½ si ya estaba medio inflado)
+        // Si quieres que siempre empiece de 0, descomenta la siguiente lï¿½nea:
         // _currentProgress = 0f; 
 
-        // Si prefieres que continúe desde la inflamación actual (más fluido):
+        // Si prefieres que continï¿½e desde la inflamaciï¿½n actual (mï¿½s fluido):
         if (_enemyMat != null)
         {
             _currentProgress = _enemyMat.GetFloat(_deathProgressID);
@@ -65,7 +65,7 @@ public class EnemyDeathState : EnemyBaseState
 
         UpdateShaderValues();
 
-        // Check de Explosión
+        // Check de Explosiï¿½n
         if (_currentProgress >= 1.0f)
         {
             Explode();
@@ -88,12 +88,10 @@ public class EnemyDeathState : EnemyBaseState
 
     void Explode()
     {
-        Debug.Log("¡BOOM! Enemigo eliminado.");
-
-        // Instancia aquí tus partículas de explosión si tienes
+        // Instancia aquï¿½ tus partï¿½culas de explosiï¿½n si tienes
         // Object.Instantiate(explosionPrefab, stateMachine.transform.position, Quaternion.identity);
 
-        // Destruimos el objeto raíz del enemigo
+        // Destruimos el objeto raï¿½z del enemigo
         Object.Destroy(stateMachine.transform.parent.gameObject);
     }
 }
