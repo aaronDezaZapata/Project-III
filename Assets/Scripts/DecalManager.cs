@@ -21,12 +21,6 @@ public class DecalManager : MonoBehaviour
             case PlayerStates.GREEN:
                 GetComponent<Renderer>().material.SetColor("_Color", Color.green);
                 break;
-
-            default:
-                break;
         }
     }
-
-
-
 }
