@@ -117,24 +117,22 @@ public class EnemyStateMachine : StateMachine
             float otherVelocity = otherEnemy.GetCurrentVelocityMagnitude();
 
             // Si alguno de los dos fue lanzado y va rápido, ambos mueren
-            if ((thisEnemyThrown && thisVelocity > 5f) || (otherEnemyThrown && otherVelocity > 5f))
+            if (thisEnemyThrown || otherEnemyThrown)
             {
-                Debug.Log($"[OnControllerColliderHit] Colisión mortal entre enemigos - Este: {thisVelocity:F2} m/s (lanzado: {thisEnemyThrown}), Otro: {otherVelocity:F2} m/s (lanzado: {otherEnemyThrown})");
                 otherEnemy.GoToDeath();
                 GoToDeath();
                 return;
             }
             
-            // Lógica original: si alguno va muy rápido (sin importar si fue lanzado), ambos mueren
+            /*// Lógica original: si alguno va muy rápido (sin importar si fue lanzado), ambos mueren
             if (thisVelocity > 5f || otherVelocity > 5f)
             {
-                Debug.Log($"[OnControllerColliderHit] Colisión a alta velocidad entre enemigos - Este: {thisVelocity:F2} m/s, Otro: {otherVelocity:F2} m/s");
                 otherEnemy.GoToDeath();
                 GoToDeath();
                 return;
-            }
+            }*/
             
-            Debug.Log($"[OnControllerColliderHit] Colisión entre enemigos sin suficiente velocidad - Este: {thisVelocity:F2} m/s, Otro: {otherVelocity:F2} m/s");
+            // Debug.Log($"[OnControllerColliderHit] Colisión entre enemigos sin suficiente velocidad - Este: {thisVelocity:F2} m/s, Otro: {otherVelocity:F2} m/s");
         }
 
         // Colisión con obstáculo
@@ -188,18 +186,9 @@ public class EnemyStateMachine : StateMachine
             float otherVelocity = otherEnemy.GetCurrentVelocityMagnitude();
 
             // Si alguno de los dos fue lanzado y va rápido, ambos mueren
-            if ((thisEnemyThrown && thisVelocity > 5f) || (otherEnemyThrown && otherVelocity > 5f))
+            if (thisEnemyThrown || otherEnemyThrown)
             {
                 Debug.Log($"[OnCollisionEnter] Colisión mortal entre enemigos - Este: {thisVelocity:F2} m/s (lanzado: {thisEnemyThrown}), Otro: {otherVelocity:F2} m/s (lanzado: {otherEnemyThrown})");
-                otherEnemy.GoToDeath();
-                GoToDeath();
-                return;
-            }
-            
-            // Lógica original: si alguno va muy rápido (sin importar si fue lanzado), ambos mueren
-            if (thisVelocity > 5f || otherVelocity > 5f)
-            {
-                Debug.Log($"[OnCollisionEnter] Colisión a alta velocidad entre enemigos - Este: {thisVelocity:F2} m/s, Otro: {otherVelocity:F2} m/s");
                 otherEnemy.GoToDeath();
                 GoToDeath();
                 return;

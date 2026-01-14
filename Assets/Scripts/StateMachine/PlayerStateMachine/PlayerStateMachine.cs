@@ -225,7 +225,7 @@ public class PlayerStateMachine : StateMachine
         AddState(new PlayerDashAttackState(this));
         
         // MUST BE PLAYERFREELOOK. CHANGES ONLY FOR TESTING
-        SwitchState(typeof(PlayerFreeLookState));
+        SwitchState(typeof(PlayerGreenState));
     }
 
     public void StartCameraShake(float duration)
