@@ -102,7 +102,6 @@ public class PlayerShootingState : PlayerBaseState
         if (stateMachine.ProjectilePrefab == null || stateMachine.FirePoint == null) return;
 
         Vector3 target = _currentHitPoint;
-
         
         if (TryGetBallisticVelocity(stateMachine.FirePoint.position, target, stateMachine.ProjectileFlightTime, out Vector3 velocity))
         {
