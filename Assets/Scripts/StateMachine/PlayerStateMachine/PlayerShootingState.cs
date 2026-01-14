@@ -99,6 +99,38 @@ public class PlayerShootingState : PlayerBaseState
 
     private void Shoot()
     {
+        // Primero verificar si hay objetos SMALL absorbidos en el StateMachine
+        if (stateMachine.HasAbsorbedSmallObjects())
+        {
+            // Obtener el primer objeto de la lista
+            AbsorbableObject obj = stateMachine.GetFirstAbsorbedObject();
+            
+            if (obj != null)
+            {
+                // Posicionar objeto frente al jugador
+                obj.transform.position = stateMachine.transform.position 
+                    + Vector3.up * 1.5f 
+                    + stateMachine.transform.forward * 2f;
+                
+                // Restaurar tamaño original
+                obj.transform.localScale = Vector3.one;
+                
+                // Dirección de disparo (hacia donde apunta la cámara)
+                Vector3 shootDirection = Camera.main.transform.forward;
+                shootDirection.Normalize();
+                
+                // Disparar el objeto
+                obj.ShootAsProjectile(shootDirection, stateMachine.GrayProjectileSpeedMultiplier);
+                
+                // Remover de la lista
+                stateMachine.RemoveFirstAbsorbedObject();
+                
+                Debug.Log("Disparado objeto SMALL absorbido");
+                return;
+            }
+        }
+        
+        // Disparo normal de tinta
         if (stateMachine.ProjectilePrefab == null || stateMachine.FirePoint == null) return;
 
         Vector3 target = _currentHitPoint;
@@ -116,7 +148,7 @@ public class PlayerShootingState : PlayerBaseState
             }
         }
     }
-
+    
     private bool TryGetBallisticVelocity(Vector3 origin, Vector3 target, float time, out Vector3 velocity)
     {
         

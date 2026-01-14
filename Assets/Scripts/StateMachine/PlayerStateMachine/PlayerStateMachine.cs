@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -28,6 +29,7 @@ public class PlayerStateMachine : StateMachine
 
     [field: Header("Movement Variables")]
     [field: SerializeField] public float FreeLookMovementSpeed { get; private set; }
+    [field: SerializeField] public float AbsorbingMovementSpeed { get; private set; }
 
     [field: SerializeField] public float RotationSpeed { get; private set; } = 3f;
 
@@ -151,6 +153,12 @@ public class PlayerStateMachine : StateMachine
     [Header("Gray Visual")]
     [Tooltip("Sistema de partículas de absorción")]
     [field: SerializeField] public ParticleSystem GrayAbsorbParticles { get; private set; }
+    
+    [Header("Gray Absorbed Objects")]
+    [Tooltip("Lista de objetos SMALL absorbidos (máximo 3)")]
+    public List<AbsorbableObject> absorbedObjects = new List<AbsorbableObject>();
+    
+    public const int MaxAbsorbedSmallObjects = 3;
 
     #endregion
     
@@ -216,16 +224,17 @@ public class PlayerStateMachine : StateMachine
 
         AddState(new PlayerFreeLookState(this));
         AddState(new PlayerSwimState(this));
+        AddState(new PlayerDashAttackState(this));
         AddState(new PlayerShootingState(this));
-        AddState(new PlayerHeiserState(this));
         AddState(new PlayerBlueState(this));
+        AddState(new PlayerHeiserState(this));
         AddState(new PlayerGreenState(this));
         AddState(new PlayerWhipState(this));
         AddState(new PlayerGrayState(this));
-        AddState(new PlayerDashAttackState(this));
+        AddState(new PlayerAbsorbState(this));
         
         // MUST BE PLAYERFREELOOK. CHANGES ONLY FOR TESTING
-        SwitchState(typeof(PlayerFreeLookState));
+        SwitchState(typeof(PlayerBlueState));
     }
 
     public void StartCameraShake(float duration)
@@ -428,4 +437,50 @@ public class PlayerStateMachine : StateMachine
 
         return forward * InputReader.MoveVector.y + right * InputReader.MoveVector.x;
     }
+    
+    #region Gray Absorbed Objects Management
+    
+    /// <summary>
+    /// Añade un objeto SMALL a la lista de absorbidos (máximo 3)
+    /// </summary>
+    public bool TryAddAbsorbedObject(AbsorbableObject obj)
+    {
+        if (obj == null) return false;
+        if (absorbedObjects.Count >= MaxAbsorbedSmallObjects) return false;
+        
+        absorbedObjects.Add(obj);
+        Debug.Log($"Objeto SMALL añadido. Total: {absorbedObjects.Count}/{MaxAbsorbedSmallObjects}");
+        return true;
+    }
+    
+    /// <summary>
+    /// Verifica si hay objetos SMALL absorbidos
+    /// </summary>
+    public bool HasAbsorbedSmallObjects()
+    {
+        return absorbedObjects.Count > 0;
+    }
+    
+    /// <summary>
+    /// Obtiene el primer objeto SMALL de la lista
+    /// </summary>
+    public AbsorbableObject GetFirstAbsorbedObject()
+    {
+        if (absorbedObjects.Count == 0) return null;
+        return absorbedObjects[0];
+    }
+    
+    /// <summary>
+    /// Remueve el primer objeto SMALL de la lista después de dispararlo
+    /// </summary>
+    public void RemoveFirstAbsorbedObject()
+    {
+        if (absorbedObjects.Count > 0)
+        {
+            absorbedObjects.RemoveAt(0);
+            Debug.Log($"Objeto SMALL disparado. Restantes: {absorbedObjects.Count}/{MaxAbsorbedSmallObjects}");
+        }
+    }
+    
+    #endregion
 }

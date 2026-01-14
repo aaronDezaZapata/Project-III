@@ -1,9 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// Marca un objeto como absorbible por la mecánica gris (aspiradora).
-/// Los objetos pueden ser pequeños (se absorben completamente) o grandes (se levantan).
-/// </summary>
 public class AbsorbableObject : MonoBehaviour
 {
     [Header("Absorbable Settings")]
@@ -40,9 +36,8 @@ public class AbsorbableObject : MonoBehaviour
     
     public enum AbsorbableSize
     {
-        Small,   // Se absorbe completamente y desaparece
-        Medium,  // Se absorbe pero es visible levitando
-        Large    // Solo se puede levantar y mover
+        Small,
+        Large
     }
     
     private void Awake()
@@ -58,9 +53,6 @@ public class AbsorbableObject : MonoBehaviour
         }
     }
     
-    /// <summary>
-    /// Llamado cuando empieza a ser absorbido
-    /// </summary>
     public void StartAbsorption()
     {
         isBeingAbsorbed = true;
@@ -76,31 +68,23 @@ public class AbsorbableObject : MonoBehaviour
             col.enabled = false;
         }
         
-        // Spawn de partículas si las hay
         if (absorbParticles != null)
         {
             Instantiate(absorbParticles, transform.position, Quaternion.identity);
         }
     }
     
-    /// <summary>
-    /// Llamado cuando se completa la absorción
-    /// </summary>
     public void CompleteAbsorption()
     {
         isBeingAbsorbed = false;
         isAbsorbed = true;
         
-        // Si es pequeño, ocultarlo
         if (size == AbsorbableSize.Small)
         {
             gameObject.SetActive(false);
         }
     }
     
-    /// <summary>
-    /// Llamado cuando se levanta (objetos grandes)
-    /// </summary>
     public void StartHolding()
     {
         isBeingHeld = true;
@@ -112,9 +96,6 @@ public class AbsorbableObject : MonoBehaviour
         }
     }
     
-    /// <summary>
-    /// Llamado cuando se suelta
-    /// </summary>
     public void Release()
     {
         isBeingAbsorbed = false;
@@ -141,39 +122,112 @@ public class AbsorbableObject : MonoBehaviour
     }
     
     /// <summary>
-    /// Convierte este objeto en un proyectil
+    /// Dispara este objeto como proyectil usando su sistema de movimiento
     /// </summary>
-    public void ConvertToProjectile(Vector3 direction, float speedMultiplier = 1f)
+    public void ShootAsProjectile(Vector3 direction, float speedMultiplier = 1f)
     {
         if (!canBeProjectile) return;
         
-        Release();
+        // Activar y restaurar el objeto
+        gameObject.SetActive(true);
+        transform.localScale = originalScale;
         
-        if (rb != null)
+        isBeingAbsorbed = false;
+        isAbsorbed = false;
+        isBeingHeld = false;
+        
+        // ===== PARA ENEMIGOS: USAR SISTEMA DE FORCERECEIVER =====
+        
+        EnemyStateMachine enemyStateMachine = GetComponent<EnemyStateMachine>();
+        if (enemyStateMachine != null)
         {
-            rb.isKinematic = false;
-            rb.useGravity = true;
-            rb.linearVelocity = direction * projectileSpeed * speedMultiplier;
+            enemyStateMachine.isBeingThrown = true;
+            // 1. Asegurar que CharacterController está activo
+            CharacterController charController = GetComponent<CharacterController>();
+            if (charController != null)
+            {
+                charController.enabled = true;
+                Debug.Log($"[ShootAsProjectile] CharacterController activado en {name}");
+            }
+            
+            // 2. Desactivar NavMeshAgent (no lo necesitamos para proyectiles)
+            UnityEngine.AI.NavMeshAgent navAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+            if (navAgent != null)
+            {
+                navAgent.enabled = false;
+                Debug.Log($"[ShootAsProjectile] NavMeshAgent desactivado en {name}");
+            }
+            
+            // 3. Activar ForceReceiver (CRÍTICO para el movimiento)
+            ForceReceiver forceReceiver = GetComponent<ForceReceiver>();
+            if (forceReceiver != null)
+            {
+                forceReceiver.enabled = true;
+                
+                // Resetear fuerzas anteriores
+                forceReceiver.Reset();
+                
+                // Aplicar impulso usando ForceReceiver
+                Vector3 force = direction * projectileSpeed * speedMultiplier;
+                forceReceiver.AddForce(force);
+                
+                Debug.Log($"[ShootAsProjectile] ForceReceiver activado - Fuerza aplicada: {force.magnitude} en dirección {direction}");
+            }
+            else
+            {
+                Debug.LogWarning($"[ShootAsProjectile] {name} no tiene ForceReceiver!");
+            }
+            
+            // 4. Marcar enemigo como lanzado para que las colisiones lo destruyan
+            float velocity = projectileSpeed * speedMultiplier;
+            enemyStateMachine.MarkAsThrown(velocity);
+            Debug.Log($"[ShootAsProjectile] Enemigo {name} marcado como lanzado con velocidad {velocity}");
+        }
+        else
+        {
+            // ===== PARA OBJETOS NORMALES: USAR RIGIDBODY =====
+            
+            if (rb != null)
+            {
+                rb.isKinematic = false;
+                rb.useGravity = true;
+                rb.constraints = RigidbodyConstraints.None;
+                
+                // Limpiar velocidad antes de aplicar la nueva
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                
+                // Aplicar velocidad en la dirección del disparo
+                rb.linearVelocity = direction * projectileSpeed * speedMultiplier;
+                
+                // Añadir rotación para efecto visual
+                rb.angularVelocity = Random.insideUnitSphere * 3f;
+                
+                Debug.Log($"[ShootAsProjectile] Rigidbody - Velocidad aplicada: {rb.linearVelocity.magnitude} en dirección {direction}");
+            }
+            else
+            {
+                Debug.LogError($"[ShootAsProjectile] {name} no tiene ni EnemyStateMachine ni Rigidbody!");
+            }
         }
         
-        // Añadir componente de proyectil
-        GrayProjectile projectile = gameObject.AddComponent<GrayProjectile>();
-        projectile.damage = projectileDamage;
-        projectile.owner = this;
+        // Activar colisión
+        if (col != null)
+        {
+            col.enabled = true;
+        }
+        
+        Debug.Log($"[ShootAsProjectile] {name} disparado - Velocidad: {projectileSpeed * speedMultiplier}, Dirección: {direction}");
     }
     
     private void OnDrawGizmosSelected()
     {
-        // Visualizar el tamaño
         Color gizmoColor = Color.green;
         
         switch (size)
         {
             case AbsorbableSize.Small:
                 gizmoColor = Color.green;
-                break;
-            case AbsorbableSize.Medium:
-                gizmoColor = Color.yellow;
                 break;
             case AbsorbableSize.Large:
                 gizmoColor = Color.red;

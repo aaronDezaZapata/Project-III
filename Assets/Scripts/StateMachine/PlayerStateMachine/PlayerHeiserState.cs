@@ -35,7 +35,7 @@ public class PlayerHeiserState : PlayerBaseState
 
         if (!stateMachine.CanHeiser)
         {
-            stateMachine.SwitchState(typeof(PlayerFreeLookState));
+            stateMachine.ReturnToMainState();
             return;
         }
 

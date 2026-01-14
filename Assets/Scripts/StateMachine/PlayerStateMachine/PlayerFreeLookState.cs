@@ -41,8 +41,6 @@ public class PlayerFreeLookState : PlayerBaseState
         
         stateMachine.InputReader.JumpEvent += OnJump;
 
-        // stateMachine.InputReader.ColorActionEvent += OnHeiserEnter;
-
         stateMachine.InputReader.DiveEvent += OnDiveEnter;
 
         // Camera Settings
@@ -63,19 +61,6 @@ public class PlayerFreeLookState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
-        /*if (stateMachine.InputReader.isGray && stateMachine.HasGrayAbility)
-        {
-            stateMachine.SwitchState(typeof(PlayerGrayState));
-            return;
-        }*/
-        
-        // TESTING
-        /*if (stateMachine.InputReader.isColorActing)
-        {
-            stateMachine.SwitchState(typeof(PlayerDashAttackState));
-            return;
-        }*/
-        
         if (stateMachine.InputReader.isColorActing && stateMachine.HasDashAttack)
         {
             if (HasNearbyPaintedEnemy())
@@ -84,27 +69,6 @@ public class PlayerFreeLookState : PlayerBaseState
                 return;
             }
         }
-
-        // Enemigos latigo
-        /*if (stateMachine.InputReader.isGreen && stateMachine.HasGreenAbility)
-        {
-            // Primero buscar enemigos (mayor prioridad)
-            if (HasNearbyEnemy())
-            {
-                // Usar mec�nica de l�tigo
-                stateMachine.SwitchState(typeof(PlayerGreenWhipState));
-                return;
-            }
-            // Si no hay enemigos, buscar GrapplePoints
-            else if (HasNearbyGrapplePoint())
-            {
-                // Usar mec�nica de balanceo
-                stateMachine.SwitchState(typeof(PlayerGreenState));
-                return;
-            }
-            // Si no hay ni enemigos ni puntos, no hacer nada
-            // (el jugador puede seguir movi�ndose con el bot�n presionado)
-        }*/
 
         // Aim
         if (stateMachine.InputReader.isAiming)

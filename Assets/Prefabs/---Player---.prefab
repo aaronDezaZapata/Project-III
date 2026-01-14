@@ -163,6 +163,7 @@ MonoBehaviour:
   <Health>k__BackingField: {fileID: 5702051418911366440}
   <Mat_Player>k__BackingField: {fileID: 0}
   <FreeLookMovementSpeed>k__BackingField: 12
+  <AbsorbingMovementSpeed>k__BackingField: 0
   <RotationSpeed>k__BackingField: 3
   <DashDuration>k__BackingField: 0.22
   <DashLength>k__BackingField: 0.63
@@ -212,6 +213,7 @@ MonoBehaviour:
   <GrayHoldDistance>k__BackingField: 2
   <GrayProjectileSpeedMultiplier>k__BackingField: 1.5
   <GrayAbsorbParticles>k__BackingField: {fileID: 0}
+  absorbedObjects: []
   <FirePoint>k__BackingField: {fileID: 0}
   <Water_JetParticle>k__BackingField: {fileID: 0}
   <WaterHeiserParticle>k__BackingField: {fileID: 0}
@@ -444,7 +446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bddc0e645e548da40bbcd861d027e531, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerState: 2
+  playerState: 1
   <InputReader>k__BackingField: {fileID: 7967625473166846616}
   <Controller>k__BackingField: {fileID: 6987920545998890324}
   <ForceReceiver>k__BackingField: {fileID: 5816333734058023856}
@@ -454,6 +456,7 @@ MonoBehaviour:
   <Health>k__BackingField: {fileID: 2416829624496613863}
   <Mat_Player>k__BackingField: {fileID: 1625049297234966129}
   <FreeLookMovementSpeed>k__BackingField: 12
+  <AbsorbingMovementSpeed>k__BackingField: 7
   <RotationSpeed>k__BackingField: 3
   <DashDuration>k__BackingField: 0.22
   <DashLength>k__BackingField: 0.63
@@ -503,6 +506,7 @@ MonoBehaviour:
   <GrayHoldDistance>k__BackingField: 2
   <GrayProjectileSpeedMultiplier>k__BackingField: 1.5
   <GrayAbsorbParticles>k__BackingField: {fileID: 0}
+  absorbedObjects: []
   <FirePoint>k__BackingField: {fileID: 5445480121851282294}
   <Water_JetParticle>k__BackingField: {fileID: 0}
   <WaterHeiserParticle>k__BackingField: {fileID: 2538796581859691256}
@@ -1136,7 +1140,7 @@ Transform:
   m_GameObject: {fileID: 5242705275377987743}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.46, y: 0, z: 0.71}
+  m_LocalPosition: {x: 0.46, y: 0, z: 1.06}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
