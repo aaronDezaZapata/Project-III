@@ -25,6 +25,11 @@ public class PlayerGrayState : PlayerBaseState
         // CAMERA IN
         stateMachine.mainCamera.Priority = 10;
 
+        stateMachine.playerState = PlayerStates.GREY;
+        
+        stateMachine.Animator.SetFloat(FreeLookSpeedHash, 0);
+        stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
+
         stateMachine.InputReader.JumpEvent += OnJump;
         stateMachine.InputReader.DiveEvent += OnDiveEnter;
         
