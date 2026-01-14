@@ -21,6 +21,10 @@ public class PlayerBlueState : PlayerBaseState
     public override void Enter()
     {
         stateMachine.playerState = PlayerStates.BLUE;
+
+        stateMachine.Animator.SetFloat(FreeLookSpeedHash, 0);
+
+        stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
     }
 
     public override void Tick(float deltaTime)
