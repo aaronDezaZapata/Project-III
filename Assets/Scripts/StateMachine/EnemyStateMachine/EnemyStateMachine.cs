@@ -15,6 +15,7 @@ public class EnemyStateMachine : StateMachine
     [field: SerializeField] public int Health { get; private set; } = 3;
     [field: SerializeField] public bool isGettingAttacked = false;
     [field: SerializeField] public NavMeshAgent agent { get; private set; }
+    
     [field: SerializeField] public ForceReceiver ForceReceiver;
 
 
@@ -85,54 +86,61 @@ public class EnemyStateMachine : StateMachine
     /// </summary>
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        // Colisión con otro enemigo (CharacterController)
-        if (hit.gameObject.CompareTag("Enemy"))
+        if (isBeingThrown)
         {
-            // Buscar EnemyStateMachine en el objeto golpeado, en sus hijos o en su padre
-            EnemyStateMachine otherEnemy = hit.gameObject.GetComponent<EnemyStateMachine>();
-            
-            // Si no está en el objeto golpeado, buscar en el padre
-            if (otherEnemy == null)
+            // Colisión con otro enemigo (CharacterController)
+            if (hit.gameObject.CompareTag("Enemy"))
             {
-                otherEnemy = hit.gameObject.GetComponentInParent<EnemyStateMachine>();
-            }
+                // Buscar EnemyStateMachine en el objeto golpeado, en sus hijos o en su padre
+                EnemyStateMachine otherEnemy = hit.gameObject.GetComponent<EnemyStateMachine>();
             
-            // Si aún no lo encuentra, buscar en los hijos
-            if (otherEnemy == null)
-            {
-                otherEnemy = hit.gameObject.GetComponentInChildren<EnemyStateMachine>();
-            }
+                // Si no está en el objeto golpeado, buscar en el padre
+                if (otherEnemy == null)
+                {
+                    otherEnemy = hit.gameObject.GetComponentInParent<EnemyStateMachine>();
+                }
             
-            if (otherEnemy == null)
-            {
-                Debug.LogWarning($"[OnControllerColliderHit] Objeto con tag 'Enemy' pero sin EnemyStateMachine: {hit.gameObject.name}");
-                return;
-            }
+                // Si aún no lo encuentra, buscar en los hijos
+                if (otherEnemy == null)
+                {
+                    otherEnemy = hit.gameObject.GetComponentInChildren<EnemyStateMachine>();
+                }
+            
+                if (otherEnemy == null)
+                {
+                    Debug.LogWarning($"[OnControllerColliderHit] Objeto con tag 'Enemy' pero sin EnemyStateMachine: {hit.gameObject.name}");
+                    return;
+                }
 
-            bool thisEnemyThrown = isBeingThrown;
-            bool otherEnemyThrown = otherEnemy.isBeingThrown;
+                bool thisEnemyThrown = isBeingThrown;
+                bool otherEnemyThrown = otherEnemy.isBeingThrown;
 
-            // Velocidades
-            float thisVelocity = GetCurrentVelocityMagnitude();
-            float otherVelocity = otherEnemy.GetCurrentVelocityMagnitude();
+                // Velocidades
+                float thisVelocity = GetCurrentVelocityMagnitude();
+                float otherVelocity = otherEnemy.GetCurrentVelocityMagnitude();
 
-            // Si alguno de los dos fue lanzado y va rápido, ambos mueren
-            if (thisEnemyThrown || otherEnemyThrown)
-            {
-                otherEnemy.GoToDeath();
-                GoToDeath();
-                return;
+                // Si alguno de los dos fue lanzado y va rápido, ambos mueren
+                if (thisEnemyThrown || otherEnemyThrown)
+                {
+                    otherEnemy.GoToDeath();
+                    GoToDeath();
+                    return;
+                }
+            
+                /*// Lógica original: si alguno va muy rápido (sin importar si fue lanzado), ambos mueren
+                if (thisVelocity > 5f || otherVelocity > 5f)
+                {
+                    otherEnemy.GoToDeath();
+                    GoToDeath();
+                    return;
+                }*/
+            
+                // Debug.Log($"[OnControllerColliderHit] Colisión entre enemigos sin suficiente velocidad - Este: {thisVelocity:F2} m/s, Otro: {otherVelocity:F2} m/s");
             }
             
-            /*// Lógica original: si alguno va muy rápido (sin importar si fue lanzado), ambos mueren
-            if (thisVelocity > 5f || otherVelocity > 5f)
-            {
-                otherEnemy.GoToDeath();
-                GoToDeath();
-                return;
-            }*/
-            
-            // Debug.Log($"[OnControllerColliderHit] Colisión entre enemigos sin suficiente velocidad - Este: {thisVelocity:F2} m/s, Otro: {otherVelocity:F2} m/s");
+            Debug.Log("Enemy Death hitting nothing!");
+            GoToDeath();
+            return;
         }
 
         // Colisión con obstáculo
@@ -144,7 +152,6 @@ public class EnemyStateMachine : StateMachine
             {
                 Debug.Log($"[OnControllerColliderHit] Enemigo golpeó obstáculo a {velocity:F2} m/s - Muerte");
                 GoToDeath();
-                return;
             }
         }
     }
@@ -221,6 +228,9 @@ public class EnemyStateMachine : StateMachine
                 }
             }
         }
+        
+        Debug.Log("Enemy Death hitting nothing!");
+        GoToDeath();
     }
 
     /// <summary>

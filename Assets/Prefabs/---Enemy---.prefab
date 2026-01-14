@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9130606234242227683}
-  m_Layer: 3
+  m_Layer: 10
   m_Name: ---Enemy---
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -50,7 +50,8 @@ GameObject:
   - component: {fileID: 2438002274498897024}
   - component: {fileID: 2819725325827491116}
   - component: {fileID: 5401775024986533027}
-  m_Layer: 3
+  - component: {fileID: 5155010759151319374}
+  m_Layer: 10
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -146,7 +147,7 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.9
-  m_Height: 1
+  m_Height: 1.8441212
   m_Direction: 1
   m_Center: {x: 0, y: -0.6, z: 0}
 --- !u!143 &3405247511187075693
@@ -192,7 +193,7 @@ MonoBehaviour:
   <RotationSpeed>k__BackingField: 3
   <AttackRange>k__BackingField: 4
   <DetectionRange>k__BackingField: 14.7
-  <Mat>k__BackingField: {fileID: 0}
+  <Mat>k__BackingField: {fileID: 6886224286690400424}
   <Health>k__BackingField: 3
   isGettingAttacked: 0
   <agent>k__BackingField: {fileID: 2819725325827491116}
@@ -263,6 +264,27 @@ MonoBehaviour:
   paintDuration: 5
   paintMaterial: {fileID: 2100000, guid: cc79c3d5bc0acc74ead8e15c64d00862, type: 2}
   isPainted: 0
+--- !u!114 &5155010759151319374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7655087076861052254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fd696843ed250a4e8c0f3e7338cb648, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  size: 0
+  weight: 0.2
+  canBeProjectile: 1
+  projectileDamage: 10
+  projectileSpeed: 20
+  absorbParticles: {fileID: 0}
+  isBeingAbsorbed: 0
+  isAbsorbed: 0
+  isBeingHeld: 0
 --- !u!1001 &6373851136874513168
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -324,6 +346,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 09fbf6d0352167a41a00727e9855dd41, type: 3}
+--- !u!137 &6886224286690400424 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -8654582200236680264, guid: 09fbf6d0352167a41a00727e9855dd41, type: 3}
+  m_PrefabInstance: {fileID: 6373851136874513168}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6917193314711987451 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 09fbf6d0352167a41a00727e9855dd41, type: 3}

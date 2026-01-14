@@ -13,13 +13,9 @@ public class PlayerAbsorbState : PlayerBaseState
     // Objeto grande que está siendo levantado
     private AbsorbableObject heldObject;
     
-    // Inventario de objetos absorbidos (pequeños/medianos)
-    private List<AbsorbableObject> absorbedObjects = new List<AbsorbableObject>();
-    
     // Control de estado
     private bool isAbsorbing;
     private bool isHoldingLarge;
-    private int maxStoredObjects = 5;
     
     // Visual
     private ParticleSystem absorbParticles;
@@ -30,30 +26,39 @@ public class PlayerAbsorbState : PlayerBaseState
 
     public override void Enter()
     {
-        Debug.Log("Entered PlayerGrayState - Vacuum Mode");
+        Debug.Log("Entered PlayerAbsorbState - Active Vacuum Mode");
         
-        // CAMERA IN
         stateMachine.mainCamera.Priority = 10;
         stateMachine.Animator.CrossFadeInFixedTime(Vacuum, CrossFadeDuration);
 
         isAbsorbing = true;
         
-        // Inicializar sistema de partículas si existe
         if (stateMachine.GrayAbsorbParticles != null)
         {
             absorbParticles = stateMachine.GrayAbsorbParticles;
             absorbParticles.Play();
         }
-        
-        stateMachine.InputReader.JumpEvent += OnShoot;
     }
 
     public override void Tick(float deltaTime)
     {
-        // Si suelta el botón gris, salir del estado
-        if (!stateMachine.InputReader.isGray)
+        // Si suelta el botón de absorción, salir del estado
+        if (!stateMachine.InputReader.isColorActing)
         {
-            stateMachine.SwitchState(typeof(PlayerFreeLookState));
+            // Si tenía un objeto LARGE, dispararlo antes de salir
+            if (isHoldingLarge && heldObject != null)
+            {
+                ShootHeldObjectOnRelease();
+            }
+            
+            stateMachine.SwitchState(typeof(PlayerGrayState));
+            return;
+        }
+        
+        // Si presiona Aim, ir al estado de disparo
+        if (stateMachine.InputReader.isAiming)
+        {
+            stateMachine.SwitchState(typeof(PlayerShootingState));
             return;
         }
         
@@ -68,24 +73,19 @@ public class PlayerAbsorbState : PlayerBaseState
             UpdateHeldObject(deltaTime);
         }
         
-        // Permitir movimiento mientras absorbe
         MovePlayer(deltaTime);
         RotatePlayer(deltaTime);
     }
 
     public override void Exit()
     {
-        Debug.Log("Exiting PlayerGrayState");
+        Debug.Log("Exiting PlayerAbsorbState");
         
-        stateMachine.InputReader.JumpEvent -= OnShoot;
-        
-        // Detener partículas
         if (absorbParticles != null)
         {
             absorbParticles.Stop();
         }
         
-        // Limpiar objetos en proceso
         foreach (var obj in objectsBeingAbsorbed)
         {
             if (obj != null)
@@ -95,7 +95,6 @@ public class PlayerAbsorbState : PlayerBaseState
         }
         objectsBeingAbsorbed.Clear();
         
-        // Soltar objeto grande si lo tiene
         if (heldObject != null)
         {
             heldObject.Release();
@@ -113,7 +112,7 @@ public class PlayerAbsorbState : PlayerBaseState
         Vector3 origin = stateMachine.transform.position + Vector3.up;
         Vector3 direction = stateMachine.transform.forward;
         
-        // Buscar objetos absorbibles en un cono frontal
+        // Buscar objetos absorbibles
         Collider[] hits = Physics.OverlapSphere(
             origin + direction * stateMachine.GrayAbsorbRange * 0.5f,
             stateMachine.GrayAbsorbRange,
@@ -122,21 +121,34 @@ public class PlayerAbsorbState : PlayerBaseState
         
         foreach (Collider hit in hits)
         {
-            // Verificar que esté en el cono de absorción
             Vector3 dirToObj = (hit.transform.position - origin).normalized;
             float angle = Vector3.Angle(direction, dirToObj);
             
             if (angle > stateMachine.GrayAbsorbAngle * 0.5f)
                 continue;
             
-            // Intentar absorber
             AbsorbableObject absorbable = hit.GetComponent<AbsorbableObject>();
             if (absorbable != null && !absorbable.isAbsorbed && !absorbable.isBeingAbsorbed)
             {
                 StartAbsorbing(absorbable);
             }
+        }
+        
+        // Buscar enemigos en su propia capa
+        Collider[] enemyHits = Physics.OverlapSphere(
+            origin + direction * stateMachine.GrayAbsorbRange * 0.5f,
+            stateMachine.GrayAbsorbRange,
+            stateMachine.EnemyLayer
+        );
+        
+        foreach (Collider hit in enemyHits)
+        {
+            Vector3 dirToObj = (hit.transform.position - origin).normalized;
+            float angle = Vector3.Angle(direction, dirToObj);
             
-            // También detectar enemigos
+            if (angle > stateMachine.GrayAbsorbAngle * 0.5f)
+                continue;
+            
             EnemyScript enemy = hit.GetComponent<EnemyScript>();
             if (enemy != null)
             {
@@ -147,9 +159,25 @@ public class PlayerAbsorbState : PlayerBaseState
     
     private void StartAbsorbing(AbsorbableObject obj)
     {
-        // Si ya está absorbiendo el máximo, no absorber más
         if (objectsBeingAbsorbed.Count >= stateMachine.GrayMaxSimultaneousAbsorb)
             return;
+        
+        // Para objetos SMALL, verificar si hay espacio en la lista del StateMachine
+        if (obj.size == AbsorbableObject.AbsorbableSize.Small)
+        {
+            if (stateMachine.absorbedObjects.Count >= PlayerStateMachine.MaxAbsorbedSmallObjects)
+            {
+                Debug.Log("Inventario de objetos SMALL lleno (3/3)");
+                return;
+            }
+        }
+        
+        // Para objetos LARGE, verificar si ya tiene uno
+        if (obj.size == AbsorbableObject.AbsorbableSize.Large && isHoldingLarge)
+        {
+            Debug.Log("Ya tienes un objeto LARGE");
+            return;
+        }
         
         obj.StartAbsorption();
         objectsBeingAbsorbed.Add(obj);
@@ -169,7 +197,6 @@ public class PlayerAbsorbState : PlayerBaseState
                 continue;
             }
             
-            // Mover objeto hacia el jugador
             Vector3 targetPos = stateMachine.transform.position + Vector3.up * 1.5f;
             
             float speed = stateMachine.GrayAbsorbSpeed / obj.weight;
@@ -179,7 +206,6 @@ public class PlayerAbsorbState : PlayerBaseState
                 speed * deltaTime
             );
             
-            // Reducir tamaño mientras se absorbe (para objetos pequeños)
             if (obj.size == AbsorbableObject.AbsorbableSize.Small)
             {
                 obj.transform.localScale = Vector3.Lerp(
@@ -189,7 +215,6 @@ public class PlayerAbsorbState : PlayerBaseState
                 );
             }
             
-            // Verificar si llegó al jugador
             float distance = Vector3.Distance(obj.transform.position, targetPos);
             
             if (distance < 0.3f)
@@ -207,33 +232,11 @@ public class PlayerAbsorbState : PlayerBaseState
         switch (obj.size)
         {
             case AbsorbableObject.AbsorbableSize.Small:
-                // Objetos pequeños se guardan en inventario
-                if (absorbedObjects.Count < maxStoredObjects)
-                {
-                    absorbedObjects.Add(obj);
-                    Debug.Log($"Objeto absorbido. Total: {absorbedObjects.Count}/{maxStoredObjects}");
-                }
-                else
-                {
-                    // Inventario lleno, destruir el más antiguo
-                    AbsorbableObject oldest = absorbedObjects[0];
-                    absorbedObjects.RemoveAt(0);
-                    Object.Destroy(oldest.gameObject);
-                    absorbedObjects.Add(obj);
-                }
-                break;
-                
-            case AbsorbableObject.AbsorbableSize.Medium:
-                // Objetos medianos se guardan pero son visibles
-                if (absorbedObjects.Count < maxStoredObjects)
-                {
-                    absorbedObjects.Add(obj);
-                    PositionStoredObject(obj, absorbedObjects.Count - 1);
-                }
+                // Añadir a la lista del StateMachine
+                stateMachine.TryAddAbsorbedObject(obj);
                 break;
                 
             case AbsorbableObject.AbsorbableSize.Large:
-                // Objetos grandes se levantan y se sostienen
                 if (heldObject != null)
                 {
                     heldObject.Release();
@@ -242,25 +245,40 @@ public class PlayerAbsorbState : PlayerBaseState
                 heldObject = obj;
                 obj.StartHolding();
                 isHoldingLarge = true;
-                Debug.Log($"Levantando objeto grande: {obj.name}");
+                Debug.Log($"Levantando objeto LARGE: {obj.name}");
                 break;
         }
     }
     
     private void AbsorbEnemy(EnemyScript enemy)
     {
-        // Aturdir y absorber al enemigo
+        // Verificar si el enemigo ya tiene AbsorbableObject y ya está siendo absorbido
+        AbsorbableObject existingAbsorbable = enemy.GetComponent<AbsorbableObject>();
+        if (existingAbsorbable != null && (existingAbsorbable.isAbsorbed || existingAbsorbable.isBeingAbsorbed))
+        {
+            return; // Ya está siendo absorbido
+        }
+        
         enemy.Stun(true);
         
-        // Crear un AbsorbableObject temporal para el enemigo
-        AbsorbableObject enemyAbsorbable = enemy.GetComponent<AbsorbableObject>();
+        AbsorbableObject enemyAbsorbable = existingAbsorbable;
         if (enemyAbsorbable == null)
         {
             enemyAbsorbable = enemy.gameObject.AddComponent<AbsorbableObject>();
-            enemyAbsorbable.size = AbsorbableObject.AbsorbableSize.Medium;
+            enemyAbsorbable.size = AbsorbableObject.AbsorbableSize.Small;
             enemyAbsorbable.weight = 2f;
             enemyAbsorbable.canBeProjectile = true;
             enemyAbsorbable.projectileDamage = 30f;
+            enemyAbsorbable.projectileSpeed = 25f;
+        }
+        
+        // Asegurar que el enemigo tenga Rigidbody para poder ser disparado
+        Rigidbody rb = enemy.GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            rb = enemy.gameObject.AddComponent<Rigidbody>();
+            rb.useGravity = true;
+            rb.isKinematic = false;
         }
         
         StartAbsorbing(enemyAbsorbable);
@@ -278,7 +296,6 @@ public class PlayerAbsorbState : PlayerBaseState
             return;
         }
         
-        // Posicionar objeto grande frente al jugador
         Vector3 targetPos = stateMachine.transform.position 
             + Vector3.up * stateMachine.GrayHoldHeight
             + stateMachine.transform.forward * stateMachine.GrayHoldDistance;
@@ -289,7 +306,6 @@ public class PlayerAbsorbState : PlayerBaseState
             deltaTime * 10f
         );
         
-        // Rotar para mirar al jugador
         heldObject.transform.rotation = Quaternion.Slerp(
             heldObject.transform.rotation,
             stateMachine.transform.rotation,
@@ -299,82 +315,23 @@ public class PlayerAbsorbState : PlayerBaseState
     
     #endregion
 
-    #region Shooting/Launching
+    #region Shooting Large Objects
     
-    private void OnShoot()
-    {
-        // Si tiene objeto grande, lanzarlo
-        if (isHoldingLarge && heldObject != null)
-        {
-            ShootHeldObject();
-            stateMachine.Animator.CrossFadeInFixedTime(ShootEnemy, CrossFadeDuration);
-            return;
-        }
-        
-        // Si tiene objetos absorbidos, lanzar uno
-        if (absorbedObjects.Count > 0)
-        {
-            stateMachine.Animator.CrossFadeInFixedTime(ShootEnemy, CrossFadeDuration);
-            ShootStoredObject();
-        }
-    }
-    
-    private void ShootHeldObject()
+    private void ShootHeldObjectOnRelease()
     {
         if (heldObject == null) return;
         
-        Vector3 shootDirection = stateMachine.transform.forward + Vector3.up * 0.2f;
+        Vector3 shootDirection = Camera.main.transform.forward;
         shootDirection.Normalize();
         
-        heldObject.ConvertToProjectile(shootDirection, stateMachine.GrayProjectileSpeedMultiplier);
+        stateMachine.Animator.CrossFadeInFixedTime(ShootEnemy, CrossFadeDuration);
         
-        Debug.Log($"Lanzado objeto grande: {heldObject.name}");
+        heldObject.ShootAsProjectile(shootDirection, stateMachine.GrayProjectileSpeedMultiplier);
+        
+        Debug.Log($"Lanzado objeto LARGE: {heldObject.name}");
         
         heldObject = null;
         isHoldingLarge = false;
-    }
-    
-    private void ShootStoredObject()
-    {
-        if (absorbedObjects.Count == 0) return;
-        
-        // Lanzar el último objeto absorbido
-        AbsorbableObject obj = absorbedObjects[absorbedObjects.Count - 1];
-        absorbedObjects.RemoveAt(absorbedObjects.Count - 1);
-        
-        if (obj == null) return;
-        
-        // Posicionar objeto frente al jugador
-        obj.transform.position = stateMachine.transform.position 
-            + Vector3.up * 1.5f 
-            + stateMachine.transform.forward * 1f;
-        
-        Vector3 shootDirection = stateMachine.transform.forward + Vector3.up * 0.2f;
-        shootDirection.Normalize();
-        
-        obj.ConvertToProjectile(shootDirection, stateMachine.GrayProjectileSpeedMultiplier);
-        
-        Debug.Log($"Lanzado proyectil: {obj.name}. Restantes: {absorbedObjects.Count}");
-    }
-    
-    #endregion
-
-    #region Visual Helpers
-    
-    private void PositionStoredObject(AbsorbableObject obj, int index)
-    {
-        // Posicionar objetos medianos orbitando al jugador
-        float angle = (360f / maxStoredObjects) * index;
-        float radius = 1.5f;
-        
-        Vector3 offset = new Vector3(
-            Mathf.Cos(angle * Mathf.Deg2Rad) * radius,
-            1f + index * 0.3f,
-            Mathf.Sin(angle * Mathf.Deg2Rad) * radius
-        );
-        
-        obj.transform.position = stateMachine.transform.position + offset;
-        obj.transform.localScale = Vector3.one * 0.5f; // Reducir tamaño
     }
     
     #endregion
@@ -389,10 +346,9 @@ public class PlayerAbsorbState : PlayerBaseState
         
         Vector3 movement = CalculateMovement();
         
-        // Moverse más lento si está sosteniendo algo grande
         float speedMultiplier = isHoldingLarge ? 0.6f : 1f;
         
-        Move(movement * stateMachine.FreeLookMovementSpeed * speedMultiplier, deltaTime);
+        Move(movement * stateMachine.AbsorbingMovementSpeed * speedMultiplier, deltaTime);
     }
     
     private void RotatePlayer(float deltaTime)
