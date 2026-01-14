@@ -35,7 +35,7 @@ public class PlayerShootingState : PlayerBaseState
     {
         if (!stateMachine.InputReader.isAiming) 
         {
-            stateMachine.SwitchState(typeof(PlayerFreeLookState));
+            stateMachine.ReturnToMainState();
             return;
         }
         

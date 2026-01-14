@@ -157,20 +157,6 @@ public class PlayerSwimState : PlayerBaseState
 
     private void OnDiveExit()
     {
-        switch (stateMachine.playerState)
-        {
-            case PlayerStates.BLACK:
-                stateMachine.SwitchState(typeof(PlayerFreeLookState));
-                break;
-            case PlayerStates.GREEN:
-                stateMachine.SwitchState(typeof(PlayerGreenState));
-                break;
-            case PlayerStates.GREY:
-                stateMachine.SwitchState(typeof(PlayerGrayState));
-                break;
-            case PlayerStates.BLUE:
-                stateMachine.SwitchState(typeof(PlayerBlueState));
-                break;
-        }
+        stateMachine.ReturnToMainState();
     }
 }

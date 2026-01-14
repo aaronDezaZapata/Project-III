@@ -63,11 +63,11 @@ public class PlayerFreeLookState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
-        if (stateMachine.InputReader.isGray && stateMachine.HasGrayAbility)
+        /*if (stateMachine.InputReader.isGray && stateMachine.HasGrayAbility)
         {
             stateMachine.SwitchState(typeof(PlayerGrayState));
             return;
-        }
+        }*/
         
         // TESTING
         /*if (stateMachine.InputReader.isColorActing)

@@ -9,6 +9,7 @@ public class PlayerGreenState : PlayerBaseState
 {
     private readonly int FreeLookSpeedHash = Animator.StringToHash("Speed");
     private readonly int FreeLookBlendTreeHash = Animator.StringToHash("FreeLookBlendTree");
+    private readonly int AnimJump = Animator.StringToHash("Jump");
     private const float CrossFadeDuration = 0.1f;
     private const float AnimatorDampTime = 0.1f;
     
@@ -141,7 +142,9 @@ public class PlayerGreenState : PlayerBaseState
     
     private void OnJump()
     {
-        stateMachine.SwitchState(typeof(PlayerSwimState));
+        if (!stateMachine.Controller.isGrounded) return;
+        stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
+        Jump();
     }
     
     private void OnDiveEnter()

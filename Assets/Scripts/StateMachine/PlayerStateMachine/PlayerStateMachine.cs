@@ -395,6 +395,25 @@ public class PlayerStateMachine : StateMachine
                 break;
         }
     }
+
+    public void ReturnToMainState()
+    {
+        switch (playerState)
+        {
+            case PlayerStates.BLACK:
+                SwitchState(typeof(PlayerFreeLookState));
+                break;
+            case PlayerStates.BLUE:
+                SwitchState(typeof(PlayerBlueState));
+                break;
+            case PlayerStates.GREEN:
+                SwitchState(typeof(PlayerGreenState));
+                break;
+            case PlayerStates.GREY:
+                SwitchState(typeof(PlayerGrayState));
+                break;
+        }
+    }
     
     public Vector3 CalculateMovement()
     {
