@@ -98,9 +98,35 @@ public class PlayerDashAttackState : PlayerBaseState
     /// </summary>
     private Transform FindNearestPaintedEnemy()
     {
+        if(GameManager.Instance.enemiesPainted.Count == 0) return null;
         List<PaintableEnemy> allPaintableEnemies = GameManager.Instance.enemiesPainted;
         
         Transform nearest = null;
+
+        float minDistanceSqr = Mathf.Infinity; 
+        Vector3 currentPos = stateMachine.transform.position;
+
+        
+        foreach (PaintableEnemy enemy in allPaintableEnemies)
+        {
+            
+            if (enemy == null) continue;
+
+            // Calculamos la distancia
+            Vector3 dirToEnemy = enemy.transform.position - currentPos;
+            float dSqrToTarget = dirToEnemy.sqrMagnitude;
+
+            
+            if (dSqrToTarget < minDistanceSqr)
+            {
+                minDistanceSqr = dSqrToTarget; // Nueva distancia minima
+                nearest = enemy.transform;     // Nuevo enemigo mas cercano
+            }
+        }
+
+        
+        return nearest;
+
         /*float nearestDistance = stateMachine.DashAttackMaxRange;
 
         foreach (PaintableEnemy paintable in allPaintableEnemies)
@@ -126,10 +152,11 @@ public class PlayerDashAttackState : PlayerBaseState
                 }
             }
         }*/
-        
+        /*
         nearest = allPaintableEnemies[0].transform;
 
         return nearest;
+        */
     }
 
     /// <summary>
