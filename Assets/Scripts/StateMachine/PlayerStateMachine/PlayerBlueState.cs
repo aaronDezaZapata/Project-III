@@ -19,7 +19,7 @@ public class PlayerBlueState : PlayerBaseState
     {
         // Heiser
         
-        if (stateMachine.InputReader.isHeiser)
+        if (stateMachine.InputReader.isColorActing)
         {
             stateMachine.SwitchState(typeof(PlayerHeiserState));
         }
