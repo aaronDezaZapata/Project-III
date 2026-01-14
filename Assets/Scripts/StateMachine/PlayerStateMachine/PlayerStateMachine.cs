@@ -234,7 +234,7 @@ public class PlayerStateMachine : StateMachine
         AddState(new PlayerAbsorbState(this));
         
         // MUST BE PLAYERFREELOOK. CHANGES ONLY FOR TESTING
-        SwitchState(typeof(PlayerBlueState));
+        SwitchState(typeof(PlayerFreeLookState));
     }
 
     public void StartCameraShake(float duration)

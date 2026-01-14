@@ -84,13 +84,4 @@ public class PlayerBlueState : PlayerBaseState
     {
         stateMachine.SwitchState(typeof(PlayerSwimState));
     }
-
-    private void FaceMovementDirection(Vector3 movement, float deltaTime)
-    {
-        stateMachine.transform.rotation = Quaternion.Lerp(
-            stateMachine.transform.rotation,
-            Quaternion.LookRotation(movement),
-            deltaTime * stateMachine.RotationSpeed);
-
-    }
 }
