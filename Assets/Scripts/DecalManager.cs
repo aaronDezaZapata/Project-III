@@ -1,32 +1,32 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class DecalManager : MonoBehaviour
 {
+    [SerializeField] private Material blackDecalMat;
+    [SerializeField] private Material blueDecalMat;
+    [SerializeField] private Material greenDecalMat;
+    [SerializeField] private Material greyDecalMat;
     private void Awake()
     {
         switch (GameManager.Instance.GetPlayer().GetComponent<PlayerStateMachine>().playerState)
         {
             case PlayerStates.BLUE:
-                GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
+                // GetComponent<MeshRenderer>().material.SetColor("_Color", Color.blue);
+                GetComponent<DecalProjector>().material = blueDecalMat;
                 break;
             
             case PlayerStates.GREY:
-                GetComponent<Renderer>().material.SetColor("_Color", Color.grey);
+                GetComponent<DecalProjector>().material = greyDecalMat;
                 break;
             
             case PlayerStates.BLACK:
-                GetComponent<Renderer>().material.SetColor("_Color", Color.black);
+                GetComponent<DecalProjector>().material = blackDecalMat;
                 break;
 
             case PlayerStates.GREEN:
-                GetComponent<Renderer>().material.SetColor("_Color", Color.green);
-                break;
-
-            default:
+                GetComponent<DecalProjector>().material = greenDecalMat;
                 break;
         }
     }
-
-
-
 }

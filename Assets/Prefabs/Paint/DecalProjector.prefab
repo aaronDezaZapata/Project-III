@@ -75,10 +75,10 @@ BoxCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
-  m_ProvidesContacts: 0
+  m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 3.3, y: 3.3, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &-6032785201516171094
 MonoBehaviour:
@@ -92,6 +92,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bd0429444afac042bda6ee33e59d551, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blackDecalMat: {fileID: 2100000, guid: 9a6bded9f849ecf47bba9aa685a87dee, type: 2}
+  blueDecalMat: {fileID: 2100000, guid: 78fb8a9962d619741abedaf83a52aa83, type: 2}
+  greenDecalMat: {fileID: 2100000, guid: d0dcaf4469a6bf74abe08aa96f4b5c56, type: 2}
+  greyDecalMat: {fileID: 2100000, guid: 0b19ad2beaf4ed440a0af7123bf5127f, type: 2}
 --- !u!23 &756373659472946990
 MeshRenderer:
   m_ObjectHideFlags: 0
