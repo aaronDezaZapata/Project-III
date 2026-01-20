@@ -220,10 +220,21 @@ public class EnemyStateMachine : StateMachine
         {
             if (collision.transform.TryGetComponent<Rigidbody>(out var rb))
             {
+                isGettingAttacked = true;
+
+                _sprayResetTimer = _sprayCooldown;
+
+                if (currentState.GetType() != typeof(EnemyInflatableState))
+                {
+                    SwitchState(typeof(EnemyInflatableState));
+                    return;
+                }
+
                 if (rb.linearVelocity.magnitude > 5)
                 {
                     Debug.Log($"[OnCollisionEnter] Objeto golpeó enemigo a {rb.linearVelocity.magnitude:F2} m/s - Muerte");
                     GoToDeath();
+                   
                     return;
                 }
             }
