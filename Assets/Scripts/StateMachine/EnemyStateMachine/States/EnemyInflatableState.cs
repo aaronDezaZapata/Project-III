@@ -16,13 +16,13 @@ public class EnemyInflatableState : EnemyBaseState
     private Material _enemyMat;
 
     [Tooltip("Velocidad a la que se llena al atacar")]
-    public float inflationSpeed = 0.5f;
+    public float inflationSpeed = 0.05f;
 
     [Tooltip("Velocidad a la que se vacía si dejas de atacar")]
     public float deflationSpeed = 1.0f;
 
     [Tooltip("Valor máximo de gordura (InflationAmount) al morir")]
-    public float maxFatness = .02f;
+    public float maxFatness = .009f;
 
     public EnemyInflatableState(EnemyStateMachine stateMachine) : base(stateMachine)
     {
@@ -107,7 +107,7 @@ public class EnemyInflatableState : EnemyBaseState
         UpdateShaderValues();
 
         
-        if (_currentProgress >= 1.0f)
+        if (_currentProgress >= maxFatness)
         {
             PopEnemy();
         }
