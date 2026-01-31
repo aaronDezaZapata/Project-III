@@ -16,10 +16,10 @@ public class EnemyIdleState : EnemyBaseState
 
     public override void Tick(float deltaTime)
     {
-        /*if (Vector3.Distance(GameManager.Instance.GetPlayer().position, stateMachine.transform.position) < stateMachine.DetectionRange)
+        if (Vector3.Distance(GameManager.Instance.GetPlayer().position, stateMachine.transform.position) < stateMachine.DetectionRange)
         {
             stateMachine.SwitchState(typeof(EnemyChaseState));
-        }*/
+        }
         
         stateMachine.ForceReceiver.ForceMovement();
     }
