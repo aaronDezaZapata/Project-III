@@ -7,6 +7,7 @@ public class PlayerShootingState : PlayerBaseState
 {
     private readonly int ShootAnim = Animator.StringToHash("Shoot");
     private const float CrossFadeDuration = 0.1f;
+    float speed = 100f;
     public PlayerShootingState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
     }
@@ -132,21 +133,21 @@ public class PlayerShootingState : PlayerBaseState
         
         // Disparo normal de tinta
         if (stateMachine.ProjectilePrefab == null || stateMachine.FirePoint == null) return;
-
-        Vector3 target = _currentHitPoint;
         
-        if (TryGetBallisticVelocity(stateMachine.FirePoint.position, target, stateMachine.ProjectileFlightTime, out Vector3 velocity))
+       
+        Rigidbody proj = UnityEngine.Object.Instantiate(stateMachine.ProjectilePrefab, stateMachine.FirePoint.position, Quaternion.identity);
+
+        Vector3 direction = (_currentHitPoint - stateMachine.FirePoint.position).normalized;
+
+
+        proj.linearVelocity = direction * speed;
+        proj.useGravity = true;
+        var inkProjectile = proj.GetComponent<InkProjectile>();
+        if (inkProjectile != null)
         {
-            Rigidbody proj = UnityEngine.Object.Instantiate(stateMachine.ProjectilePrefab, stateMachine.FirePoint.position, Quaternion.identity);
-
-            proj.linearVelocity = velocity;
-
-            var inkProjectile = proj.GetComponent<InkProjectile>();
-            if (inkProjectile != null)
-            {
-                inkProjectile.Initialize(stateMachine); 
-            }
+            inkProjectile.Initialize(stateMachine); 
         }
+        
     }
     
     private bool TryGetBallisticVelocity(Vector3 origin, Vector3 target, float time, out Vector3 velocity)
