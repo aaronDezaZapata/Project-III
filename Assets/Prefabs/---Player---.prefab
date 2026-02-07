@@ -304,6 +304,7 @@ GameObject:
   - component: {fileID: 2416829624496613863}
   - component: {fileID: 7942664696912470062}
   - component: {fileID: 8719049261872959655}
+  - component: {fileID: 6631076228066749022}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -511,7 +512,7 @@ MonoBehaviour:
   <Water_JetParticle>k__BackingField: {fileID: 0}
   <WaterHeiserParticle>k__BackingField: {fileID: 2538796581859691256}
   <WaterHeiserParticleSecond>k__BackingField: {fileID: 2938504528476204852}
-  <ProjectilePrefab>k__BackingField: {fileID: 4575993021514827145, guid: eec7e630600ae6641b068a12bafbd620, type: 3}
+  <ProjectilePrefab>k__BackingField: {fileID: 1614819613750782360, guid: c3872cc97262bfb428bb4f31bc82f215, type: 3}
   <FireCooldown>k__BackingField: 0.15
   <ProjectileFlightTime>k__BackingField: 0.6
   <PaintableLayer>k__BackingField:
@@ -526,7 +527,7 @@ MonoBehaviour:
   <MaxAimDistance>k__BackingField: 80
   <AimLayerMask>k__BackingField:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 1407
   <ReticleSurfaceOffset>k__BackingField: 0.02
   <HoverForce>k__BackingField: 75
   <aerialMoveSpeed>k__BackingField: 10
@@ -610,6 +611,20 @@ MonoBehaviour:
   ropeWidth: 0.05
   ropeMaterial: {fileID: 0}
   setupComplete: 1
+--- !u!114 &6631076228066749022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453968334896795462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d66a54992e03a664d9fcd7612d4be135, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UniqueID: ff66e67c-acbd-4d24-8ee1-9c8b2bdceb6b
+  hasUnsyncedChanges: 1
 --- !u!1 &2387398348442301700
 GameObject:
   m_ObjectHideFlags: 0
