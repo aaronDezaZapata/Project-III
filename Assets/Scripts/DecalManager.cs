@@ -6,7 +6,8 @@ public class DecalManager : MonoBehaviour
 {
     #region Variables
 
-    [Header("Decal Settings")]
+    [Header("Decal Settings")] 
+    [SerializeField] private bool isInitialized;
     [SerializeField] private float currentTimeToLive;
     
     [Header("Materials")]
@@ -40,15 +41,19 @@ public class DecalManager : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        
+        currentTimeToLive -= Time.deltaTime;
+
+        if (currentTimeToLive <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void InitializeInkDecal(float timeToLive)
     {
+        isInitialized = true;
         currentTimeToLive = timeToLive;
-        
-        
     }
 }
