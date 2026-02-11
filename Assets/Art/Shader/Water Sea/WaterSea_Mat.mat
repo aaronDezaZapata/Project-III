@@ -37,12 +37,36 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _CausticTexture:
+        m_Texture: {fileID: 2800000, guid: 14d3c685f240b5b42a8ab32675ee690b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FlowMap:
+        m_Texture: {fileID: 2800000, guid: 88c78f705abc0fe4e89f378ac473cf6e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FoamTexture:
+        m_Texture: {fileID: 2800000, guid: 6bd529442f427774aa8347fdb4c89772, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainNormal:
         m_Texture: {fileID: 2800000, guid: 77068df570cf64947a685d454751b507, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SecondNormal:
         m_Texture: {fileID: 2800000, guid: 27c64d89154807d468416310331d209f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_41c15b7fc3a5464fbfeb1edef41e1e3e_Out_0_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_ccf3d58ea8f541639abe9f843e7dfcd0_Out_0_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_d73e5d0af6274ab2be38f7fcb08bfd01_Out_0_Texture2D:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -59,19 +83,38 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _CausticCutOut: 0.97
+    - _CausticsSpeed: 0.2
+    - _CausticsTiling: 1.55
     - _Depth: 36.2
-    - _Displacement: 0.0004
-    - _NormalStrength: 0.35
+    - _DepthFallOff: 4.24
+    - _Depth_1: 0
+    - _Displacement: 0.85
+    - _FlowSpeed: 0.81
+    - _FlowStrength: 0.36
+    - _FoamAmount: 1
+    - _FoamCutOut: 0.01
+    - _FoamDepth: 2
+    - _FoamFallOff: 17
+    - _FoamShoreWidth: 1
+    - _FoamTiling: 7.8
+    - _NormalStrength: 0.803
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Smoothness: 0.53
-    - _Strength: 1.46
-    - _WaveSpeed: 0
+    - _Smoothness: 0
+    - _Strength: 1.502
+    - _WaveIntensity: 1.52
+    - _WaveSpeed: 1.2
     - _WaveSpeedFast: 3.13
     - _WaveSpeedMedium: 8.96
     - _WaveSpeedSlow: 0.07
     m_Colors:
-    - _DeepWaterColor: {r: 0, g: 0.40859535, b: 0.8018868, a: 0.8666667}
-    - _ShallowWaterColor: {r: 0, g: 0.60367745, b: 0.7735849, a: 0.6666667}
+    - _CausticColor: {r: 1, g: 1, b: 1, a: 1}
+    - _DeepWaterColor: {r: 0, g: 0.4085953, b: 0.8018868, a: 0.7647059}
+    - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FoamSpeed: {r: 0, g: 5.6, b: 0, a: 0}
+    - _MainColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ShallowWaterColor: {r: 0, g: 0.60367745, b: 0.7735849, a: 0}
+    - _ShoreColor: {r: 0, g: 0.8498082, b: 1, a: 0.6666667}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
