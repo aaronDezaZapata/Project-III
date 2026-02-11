@@ -1,12 +1,22 @@
+using System;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 public class DecalManager : MonoBehaviour
 {
+    #region Variables
+
+    [Header("Decal Settings")]
+    [SerializeField] private float currentTimeToLive;
+    
+    [Header("Materials")]
     [SerializeField] private Material blackDecalMat;
     [SerializeField] private Material blueDecalMat;
     [SerializeField] private Material greenDecalMat;
     [SerializeField] private Material greyDecalMat;
+
+    #endregion
+    
     private void Awake()
     {
         switch (GameManager.Instance.GetPlayer().GetComponent<PlayerStateMachine>().playerState)
@@ -28,5 +38,17 @@ public class DecalManager : MonoBehaviour
                 GetComponent<DecalProjector>().material = greenDecalMat;
                 break;
         }
+    }
+
+    private void Update()
+    {
+        
+    }
+
+    public void InitializeInkDecal(float timeToLive)
+    {
+        currentTimeToLive = timeToLive;
+        
+        
     }
 }
