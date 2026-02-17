@@ -55,6 +55,10 @@ public class PlayerStateMachine : StateMachine
     public bool IsOnInk;
     public Vector3 CurrentInkNormal = Vector3.up;
 
+    // Flag: el WhipState no encontró objetivos en el último intento.
+    // PlayerGreenState lo usa para no re-entrar hasta que el botón se suelte.
+    [HideInInspector] public bool WhipFailedLastAttempt;
+
     [field: Header("Green Grapple Mechanics")]
     [Tooltip("¿El jugador tiene habilitado el color verde? (Dejar en true para pruebas)")]
     [field: SerializeField] public bool HasGreenAbility { get; private set; } = true;
