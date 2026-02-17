@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -36,5 +38,10 @@ public class GameManager : MonoBehaviour
     public void RemovePaintedEnemy(PaintableEnemy enemy)
     {
         enemiesPainted.Remove(enemy);
+    }
+
+    internal void PlayerDeath()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
