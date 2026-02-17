@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     
     public List<PaintableEnemy> enemiesPainted;
 
+    private Transform currentCheckPoint;
+
     private void Awake()
     {
         if (Instance == null)
@@ -18,7 +20,11 @@ public class GameManager : MonoBehaviour
         else
         {
             Destroy(this);
+            return;
         }
+
+        if (currentCheckPoint == null) return;
+        GetNewCheckPoint(currentCheckPoint);
     }
 
 
@@ -40,8 +46,17 @@ public class GameManager : MonoBehaviour
         enemiesPainted.Remove(enemy);
     }
 
-    internal void PlayerDeath()
+    public void GetNewCheckPoint(Transform newCheckPoint)
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        currentCheckPoint = newCheckPoint;
+    }
+
+    public void PlayerDeath()
+    {
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+        player.transform.position = currentCheckPoint.transform.position;
+        player.transform.rotation = currentCheckPoint.transform.rotation;
+
     }
 }
