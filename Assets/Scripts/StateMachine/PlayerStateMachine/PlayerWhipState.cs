@@ -88,6 +88,7 @@ public class PlayerWhipState : PlayerBaseState
         else
         {
             Debug.LogWarning("No enemies or GrapplePoints found - Returning to PlayerGreenState");
+            stateMachine.WhipFailedLastAttempt = true;
             stateMachine.SwitchState(typeof(PlayerGreenState));
             return;
         }

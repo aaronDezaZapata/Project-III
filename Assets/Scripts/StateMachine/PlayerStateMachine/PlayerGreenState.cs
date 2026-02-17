@@ -71,8 +71,18 @@ public class PlayerGreenState : PlayerBaseState
     {
         if (stateMachine.InputReader.isColorActing)
         {
-            stateMachine.SwitchState(typeof(PlayerWhipState));
-            return;
+            // Si el whip ya intentó ejecutarse y no encontró objetivos,
+            // esperamos a que el jugador suelte el botón antes de volver a intentarlo
+            if (!stateMachine.WhipFailedLastAttempt)
+            {
+                stateMachine.SwitchState(typeof(PlayerWhipState));
+                return;
+            }
+        }
+        else
+        {
+            // El jugador soltó el botón: resetear para el siguiente intento
+            stateMachine.WhipFailedLastAttempt = false;
         }
         
         if (stateMachine.InputReader.isAiming)
