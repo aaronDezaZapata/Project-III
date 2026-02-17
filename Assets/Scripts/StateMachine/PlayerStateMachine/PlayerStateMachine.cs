@@ -404,6 +404,10 @@ public class PlayerStateMachine : StateMachine
                 }
                 break;
 
+            case "CheckPoint":
+                GameManager.Instance.GetNewCheckPoint(other.transform);
+                break;
+
             default:
 
                 break;
