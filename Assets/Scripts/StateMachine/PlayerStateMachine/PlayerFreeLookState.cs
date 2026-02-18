@@ -25,7 +25,7 @@ public class PlayerFreeLookState : PlayerBaseState
 
     private const float AnimatorDampTime = 0.1f;
 
-    private const float RunThreshold = 0.8f;
+    private const float RunThreshold = 0.7f;
 
     private float lastSpeed = 0f;
     private float lastInputMagnitude = 0f;
@@ -81,33 +81,36 @@ public class PlayerFreeLookState : PlayerBaseState
         Vector3 movement = stateMachine.CalculateMovement();
         float currentInputMagnitude = movement.magnitude;
 
-        //TODO: BORREN ESTO PORFAVOR ES PARA QUE ANDE EN TECLADO
-        currentInputMagnitude *= 0.5f;
-        movement.x *= 0.5f;
+       
         
         stateMachine.Animator.SetFloat(FreeLookSpeedHash, currentInputMagnitude, AnimatorDampTime, deltaTime);
         stateMachine.Animator.SetFloat(AnimationSpeedHash, movement.x, AnimatorDampTime, deltaTime);
 
-        if(currentInputMagnitude > 0.6f)
+        if (GetNormalizedTime(stateMachine.Animator, "Jump") > 0.98f)
         {
-            stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
-        }
-        else
-        {
-            stateMachine.Animator.CrossFadeInFixedTime(AnimationSpeedHash, CrossFadeDuration);
+
+            if(currentInputMagnitude > 0.6f)
+            {
+                stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
+            }
+            else
+            {
+                stateMachine.Animator.CrossFadeInFixedTime(WalkingBlendTreeHash, CrossFadeDuration);
+            }
+
+            if (currentInputMagnitude > RunThreshold)
+            {
+                stateMachine.Animator.CrossFadeInFixedTime(StopRun, CrossFadeDuration);
+            }
+
+            if (GetNormalizedTime(stateMachine.Animator, "Jump") >= 0.98f)
+            {
+                stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
+            }
+
         }
 
-        if (currentInputMagnitude < 0.01f && lastSpeed > RunThreshold)
-        {
-            stateMachine.Animator.CrossFadeInFixedTime(StopRun, CrossFadeDuration);
-        }
 
-        if (GetNormalizedTime(stateMachine.Animator, "Jump") >= 0.999f)
-        {
-            stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
-        }
-
-        
 
         if (currentInputMagnitude > 0.01f) 
         {
