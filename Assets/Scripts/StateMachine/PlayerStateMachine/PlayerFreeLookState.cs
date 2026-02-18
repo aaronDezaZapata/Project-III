@@ -12,8 +12,10 @@ using UnityEngine.Rendering.Universal.Internal;
 public class PlayerFreeLookState : PlayerBaseState
 {
     private readonly int FreeLookSpeedHash = Animator.StringToHash("Speed");
+    private readonly int AnimationSpeedHash = Animator.StringToHash("SpeedX");
 
     private readonly int FreeLookBlendTreeHash = Animator.StringToHash("FreeLookBlendTree");
+    private readonly int WalkingBlendTreeHash = Animator.StringToHash("WalkingBlendTree");
 
     private readonly int StopRun = Animator.StringToHash("StopRun");
 
@@ -57,7 +59,7 @@ public class PlayerFreeLookState : PlayerBaseState
         lastInputMagnitude = 0f;
     }
 
-  
+
 
     public override void Tick(float deltaTime)
     {
@@ -70,7 +72,6 @@ public class PlayerFreeLookState : PlayerBaseState
             }
         }
 
-        // Aim
         if (stateMachine.InputReader.isAiming)
         {
             stateMachine.SwitchState(typeof(PlayerShootingState));
@@ -79,29 +80,43 @@ public class PlayerFreeLookState : PlayerBaseState
 
         Vector3 movement = stateMachine.CalculateMovement();
         float currentInputMagnitude = movement.magnitude;
-        lastSpeed = movement.magnitude;
 
-        stateMachine.Animator.SetFloat(FreeLookSpeedHash, movement.magnitude, AnimatorDampTime, deltaTime);
-       
+        //TODO: BORREN ESTO PORFAVOR ES PARA QUE ANDE EN TECLADO
+        currentInputMagnitude *= 0.5f;
+        movement.x *= 0.5f;
+        
+        stateMachine.Animator.SetFloat(FreeLookSpeedHash, currentInputMagnitude, AnimatorDampTime, deltaTime);
+        stateMachine.Animator.SetFloat(AnimationSpeedHash, movement.x, AnimatorDampTime, deltaTime);
+
+        if(currentInputMagnitude > 0.6f)
+        {
+            stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
+        }
+        else
+        {
+            stateMachine.Animator.CrossFadeInFixedTime(AnimationSpeedHash, CrossFadeDuration);
+        }
+
         if (currentInputMagnitude < 0.01f && lastSpeed > RunThreshold)
         {
             stateMachine.Animator.CrossFadeInFixedTime(StopRun, CrossFadeDuration);
         }
 
-        if(GetNormalizedTime(stateMachine.Animator, "Jump") >= 1f)
+        if (GetNormalizedTime(stateMachine.Animator, "Jump") >= 0.999f)
         {
             stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
         }
 
+        
 
-        if (!Equals(movement, Vector3.zero))
+        if (currentInputMagnitude > 0.01f) 
         {
             FaceMovementDirection(movement, deltaTime);
-            stateMachine.Animator.SetFloat(FreeLookSpeedHash, movement.normalized.magnitude, AnimatorDampTime, deltaTime);
         }
 
         Move(movement * stateMachine.FreeLookMovementSpeed, deltaTime);
 
+        lastSpeed = currentInputMagnitude;
         lastInputMagnitude = currentInputMagnitude;
     }
 
