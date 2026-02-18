@@ -271,6 +271,43 @@ public class EnemyStateMachine : StateMachine
         return 0f;
     }
 
+    // Estado original de los componentes de física (guardado al desactivar)
+    private bool _originalControllerEnabled;
+    private bool _originalAgentEnabled;
+    private bool _originalForceReceiverEnabled;
+    private Collider _capturedCollider;
+
+    public void DisablePhysics()
+    {
+        if (Controller != null)
+        {
+            _originalControllerEnabled = Controller.enabled;
+            Controller.enabled = false;
+        }
+
+        if (ForceReceiver != null)
+        {
+            _originalForceReceiverEnabled = ForceReceiver.enabled;
+            ForceReceiver.enabled = false;
+        }
+
+        if (agent != null)
+        {
+            _originalAgentEnabled = agent.enabled;
+            agent.enabled = false;
+        }
+
+        // Guardar referencia al collider principal para uso externo
+        _capturedCollider = GetComponentInChildren<Collider>();
+    }
+
+    public void RestorePhysics()
+    {
+        if (Controller != null) Controller.enabled = _originalControllerEnabled;
+        if (ForceReceiver != null) ForceReceiver.enabled = _originalForceReceiverEnabled;
+        if (agent != null) agent.enabled = _originalAgentEnabled;
+    }
+
     /// <summary>
     /// Marca al enemigo como lanzado con una velocidad específica
     /// </summary>

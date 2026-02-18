@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,7 +12,7 @@ public class PlayerStateMachine : StateMachine
 
     [field: Header("Player State")]
     [field: SerializeField] public PlayerStates playerState;
-    
+
     [field: Header("Getters and Setters")]
     [field: SerializeField] public InputHandler InputReader { get; private set; }
 
@@ -54,6 +55,10 @@ public class PlayerStateMachine : StateMachine
 
     public bool IsOnInk;
     public Vector3 CurrentInkNormal = Vector3.up;
+
+    // Flag: el WhipState no encontró objetivos en el último intento.
+    // PlayerGreenState lo usa para no re-entrar hasta que el botón se suelte.
+    [HideInInspector] public bool WhipFailedLastAttempt;
 
     [field: Header("Green Grapple Mechanics")]
     [Tooltip("¿El jugador tiene habilitado el color verde? (Dejar en true para pruebas)")]
@@ -153,15 +158,15 @@ public class PlayerStateMachine : StateMachine
     [Header("Gray Visual")]
     [Tooltip("Sistema de partículas de absorción")]
     [field: SerializeField] public ParticleSystem GrayAbsorbParticles { get; private set; }
-    
+
     [Header("Gray Absorbed Objects")]
     [Tooltip("Lista de objetos SMALL absorbidos (máximo 3)")]
     public List<AbsorbableObject> absorbedObjects = new List<AbsorbableObject>();
-    
+
     public const int MaxAbsorbedSmallObjects = 3;
 
     #endregion
-    
+
     [Header("References")]
 
     [field: SerializeField] public Transform FirePoint { get; private set; }
@@ -172,7 +177,7 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public float FireCooldown { get; private set; } = 0.15f;
     [field: SerializeField] public float ProjectileFlightTime { get; private set; } = 0.6f;
     [field: SerializeField] public LayerMask PaintableLayer { get; private set; } = ~0;
-    
+
     [field: Header("Shooting Config")]
     [field: SerializeField] public float AimMovementSpeed = 3f;
     [field: SerializeField] public float HorizontalSensitivity = 150f;
@@ -192,7 +197,7 @@ public class PlayerStateMachine : StateMachine
 
     // Esta variable controla que solo se use una vez por aire
     public bool CanHeiser { get; set; } = true;
-    
+
     [field: Header("Black Dash Attack (Painted Enemy)")]
     [Tooltip("¿El jugador tiene habilitado el dash attack a enemigos pintados?")]
     [field: SerializeField] public bool HasDashAttack { get; private set; } = true;
@@ -215,7 +220,7 @@ public class PlayerStateMachine : StateMachine
     [Tooltip("Daño causado al enemigo")]
     [field: SerializeField] public int DashAttackDamage { get; private set; } = 1;
 
-    
+
 
     private void Start()
     {
@@ -232,7 +237,7 @@ public class PlayerStateMachine : StateMachine
         AddState(new PlayerWhipState(this));
         AddState(new PlayerGrayState(this));
         AddState(new PlayerAbsorbState(this));
-        
+
         // MUST BE PLAYERFREELOOK. CHANGES ONLY FOR TESTING
         SwitchState(typeof(PlayerFreeLookState));
     }
@@ -366,16 +371,16 @@ public class PlayerStateMachine : StateMachine
         switch (other.tag)
         {
             case "CharcoAzul":
-                 SwitchState(typeof(PlayerBlueState));
+                SwitchState(typeof(PlayerBlueState));
                 //Mat_Player.SetColor("_Color", Color.blue);
-                if(Mat_Player != null)
+                if (Mat_Player != null)
                 {
                     Mat_Player.material.SetColor("_SpecularColor", Color.blue);
                 }
                 break;
 
             case "CharcoNegro":
-                 SwitchState(typeof(PlayerFreeLookState));
+                SwitchState(typeof(PlayerFreeLookState));
                 if (Mat_Player != null)
                 {
                     Color blackColor = new Color(1 - 38f, 1 - 38f, 1 - 38f);
@@ -384,7 +389,7 @@ public class PlayerStateMachine : StateMachine
                 break;
 
             case "CharcoGris":
-                 SwitchState(typeof(PlayerGrayState));
+                SwitchState(typeof(PlayerGrayState));
                 if (Mat_Player != null)
                 {
                     Mat_Player.material.SetColor("_SpecularColor", Color.grey);
@@ -399,12 +404,34 @@ public class PlayerStateMachine : StateMachine
                 }
                 break;
 
-            default:
-                
+            case "CheckPoint":
+                GameManager.Instance.GetNewCheckPoint(other.transform);
                 break;
+
+            default:
+
+                break;
+        
         }
     }
 
+
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        switch(hit.transform.tag)
+        {
+            case "Insta":
+                GameManager.Instance.PlayerDeath();
+                break;
+
+                default : break;
+        }
+        
+
+
+        
+    }
     public void ReturnToMainState()
     {
         switch (playerState)
