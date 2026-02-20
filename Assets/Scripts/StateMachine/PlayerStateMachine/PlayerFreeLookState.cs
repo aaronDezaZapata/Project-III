@@ -26,6 +26,8 @@ public class PlayerFreeLookState : PlayerBaseState
     private const float AnimatorDampTime = 0.1f;
 
     private const float RunThreshold = 0.7f;
+    private const float IdleThreshold = 0.05f;
+    
 
     private float lastSpeed = 0f;
     private float lastInputMagnitude = 0f;
@@ -63,6 +65,8 @@ public class PlayerFreeLookState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
+        stateMachine.CheckGrounded();
+
         if (stateMachine.InputReader.isColorActing && stateMachine.HasDashAttack)
         {
             if (HasNearbyPaintedEnemy())
@@ -71,7 +75,7 @@ public class PlayerFreeLookState : PlayerBaseState
                 return;
             }
         }
-
+        
         if (stateMachine.InputReader.isAiming)
         {
             stateMachine.SwitchState(typeof(PlayerShootingState));
@@ -81,46 +85,47 @@ public class PlayerFreeLookState : PlayerBaseState
         Vector3 movement = stateMachine.CalculateMovement();
         float currentInputMagnitude = movement.magnitude;
 
-       
-        
         stateMachine.Animator.SetFloat(FreeLookSpeedHash, currentInputMagnitude, AnimatorDampTime, deltaTime);
         stateMachine.Animator.SetFloat(AnimationSpeedHash, movement.x, AnimatorDampTime, deltaTime);
 
-        if (GetNormalizedTime(stateMachine.Animator, "Jump") > 0.98f)
+        // Blend tree switching basado en velocidad de input
+        HandleBlendTreeTransition(currentInputMagnitude);
+        if (currentInputMagnitude > RunThreshold)
         {
+            FaceMovementDirection(movement, deltaTime);
+        }
 
-            if(currentInputMagnitude > 0.6f)
-            {
-                stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
-            }
-            else
-            {
-                stateMachine.Animator.CrossFadeInFixedTime(WalkingBlendTreeHash, CrossFadeDuration);
-            }
+        // Cuando termina el salto
+        float jumpTime = GetNormalizedTime(stateMachine.Animator, "Jump");
+        if (jumpTime > 0.98f)
+        {
+            HandleBlendTreeTransition(currentInputMagnitude);
 
             if (currentInputMagnitude > RunThreshold)
             {
                 stateMachine.Animator.CrossFadeInFixedTime(StopRun, CrossFadeDuration);
             }
-
-            if (GetNormalizedTime(stateMachine.Animator, "Jump") >= 0.98f)
-            {
-                stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
-            }
-
-        }
-
-
-
-        if (currentInputMagnitude > 0.01f) 
-        {
-            FaceMovementDirection(movement, deltaTime);
         }
 
         Move(movement * stateMachine.FreeLookMovementSpeed, deltaTime);
 
         lastSpeed = currentInputMagnitude;
         lastInputMagnitude = currentInputMagnitude;
+    }
+
+
+    private void HandleBlendTreeTransition(float inputMagnitude)
+    {
+        if (inputMagnitude >= IdleThreshold && inputMagnitude < RunThreshold)
+        {
+            if (lastInputMagnitude < IdleThreshold || lastInputMagnitude >= RunThreshold)
+                stateMachine.Animator.CrossFadeInFixedTime(WalkingBlendTreeHash, CrossFadeDuration);
+        }
+        else
+        {
+            if (lastInputMagnitude >= IdleThreshold && lastInputMagnitude < RunThreshold)
+                stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
+        }
     }
 
     public override void Exit()
@@ -150,7 +155,8 @@ public class PlayerFreeLookState : PlayerBaseState
     
     private void OnJump()
     {
-        if (!stateMachine.Controller.isGrounded) return;
+        //if (!stateMachine.Controller.isGrounded) return;
+        if (!stateMachine.isGrounded) return;
         stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();
     }
@@ -171,4 +177,6 @@ public class PlayerFreeLookState : PlayerBaseState
         
         orbitalFollow.RadialAxis.Value = orbitalFollow.RadialAxis.Center;
     }
+
+    
 }
