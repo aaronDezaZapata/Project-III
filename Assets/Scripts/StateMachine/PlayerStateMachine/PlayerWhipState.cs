@@ -6,6 +6,13 @@ public class PlayerWhipState : PlayerBaseState
     private enum WhipMode { None, EnemyWhip, GrappleSwing }
     private WhipMode currentMode = WhipMode.None;
 
+    #region Animation Variables
+
+    private readonly int FrontLianaAnim = Animator.StringToHash("FrontLiana");
+    private const float CrossFadeDuration = 0.1f;
+
+    #endregion
+
     #region Enemy Whip Variables
     private Transform capturedEnemy;
     private EnemyStateMachine capturedEnemyStateMachine;
@@ -302,6 +309,12 @@ public class PlayerWhipState : PlayerBaseState
         MovePlayer(deltaTime);
         RotatePlayer(deltaTime);
         CheckRopeIntegrity();
+        AnimationGrapple();
+    }
+
+    private void AnimationGrapple()
+    {
+        stateMachine.Animator.CrossFadeInFixedTime(FrontLianaAnim, CrossFadeDuration);
     }
 
     private bool TryFindGrapplePoint()
