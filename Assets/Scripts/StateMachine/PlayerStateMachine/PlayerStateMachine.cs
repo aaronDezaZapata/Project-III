@@ -43,6 +43,16 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public float AccelerationTime { get; private set; } = 0.1f;
 
     [field: SerializeField] public float DecelerationTime { get; private set; } = 0.2f;
+    
+    [field: Header("Direction Change Settings")]
+    [field: Tooltip("Ángulo mínimo (en grados) para detectar cambio brusco de dirección")]
+    [field: SerializeField] public float DirectionChangeThreshold { get; private set; } = 90f;
+    
+    [field: Tooltip("Tiempo de frenado cuando se detecta cambio brusco")]
+    [field: SerializeField] public float QuickStopTime { get; private set; } = 0.05f;
+    
+    [field: Tooltip("Velocidad mínima para considerar que el jugador se detuvo")]
+    [field: SerializeField] public float QuickStopSpeedThreshold { get; private set; } = 0.3f;
 
 
     [field: Header("Splatoon Mechanics")]
