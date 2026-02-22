@@ -21,6 +21,7 @@ public class PlayerShootingState : PlayerBaseState
 
     public override void Enter()
     {
+        stateMachine.FaceMovementDirectionInstant(Camera.main.transform.forward);
         // CAMERA IN
         stateMachine.aimCamera.Priority = 10;
         stateMachine.Animator.CrossFadeInFixedTime(ShootAnim, CrossFadeDuration);
