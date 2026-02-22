@@ -42,6 +42,15 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("AccelerationTime");
         DrawBackingProperty("DecelerationTime");
 
+        //Ground Check
+        EditorGUILayout.Space(10);
+        DrawHeader("Ground Check", Color.white);
+        DrawBackingProperty("groundCheckDistance");
+        DrawBackingProperty("groundCheckRadius");
+        DrawBackingProperty("groundMask");
+        DrawBackingProperty("groundCheckOrigin");
+        DrawBackingProperty("isGrounded");
+
         // COMMON SPLATOON & SHOOTING
         EditorGUILayout.Space(10);
         DrawHeader("SPLATOON & SHOOTING", Color.cyan);

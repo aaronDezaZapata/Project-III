@@ -45,6 +45,14 @@ public class PlayerStateMachine : StateMachine
 
     [field: SerializeField] public float DecelerationTime { get; private set; } = 0.2f;
 
+    [Header("Ground Check")]
+    [SerializeField] private float groundCheckDistance = 0.2f;
+    [SerializeField] private float groundCheckRadius = 0.3f; 
+    [SerializeField] private LayerMask groundMask;
+    [SerializeField] private Transform groundCheckOrigin; 
+
+    public bool isGrounded;
+
 
     [field: Header("Splatoon Mechanics")]
     [field: SerializeField] public float SwimSpeed { get; private set; } = 12f;
@@ -466,6 +474,19 @@ public class PlayerStateMachine : StateMachine
         return forward * InputReader.MoveVector.y + right * InputReader.MoveVector.x;
     }
 
+    public void CheckGrounded()
+    {
+        isGrounded = Physics.SphereCast(
+            groundCheckOrigin.position,
+            groundCheckRadius,
+            Vector3.down,
+            out RaycastHit hit,
+            groundCheckDistance,
+            groundMask
+        );
+    }
+
+
     public void FaceMovementDirection(Vector3 movement, float deltaTime)
     {
         transform.rotation = Quaternion.Lerp(
@@ -527,6 +548,48 @@ public class PlayerStateMachine : StateMachine
             Debug.Log($"Objeto SMALL disparado. Restantes: {absorbedObjects.Count}/{MaxAbsorbedSmallObjects}");
         }
     }
-    
+
     #endregion
+
+
+    private void OnDrawGizmosSelected()
+    {
+        if (groundCheckOrigin == null) return;
+
+        Gizmos.color = Color.green;
+
+        // Esfera en el origen
+        Gizmos.DrawWireSphere(groundCheckOrigin.position, groundCheckRadius);
+
+        // Dirección del SphereCast
+        Vector3 castDirection = Vector3.down * groundCheckDistance;
+
+        // Esfera al final del cast
+        Vector3 endPosition = groundCheckOrigin.position + castDirection;
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(endPosition, groundCheckRadius);
+
+        // Línea que conecta ambas
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(groundCheckOrigin.position, endPosition);
+
+        // Si está grounded en editor (opcional, solo en Play Mode)
+        if (Application.isPlaying)
+        {
+            if (Physics.SphereCast(
+                groundCheckOrigin.position,
+                groundCheckRadius,
+                Vector3.down,
+                out RaycastHit hit,
+                groundCheckDistance,
+                groundMask
+            ))
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawSphere(hit.point, 0.05f);
+            }
+        }
+    }
+
+
 }
