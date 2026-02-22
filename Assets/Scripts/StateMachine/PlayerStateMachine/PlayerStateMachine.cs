@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -464,9 +465,27 @@ public class PlayerStateMachine : StateMachine
 
         return forward * InputReader.MoveVector.y + right * InputReader.MoveVector.x;
     }
-    
+
+    public void FaceMovementDirection(Vector3 movement, float deltaTime)
+    {
+        transform.rotation = Quaternion.Lerp(
+            transform.rotation,
+            Quaternion.LookRotation(movement),
+            deltaTime * RotationSpeed);
+
+    }
+
+    public void FaceMovementDirectionInstant(Vector3 movement)
+    {
+        // Verificamos que haya movimiento para evitar errores de LookRotation
+        if (movement != Vector3.zero)
+        {
+            transform.rotation = Quaternion.LookRotation(movement);
+        }
+    }
+
     #region Gray Absorbed Objects Management
-    
+
     /// <summary>
     /// Añade un objeto SMALL a la lista de absorbidos (máximo 3)
     /// </summary>
