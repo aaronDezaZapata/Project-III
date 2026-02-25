@@ -94,11 +94,33 @@ public class PlayerSwimState : PlayerBaseState
 
         Vector3 cameraRight = Camera.main.transform.right;
 
+        // Proyectar el right de la cámara sobre la superficie (movimiento horizontal)
         Vector3 rightProjected = Vector3.ProjectOnPlane(cameraRight, surfaceNormal).normalized;
 
-        Vector3 forwardProjected = Vector3.Cross(rightProjected, surfaceNormal);
+        // Para el movimiento vertical en la superficie, usamos el producto cruz
+        // rightProjected x surfaceNormal nos da un vector perpendicular a ambos,
+        // que está sobre la superficie y apunta "hacia arriba" a lo largo de la pared
+        Vector3 upProjected = Vector3.Cross(surfaceNormal, rightProjected).normalized;
+        
+        // Verificar que upProjected apunte generalmente hacia arriba
+        // Si apunta hacia abajo, invertirlo
+        if (Vector3.Dot(upProjected, Vector3.up) < 0)
+        {
+            upProjected = -upProjected;
+        }
 
-        Vector3 moveDir = (forwardProjected * input.y + rightProjected * input.x).normalized;
+        // Calcular la dirección de movimiento
+        Vector3 moveDir = (upProjected * input.y + rightProjected * input.x);
+        
+        // Solo normalizar si hay movimiento significativo
+        if (moveDir.sqrMagnitude > 0.01f)
+        {
+            moveDir.Normalize();
+        }
+        else
+        {
+            moveDir = Vector3.zero;
+        }
 
         if (moveDir != Vector3.zero)
         {

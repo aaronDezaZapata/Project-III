@@ -15,6 +15,10 @@ public abstract class PlayerBaseState : State
     private bool _isQuickStopping = false;
     private float _quickStopTimer = 0f;
     
+    // Variables para coyote time
+    private float _timeSinceLeftGround = 0f;
+    private bool _wasGroundedLastFrame = false;
+    
 
     public PlayerBaseState(PlayerStateMachine stateMachine)
     {
@@ -25,6 +29,8 @@ public abstract class PlayerBaseState : State
 
     protected void Move(Vector3 motion, float deltaTime)
     {
+        // Actualizar coyote time
+        UpdateCoyoteTime(deltaTime);
         
         Vector3 horizontalMotion = new Vector3(motion.x, 0, motion.z);
         Vector3 verticalMotion = new Vector3(0, motion.y, 0);
@@ -140,11 +146,43 @@ public abstract class PlayerBaseState : State
 
     #region Jump
 
+    private void UpdateCoyoteTime(float deltaTime)
+    {
+        bool isGroundedNow = stateMachine.Controller.isGrounded;
+        
+        // Si estaba en el suelo y ahora no lo está, empezar a contar
+        if (_wasGroundedLastFrame && !isGroundedNow)
+        {
+            _timeSinceLeftGround = 0f;
+        }
+        // Si no está en el suelo, incrementar el contador
+        else if (!isGroundedNow)
+        {
+            _timeSinceLeftGround += deltaTime;
+        }
+        // Si está en el suelo, resetear
+        else
+        {
+            _timeSinceLeftGround = 0f;
+        }
+        
+        _wasGroundedLastFrame = isGroundedNow;
+    }
+    
+    protected bool CanJump()
+    {
+        // Puede saltar si está en el suelo o si está dentro del coyote time
+        return stateMachine.Controller.isGrounded || _timeSinceLeftGround <= stateMachine.CoyoteTime;
+    }
+
     protected void Jump()
     {
-        if (!stateMachine.Controller.isGrounded) return;
+        if (!CanJump()) return;
         
         stateMachine.ForceReceiver.Jump(stateMachine.JumpForce);
+        
+        // Invalidar el coyote time después de saltar para evitar dobles saltos
+        _timeSinceLeftGround = stateMachine.CoyoteTime + 1f;
     }
 
     #endregion

@@ -43,6 +43,7 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("JumpForce");
         DrawBackingProperty("AccelerationTime");
         DrawBackingProperty("DecelerationTime");
+        DrawBackingProperty("CoyoteTime");
 
         // COMMON SPLATOON & SHOOTING
         EditorGUILayout.Space(10);

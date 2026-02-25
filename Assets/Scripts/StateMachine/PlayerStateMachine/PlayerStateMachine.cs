@@ -49,6 +49,9 @@ public class PlayerStateMachine : StateMachine
 
     [field: SerializeField] public float JumpForce { get; private set; }
 
+    [field: Tooltip("Tiempo tras dejar el suelo en el que aún se puede saltar (segundos)")]
+    [field: SerializeField] public float CoyoteTime { get; private set; } = 0.15f;
+
     [field: SerializeField] public float AccelerationTime { get; private set; } = 0.1f;
 
     [field: SerializeField] public float DecelerationTime { get; private set; } = 0.2f;
