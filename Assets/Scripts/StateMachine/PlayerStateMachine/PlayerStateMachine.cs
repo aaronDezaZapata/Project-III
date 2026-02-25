@@ -27,6 +27,8 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public Health Health { get; private set; }
 
     [field: SerializeField] public SkinnedMeshRenderer Mat_Player { get; private set; }
+    
+    [field: SerializeField] public float CameraSensitivity { get; set; }
 
     [field: Header("Movement Variables")]
     [field: SerializeField] public float FreeLookMovementSpeed { get; private set; }
@@ -437,10 +439,6 @@ public class PlayerStateMachine : StateMachine
 
                 default : break;
         }
-        
-
-
-        
     }
     public void ReturnToMainState()
     {

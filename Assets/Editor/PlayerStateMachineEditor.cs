@@ -27,6 +27,7 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("Animator");
         DrawBackingProperty("mainCamera");
         DrawBackingProperty("aimCamera");
+        DrawBackingProperty("CameraSensitivity");
         DrawBackingProperty("Health");
         DrawBackingProperty("Mat_Player");
 
@@ -186,7 +187,7 @@ public class PlayerStateMachineEditor : Editor
         // Intentamos buscar la propiedad con el nombre exacto (por si cambias a variables normales)
         SerializedProperty prop = serializedObject.FindProperty(propertyName);
 
-        // Si es null, buscamos el formato de backing field automático
+        // Si es null, buscamos el formato de backing field automï¿½tico
         if (prop == null)
         {
             prop = serializedObject.FindProperty($"<{propertyName}>k__BackingField");
