@@ -37,6 +37,7 @@ public class PlayerGrayState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
+        stateMachine.CheckGrounded();
         if (stateMachine.InputReader.isColorActing)
         {
             stateMachine.SwitchState(typeof(PlayerAbsorbState));
@@ -50,7 +51,14 @@ public class PlayerGrayState : PlayerBaseState
         }
         
         Vector3 movement = stateMachine.CalculateMovement();
-        
+
+        float jumpTime = GetNormalizedTime(stateMachine.Animator, "Jump");
+
+        if (jumpTime > 0.98f)
+        {
+            stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
+        }
+
         stateMachine.Animator.SetFloat(FreeLookSpeedHash, movement.magnitude, AnimatorDampTime, deltaTime);
         
         if (!Equals(movement, Vector3.zero))
@@ -79,7 +87,7 @@ public class PlayerGrayState : PlayerBaseState
     
     private void OnJump()
     {
-        if (!CanJump()) return;
+        if (!stateMachine.isGrounded) return;
         stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();
     }
