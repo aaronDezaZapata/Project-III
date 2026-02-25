@@ -482,15 +482,11 @@ public class PlayerStateMachine : StateMachine
     
     /// <summary>
     /// Obtiene la sensibilidad de cámara apropiada según el dispositivo de entrada.
-    /// Detecta automáticamente si es ratón o gamepad basándose en la magnitud del input.
+    /// Usa la detección de dispositivo del InputHandler para determinar qué sensibilidad aplicar.
     /// </summary>
     public float GetCurrentCameraSensitivity()
     {
-        // El ratón genera valores muy grandes (cientos), el gamepad genera valores normalizados (-1 a 1)
-        float lookMagnitude = InputReader.LookVector.magnitude;
-        
-        // Si el input es mayor a 2, es ratón; si es menor, es gamepad
-        return lookMagnitude > 2f ? MouseSensitivity : GamepadSensitivity;
+        return InputReader.IsUsingGamepad ? GamepadSensitivity : MouseSensitivity;
     }
     
     #region Gray Absorbed Objects Management
