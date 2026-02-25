@@ -7,7 +7,7 @@ public class PitchCameraControl : MonoBehaviour
     
     public PlayerStateMachine playerStateMachine;
 
-    [Tooltip("Sensibilidad base de la cámara (se multiplica por CameraSensitivity del Player)")]
+    [Tooltip("Sensibilidad base de la cámara (se multiplica por Mouse/GamepadSensitivity del Player)")]
     public float baseSensitivity = 120f;
     public float minPitch = -60f;
     public float maxPitch = 80f;
@@ -15,9 +15,9 @@ public class PitchCameraControl : MonoBehaviour
     private float pitch;
 
     /// <summary>
-    /// Sensibilidad efectiva = baseSensitivity * CameraSensitivity del Player
+    /// Sensibilidad efectiva = baseSensitivity * sensibilidad del dispositivo actual (ratón o gamepad)
     /// </summary>
-    private float EffectiveSensitivity => baseSensitivity * playerStateMachine.CameraSensitivity;
+    private float EffectiveSensitivity => baseSensitivity * playerStateMachine.GetCurrentCameraSensitivity();
 
     private void Update()
     {

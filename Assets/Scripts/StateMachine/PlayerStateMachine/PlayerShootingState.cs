@@ -166,9 +166,10 @@ public class PlayerShootingState : PlayerBaseState
     {
         Vector2 lookInput = stateMachine.InputReader.LookVector;
 
-        // Sensibilidad = valor base * CameraSensitivity global del Player
-        float hSens = stateMachine.HorizontalSensitivity * stateMachine.CameraSensitivity;
-        float vSens = stateMachine.VerticalSensitivity * stateMachine.CameraSensitivity;
+        // Sensibilidad = valor base * sensibilidad del dispositivo actual (ratón o gamepad)
+        float currentSensitivity = stateMachine.GetCurrentCameraSensitivity();
+        float hSens = stateMachine.HorizontalSensitivity * currentSensitivity;
+        float vSens = stateMachine.VerticalSensitivity * currentSensitivity;
 
         // Rotación horizontal - rota al jugador
         _rotationX += lookInput.x * hSens * deltaTime;

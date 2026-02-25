@@ -28,7 +28,14 @@ public class PlayerStateMachine : StateMachine
 
     [field: SerializeField] public SkinnedMeshRenderer Mat_Player { get; private set; }
     
-    [field: SerializeField] public float CameraSensitivity { get; set; }
+    [field: Header("Camera Sensitivity")]
+    [field: Tooltip("Sensibilidad de la cámara con ratón")]
+    [field: Range(0.1f, 5f)]
+    [field: SerializeField] public float MouseSensitivity { get; set; } = 1f;
+    
+    [field: Tooltip("Sensibilidad de la cámara con mando/gamepad")]
+    [field: Range(0.1f, 5f)]
+    [field: SerializeField] public float GamepadSensitivity { get; set; } = 3f;
 
     [field: Header("Movement Variables")]
     [field: SerializeField] public float FreeLookMovementSpeed { get; private set; }
@@ -471,6 +478,19 @@ public class PlayerStateMachine : StateMachine
         right.Normalize();
 
         return forward * InputReader.MoveVector.y + right * InputReader.MoveVector.x;
+    }
+    
+    /// <summary>
+    /// Obtiene la sensibilidad de cámara apropiada según el dispositivo de entrada.
+    /// Detecta automáticamente si es ratón o gamepad basándose en la magnitud del input.
+    /// </summary>
+    public float GetCurrentCameraSensitivity()
+    {
+        // El ratón genera valores muy grandes (cientos), el gamepad genera valores normalizados (-1 a 1)
+        float lookMagnitude = InputReader.LookVector.magnitude;
+        
+        // Si el input es mayor a 2, es ratón; si es menor, es gamepad
+        return lookMagnitude > 2f ? MouseSensitivity : GamepadSensitivity;
     }
     
     #region Gray Absorbed Objects Management

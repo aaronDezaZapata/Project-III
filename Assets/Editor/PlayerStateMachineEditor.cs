@@ -27,7 +27,8 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("Animator");
         DrawBackingProperty("mainCamera");
         DrawBackingProperty("aimCamera");
-        DrawBackingProperty("CameraSensitivity");
+        DrawBackingProperty("MouseSensitivity");
+        DrawBackingProperty("GamepadSensitivity");
         DrawBackingProperty("Health");
         DrawBackingProperty("Mat_Player");
 
