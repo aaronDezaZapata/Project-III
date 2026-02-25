@@ -28,6 +28,16 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public Health Health { get; private set; }
 
     [field: SerializeField] public SkinnedMeshRenderer Mat_Player { get; private set; }
+    
+    [field: Header("Camera Sensitivity")]
+    [field: Tooltip("Sensibilidad de la cámara con ratón")]
+    [field: Range(0.1f, 5f)]
+    [field: SerializeField] public float MouseSensitivity { get; set; } = 1f;
+    
+    [field: Tooltip("Sensibilidad de la cámara con mando/gamepad")]
+    [field: Range(0.1f, 5f)]
+    [field: SerializeField] public float GamepadSensitivity { get; set; } = 3f;
+
 
     [field: Header("Movement Variables")]
     [field: SerializeField] public float FreeLookMovementSpeed { get; private set; }
@@ -40,10 +50,23 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public float DashLength { get; private set; }
 
     [field: SerializeField] public float JumpForce { get; private set; }
+    
+    [field: Tooltip("Tiempo tras dejar el suelo en el que aún se puede saltar (segundos)")]
+    [field: SerializeField] public float CoyoteTime { get; private set; } = 0.15f;
 
     [field: SerializeField] public float AccelerationTime { get; private set; } = 0.1f;
 
     [field: SerializeField] public float DecelerationTime { get; private set; } = 0.2f;
+    
+    [field: Header("Direction Change Settings")]
+    [field: Tooltip("Ángulo mínimo (en grados) para detectar cambio brusco de dirección")]
+    [field: SerializeField] public float DirectionChangeThreshold { get; private set; } = 90f;
+    
+    [field: Tooltip("Tiempo de frenado cuando se detecta cambio brusco")]
+    [field: SerializeField] public float QuickStopTime { get; private set; } = 0.05f;
+    
+    [field: Tooltip("Velocidad mínima para considerar que el jugador se detuvo")]
+    [field: SerializeField] public float QuickStopSpeedThreshold { get; private set; } = 0.3f;
 
     [Header("Ground Check")]
     [SerializeField] private float groundCheckDistance = 0.2f;
@@ -56,6 +79,11 @@ public class PlayerStateMachine : StateMachine
 
     [field: Header("Splatoon Mechanics")]
     [field: SerializeField] public float SwimSpeed { get; private set; } = 12f;
+    [field: Tooltip("Fuerza del salto diagonal cuando se sale de una pared vertical (>60º)")]
+    [field: SerializeField] public float WallJumpForce { get; private set; } = 15f;
+    [field: Tooltip("Ángulo de salida de la tinta en paredes verticales (0° = vertical, 90° = horizontal)")]
+    [field: Range(0f, 90f)]
+    [field: SerializeField] public float WallJumpAngle { get; private set; } = 30f;
     [field: SerializeField] public GameObject InkDecalPrefab;
     [field: SerializeField] public LayerMask InkLayer;
     [field: SerializeField] public Transform GunOrigin;
@@ -551,6 +579,11 @@ public class PlayerStateMachine : StateMachine
 
     #endregion
 
+    public float GetCurrentCameraSensitivity()
+    {
+        return InputReader.IsUsingGamepad ? GamepadSensitivity : MouseSensitivity;
+    }
+
 
     private void OnDrawGizmosSelected()
     {
@@ -590,6 +623,4 @@ public class PlayerStateMachine : StateMachine
             }
         }
     }
-
-
 }

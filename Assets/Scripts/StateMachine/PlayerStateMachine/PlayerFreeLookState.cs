@@ -150,13 +150,11 @@ public class PlayerFreeLookState : PlayerBaseState
             stateMachine.transform.rotation,
             Quaternion.LookRotation(movement),
             deltaTime * stateMachine.RotationSpeed);
-        
     }
     
     private void OnJump()
     {
-        //if (!stateMachine.Controller.isGrounded) return;
-        if (!stateMachine.isGrounded) return;
+        if (!CanJump()) return;
         stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();
     }

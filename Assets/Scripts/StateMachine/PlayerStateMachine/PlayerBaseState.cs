@@ -150,17 +150,17 @@ public abstract class PlayerBaseState : State
     {
         bool isGroundedNow = stateMachine.Controller.isGrounded;
         
-        // Si estaba en el suelo y ahora no lo está, empezar a contar
+        
         if (_wasGroundedLastFrame && !isGroundedNow)
         {
             _timeSinceLeftGround = 0f;
         }
-        // Si no está en el suelo, incrementar el contador
+        
         else if (!isGroundedNow)
         {
             _timeSinceLeftGround += deltaTime;
         }
-        // Si está en el suelo, resetear
+        
         else
         {
             _timeSinceLeftGround = 0f;
@@ -171,7 +171,6 @@ public abstract class PlayerBaseState : State
     
     protected bool CanJump()
     {
-        // Puede saltar si está en el suelo o si está dentro del coyote time
         return stateMachine.Controller.isGrounded || _timeSinceLeftGround <= stateMachine.CoyoteTime;
     }
 
@@ -181,7 +180,6 @@ public abstract class PlayerBaseState : State
         
         stateMachine.ForceReceiver.Jump(stateMachine.JumpForce);
         
-        // Invalidar el coyote time después de saltar para evitar dobles saltos
         _timeSinceLeftGround = stateMachine.CoyoteTime + 1f;
     }
 
