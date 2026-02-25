@@ -48,6 +48,8 @@ public class PlayerStateMachineEditor : Editor
         EditorGUILayout.Space(10);
         DrawHeader("SPLATOON & SHOOTING", Color.cyan);
         DrawBackingProperty("SwimSpeed");
+        DrawBackingProperty("WallJumpForce");
+        DrawBackingProperty("WallJumpAngle");
         DrawBackingProperty("InkDecalPrefab");
         DrawBackingProperty("InkLayer");
         DrawBackingProperty("GunOrigin");

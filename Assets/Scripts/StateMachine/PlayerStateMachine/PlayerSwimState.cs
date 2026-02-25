@@ -128,29 +128,62 @@ public class PlayerSwimState : PlayerBaseState
 
     private void PerformInkJump()
     {
-        Vector2 input = stateMachine.InputReader.MoveVector;
-        Vector3 jumpDir;
+        Vector3 surfaceNormal = stateMachine.CurrentInkNormal;
         
-        if (input.magnitude > 0.1f)
+        // Calcular el ángulo de la superficie respecto a la horizontal
+        float surfaceAngle = Vector3.Angle(surfaceNormal, Vector3.up);
+        
+        // Verificar si estamos en una pared vertical (>60º)
+        bool isOnVerticalWall = surfaceAngle > 60f;
+        
+        Vector3 jumpDir;
+        float jumpForce;
+        
+        if (isOnVerticalWall)
         {
-            Vector3 surfaceNormal = stateMachine.CurrentInkNormal;
-            Vector3 cameraRight = Camera.main.transform.right;
-            Vector3 rightProjected = Vector3.ProjectOnPlane(cameraRight, surfaceNormal).normalized;
-            Vector3 forwardProjected = Vector3.Cross(rightProjected, surfaceNormal);
-            Vector3 moveDir = (forwardProjected * input.y + rightProjected * input.x).normalized;
+            // Salto diagonal hacia afuera de la pared
+            // Usamos el ángulo configurable para determinar la dirección
+            Vector3 outwardDir = surfaceNormal.normalized;
+            Vector3 upwardDir = Vector3.up;
             
-            jumpDir = (stateMachine.CurrentInkNormal + moveDir * 0.5f).normalized;
+            // Convertir el ángulo a radianes y calcular los componentes
+            // WallJumpAngle = 0° -> 100% vertical (solo hacia arriba)
+            // WallJumpAngle = 90° -> 100% horizontal (solo hacia afuera)
+            float angleRad = stateMachine.WallJumpAngle * Mathf.Deg2Rad;
+            float horizontalComponent = Mathf.Sin(angleRad); // Componente hacia afuera
+            float verticalComponent = Mathf.Cos(angleRad);   // Componente hacia arriba
+            
+            jumpDir = (outwardDir * horizontalComponent + upwardDir * verticalComponent).normalized;
+            jumpForce = stateMachine.WallJumpForce;
+            
+            Debug.Log($"Wall Jump! Angle: {surfaceAngle:F1}°, Jump Angle: {stateMachine.WallJumpAngle}°, Direction: {jumpDir}");
         }
         else
         {
-            jumpDir = stateMachine.CurrentInkNormal;
+            // Comportamiento normal para superficies horizontales o poco inclinadas
+            Vector2 input = stateMachine.InputReader.MoveVector;
+            
+            if (input.magnitude > 0.1f)
+            {
+                Vector3 cameraRight = Camera.main.transform.right;
+                Vector3 rightProjected = Vector3.ProjectOnPlane(cameraRight, surfaceNormal).normalized;
+                Vector3 forwardProjected = Vector3.Cross(rightProjected, surfaceNormal);
+                Vector3 moveDir = (forwardProjected * input.y + rightProjected * input.x).normalized;
+                
+                jumpDir = (surfaceNormal + moveDir * 0.5f).normalized;
+            }
+            else
+            {
+                jumpDir = surfaceNormal;
+            }
+            
+            jumpForce = stateMachine.JumpForce * 1.5f;
         }
         
         if(!stateMachine.ForceReceiver.isActiveAndEnabled)
             stateMachine.ForceReceiver.enabled = true;
         
-
-        stateMachine.ForceReceiver.AddForce(jumpDir * (stateMachine.JumpForce * 1.5f));
+        stateMachine.ForceReceiver.AddForce(jumpDir * jumpForce);
         
         OnDiveExit();
     }

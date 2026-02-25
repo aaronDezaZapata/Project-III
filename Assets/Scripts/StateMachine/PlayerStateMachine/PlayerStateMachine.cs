@@ -66,6 +66,11 @@ public class PlayerStateMachine : StateMachine
 
     [field: Header("Splatoon Mechanics")]
     [field: SerializeField] public float SwimSpeed { get; private set; } = 12f;
+    [field: Tooltip("Fuerza del salto diagonal cuando se sale de una pared vertical (>60º)")]
+    [field: SerializeField] public float WallJumpForce { get; private set; } = 15f;
+    [field: Tooltip("Ángulo de salida de la tinta en paredes verticales (0° = vertical, 90° = horizontal)")]
+    [field: Range(0f, 90f)]
+    [field: SerializeField] public float WallJumpAngle { get; private set; } = 30f;
     [field: SerializeField] public GameObject InkDecalPrefab;
     [field: SerializeField] public LayerMask InkLayer;
     [field: SerializeField] public Transform GunOrigin;
