@@ -27,6 +27,8 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("Animator");
         DrawBackingProperty("mainCamera");
         DrawBackingProperty("aimCamera");
+        DrawBackingProperty("MouseSensitivity");
+        DrawBackingProperty("GamepadSensitivity");
         DrawBackingProperty("Health");
         DrawBackingProperty("Mat_Player");
 
@@ -41,6 +43,7 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("JumpForce");
         DrawBackingProperty("AccelerationTime");
         DrawBackingProperty("DecelerationTime");
+        DrawBackingProperty("CoyoteTime");
 
         //Ground Check
         EditorGUILayout.Space(10);
@@ -55,6 +58,8 @@ public class PlayerStateMachineEditor : Editor
         EditorGUILayout.Space(10);
         DrawHeader("SPLATOON & SHOOTING", Color.cyan);
         DrawBackingProperty("SwimSpeed");
+        DrawBackingProperty("WallJumpForce");
+        DrawBackingProperty("WallJumpAngle");
         DrawBackingProperty("InkDecalPrefab");
         DrawBackingProperty("InkLayer");
         DrawBackingProperty("GunOrigin");
@@ -195,7 +200,7 @@ public class PlayerStateMachineEditor : Editor
         // Intentamos buscar la propiedad con el nombre exacto (por si cambias a variables normales)
         SerializedProperty prop = serializedObject.FindProperty(propertyName);
 
-        // Si es null, buscamos el formato de backing field automático
+        // Si es null, buscamos el formato de backing field automï¿½tico
         if (prop == null)
         {
             prop = serializedObject.FindProperty($"<{propertyName}>k__BackingField");

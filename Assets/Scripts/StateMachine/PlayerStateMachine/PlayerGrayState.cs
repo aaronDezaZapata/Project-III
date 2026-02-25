@@ -79,7 +79,7 @@ public class PlayerGrayState : PlayerBaseState
     
     private void OnJump()
     {
-        if (!stateMachine.Controller.isGrounded) return;
+        if (!CanJump()) return;
         stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();
     }

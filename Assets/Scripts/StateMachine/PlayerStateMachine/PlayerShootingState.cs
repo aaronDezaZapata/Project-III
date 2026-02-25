@@ -153,7 +153,6 @@ public class PlayerShootingState : PlayerBaseState
     
     private bool TryGetBallisticVelocity(Vector3 origin, Vector3 target, float time, out Vector3 velocity)
     {
-        
         float g = Physics.gravity.y;
         time = Mathf.Max(0.05f, time);
         Vector3 delta = target - origin;
@@ -168,9 +167,10 @@ public class PlayerShootingState : PlayerBaseState
     {
         Vector2 lookInput = stateMachine.InputReader.LookVector;
 
-        // Sensibilidad (ajusta estos valores en PlayerStateMachine si quieres)
-        float hSens = 150f;
-        float vSens = 100f;
+        // Sensibilidad = valor base * sensibilidad del dispositivo actual (ratón o gamepad)
+        float currentSensitivity = stateMachine.GetCurrentCameraSensitivity();
+        float hSens = stateMachine.HorizontalSensitivity * currentSensitivity;
+        float vSens = stateMachine.VerticalSensitivity * currentSensitivity;
 
         // Rotación horizontal - rota al jugador
         _rotationX += lookInput.x * hSens * deltaTime;
@@ -180,7 +180,7 @@ public class PlayerShootingState : PlayerBaseState
 
         // Rotación vertical (opcional) - para inclinar la cámara
         _rotationY -= lookInput.y * vSens * deltaTime;
-        _rotationY = Mathf.Clamp(_rotationY, -30f, 60f);
+        _rotationY = Mathf.Clamp(_rotationY, stateMachine.MinVerticalAngle, stateMachine.MaxVerticalAngle);
         // Aquí aplicarías _rotationY a un pivot de cámara si lo necesitas
     }
 

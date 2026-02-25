@@ -9,6 +9,11 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public Vector2 MoveVector { get; private set; }
     public Vector2 LookVector { get; private set; }
+    
+    /// <summary>
+    /// True si el último input de Look vino de un gamepad, false si vino del ratón
+    /// </summary>
+    public bool IsUsingGamepad { get; private set; }
 
     public bool isAiming { get; private set; }
     public bool IsFiring { get; private set; }
@@ -71,6 +76,16 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public void OnLook(InputAction.CallbackContext context)
     {
         LookVector = context.ReadValue<Vector2>();
+        
+        // Detectar el dispositivo de entrada
+        if (context.control.device is UnityEngine.InputSystem.Mouse)
+        {
+            IsUsingGamepad = false;
+        }
+        else if (context.control.device is UnityEngine.InputSystem.Gamepad)
+        {
+            IsUsingGamepad = true;
+        }
     }
 
     public void OnMove(InputAction.CallbackContext context)
