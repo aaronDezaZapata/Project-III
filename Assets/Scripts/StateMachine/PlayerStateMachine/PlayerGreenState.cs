@@ -28,6 +28,8 @@ public class PlayerGreenState : PlayerBaseState
     private const float EnergyBoost = 0.2f; 
     private const float MinAngularVelocity = 1.5f; 
 
+    bool isJumping = false;
+
     public PlayerGreenState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
     }
@@ -69,6 +71,7 @@ public class PlayerGreenState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
+        stateMachine.CheckGrounded();
         if (stateMachine.InputReader.isColorActing)
         {
             // Si el whip ya intentó ejecutarse y no encontró objetivos,
@@ -92,7 +95,14 @@ public class PlayerGreenState : PlayerBaseState
         }
         
         Vector3 movement = stateMachine.CalculateMovement();
-        
+
+        float jumpTime = GetNormalizedTime(stateMachine.Animator, "Jump");
+
+        if (jumpTime > 0.98f)
+        {
+            stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
+        }
+
         stateMachine.Animator.SetFloat(FreeLookSpeedHash, movement.magnitude, AnimatorDampTime, deltaTime);
         
         if (!Equals(movement, Vector3.zero))
@@ -152,7 +162,8 @@ public class PlayerGreenState : PlayerBaseState
     
     private void OnJump()
     {
-        if (!CanJump()) return;
+        if (!stateMachine.isGrounded) return;
+        isJumping = true;
         stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();
     }

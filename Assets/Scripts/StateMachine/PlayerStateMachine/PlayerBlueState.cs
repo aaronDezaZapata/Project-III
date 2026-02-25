@@ -13,6 +13,8 @@ public class PlayerBlueState : PlayerBaseState
     
     private const float AnimatorDampTime = 0.1f;
     private const float CrossFadeDuration = 0.1f;
+
+    bool isJumping;
     
     public PlayerBlueState(PlayerStateMachine stateMachine) : base(stateMachine)
     { }
@@ -33,10 +35,12 @@ public class PlayerBlueState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
+        stateMachine.CheckGrounded();
         if (stateMachine.InputReader.isColorActing)
         {
             stateMachine.SwitchState(typeof(PlayerHeiserState));
         }
+
         
         // Aim
         if (stateMachine.InputReader.isAiming)
@@ -46,7 +50,14 @@ public class PlayerBlueState : PlayerBaseState
         }
         
         Vector3 movement = stateMachine.CalculateMovement();
-        
+
+        float jumpTime = GetNormalizedTime(stateMachine.Animator, "Jump");
+
+        if(jumpTime > 0.98f)
+        {
+            stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
+        }
+
         stateMachine.Animator.SetFloat(FreeLookSpeedHash, movement.magnitude, AnimatorDampTime, deltaTime);
         
         if (!Equals(movement, Vector3.zero))
@@ -75,7 +86,8 @@ public class PlayerBlueState : PlayerBaseState
     
     private void OnJump()
     {
-        if (!CanJump()) return;
+        if (!stateMachine.isGrounded) return;
+        isJumping = true;
         stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();
     }
