@@ -61,8 +61,6 @@ public class PlayerFreeLookState : PlayerBaseState
         lastInputMagnitude = 0f;
     }
 
-
-
     public override void Tick(float deltaTime)
     {
         stateMachine.CheckGrounded();
@@ -112,7 +110,6 @@ public class PlayerFreeLookState : PlayerBaseState
         lastSpeed = currentInputMagnitude;
         lastInputMagnitude = currentInputMagnitude;
     }
-
 
     private void HandleBlendTreeTransition(float inputMagnitude)
     {
@@ -175,6 +172,4 @@ public class PlayerFreeLookState : PlayerBaseState
         
         orbitalFollow.RadialAxis.Value = orbitalFollow.RadialAxis.Center;
     }
-
-    
 }

@@ -93,75 +93,33 @@ public class PlayerDashAttackState : PlayerBaseState
         }
     }
     
-    /// <summary>
-    /// Busca el enemigo pintado más cercano
-    /// </summary>
     private Transform FindNearestPaintedEnemy()
     {
         if(GameManager.Instance.enemiesPainted.Count == 0) return null;
         List<PaintableEnemy> allPaintableEnemies = GameManager.Instance.enemiesPainted;
         
         Transform nearest = null;
-
+        
         float minDistanceSqr = Mathf.Infinity; 
         Vector3 currentPos = stateMachine.transform.position;
-
         
         foreach (PaintableEnemy enemy in allPaintableEnemies)
         {
-            
             if (enemy == null) continue;
 
             // Calculamos la distancia
             Vector3 dirToEnemy = enemy.transform.position - currentPos;
             float dSqrToTarget = dirToEnemy.sqrMagnitude;
-
             
             if (dSqrToTarget < minDistanceSqr)
             {
-                minDistanceSqr = dSqrToTarget; // Nueva distancia minima
-                nearest = enemy.transform;     // Nuevo enemigo mas cercano
+                minDistanceSqr = dSqrToTarget; // New Closest Enemy
+                nearest = enemy.transform;     // Closest Enemy
             }
         }
-
-        
         return nearest;
-
-        /*float nearestDistance = stateMachine.DashAttackMaxRange;
-
-        foreach (PaintableEnemy paintable in allPaintableEnemies)
-        {
-            if (!paintable.IsPainted) continue;
-            if (!paintable.gameObject.activeInHierarchy) continue;
-
-            float distance = Vector3.Distance(stateMachine.transform.position, paintable.transform.position);
-
-            if (distance < nearestDistance)
-            {
-                // Verificar línea de visión
-                Vector3 directionToEnemy = paintable.transform.position - stateMachine.transform.position;
-
-                if (!Physics.Raycast(
-                    stateMachine.transform.position + Vector3.up,
-                    directionToEnemy.normalized,
-                    distance,
-                    stateMachine.GrappleObstacleLayer)) // Usar la misma máscara de obstáculos
-                {
-                    nearest = paintable.transform;
-                    nearestDistance = distance;
-                }
-            }
-        }*/
-        /*
-        nearest = allPaintableEnemies[0].transform;
-
-        return nearest;
-        */
     }
 
-    /// <summary>
-    /// Maneja la colisión con el enemigo
-    /// </summary>
     private void OnHitEnemy()
     {
         hasHitTarget = true;
@@ -189,9 +147,6 @@ public class PlayerDashAttackState : PlayerBaseState
         stateMachine.SwitchState(typeof(PlayerFreeLookState));
     }
     
-    /// <summary>
-    /// Aplica el impulso de rebote al jugador
-    /// </summary>
     private void ApplyKnockback()
     {
         // Calcular dirección opuesta al enemigo

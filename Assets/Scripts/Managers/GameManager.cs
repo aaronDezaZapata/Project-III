@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     
     public List<PaintableEnemy> enemiesPainted;
 
+    public GameObject paintBeacon;
+
     private Transform currentCheckPoint;
 
     private void Awake()
@@ -57,6 +59,5 @@ public class GameManager : MonoBehaviour
 
         player.transform.position = currentCheckPoint.transform.position;
         player.transform.rotation = currentCheckPoint.transform.rotation;
-
     }
 }
