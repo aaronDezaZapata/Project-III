@@ -138,7 +138,8 @@ public class PlayerFreeLookState : PlayerBaseState
     // CHECKER IF WE HAVE A PAINTED ENEMY
     private bool HasNearbyPaintedEnemy()
     {
-        return GameManager.Instance.enemiesPainted.Count > 0;
+        GameManager gm = GameManager.Instance;
+        return gm.enemiesPainted.Count > 0 || gm.paintBeacon;
     }
     
     private void FaceMovementDirection(Vector3 movement, float deltaTime)

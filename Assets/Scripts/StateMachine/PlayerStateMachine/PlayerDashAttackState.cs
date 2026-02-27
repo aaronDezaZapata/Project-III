@@ -17,7 +17,7 @@ public class PlayerDashAttackState : PlayerBaseState
     {
         Debug.Log("Entered PlayerDashAttackState");
         
-        targetEnemy = FindNearestPaintedEnemy();
+        targetEnemy = FindNearestPaintedTarget();
         
         if (targetEnemy == null)
         {
@@ -93,9 +93,19 @@ public class PlayerDashAttackState : PlayerBaseState
         }
     }
     
-    private Transform FindNearestPaintedEnemy()
+    private Transform FindNearestPaintedTarget()
     {
-        if(GameManager.Instance.enemiesPainted.Count == 0) return null;
+        Transform currentPaintBeacon = GameManager.Instance.paintBeacon.transform;
+        
+        if (GameManager.Instance.enemiesPainted.Count == 0)
+        {
+            if (currentPaintBeacon != null)
+            {
+                return currentPaintBeacon;
+            }
+            return null;
+        }
+        
         List<PaintableEnemy> allPaintableEnemies = GameManager.Instance.enemiesPainted;
         
         Transform nearest = null;
