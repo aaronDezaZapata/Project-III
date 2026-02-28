@@ -10,9 +10,6 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public Vector2 MoveVector { get; private set; }
     public Vector2 LookVector { get; private set; }
     
-    /// <summary>
-    /// True si el último input de Look vino de un gamepad, false si vino del ratón
-    /// </summary>
     public bool IsUsingGamepad { get; private set; }
 
     public bool isAiming { get; private set; }
@@ -30,6 +27,8 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public event Action DiveEvent;
     public event Action InteractionEvent;
     public event Action DashAttackEvent;
+
+    public static event Action<bool> OnAiming; 
 
     void Start()
     {
@@ -116,6 +115,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         else if (context.canceled)
             {isAiming = false;}
         
+        OnAiming?.Invoke(isAiming);
         Debug.Log("isAiming");
     }
 

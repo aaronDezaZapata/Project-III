@@ -13,8 +13,6 @@ public class PlayerShootingState : PlayerBaseState
     }
 
     private float _nextFireTime;
-    private Vector3 _currentHitPoint;
-    private bool _hasHitTarget;
 
     private float _rotationX;
     private float _rotationY;
@@ -43,8 +41,6 @@ public class PlayerShootingState : PlayerBaseState
         
         HandleLookRotation(deltaTime);
         
-        // UpdateReticlePosition();
-        
         HandleAimMovement(deltaTime);
 
         
@@ -63,83 +59,13 @@ public class PlayerShootingState : PlayerBaseState
             stateMachine.ReticleTransform.gameObject.SetActive(false);
     }
 
-    private void UpdateReticlePosition()
-    {
-        if (stateMachine.ReticleTransform == null) return;
-
-        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f)); // Centro pantalla
-
-        
-        bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, stateMachine.MaxAimDistance, stateMachine.AimLayerMask);
-
-        if (hit)
-        {
-            _hasHitTarget = true;
-            _currentHitPoint = hitInfo.point;
-
-            
-            stateMachine.ReticleTransform.position = hitInfo.point + hitInfo.normal * stateMachine.ReticleSurfaceOffset;
-
-            stateMachine.ReticleTransform.gameObject.SetActive(true);
-
-            stateMachine.ReticleTransform.rotation = Quaternion.LookRotation(hitInfo.normal);
-        }
-        else
-        {
-            _hasHitTarget = false;
-            
-            _currentHitPoint = ray.GetPoint(stateMachine.MaxAimDistance);
-
-            
-            stateMachine.ReticleTransform.gameObject.SetActive(false);
-
-            
-            stateMachine.ReticleTransform.position = _currentHitPoint;
-            stateMachine.ReticleTransform.rotation = Quaternion.LookRotation(-ray.direction);
-        }
-    }
-
     private void Shoot()
     {
-        // Primero verificar si hay objetos SMALL absorbidos en el StateMachine
-        if (stateMachine.HasAbsorbedSmallObjects())
-        {
-            // Obtener el primer objeto de la lista
-            AbsorbableObject obj = stateMachine.GetFirstAbsorbedObject();
-            
-            if (obj != null)
-            {
-                // Posicionar objeto frente al jugador
-                obj.transform.position = stateMachine.transform.position 
-                    + Vector3.up * 1.5f 
-                    + stateMachine.transform.forward * 2f;
-                
-                // Restaurar tamaño original
-                obj.transform.localScale = Vector3.one;
-                
-                // Dirección de disparo (hacia donde apunta la cámara)
-                Vector3 shootDirection = Camera.main.transform.forward;
-                shootDirection.Normalize();
-                
-                // Disparar el objeto
-                obj.ShootAsProjectile(shootDirection, stateMachine.GrayProjectileSpeedMultiplier);
-                
-                // Remover de la lista
-                stateMachine.RemoveFirstAbsorbedObject();
-                
-                Debug.Log("Disparado objeto SMALL absorbido");
-                return;
-            }
-        }
-        
-        // Disparo normal de tinta
         if (stateMachine.ProjectilePrefab == null || stateMachine.FirePoint == null) return;
         
-       
         Rigidbody proj = UnityEngine.Object.Instantiate(stateMachine.ProjectilePrefab, stateMachine.FirePoint.position, Quaternion.identity);
-
-        Vector3 direction = (_currentHitPoint - stateMachine.FirePoint.position).normalized;
-
+        
+        Vector3 direction = Camera.main.transform.forward;
 
         proj.linearVelocity = direction * speed;
         proj.useGravity = true;
@@ -148,7 +74,7 @@ public class PlayerShootingState : PlayerBaseState
         {
             inkProjectile.Initialize(stateMachine); 
         }
-        
+        // Debug.Break();
     }
     
     private bool TryGetBallisticVelocity(Vector3 origin, Vector3 target, float time, out Vector3 velocity)
