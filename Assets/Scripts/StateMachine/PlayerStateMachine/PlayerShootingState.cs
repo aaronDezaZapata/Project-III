@@ -43,7 +43,7 @@ public class PlayerShootingState : PlayerBaseState
         
         HandleLookRotation(deltaTime);
         
-        UpdateReticlePosition();
+        // UpdateReticlePosition();
         
         HandleAimMovement(deltaTime);
 
