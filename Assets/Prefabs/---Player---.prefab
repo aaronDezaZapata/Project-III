@@ -89,7 +89,7 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 2
+  m_Height: 1.8
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
@@ -108,7 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bddc0e645e548da40bbcd861d027e531, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerState: 2
+  playerState: 0
   <InputReader>k__BackingField: {fileID: 7967625473166846616}
   <Controller>k__BackingField: {fileID: 6987920545998890324}
   <ForceReceiver>k__BackingField: {fileID: 5816333734058023856}
@@ -117,14 +117,22 @@ MonoBehaviour:
   <aimCamera>k__BackingField: {fileID: 819250276293194355}
   <Health>k__BackingField: {fileID: 2416829624496613863}
   <Mat_Player>k__BackingField: {fileID: 1625049297234966129}
+  <MouseSensitivity>k__BackingField: 0.1
+  <GamepadSensitivity>k__BackingField: 3
   <FreeLookMovementSpeed>k__BackingField: 12
   <AbsorbingMovementSpeed>k__BackingField: 7
   <RotationSpeed>k__BackingField: 3
   <DashDuration>k__BackingField: 0.22
   <DashLength>k__BackingField: 0.63
-  <JumpForce>k__BackingField: 12
+  <JumpForce>k__BackingField: 16
+  <HasDoubleJump>k__BackingField: 1
+  <DoubleJumpForce>k__BackingField: 15
+  <CoyoteTime>k__BackingField: 0.15
   <AccelerationTime>k__BackingField: 0.1
   <DecelerationTime>k__BackingField: 0.1
+  <DirectionChangeThreshold>k__BackingField: 90
+  <QuickStopTime>k__BackingField: 0.05
+  <QuickStopSpeedThreshold>k__BackingField: 0.3
   groundCheckDistance: 0.99
   groundCheckRadius: 0.45
   groundMask:
@@ -133,6 +141,8 @@ MonoBehaviour:
   groundCheckOrigin: {fileID: 8052952328557870496}
   isGrounded: 0
   <SwimSpeed>k__BackingField: 12
+  <WallJumpForce>k__BackingField: 60
+  <WallJumpAngle>k__BackingField: 30
   InkDecalPrefab: {fileID: 6003062172566789636, guid: 4936e89ea5ec69143bb964a143f192b9, type: 3}
   InkLayer:
     serializedVersion: 2
@@ -181,7 +191,7 @@ MonoBehaviour:
   <Water_JetParticle>k__BackingField: {fileID: 0}
   <WaterHeiserParticle>k__BackingField: {fileID: 2538796581859691256}
   <WaterHeiserParticleSecond>k__BackingField: {fileID: 2938504528476204852}
-  <ProjectilePrefab>k__BackingField: {fileID: 1614819613750782360, guid: c3872cc97262bfb428bb4f31bc82f215, type: 3}
+  <ProjectilePrefab>k__BackingField: {fileID: 1614819613750782360, guid: 8b08db91edd674949bcfa6d5ad89a16f, type: 3}
   <FireCooldown>k__BackingField: 0.15
   <ProjectileFlightTime>k__BackingField: 0.6
   <PaintableLayer>k__BackingField:
@@ -206,7 +216,6 @@ MonoBehaviour:
   <DashAttackCollisionRadius>k__BackingField: 1.5
   <DashAttackKnockbackForce>k__BackingField: 8
   <DashAttackVerticalKnockback>k__BackingField: 5
-  <DashAttackDamage>k__BackingField: 1
 --- !u!114 &5816333734058023856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -601,7 +610,7 @@ Transform:
   m_GameObject: {fileID: 5242705275377987743}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.46, y: 0, z: 1.06}
+  m_LocalPosition: {x: -0.072, y: 0.324, z: 1.47}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -718,7 +727,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isActive: 0
   playerStateMachine: {fileID: 8526194884507870142}
-  sensitivity: 120
+  baseSensitivity: 120
   minPitch: -60
   maxPitch: 80
 --- !u!1 &7575750637447163079
@@ -750,7 +759,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7575750637447163079}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.21239214, y: 8.3618034e-19, z: 2.9240915e-19, w: 0.97718453}
+  m_LocalRotation: {x: 0.21239232, y: 0.000000031485325, z: -0.0000000068433756, w: 0.97718453}
   m_LocalPosition: {x: 0, y: 4.12, z: -9.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
