@@ -446,12 +446,9 @@ public class PlayerStateMachine : StateMachine
                 break;
 
             default:
-
                 break;
-        
         }
     }
-
 
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
@@ -464,11 +461,8 @@ public class PlayerStateMachine : StateMachine
 
                 default : break;
         }
-        
-
-
-        
     }
+    
     public void ReturnToMainState()
     {
         switch (playerState)
@@ -583,7 +577,6 @@ public class PlayerStateMachine : StateMachine
     {
         return InputReader.IsUsingGamepad ? GamepadSensitivity : MouseSensitivity;
     }
-
 
     private void OnDrawGizmosSelected()
     {
