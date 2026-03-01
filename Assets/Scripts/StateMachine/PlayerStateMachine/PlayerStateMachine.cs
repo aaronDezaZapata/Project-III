@@ -51,6 +51,14 @@ public class PlayerStateMachine : StateMachine
 
     [field: SerializeField] public float JumpForce { get; private set; }
     
+    [field: Header("Double Jump Settings")]
+    [field: Tooltip("¿El jugador tiene habilitado el doble salto?")]
+    [field: SerializeField] public bool HasDoubleJump { get; private set; } = true;
+    
+    [field: Tooltip("Fuerza del segundo salto")]
+    [field: SerializeField] public float DoubleJumpForce { get; private set; } = 15f;
+    
+    [field: Header("Jump Timing")]
     [field: Tooltip("Tiempo tras dejar el suelo en el que aún se puede saltar (segundos)")]
     [field: SerializeField] public float CoyoteTime { get; private set; } = 0.15f;
 
@@ -77,7 +85,7 @@ public class PlayerStateMachine : StateMachine
     public bool isGrounded;
 
 
-    [field: Header("Splatoon Mechanics")]
+    [field: Header("Swim Mechanics")]
     [field: SerializeField] public float SwimSpeed { get; private set; } = 12f;
     [field: Tooltip("Fuerza del salto diagonal cuando se sale de una pared vertical (>60º)")]
     [field: SerializeField] public float WallJumpForce { get; private set; } = 15f;
@@ -157,15 +165,20 @@ public class PlayerStateMachine : StateMachine
 
     [Tooltip("Velocidad a la que el enemigo es capturado")]
     [field: SerializeField] public float WhipCaptureSpeed { get; private set; } = 20f;
-
-
+    
+    // TODO: Remove
+    // No hay Gray
     [Header("Gray Vacuum Mechanics")]
     [Tooltip("¿El jugador tiene habilitada la habilidad gris?")]
     [field: SerializeField] public bool HasGrayAbility { get; private set; } = true;
-
+    
+    // TODO: Remove
+    // No hay Gray
     [Tooltip("Capa de objetos que pueden ser absorbidos")]
     [field: SerializeField] public LayerMask AbsorbableLayer { get; private set; }
 
+    // TODO: Remove
+    // No hay Gray
     [Header("Gray Absorption Settings")]
     [Tooltip("Rango de absorción (metros)")]
     [field: SerializeField] public float GrayAbsorbRange { get; private set; } = 8f;
@@ -174,35 +187,47 @@ public class PlayerStateMachine : StateMachine
     [Range(30f, 180f)]
     [field: SerializeField] public float GrayAbsorbAngle { get; private set; } = 90f;
 
+    // TODO: Remove
+    // No hay Gray
     [Tooltip("Velocidad de absorción base")]
     [field: SerializeField] public float GrayAbsorbSpeed { get; private set; } = 5f;
 
+    // TODO: Remove
+    // No hay Gray
     [Tooltip("Máximo de objetos absorbiendo simultáneamente")]
     [Range(1, 10)]
     [field: SerializeField] public int GrayMaxSimultaneousAbsorb { get; private set; } = 3;
 
+    // TODO: Remove
+    // No hay Gray
     [Header("Gray Holding Settings")]
     [Tooltip("Altura a la que se sostienen objetos grandes")]
     [field: SerializeField] public float GrayHoldHeight { get; private set; } = 1.5f;
 
+    // TODO: Remove
+    // No hay Gray
     [Tooltip("Distancia desde el jugador de objetos grandes")]
     [field: SerializeField] public float GrayHoldDistance { get; private set; } = 2f;
 
+    // TODO: Remove
+    // No hay Gray
     [Header("Gray Projectile Settings")]
     [Tooltip("Multiplicador de velocidad de proyectiles")]
     [field: SerializeField] public float GrayProjectileSpeedMultiplier { get; private set; } = 1.5f;
 
+    // TODO: Remove
+    // No hay Gray
     [Header("Gray Visual")]
     [Tooltip("Sistema de partículas de absorción")]
     [field: SerializeField] public ParticleSystem GrayAbsorbParticles { get; private set; }
-
+    
+    // TODO: Remove
+    // No hay Gray
     [Header("Gray Absorbed Objects")]
     [Tooltip("Lista de objetos SMALL absorbidos (máximo 3)")]
     public List<AbsorbableObject> absorbedObjects = new List<AbsorbableObject>();
 
     public const int MaxAbsorbedSmallObjects = 3;
-
-    #endregion
 
     [Header("References")]
 
@@ -222,6 +247,8 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public float MinVerticalAngle = -60f;
     [field: SerializeField] public float MaxVerticalAngle = 60f;
 
+    // TODO: Remove
+    // Reticula cambiada
     [field: Header("Reticle Config")]
     [field: SerializeField] public Transform ReticleTransform { get; private set; } // El objeto visual de la mira
     [field: SerializeField] public float MaxAimDistance { get; private set; } = 80f;
@@ -229,12 +256,17 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public float ReticleSurfaceOffset { get; private set; } = 0.02f;
 
     [field: Header("Heiser")]
-    [field: SerializeField] public float HoverForce { get; private set; } = 15f; // subir mas/menos rapido
+    [field: SerializeField] public float HoverForce { get; private set; } = 15f;
     [field: SerializeField] public float aerialMoveSpeed { get; private set; } = 10f;
-
-    // Esta variable controla que solo se use una vez por aire
+    
     public bool CanHeiser { get; set; } = true;
-
+    
+    /// <summary>
+    /// Dash variables
+    /// </summary>
+    
+    // TODO: Remove
+    // Ya no hay combate
     [field: Header("Black Dash Attack (Painted Enemy)")]
     [Tooltip("¿El jugador tiene habilitado el dash attack a enemigos pintados?")]
     [field: SerializeField] public bool HasDashAttack { get; private set; } = true;
@@ -253,10 +285,8 @@ public class PlayerStateMachine : StateMachine
 
     [Tooltip("Fuerza del impulso vertical tras golpear")]
     [field: SerializeField] public float DashAttackVerticalKnockback { get; private set; } = 5f;
-
-    [Tooltip("Daño causado al enemigo")]
-    [field: SerializeField] public int DashAttackDamage { get; private set; } = 1;
-
+    
+    #endregion
 
 
     private void Start()
@@ -289,9 +319,7 @@ public class PlayerStateMachine : StateMachine
         mainCamera.GetComponent<CinemachineBasicMultiChannelPerlin>().AmplitudeGain = 5f;
         mainCamera.GetComponent<CinemachineBasicMultiChannelPerlin>().FrequencyGain = 2f;
         float elapsed = 0f;
-
-
-        // Gradually reduce shake over time
+        
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
@@ -302,8 +330,9 @@ public class PlayerStateMachine : StateMachine
         mainCamera.GetComponent<CinemachineBasicMultiChannelPerlin>().AmplitudeGain = 0f;
         mainCamera.GetComponent<CinemachineBasicMultiChannelPerlin>().FrequencyGain = 0f;
     }
-
-    void HandleTakeDamage()
+    
+    // TODO: Remove
+    /*void HandleTakeDamage()
     {
         //SwitchState(PlayerImpactState);
     }
@@ -311,16 +340,13 @@ public class PlayerStateMachine : StateMachine
     void HandleDie()
     {
         // SwitchState( PlayerDeadState);
-    }
+    }*/
 
 
     public void CheckForInk()
     {
-        //  Usamos el centro real del CharacterController en el mundo, no los pies.
-
         Vector3 detectionOrigin = transform.TransformPoint(Controller.center);
-
-        // 2. RADIO: 0.7f u 0.8f esta bien.
+        
         Collider[] hitColliders = Physics.OverlapSphere(detectionOrigin, 0.7f, InkLayer);
 
         if (hitColliders.Length > 0)
@@ -328,17 +354,13 @@ public class PlayerStateMachine : StateMachine
             IsOnInk = true;
 
             RaycastHit hit;
-
-            // Lanzamos el rayo también desde el centro para mayor precisión
-            // "detectionOrigin" es el centro del cuerpo.
-            // "-transform.up" busca la superficie bajo nuestros pies/ventosa.
+            
             if (Physics.Raycast(detectionOrigin, -transform.up, out hit, 1.5f, InkLayer))
             {
                 CurrentInkNormal = hit.normal;
             }
             else
             {
-                // Si el rayo falla (común en esquinas raras), usamos tu truco del forward del decal
                 CurrentInkNormal = hitColliders[0].transform.forward * -1f;
             }
         }
@@ -353,53 +375,13 @@ public class PlayerStateMachine : StateMachine
     public void PaintSurface(Vector3 point, Vector3 normal)
     {
         if (InkDecalPrefab == null) return;
-
-        // Lógica traída de InkDecalPainter
+        
         Quaternion alignmentRotation = Quaternion.FromToRotation(Vector3.up, normal);
-        Quaternion fixRotation = Quaternion.Euler(90f, 0f, 0f); // Ajuste si tu decal está rotado
+        Quaternion fixRotation = Quaternion.Euler(90f, 0f, 0f);
         Quaternion finalRotation = alignmentRotation * fixRotation;
 
         GameObject splat = Instantiate(InkDecalPrefab, point, finalRotation);
         splat.transform.position += normal * ReticleSurfaceOffset;
-    }
-
-    // Helper para instanciar tinta (llamado desde los estados)
-    public void ShootInk()
-    {
-        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
-        RaycastHit hit;
-
-        int layerMask = ~LayerMask.GetMask("Player", "Ink", "UI");
-
-        if (Physics.Raycast(ray, out hit, 100f, layerMask))
-        {
-
-            Quaternion alignmentRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-
-
-            // Esto voltea el objeto para que su Eje Z (el de proyección) mire hacia la superficie
-            Quaternion fixRotation = Quaternion.Euler(90f, 0f, 0f);
-
-            //Primero alinear, luego voltear el eje de proyección
-            Quaternion finalRotation = alignmentRotation * fixRotation;
-
-
-            GameObject splat = Instantiate(InkDecalPrefab, hit.point, finalRotation);
-
-            // Pequeño offset para evitar Z-Fighting visual
-            splat.transform.position += hit.normal * 0.01f;
-        }
-    }
-
-    public void SetGreenAbility(bool enabled)
-    {
-        HasGreenAbility = enabled;
-
-        // Si se desactiva mientras está en uso, salir del estado
-        if (!enabled && currentState is PlayerGreenState)
-        {
-            SwitchState(typeof(PlayerFreeLookState));
-        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -424,14 +406,15 @@ public class PlayerStateMachine : StateMachine
                     Mat_Player.material.SetColor("_SpecularColor", blackColor);
                 }
                 break;
-
-            case "CharcoGris":
+            
+            // TODO: Remove
+            /*case "CharcoGris":
                 SwitchState(typeof(PlayerGrayState));
                 if (Mat_Player != null)
                 {
                     Mat_Player.material.SetColor("_SpecularColor", Color.grey);
                 }
-                break;
+                break;*/
 
             case "CharcoVerde":
                 SwitchState(typeof(PlayerGreenState));
@@ -458,7 +441,6 @@ public class PlayerStateMachine : StateMachine
             case "Insta":
                 GameManager.Instance.PlayerDeath();
                 break;
-
                 default : break;
         }
     }
@@ -476,9 +458,10 @@ public class PlayerStateMachine : StateMachine
             case PlayerStates.GREEN:
                 SwitchState(typeof(PlayerGreenState));
                 break;
-            case PlayerStates.GREY:
+            // TODO: Remove
+            /*case PlayerStates.GREY:
                 SwitchState(typeof(PlayerGrayState));
-                break;
+                break;*/
         }
     }
     
@@ -515,7 +498,6 @@ public class PlayerStateMachine : StateMachine
             transform.rotation,
             Quaternion.LookRotation(movement),
             deltaTime * RotationSpeed);
-
     }
 
     public void FaceMovementDirectionInstant(Vector3 movement)
@@ -527,7 +509,7 @@ public class PlayerStateMachine : StateMachine
         }
     }
 
-    #region Gray Absorbed Objects Management
+    /*#region Gray Absorbed Objects Management
 
     /// <summary>
     /// Añade un objeto SMALL a la lista de absorbidos (máximo 3)
@@ -571,7 +553,7 @@ public class PlayerStateMachine : StateMachine
         }
     }
 
-    #endregion
+    #endregion*/
 
     public float GetCurrentCameraSensitivity()
     {

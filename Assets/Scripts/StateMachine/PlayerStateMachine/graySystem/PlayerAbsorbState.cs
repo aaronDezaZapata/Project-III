@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// TODO: Remove
+// Remove the hole script and its dependencies.
 public class PlayerAbsorbState : PlayerBaseState
 {
     private readonly int Vacuum = Animator.StringToHash("Vacuum");
@@ -233,7 +235,7 @@ public class PlayerAbsorbState : PlayerBaseState
         {
             case AbsorbableObject.AbsorbableSize.Small:
                 // Añadir a la lista del StateMachine
-                stateMachine.TryAddAbsorbedObject(obj);
+                // stateMachine.TryAddAbsorbedObject(obj);
                 break;
                 
             case AbsorbableObject.AbsorbableSize.Large:
