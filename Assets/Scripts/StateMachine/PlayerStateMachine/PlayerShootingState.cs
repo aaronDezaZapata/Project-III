@@ -74,7 +74,6 @@ public class PlayerShootingState : PlayerBaseState
         {
             inkProjectile.Initialize(stateMachine); 
         }
-        // Debug.Break();
     }
     
     private bool TryGetBallisticVelocity(Vector3 origin, Vector3 target, float time, out Vector3 velocity)
