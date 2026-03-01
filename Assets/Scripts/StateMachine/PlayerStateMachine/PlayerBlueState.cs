@@ -86,7 +86,7 @@ public class PlayerBlueState : PlayerBaseState
     
     private void OnJump()
     {
-        if (!stateMachine.isGrounded) return;
+        if (!CanJump()) return;
         isJumping = true;
         stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();

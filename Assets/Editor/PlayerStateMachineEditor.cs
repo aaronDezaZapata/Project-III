@@ -43,6 +43,10 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("JumpForce");
         DrawBackingProperty("AccelerationTime");
         DrawBackingProperty("DecelerationTime");
+        
+        DrawBackingProperty("HasDoubleJump");
+        DrawBackingProperty("DoubleJumpForce");
+        
         DrawBackingProperty("CoyoteTime");
 
         //Ground Check
