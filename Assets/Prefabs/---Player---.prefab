@@ -108,7 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bddc0e645e548da40bbcd861d027e531, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerState: 2
+  playerState: 0
   <InputReader>k__BackingField: {fileID: 7967625473166846616}
   <Controller>k__BackingField: {fileID: 6987920545998890324}
   <ForceReceiver>k__BackingField: {fileID: 5816333734058023856}
@@ -141,7 +141,7 @@ MonoBehaviour:
   groundCheckOrigin: {fileID: 8052952328557870496}
   isGrounded: 0
   <SwimSpeed>k__BackingField: 12
-  <WallJumpForce>k__BackingField: 60
+  <WallJumpForce>k__BackingField: 30
   <WallJumpAngle>k__BackingField: 30
   InkDecalPrefab: {fileID: 6003062172566789636, guid: 4936e89ea5ec69143bb964a143f192b9, type: 3}
   InkLayer:
@@ -211,7 +211,7 @@ MonoBehaviour:
   <HoverForce>k__BackingField: 60
   <aerialMoveSpeed>k__BackingField: 10
   <HasDashAttack>k__BackingField: 1
-  <DashAttackSpeed>k__BackingField: 25
+  <DashAttackSpeed>k__BackingField: 35
   <DashAttackMaxRange>k__BackingField: 20
   <DashAttackCollisionRadius>k__BackingField: 1.5
   <DashAttackKnockbackForce>k__BackingField: 8
