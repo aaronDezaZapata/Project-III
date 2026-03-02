@@ -17,8 +17,9 @@ public class InkProjectile : MonoBehaviour
     {
         if (done) return;
     
-        // Enemy detection
-        EnemyStateMachine enemyStateMachine = collision.gameObject.GetComponent<EnemyStateMachine>();
+        // TODO: Remove
+        // No hay enemigos
+        /*EnemyStateMachine enemyStateMachine = collision.gameObject.GetComponent<EnemyStateMachine>();
         if (enemyStateMachine != null)
         {
             PaintableEnemy paintable = collision.gameObject.GetComponent<PaintableEnemy>();
@@ -28,13 +29,12 @@ public class InkProjectile : MonoBehaviour
             }
 
             paintable.ApplyPaint();
-        }
+        }*/
         
         // Paint surface
         if ((decalLayerMask.value & (1 << collision.gameObject.layer)) == 0) return;
 
         ContactPoint cp = collision.GetContact(0);
-
         
         if (stateMachine != null)
         {

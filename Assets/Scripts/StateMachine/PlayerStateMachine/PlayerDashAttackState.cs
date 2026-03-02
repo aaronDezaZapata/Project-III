@@ -97,13 +97,16 @@ public class PlayerDashAttackState : PlayerBaseState
     {
         Transform currentPaintBeacon = GameManager.Instance.paintBeacon.transform;
         
-        if (GameManager.Instance.enemiesPainted.Count == 0)
+        if (currentPaintBeacon != null)
         {
-            if (currentPaintBeacon != null)
-            {
-                return currentPaintBeacon;
-            }
-            return null;
+            return currentPaintBeacon;
+        }
+        return null;
+        // TODO: Remove
+        // Ya no tenemos que hacer delimitacion de distancia de enemigos
+        /*if (GameManager.Instance.enemiesPainted.Count == 0)
+        {
+            
         }
         
         List<PaintableEnemy> allPaintableEnemies = GameManager.Instance.enemiesPainted;
@@ -127,7 +130,7 @@ public class PlayerDashAttackState : PlayerBaseState
                 nearest = enemy.transform;     // Closest Enemy
             }
         }
-        return nearest;
+        return nearest;*/
     }
 
     private void OnHitEnemy()

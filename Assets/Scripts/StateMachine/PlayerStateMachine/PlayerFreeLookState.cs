@@ -135,11 +135,11 @@ public class PlayerFreeLookState : PlayerBaseState
         stateMachine.mainCamera.Priority = -1;
     }
     
-    // CHECKER IF WE HAVE A PAINTED ENEMY
+    // TODO: Check a timer for a valid TP
+    // CHECKER IF WE HAVE A PAINTED BEACON
     private bool HasNearbyPaintedEnemy()
     {
-        GameManager gm = GameManager.Instance;
-        return gm.enemiesPainted.Count > 0 || gm.paintBeacon;
+        return GameManager.Instance.paintBeacon;
     }
     
     private void FaceMovementDirection(Vector3 movement, float deltaTime)

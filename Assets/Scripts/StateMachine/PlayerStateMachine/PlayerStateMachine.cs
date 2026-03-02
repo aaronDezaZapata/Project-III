@@ -381,6 +381,7 @@ public class PlayerStateMachine : StateMachine
         Quaternion finalRotation = alignmentRotation * fixRotation;
 
         GameObject splat = Instantiate(InkDecalPrefab, point, finalRotation);
+        GameManager.Instance.levelDecals.Add(splat);
         splat.transform.position += normal * ReticleSurfaceOffset;
     }
 
