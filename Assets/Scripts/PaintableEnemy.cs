@@ -41,7 +41,7 @@ public class PaintableEnemy : MonoBehaviour
         isPainted = true;
         paintTimer = paintDuration;
         
-        GameManager.Instance.AddPaintedEnemy(this);
+        // GameManager.Instance.AddPaintedEnemy(this);
 
         if (paintMaterial != null && enemyRenderer != null)
         {
@@ -52,7 +52,7 @@ public class PaintableEnemy : MonoBehaviour
     private void RemovePaint()
     {
         isPainted = false;
-        GameManager.Instance.RemovePaintedEnemy(this);
+        // GameManager.Instance.RemovePaintedEnemy(this);
         
         if (originalMaterial != null && enemyRenderer != null)
         {
