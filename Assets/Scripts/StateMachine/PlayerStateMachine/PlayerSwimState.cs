@@ -37,7 +37,7 @@ public class PlayerSwimState : PlayerBaseState
         swimVelocity = Vector3.zero;
 
         // Reset inicial
-        stateMachine.ForceReceiver.enabled = false;
+        // stateMachine.ForceReceiver.enabled = false;
     }
 
     public override void Tick(float deltaTime)
@@ -58,16 +58,8 @@ public class PlayerSwimState : PlayerBaseState
         }
         else
         {
-            // Si detectamos tinta, reseteamos el contador
             timeWithoutInk = 0f;
         }
-
-
-        /*if(Input.GetKeyDown(KeyCode.Space))
-        {
-            PerformInkJump();
-        }*/
-
         
         HandleSwimMovement(deltaTime);
     }
@@ -84,7 +76,7 @@ public class PlayerSwimState : PlayerBaseState
         // Al salir, rotamos suavemente hacia arriba global
         stateMachine.transform.rotation = Quaternion.FromToRotation(stateMachine.transform.up, Vector3.up) * stateMachine.transform.rotation;
 
-        stateMachine.ForceReceiver.enabled = true;
+        // stateMachine.ForceReceiver.enabled = true;
     }
 
     private void HandleSwimMovement(float deltaTime)
@@ -93,26 +85,18 @@ public class PlayerSwimState : PlayerBaseState
         Vector3 surfaceNormal = stateMachine.CurrentInkNormal;
 
         Vector3 cameraRight = Camera.main.transform.right;
-
-        // Proyectar el right de la cámara sobre la superficie (movimiento horizontal)
+        
         Vector3 rightProjected = Vector3.ProjectOnPlane(cameraRight, surfaceNormal).normalized;
 
-        // Para el movimiento vertical en la superficie, usamos el producto cruz
-        // rightProjected x surfaceNormal nos da un vector perpendicular a ambos,
-        // que está sobre la superficie y apunta "hacia arriba" a lo largo de la pared
         Vector3 upProjected = Vector3.Cross(surfaceNormal, rightProjected).normalized;
         
-        // Verificar que upProjected apunte generalmente hacia arriba
-        // Si apunta hacia abajo, invertirlo
         if (Vector3.Dot(upProjected, Vector3.up) < 0)
         {
             upProjected = -upProjected;
         }
-
-        // Calcular la dirección de movimiento
+        
         Vector3 moveDir = (upProjected * input.y + rightProjected * input.x);
         
-        // Solo normalizar si hay movimiento significativo
         if (moveDir.sqrMagnitude > 0.01f)
         {
             moveDir.Normalize();
@@ -141,8 +125,7 @@ public class PlayerSwimState : PlayerBaseState
         {
             swimVelocity = Vector3.MoveTowards(swimVelocity, Vector3.zero, 40f * deltaTime);
         }
-
-        //  GRAVEDAD DE ADHERENCIA
+        
         Vector3 stickForce = -surfaceNormal * 5f;
 
         stateMachine.Controller.Move((swimVelocity + stickForce) * deltaTime);
@@ -152,10 +135,8 @@ public class PlayerSwimState : PlayerBaseState
     {
         Vector3 surfaceNormal = stateMachine.CurrentInkNormal;
         
-        // Calcular el ángulo de la superficie respecto a la horizontal
         float surfaceAngle = Vector3.Angle(surfaceNormal, Vector3.up);
         
-        // Verificar si estamos en una pared vertical (>60º)
         bool isOnVerticalWall = surfaceAngle > 60f;
         
         Vector3 jumpDir;
@@ -163,17 +144,12 @@ public class PlayerSwimState : PlayerBaseState
         
         if (isOnVerticalWall)
         {
-            // Salto diagonal hacia afuera de la pared
-            // Usamos el ángulo configurable para determinar la dirección
             Vector3 outwardDir = surfaceNormal.normalized;
             Vector3 upwardDir = Vector3.up;
             
-            // Convertir el ángulo a radianes y calcular los componentes
-            // WallJumpAngle = 0° -> 100% vertical (solo hacia arriba)
-            // WallJumpAngle = 90° -> 100% horizontal (solo hacia afuera)
             float angleRad = stateMachine.WallJumpAngle * Mathf.Deg2Rad;
-            float horizontalComponent = Mathf.Sin(angleRad); // Componente hacia afuera
-            float verticalComponent = Mathf.Cos(angleRad);   // Componente hacia arriba
+            float horizontalComponent = Mathf.Sin(angleRad);
+            float verticalComponent = Mathf.Cos(angleRad);
             
             jumpDir = (outwardDir * horizontalComponent + upwardDir * verticalComponent).normalized;
             jumpForce = stateMachine.WallJumpForce;
@@ -182,7 +158,6 @@ public class PlayerSwimState : PlayerBaseState
         }
         else
         {
-            // Comportamiento normal para superficies horizontales o poco inclinadas
             Vector2 input = stateMachine.InputReader.MoveVector;
             
             if (input.magnitude > 0.1f)
@@ -212,6 +187,8 @@ public class PlayerSwimState : PlayerBaseState
 
     private void OnDiveExit()
     {
+        if(!stateMachine.ForceReceiver.isActiveAndEnabled)
+            stateMachine.ForceReceiver.enabled = true;
         stateMachine.ReturnToMainState();
     }
 }
