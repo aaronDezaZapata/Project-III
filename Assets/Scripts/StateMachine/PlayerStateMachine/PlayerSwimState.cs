@@ -36,6 +36,9 @@ public class PlayerSwimState : PlayerBaseState
 
         swimVelocity = Vector3.zero;
 
+        //Camera Pull Back
+        CameraManager.Instance.ChangeCameraSwimming(true);
+
         // Reset inicial
         // stateMachine.ForceReceiver.enabled = false;
     }
@@ -75,6 +78,9 @@ public class PlayerSwimState : PlayerBaseState
 
         // Al salir, rotamos suavemente hacia arriba global
         stateMachine.transform.rotation = Quaternion.FromToRotation(stateMachine.transform.up, Vector3.up) * stateMachine.transform.rotation;
+
+        //Camera Pull Front
+        CameraManager.Instance.ChangeCameraSwimming(false);
 
         // stateMachine.ForceReceiver.enabled = true;
     }
