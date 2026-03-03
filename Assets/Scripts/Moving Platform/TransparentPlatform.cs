@@ -8,6 +8,10 @@ public class TransparentPlatform : MonoBehaviour
     [Range(0f, 1f)] public float transparentAlpha = 0.2f;
     [Range(0f, 1f)] public float opaqueAlpha = 1f;
 
+    [Header("Materials")]
+    public Material transparentMaterial; 
+    public Material opaqueMaterial;
+
     private Renderer rend;
     private bool isPainted = false;
 
@@ -19,6 +23,8 @@ public class TransparentPlatform : MonoBehaviour
         rend = GetComponent<Renderer>();
 
         solidCollider.enabled = false;
+
+        rend.material = transparentMaterial;
 
         SetAlpha(transparentAlpha);
     }
@@ -37,6 +43,7 @@ public class TransparentPlatform : MonoBehaviour
         isPainted = true;
         solidCollider.enabled = true;
 
+        rend.material = opaqueMaterial;
 
         SetAlpha(opaqueAlpha);
     }
