@@ -36,6 +36,16 @@ public class GameManager : MonoBehaviour
         return player;
     }
 
+    public State GetPlayerState()
+    {
+        return GetPlayer().GetComponent<StateMachine>().GetCurrentState(); // ya existe en StateMachine.cs
+    }
+
+    public void SetPlayerState<T>() where T : State
+    {
+        GetPlayer().GetComponent<StateMachine>().SwitchState(typeof(T));
+    }
+
     public void RemoveCurrentDecals()
     {
         foreach (GameObject decal in levelDecals)

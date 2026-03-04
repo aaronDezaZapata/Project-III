@@ -304,6 +304,7 @@ public class PlayerStateMachine : StateMachine
         AddState(new PlayerWhipState(this));
         AddState(new PlayerGrayState(this));
         AddState(new PlayerAbsorbState(this));
+        AddState(new PlayerFlyState(this));
 
         // MUST BE PLAYERFREELOOK. CHANGES ONLY FOR TESTING
         SwitchState(typeof(PlayerFreeLookState));
