@@ -40,7 +40,7 @@ public class StateMachine : MonoBehaviour
         }
         else
         {
-            // --- NUEVO BLOQUE DE ERROR ---
+            
             // Si el estado no se encuentra lanzamos un error claro.
             Debug.LogError(
                 $"El estado '{newStateType.FullName}' no se encontró en el diccionario de '{gameObject.name}'. " +
