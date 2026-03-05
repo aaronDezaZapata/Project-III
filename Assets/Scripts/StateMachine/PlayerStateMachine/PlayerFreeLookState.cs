@@ -11,15 +11,15 @@ using UnityEngine.Rendering.Universal.Internal;
 /// </summary>
 public class PlayerFreeLookState : PlayerBaseState
 {
-    private readonly int FreeLookSpeedHash = Animator.StringToHash("Speed");
-    private readonly int AnimationSpeedHash = Animator.StringToHash("SpeedX");
+    private readonly int FreeLookSpeedHash = Animator.StringToHash("SpeedX");
+    private readonly int AnimationSpeedHash = Animator.StringToHash("AnimSpeedX");
 
     private readonly int FreeLookBlendTreeHash = Animator.StringToHash("FreeLookBlendTree");
     private readonly int WalkingBlendTreeHash = Animator.StringToHash("WalkingBlendTree");
 
     private readonly int StopRun = Animator.StringToHash("StopRun");
 
-    private readonly int AnimJump = Animator.StringToHash("Jump");
+    private readonly int AnimJump = Animator.StringToHash("Impulse");
 
     private const float CrossFadeDuration = 0.1f;
 
