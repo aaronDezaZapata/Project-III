@@ -14,10 +14,13 @@ public class PitchCameraControl : MonoBehaviour
 
     private float pitch;
 
-    /// <summary>
-    /// Sensibilidad efectiva = baseSensitivity * sensibilidad del dispositivo actual (ratón o gamepad)
-    /// </summary>
     private float EffectiveSensitivity => baseSensitivity * playerStateMachine.GetCurrentCameraSensitivity();
+    
+    public void SetPitch(float newPitch)
+    {
+        pitch = Mathf.Clamp(newPitch, minPitch, maxPitch);
+        transform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+    }
 
     private void Update()
     {

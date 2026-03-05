@@ -4,6 +4,10 @@ public class TransparentPlatform : MonoBehaviour
 {  
     private BoxCollider solidCollider;
 
+    [Header("Shooting Configuration")]
+    public int timesToBeShooted;
+    private int shootedTimes;
+
     [Header("Transparency")]
     [Range(0f, 1f)] public float transparentAlpha = 0.2f;
     [Range(0f, 1f)] public float opaqueAlpha = 1f;
@@ -39,7 +43,11 @@ public class TransparentPlatform : MonoBehaviour
     public void OnInked()
     {
         if (isPainted) return;
-
+        
+        shootedTimes++;
+        
+        if (shootedTimes < timesToBeShooted) return;
+        
         isPainted = true;
         solidCollider.enabled = true;
 
