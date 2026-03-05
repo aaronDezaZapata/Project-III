@@ -19,7 +19,11 @@ public class PlayerShootingState : PlayerBaseState
 
     public override void Enter()
     {
-        stateMachine.FaceMovementDirectionInstant(Camera.main.transform.forward);
+        // stateMachine.FaceMovementDirectionInstant(Camera.main.transform.forward);
+        
+        // Sincronizar la dirección de la cámara de apuntado con la orbital
+        SyncAimCameraWithOrbital();
+        
         // CAMERA IN
         stateMachine.aimCamera.Priority = 10;
         stateMachine.Animator.CrossFadeInFixedTime(ShootAnim, CrossFadeDuration);
@@ -53,6 +57,9 @@ public class PlayerShootingState : PlayerBaseState
 
     public override void Exit()
     {
+        // Sincronizar la cámara orbital con la dirección de la cámara de apuntado
+        SyncOrbitalWithAimCamera();
+        
         stateMachine.aimCamera.Priority = -1;
         
         if (stateMachine.ReticleTransform != null)
@@ -76,7 +83,9 @@ public class PlayerShootingState : PlayerBaseState
         }
     }
     
-    private bool TryGetBallisticVelocity(Vector3 origin, Vector3 target, float time, out Vector3 velocity)
+    // TODO: Remove
+    // No lo usamos
+    /*private bool TryGetBallisticVelocity(Vector3 origin, Vector3 target, float time, out Vector3 velocity)
     {
         float g = Physics.gravity.y;
         time = Mathf.Max(0.05f, time);
@@ -86,27 +95,22 @@ public class PlayerShootingState : PlayerBaseState
         float vY = (delta.y - 0.5f * g * time * time) / time;
         velocity = vXZ + Vector3.up * vY;
         return true;
-    }
+    }*/
     
     private void HandleLookRotation(float deltaTime)
     {
         Vector2 lookInput = stateMachine.InputReader.LookVector;
-
-        // Sensibilidad = valor base * sensibilidad del dispositivo actual (ratón o gamepad)
+        
         float currentSensitivity = stateMachine.GetCurrentCameraSensitivity();
         float hSens = stateMachine.HorizontalSensitivity * currentSensitivity;
         float vSens = stateMachine.VerticalSensitivity * currentSensitivity;
-
-        // Rotación horizontal - rota al jugador
+        
         _rotationX += lookInput.x * hSens * deltaTime;
-
-        // Aplicar rotación al jugador
+        
         stateMachine.transform.rotation = Quaternion.Euler(0f, _rotationX, 0f);
-
-        // Rotación vertical (opcional) - para inclinar la cámara
+        
         _rotationY -= lookInput.y * vSens * deltaTime;
         _rotationY = Mathf.Clamp(_rotationY, stateMachine.MinVerticalAngle, stateMachine.MaxVerticalAngle);
-        // Aquí aplicarías _rotationY a un pivot de cámara si lo necesitas
     }
 
     private void HandleAimMovement(float deltaTime)
@@ -133,5 +137,43 @@ public class PlayerShootingState : PlayerBaseState
                 stateMachine.RotationSpeed * deltaTime
             );
         }*/
+    }
+
+    private void SyncAimCameraWithOrbital()
+    {
+        Vector3 orbitalForward = stateMachine.mainCamera.transform.forward;
+        
+        Vector3 forwardFlat = new Vector3(orbitalForward.x, 0f, orbitalForward.z).normalized;
+        if (forwardFlat != Vector3.zero)
+        {
+            float yawAngle = Mathf.Atan2(forwardFlat.x, forwardFlat.z) * Mathf.Rad2Deg;
+            
+            stateMachine.transform.rotation = Quaternion.Euler(0f, yawAngle, 0f);
+            _rotationX = yawAngle;
+        }
+        
+        float pitchAngle = -Mathf.Asin(orbitalForward.y) * Mathf.Rad2Deg;
+        
+        if (stateMachine.aimCameraPitchControl != null)
+        {
+            stateMachine.aimCameraPitchControl.SetPitch(pitchAngle);
+        }
+    }
+    
+    private void SyncOrbitalWithAimCamera()
+    {
+        CinemachineOrbitalFollow orbitalFollow = stateMachine.mainCamera.gameObject.GetComponent<CinemachineOrbitalFollow>();
+        if (orbitalFollow == null) return;
+        
+        float playerYaw = stateMachine.transform.eulerAngles.y;
+        orbitalFollow.HorizontalAxis.Value = playerYaw;
+        
+        Vector3 aimForward = stateMachine.aimCamera.transform.forward;
+        
+        float pitchAngle = -Mathf.Asin(aimForward.y) * Mathf.Rad2Deg;
+        
+        float normalizedPitch = Mathf.InverseLerp(stateMachine.MinVerticalAngle, stateMachine.MaxVerticalAngle, pitchAngle);
+        
+        orbitalFollow.VerticalAxis.Value = normalizedPitch;
     }
 }
