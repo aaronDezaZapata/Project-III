@@ -24,6 +24,7 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public CinemachineCamera mainCamera { get; private set; }
 
     [field: SerializeField] public CinemachineCamera aimCamera { get; private set; }
+    [field: SerializeField] public PitchCameraControl aimCameraPitchControl { get; private set; }
 
     [field: SerializeField] public Health Health { get; private set; }
 
@@ -288,7 +289,6 @@ public class PlayerStateMachine : StateMachine
     
     #endregion
 
-
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -304,6 +304,7 @@ public class PlayerStateMachine : StateMachine
         AddState(new PlayerWhipState(this));
         AddState(new PlayerGrayState(this));
         AddState(new PlayerAbsorbState(this));
+        AddState(new PlayerFlyState(this));
 
         // MUST BE PLAYERFREELOOK. CHANGES ONLY FOR TESTING
         SwitchState(typeof(PlayerFreeLookState));
@@ -566,23 +567,18 @@ public class PlayerStateMachine : StateMachine
         if (groundCheckOrigin == null) return;
 
         Gizmos.color = Color.green;
-
-        // Esfera en el origen
+        
         Gizmos.DrawWireSphere(groundCheckOrigin.position, groundCheckRadius);
-
-        // Dirección del SphereCast
+        
         Vector3 castDirection = Vector3.down * groundCheckDistance;
-
-        // Esfera al final del cast
+        
         Vector3 endPosition = groundCheckOrigin.position + castDirection;
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(endPosition, groundCheckRadius);
-
-        // Línea que conecta ambas
+        
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(groundCheckOrigin.position, endPosition);
-
-        // Si está grounded en editor (opcional, solo en Play Mode)
+        
         if (Application.isPlaying)
         {
             if (Physics.SphereCast(
