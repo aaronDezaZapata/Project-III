@@ -12,7 +12,9 @@ using UnityEngine.Rendering.Universal.Internal;
 public class PlayerFreeLookState : PlayerBaseState
 {
     private readonly int FreeLookSpeedHash = Animator.StringToHash("SpeedX");
-    private readonly int AnimationSpeedHash = Animator.StringToHash("AnimSpeedX");
+    private readonly int AnimationSpeedHash = Animator.StringToHash("AimSpeedX");
+    private readonly int VerticalSpeedHash = Animator.StringToHash("SpeedY");
+    private readonly int GroundedHash = Animator.StringToHash("IsGrounded");
 
     private readonly int FreeLookBlendTreeHash = Animator.StringToHash("FreeLookBlendTree");
     private readonly int WalkingBlendTreeHash = Animator.StringToHash("WalkingBlendTree");
@@ -85,6 +87,9 @@ public class PlayerFreeLookState : PlayerBaseState
 
         stateMachine.Animator.SetFloat(FreeLookSpeedHash, currentInputMagnitude, AnimatorDampTime, deltaTime);
         stateMachine.Animator.SetFloat(AnimationSpeedHash, movement.x, AnimatorDampTime, deltaTime);
+        stateMachine.Animator.SetFloat(VerticalSpeedHash, stateMachine.Controller.velocity.y, AnimatorDampTime, deltaTime);
+        stateMachine.Animator.SetBool(GroundedHash, stateMachine.isGrounded);
+        
 
         // Blend tree switching basado en velocidad de input
         HandleBlendTreeTransition(currentInputMagnitude);
