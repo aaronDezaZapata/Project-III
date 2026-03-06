@@ -4230,9 +4230,9 @@ GameObject:
   m_Component:
   - component: {fileID: 194241474}
   - component: {fileID: 194241473}
-  - component: {fileID: 194241472}
   - component: {fileID: 194241475}
   - component: {fileID: 194241476}
+  - component: {fileID: 194241477}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -4240,14 +4240,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &194241472
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 194241471}
-  m_Enabled: 1
 --- !u!20 &194241473
 Camera:
   m_ObjectHideFlags: 0
@@ -4390,6 +4382,20 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
+--- !u!114 &194241477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 194241471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nonRigidbodyVelocity: 0
+  attenuationObject: {fileID: 0}
 --- !u!1 &198558637
 GameObject:
   m_ObjectHideFlags: 0
@@ -44771,8 +44777,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6912d79ae34f8014e96978e2ed6c41f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemiesPainted: []
   player: {fileID: 1884805548}
+  levelDecals: []
+  paintBeacon: {fileID: 0}
 --- !u!1 &1658801860
 GameObject:
   m_ObjectHideFlags: 0
