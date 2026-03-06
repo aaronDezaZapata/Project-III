@@ -388,7 +388,6 @@ public class PlayerStateMachine : StateMachine
 
     private void OnTriggerEnter(Collider other)
     {
-
         switch (other.tag)
         {
             case "CharcoAzul":
@@ -405,18 +404,17 @@ public class PlayerStateMachine : StateMachine
                 if (Mat_Player != null)
                 {
                     Color blackColor = new Color(1 - 38f, 1 - 38f, 1 - 38f);
-                    Mat_Player.material.SetColor("_SpecularColor", blackColor);
+                    Mat_Player.material.SetColor("_SpecularColor", Color.white);
                 }
                 break;
             
-            // TODO: Remove
-            /*case "CharcoGris":
+            case "CharcoRojo":
                 SwitchState(typeof(PlayerGrayState));
                 if (Mat_Player != null)
                 {
-                    Mat_Player.material.SetColor("_SpecularColor", Color.grey);
+                    Mat_Player.material.SetColor("_SpecularColor", Color.red);
                 }
-                break;*/
+                break;
 
             case "CharcoVerde":
                 SwitchState(typeof(PlayerGreenState));
@@ -460,10 +458,9 @@ public class PlayerStateMachine : StateMachine
             case PlayerStates.GREEN:
                 SwitchState(typeof(PlayerGreenState));
                 break;
-            // TODO: Remove
-            /*case PlayerStates.GREY:
+            case PlayerStates.GREY:
                 SwitchState(typeof(PlayerGrayState));
-                break;*/
+                break;
         }
     }
     

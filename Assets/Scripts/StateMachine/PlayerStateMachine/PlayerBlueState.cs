@@ -42,12 +42,13 @@ public class PlayerBlueState : PlayerBaseState
         }
 
         
-        // Aim
-        if (stateMachine.InputReader.isAiming)
+        // TODO: Remove
+        // El color azul no puede apuntar/disparar
+        /*if (stateMachine.InputReader.isAiming)
         {
             stateMachine.SwitchState(typeof(PlayerShootingState));
             return;
-        }
+        }*/
         
         Vector3 movement = stateMachine.CalculateMovement();
 

@@ -30,12 +30,11 @@ public class PlayerFreeLookState : PlayerBaseState
     private const float RunThreshold = 0.7f;
     private const float IdleThreshold = 0.05f;
     
-
     private float lastSpeed = 0f;
     private float lastInputMagnitude = 0f;
+    
     public PlayerFreeLookState(PlayerStateMachine stateMachine) : base(stateMachine)
     { 
-       
     }
 
 
@@ -44,6 +43,8 @@ public class PlayerFreeLookState : PlayerBaseState
         Debug.Log("Entered PlayerFreeLookState");
 
         stateMachine.playerState = PlayerStates.BLACK;
+        
+        stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.white);
         
         stateMachine.InputReader.JumpEvent += OnJump;
 
@@ -66,7 +67,6 @@ public class PlayerFreeLookState : PlayerBaseState
     public override void Tick(float deltaTime)
     {
         stateMachine.CheckGrounded();
-
         if (stateMachine.InputReader.isColorActing && stateMachine.HasDashAttack)
         {
             if (HasNearbyPaintedEnemy())
@@ -76,11 +76,13 @@ public class PlayerFreeLookState : PlayerBaseState
             }
         }
         
-        if (stateMachine.InputReader.isAiming)
+        // TODO: Remove
+        // Idle/Transparent state
+        /*if (stateMachine.InputReader.isAiming)
         {
             stateMachine.SwitchState(typeof(PlayerShootingState));
             return;
-        }
+        }*/
 
         Vector3 movement = stateMachine.CalculateMovement();
         float currentInputMagnitude = movement.magnitude;
@@ -116,6 +118,16 @@ public class PlayerFreeLookState : PlayerBaseState
         lastInputMagnitude = currentInputMagnitude;
     }
 
+    public override void Exit()
+    {
+        stateMachine.InputReader.JumpEvent -= OnJump;
+        // stateMachine.InputReader.DashEvent -= OnDash;
+        stateMachine.InputReader.DiveEvent -= OnDiveEnter;
+        
+        // Camera Out
+        stateMachine.mainCamera.Priority = -1;
+    }
+    
     private void HandleBlendTreeTransition(float inputMagnitude)
     {
         if (inputMagnitude >= IdleThreshold && inputMagnitude < RunThreshold)
@@ -128,16 +140,6 @@ public class PlayerFreeLookState : PlayerBaseState
             if (lastInputMagnitude >= IdleThreshold && lastInputMagnitude < RunThreshold)
                 stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
         }
-    }
-
-    public override void Exit()
-    {
-        stateMachine.InputReader.JumpEvent -= OnJump;
-        // stateMachine.InputReader.DashEvent -= OnDash;
-        stateMachine.InputReader.DiveEvent -= OnDiveEnter;
-        
-        // Camera Out
-        stateMachine.mainCamera.Priority = -1;
     }
     
     // TODO: Check a timer for a valid TP
