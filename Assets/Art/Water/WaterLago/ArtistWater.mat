@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ArtistWater
+  m_Shader: {fileID: 4800000, guid: 9f1a240d36dbe8f4da9a68b311f83ce1, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 0
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _CausticTexture:
+        m_Texture: {fileID: 2800000, guid: 14d3c685f240b5b42a8ab32675ee690b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FlowMap:
+        m_Texture: {fileID: 2800000, guid: 88c78f705abc0fe4e89f378ac473cf6e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FoamTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _CausticCutOut: 0.91
+    - _CausticsSpeed: 0.009
+    - _CausticsTiling: 11.1
+    - _Depth: 13.75
+    - _DepthFallOff: 2.71
+    - _FlowSpeed: 4.51
+    - _FlowStrength: 0
+    - _FoamAmount: 0.56
+    - _FoamCutOut: 0.55
+    - _FoamDepth: 5
+    - _FoamFallOff: 7.98
+    - _FoamShoreWidth: 0.18
+    - _FoamTiling: 1.34
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _SecondFoamWidth: 0.35
+    - _WaveIntensity: 0.38
+    - _WaveSpeed: 0.09
+    m_Colors:
+    - _CausticColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FoamColor: {r: 1, g: 0, b: 0.09828234, a: 1}
+    - _FoamSpeed: {r: 2, g: 0, b: 0, a: 0}
+    - _MainColor: {r: 0.3443396, g: 0.6192468, b: 1, a: 1}
+    - _SecondFoamColor: {r: 0.7490196, g: 0.40672693, b: 0, a: 1}
+    - _ShoreColor: {r: 0, g: 0.972549, b: 0.9666889, a: 0.85882354}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

@@ -10,7 +10,8 @@ public class PaintBeaconController : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-        if (isUsed) return;
+        if (!isReusable)
+            if (isUsed) return;
         
         if (other.CompareTag("Player"))
         {
