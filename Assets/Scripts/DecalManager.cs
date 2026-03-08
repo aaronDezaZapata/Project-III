@@ -5,10 +5,6 @@ using UnityEngine.Rendering.Universal;
 public class DecalManager : MonoBehaviour
 {
     #region Variables
-
-    [Header("Decal Settings")] 
-    [SerializeField] private bool isInitialized;
-    [SerializeField] private float currentTimeToLive;
     
     [Header("Materials")]
     [SerializeField] private Material blackDecalMat;
@@ -39,21 +35,5 @@ public class DecalManager : MonoBehaviour
                 GetComponent<DecalProjector>().material = greenDecalMat;
                 break;
         }
-    }
-
-    private void FixedUpdate()
-    {
-        currentTimeToLive -= Time.deltaTime;
-
-        if (currentTimeToLive <= 0)
-        {
-            Destroy(gameObject);
-        }
-    }
-
-    public void InitializeInkDecal(float timeToLive)
-    {
-        isInitialized = true;
-        currentTimeToLive = timeToLive;
     }
 }

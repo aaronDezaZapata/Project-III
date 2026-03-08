@@ -5,9 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private Transform player;
+    
     public static GameManager Instance;
     
-    public List<PaintableEnemy> enemiesPainted;
+    public List<GameObject> levelDecals;
+
+    public GameObject paintBeacon;
 
     private Transform currentCheckPoint;
 
@@ -27,24 +31,43 @@ public class GameManager : MonoBehaviour
         GetNewCheckPoint(currentCheckPoint);
     }
 
-
-    [SerializeField] Transform player;
-
-
     public Transform GetPlayer()
     {
         return player;
     }
 
-    public void AddPaintedEnemy(PaintableEnemy enemy)
+    public State GetPlayerState()
     {
-        enemiesPainted.Add(enemy);
+        return GetPlayer().GetComponent<StateMachine>().GetCurrentState(); // ya existe en StateMachine.cs
     }
 
-    public void RemovePaintedEnemy(PaintableEnemy enemy)
+    public void SetPlayerState<T>() where T : State
+    {
+        GetPlayer().GetComponent<StateMachine>().SwitchState(typeof(T));
+    }
+
+    public void RemoveCurrentDecals()
+    {
+        foreach (GameObject decal in levelDecals)
+        {
+            Destroy(decal);
+        }
+        
+        levelDecals.Clear();
+    }
+    
+    // TODO: Remove
+    // No hay enemigos
+    /*public void AddPaintedEnemy(PaintableEnemy enemy)
+    {
+        enemiesPainted.Add(enemy);
+    }*/
+    // TODO: Remove
+    // No hay enemigos
+    /*public void RemovePaintedEnemy(PaintableEnemy enemy)
     {
         enemiesPainted.Remove(enemy);
-    }
+    }*/
 
     public void GetNewCheckPoint(Transform newCheckPoint)
     {
@@ -57,6 +80,5 @@ public class GameManager : MonoBehaviour
 
         player.transform.position = currentCheckPoint.transform.position;
         player.transform.rotation = currentCheckPoint.transform.rotation;
-
     }
 }

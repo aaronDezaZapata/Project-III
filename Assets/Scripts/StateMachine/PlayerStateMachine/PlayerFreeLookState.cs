@@ -61,8 +61,6 @@ public class PlayerFreeLookState : PlayerBaseState
         lastInputMagnitude = 0f;
     }
 
-
-
     public override void Tick(float deltaTime)
     {
         stateMachine.CheckGrounded();
@@ -113,7 +111,6 @@ public class PlayerFreeLookState : PlayerBaseState
         lastInputMagnitude = currentInputMagnitude;
     }
 
-
     private void HandleBlendTreeTransition(float inputMagnitude)
     {
         if (inputMagnitude >= IdleThreshold && inputMagnitude < RunThreshold)
@@ -138,10 +135,11 @@ public class PlayerFreeLookState : PlayerBaseState
         stateMachine.mainCamera.Priority = -1;
     }
     
-    // CHECKER IF WE HAVE A PAINTED ENEMY
+    // TODO: Check a timer for a valid TP
+    // CHECKER IF WE HAVE A PAINTED BEACON
     private bool HasNearbyPaintedEnemy()
     {
-        return GameManager.Instance.enemiesPainted.Count > 0;
+        return GameManager.Instance.paintBeacon;
     }
     
     private void FaceMovementDirection(Vector3 movement, float deltaTime)
@@ -175,6 +173,4 @@ public class PlayerFreeLookState : PlayerBaseState
         
         orbitalFollow.RadialAxis.Value = orbitalFollow.RadialAxis.Center;
     }
-
-    
 }

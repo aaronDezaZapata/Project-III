@@ -10,14 +10,15 @@ public abstract class PlayerBaseState : State
     private Vector3 _currentMovementVelocity;
     private Vector3 _movementVelocitySmoothRef;
     
-    // Variables para detección de cambio brusco de dirección
     private Vector3 _lastMovementDirection;
     private bool _isQuickStopping = false;
     private float _quickStopTimer = 0f;
     
-    // Variables para coyote time
     private float _timeSinceLeftGround = 0f;
     private bool _wasGroundedLastFrame = false;
+    
+    private bool _doubleJumpAvailable = true;
+    private bool _hasUsedDoubleJump = false;
     
 
     public PlayerBaseState(PlayerStateMachine stateMachine)
@@ -164,6 +165,9 @@ public abstract class PlayerBaseState : State
         else
         {
             _timeSinceLeftGround = 0f;
+            
+            _hasUsedDoubleJump = false;
+            _doubleJumpAvailable = true;
         }
         
         _wasGroundedLastFrame = isGroundedNow;
@@ -171,16 +175,33 @@ public abstract class PlayerBaseState : State
     
     protected bool CanJump()
     {
-        return stateMachine.Controller.isGrounded || _timeSinceLeftGround <= stateMachine.CoyoteTime;
+        bool canFirstJump = stateMachine.Controller.isGrounded || _timeSinceLeftGround <= stateMachine.CoyoteTime;
+        
+        bool canDoubleJump = stateMachine.HasDoubleJump && !stateMachine.Controller.isGrounded && _doubleJumpAvailable && !_hasUsedDoubleJump;
+        
+        return canFirstJump || canDoubleJump;
     }
 
     protected void Jump()
     {
-        if (!CanJump()) return;
+        bool isFirstJump = stateMachine.Controller.isGrounded || _timeSinceLeftGround <= stateMachine.CoyoteTime;
         
-        stateMachine.ForceReceiver.Jump(stateMachine.JumpForce);
-        
-        _timeSinceLeftGround = stateMachine.CoyoteTime + 1f;
+        if (isFirstJump)
+        {
+            stateMachine.ForceReceiver.Jump(stateMachine.JumpForce);
+            _timeSinceLeftGround = stateMachine.CoyoteTime + 1f;
+            
+            if (stateMachine.HasDoubleJump)
+            {
+                _doubleJumpAvailable = true;
+                _hasUsedDoubleJump = false;
+            }
+        }
+        else if (stateMachine.HasDoubleJump && _doubleJumpAvailable && !_hasUsedDoubleJump)
+        {
+            stateMachine.ForceReceiver.Jump(stateMachine.DoubleJumpForce);
+            _hasUsedDoubleJump = true;
+        }
     }
 
     #endregion

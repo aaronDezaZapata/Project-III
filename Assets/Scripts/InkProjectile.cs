@@ -3,25 +3,23 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody), typeof(Collider))]
 public class InkProjectile : MonoBehaviour
 {
-    
     private PlayerStateMachine stateMachine;
-    private LayerMask mask;
+    [SerializeField] private LayerMask decalLayerMask = ~0;
     private bool done;
 
     
     public void Initialize(PlayerStateMachine machineRef)
     {
         stateMachine = machineRef;
-        
-        mask = machineRef.PaintableLayer;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (done) return;
     
-        // Enemy detection
-        EnemyStateMachine enemyStateMachine = collision.gameObject.GetComponent<EnemyStateMachine>();
+        // TODO: Remove
+        // No hay enemigos
+        /*EnemyStateMachine enemyStateMachine = collision.gameObject.GetComponent<EnemyStateMachine>();
         if (enemyStateMachine != null)
         {
             PaintableEnemy paintable = collision.gameObject.GetComponent<PaintableEnemy>();
@@ -31,13 +29,12 @@ public class InkProjectile : MonoBehaviour
             }
 
             paintable.ApplyPaint();
-        }
+        }*/
         
         // Paint surface
-        if (((1 << collision.gameObject.layer) & mask) == 0) return;
+        if ((decalLayerMask.value & (1 << collision.gameObject.layer)) == 0) return;
 
         ContactPoint cp = collision.GetContact(0);
-
         
         if (stateMachine != null)
         {

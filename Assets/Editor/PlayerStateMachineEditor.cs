@@ -27,6 +27,7 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("Animator");
         DrawBackingProperty("mainCamera");
         DrawBackingProperty("aimCamera");
+        DrawBackingProperty("aimCameraPitchControl");
         DrawBackingProperty("MouseSensitivity");
         DrawBackingProperty("GamepadSensitivity");
         DrawBackingProperty("Health");
@@ -43,6 +44,10 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("JumpForce");
         DrawBackingProperty("AccelerationTime");
         DrawBackingProperty("DecelerationTime");
+        
+        DrawBackingProperty("HasDoubleJump");
+        DrawBackingProperty("DoubleJumpForce");
+        
         DrawBackingProperty("CoyoteTime");
 
         //Ground Check
