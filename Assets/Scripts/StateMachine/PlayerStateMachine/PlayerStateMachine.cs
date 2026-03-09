@@ -260,6 +260,9 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public float HoverForce { get; private set; } = 15f;
     [field: SerializeField] public float aerialMoveSpeed { get; private set; } = 10f;
     
+    [field: Tooltip("Tiempo en segundos que debe mantenerse el salto en el aire para activar Heiser")]
+    [field: SerializeField] public float HeiserActivationTime { get; private set; } = 0.5f;
+    
     public bool CanHeiser { get; set; } = true;
     
     /// <summary>

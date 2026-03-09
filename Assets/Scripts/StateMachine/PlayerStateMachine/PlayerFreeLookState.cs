@@ -6,8 +6,10 @@ using UnityEngine.Rendering.Universal.Internal;
 
 /// <summary>
 /// Clase Black Base
-/// - Plain Shoot
-/// - Player impulses himself into enemies as attack
+/// - Has everything on
+///  - Blue
+///  - Red
+///  - Green
 /// </summary>
 public class PlayerFreeLookState : PlayerBaseState
 {

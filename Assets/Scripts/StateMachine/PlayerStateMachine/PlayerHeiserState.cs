@@ -24,7 +24,7 @@ public class PlayerHeiserState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
-        if(stateMachine.InputReader.isColorActing)
+        if(stateMachine.InputReader.isJumpHeld)
         {
             stateMachine.CanHeiser = true;   
         }

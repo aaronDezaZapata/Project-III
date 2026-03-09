@@ -122,6 +122,7 @@ public class PlayerStateMachineEditor : Editor
 
             DrawBackingProperty("HoverForce");
             DrawBackingProperty("aerialMoveSpeed");
+            DrawBackingProperty("HeiserActivationTime");
 
             // Particles related to blue/water go here
             DrawBackingProperty("Water_JetParticle");

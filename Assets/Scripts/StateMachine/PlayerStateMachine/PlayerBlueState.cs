@@ -2,7 +2,6 @@ using UnityEngine;
 
 /// <summary>
 /// Player Blue State
-/// - Player Shoot increases enemy size a little bit until he explodes.
 /// - Can do heiser movement
 /// </summary>
 public class PlayerBlueState : PlayerBaseState
@@ -15,6 +14,7 @@ public class PlayerBlueState : PlayerBaseState
     private const float CrossFadeDuration = 0.1f;
 
     bool isJumping;
+    private float jumpHoldTimer = 0f;
     
     public PlayerBlueState(PlayerStateMachine stateMachine) : base(stateMachine)
     { }
@@ -29,6 +29,8 @@ public class PlayerBlueState : PlayerBaseState
         stateMachine.Animator.SetFloat(FreeLookSpeedHash, 0);
         stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
         
+        jumpHoldTimer = 0f;
+        
         stateMachine.InputReader.JumpEvent += OnJump;
         stateMachine.InputReader.DiveEvent += OnDiveEnter;
     }
@@ -36,20 +38,22 @@ public class PlayerBlueState : PlayerBaseState
     public override void Tick(float deltaTime)
     {
         stateMachine.CheckGrounded();
-        if (stateMachine.InputReader.isColorActing)
+        
+        if (!stateMachine.Controller.isGrounded && stateMachine.InputReader.isJumpHeld)
         {
-            stateMachine.SwitchState(typeof(PlayerHeiserState));
+            jumpHoldTimer += deltaTime;
+            
+            if (jumpHoldTimer >= stateMachine.HeiserActivationTime)
+            {
+                stateMachine.SwitchState(typeof(PlayerHeiserState));
+                return;
+            }
+        }
+        else
+        {
+            jumpHoldTimer = 0f;
         }
 
-        
-        // TODO: Remove
-        // El color azul no puede apuntar/disparar
-        /*if (stateMachine.InputReader.isAiming)
-        {
-            stateMachine.SwitchState(typeof(PlayerShootingState));
-            return;
-        }*/
-        
         Vector3 movement = stateMachine.CalculateMovement();
 
         float jumpTime = GetNormalizedTime(stateMachine.Animator, "Jump");
