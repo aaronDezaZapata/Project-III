@@ -256,9 +256,15 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public LayerMask AimLayerMask { get; private set; } = ~0;
     [field: SerializeField] public float ReticleSurfaceOffset { get; private set; } = 0.02f;
 
-    [field: Header("Heiser")]
+    // HEISER VARIABLES
     [field: SerializeField] public float HoverForce { get; private set; } = 15f;
     [field: SerializeField] public float aerialMoveSpeed { get; private set; } = 10f;
+    
+    [field: Tooltip("Tiempo en segundos que debe mantenerse el salto en el aire para activar Heiser")]
+    [field: SerializeField] public float HeiserActivationTime { get; private set; } = 0.5f;
+    
+    [field: Tooltip("Fuerza del impulso vertical inicial al entrar al estado Heiser")]
+    [field: SerializeField] public float HeiserInitialBoostForce { get; private set; } = 10f;
     
     public bool CanHeiser { get; set; } = true;
     
@@ -388,7 +394,6 @@ public class PlayerStateMachine : StateMachine
 
     private void OnTriggerEnter(Collider other)
     {
-
         switch (other.tag)
         {
             case "CharcoAzul":
@@ -405,18 +410,17 @@ public class PlayerStateMachine : StateMachine
                 if (Mat_Player != null)
                 {
                     Color blackColor = new Color(1 - 38f, 1 - 38f, 1 - 38f);
-                    Mat_Player.material.SetColor("_SpecularColor", blackColor);
+                    Mat_Player.material.SetColor("_SpecularColor", Color.white);
                 }
                 break;
             
-            // TODO: Remove
-            /*case "CharcoGris":
+            case "CharcoRojo":
                 SwitchState(typeof(PlayerGrayState));
                 if (Mat_Player != null)
                 {
-                    Mat_Player.material.SetColor("_SpecularColor", Color.grey);
+                    Mat_Player.material.SetColor("_SpecularColor", Color.red);
                 }
-                break;*/
+                break;
 
             case "CharcoVerde":
                 SwitchState(typeof(PlayerGreenState));
@@ -460,10 +464,9 @@ public class PlayerStateMachine : StateMachine
             case PlayerStates.GREEN:
                 SwitchState(typeof(PlayerGreenState));
                 break;
-            // TODO: Remove
-            /*case PlayerStates.GREY:
+            case PlayerStates.GREY:
                 SwitchState(typeof(PlayerGrayState));
-                break;*/
+                break;
         }
     }
     
