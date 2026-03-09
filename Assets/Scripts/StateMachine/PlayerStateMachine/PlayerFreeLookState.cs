@@ -26,7 +26,6 @@ public class PlayerFreeLookState : PlayerBaseState
     private readonly int AnimJump = Animator.StringToHash("Impulse");
 
     private const float CrossFadeDuration = 0.1f;
-
     private const float AnimatorDampTime = 0.1f;
 
     private const float RunThreshold = 0.7f;

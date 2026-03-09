@@ -119,12 +119,15 @@ public class PlayerStateMachineEditor : Editor
             DrawHeader("--- BLUE STATE (HEISER) ---", Color.blue);
             GUI.backgroundColor = new Color(0.6f, 0.8f, 1f);
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-
+            
+            DrawHeader("Force Variable Config", Color.white);
             DrawBackingProperty("HoverForce");
             DrawBackingProperty("aerialMoveSpeed");
             DrawBackingProperty("HeiserActivationTime");
+            DrawBackingProperty("HeiserInitialBoostForce");
 
             // Particles related to blue/water go here
+            DrawHeader("Visuals Config", Color.white);
             DrawBackingProperty("Water_JetParticle");
             DrawBackingProperty("WaterHeiserParticle");
             DrawBackingProperty("WaterHeiserParticleSecond");
