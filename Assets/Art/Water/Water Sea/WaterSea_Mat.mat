@@ -23,13 +23,13 @@ Material:
   m_Name: WaterSea_Mat
   m_Shader: {fileID: -6465566751694194690, guid: 85a6864ec89a7d54697a4dde4646af34, type: 3}
   m_Parent: {fileID: 2100000, guid: 679445a5760a82843a0f925fc634ad73, type: 2}
-  m_ModifiedSerializedProperties: 0
+  m_ModifiedSerializedProperties: 16
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2999
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
@@ -40,6 +40,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Displacement: 0.2
+    - _QueueOffset: -1
     m_Colors: []
   m_BuildTextureStacks: []
   m_AllowLocking: 1
