@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using Unity.Cinemachine;
 
 /// <summary>
-/// Estado que maneja la mecánica de aspiradora (gris).
-/// Absorbe objetos y enemigos, los almacena y los lanza como proyectiles.
+/// Player Red State
+/// - Everything on White State
+/// - Can Shoot
 /// </summary>
-public class PlayerGrayState : PlayerBaseState
+public class PlayerRedState : PlayerBaseState
 {
     private readonly int FreeLookSpeedHash = Animator.StringToHash("SpeedX");
     private readonly int AnimationSpeedHash = Animator.StringToHash("AimSpeedX");
@@ -29,7 +30,7 @@ public class PlayerGrayState : PlayerBaseState
     private float lastSpeed = 0f;
     private float lastInputMagnitude = 0f;
     
-    public PlayerGrayState(PlayerStateMachine stateMachine) : base(stateMachine)
+    public PlayerRedState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
     }
 
@@ -40,7 +41,7 @@ public class PlayerGrayState : PlayerBaseState
         // CAMERA IN
         stateMachine.mainCamera.Priority = 10;
 
-        stateMachine.playerState = PlayerStates.GREY;
+        stateMachine.playerState = PlayerStates.RED;
         
         stateMachine.Animator.SetFloat(FreeLookSpeedHash, 0);
         stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);

@@ -300,7 +300,7 @@ public class PlayerStateMachine : StateMachine
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        AddState(new PlayerFreeLookState(this));
+        AddState(new PlayerWhiteState(this));
         AddState(new PlayerSwimState(this));
         AddState(new PlayerDashAttackState(this));
         AddState(new PlayerShootingState(this));
@@ -308,12 +308,12 @@ public class PlayerStateMachine : StateMachine
         AddState(new PlayerHeiserState(this));
         AddState(new PlayerGreenState(this));
         AddState(new PlayerWhipState(this));
-        AddState(new PlayerGrayState(this));
+        AddState(new PlayerRedState(this));
         AddState(new PlayerAbsorbState(this));
         AddState(new PlayerFlyState(this));
 
         // MUST BE PLAYERFREELOOK. CHANGES ONLY FOR TESTING
-        SwitchState(typeof(PlayerFreeLookState));
+        SwitchState(typeof(PlayerWhiteState));
     }
 
     public void StartCameraShake(float duration)
@@ -406,7 +406,7 @@ public class PlayerStateMachine : StateMachine
                 break;
 
             case "CharcoNegro":
-                SwitchState(typeof(PlayerFreeLookState));
+                SwitchState(typeof(PlayerWhiteState));
                 if (Mat_Player != null)
                 {
                     Color blackColor = new Color(1 - 38f, 1 - 38f, 1 - 38f);
@@ -415,7 +415,7 @@ public class PlayerStateMachine : StateMachine
                 break;
             
             case "CharcoRojo":
-                SwitchState(typeof(PlayerGrayState));
+                SwitchState(typeof(PlayerRedState));
                 if (Mat_Player != null)
                 {
                     Mat_Player.material.SetColor("_SpecularColor", Color.red);
@@ -455,17 +455,17 @@ public class PlayerStateMachine : StateMachine
     {
         switch (playerState)
         {
-            case PlayerStates.BLACK:
-                SwitchState(typeof(PlayerFreeLookState));
+            case PlayerStates.WHITE:
+                SwitchState(typeof(PlayerWhiteState));
+                break;
+            case PlayerStates.RED:
+                SwitchState(typeof(PlayerRedState));
                 break;
             case PlayerStates.BLUE:
                 SwitchState(typeof(PlayerBlueState));
                 break;
             case PlayerStates.GREEN:
                 SwitchState(typeof(PlayerGreenState));
-                break;
-            case PlayerStates.GREY:
-                SwitchState(typeof(PlayerGrayState));
                 break;
         }
     }

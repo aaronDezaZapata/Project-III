@@ -1,65 +1,56 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.Rendering.Universal.Internal;
 
 /// <summary>
-/// Clase Black Base
-/// - Has everything on
-///  - Blue
-///  - Red
-///  - Green
+/// Player Blue State
+/// - Can do heiser movement
+/// - Player Basic Movement
 /// </summary>
-public class PlayerFreeLookState : PlayerBaseState
+public class PlayerBlueState : PlayerBaseState
 {
     private readonly int FreeLookSpeedHash = Animator.StringToHash("SpeedX");
     private readonly int AnimationSpeedHash = Animator.StringToHash("AimSpeedX");
     private readonly int VerticalSpeedHash = Animator.StringToHash("SpeedY");
     private readonly int GroundedHash = Animator.StringToHash("IsGrounded");
-
+    
     private readonly int FreeLookBlendTreeHash = Animator.StringToHash("FreeLookBlendTree");
     private readonly int WalkingBlendTreeHash = Animator.StringToHash("WalkingBlendTree");
-
+    
     private readonly int StopRun = Animator.StringToHash("StopRun");
 
     private readonly int AnimJump = Animator.StringToHash("Impulse");
-
-    private const float CrossFadeDuration = 0.1f;
+    
     private const float AnimatorDampTime = 0.1f;
+    private const float CrossFadeDuration = 0.1f;
 
     private const float RunThreshold = 0.7f;
     private const float IdleThreshold = 0.05f;
     
-    private float lastSpeed = 0f;
-    private float lastInputMagnitude = 0f;
+    private float lastSpeed;
+    private float lastInputMagnitude;
     
-    public PlayerFreeLookState(PlayerStateMachine stateMachine) : base(stateMachine)
-    { 
-    }
-
+    // Heiser action variable
+    private bool isJumping;
+    private float jumpHoldTimer = 0f;
+    
+    public PlayerBlueState(PlayerStateMachine stateMachine) : base(stateMachine)
+    { }
 
     public override void Enter()
     {
-        Debug.Log("Entered PlayerFreeLookState");
-
-        stateMachine.playerState = PlayerStates.BLACK;
+        Debug.Log("Entering PlayerBlueState");
+        stateMachine.mainCamera.Priority = 10;
         
-        stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.white);
+        stateMachine.playerState = PlayerStates.BLUE;
+        
+        stateMachine.Animator.SetFloat(FreeLookSpeedHash, 0);
+        stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
+        
+        jumpHoldTimer = 0f;
         
         stateMachine.InputReader.JumpEvent += OnJump;
-
         stateMachine.InputReader.DiveEvent += OnDiveEnter;
-
-        // Camera Settings
-        if (stateMachine.mainCamera.Priority <= 9)
-        {
-            CameraRecenter();
-            stateMachine.mainCamera.Priority = 10;
-        }
-
+        
         stateMachine.Animator.SetFloat(FreeLookSpeedHash, 0);
-
         stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
         lastSpeed = 0f;
         lastInputMagnitude = 0f;
@@ -68,65 +59,88 @@ public class PlayerFreeLookState : PlayerBaseState
     public override void Tick(float deltaTime)
     {
         stateMachine.CheckGrounded();
-        if (stateMachine.InputReader.isColorActing && stateMachine.HasDashAttack)
+        if (!stateMachine.Controller.isGrounded && stateMachine.InputReader.isJumpHeld)
         {
-            if (HasNearbyPaintedEnemy())
+            jumpHoldTimer += deltaTime;
+            
+            if (jumpHoldTimer >= stateMachine.HeiserActivationTime)
             {
-                stateMachine.SwitchState(typeof(PlayerDashAttackState));
+                stateMachine.SwitchState(typeof(PlayerHeiserState));
                 return;
             }
         }
-        
-        // TODO: Remove
-        // Idle/Transparent state
-        /*if (stateMachine.InputReader.isAiming)
+        else
         {
-            stateMachine.SwitchState(typeof(PlayerShootingState));
-            return;
-        }*/
+            jumpHoldTimer = 0f;
+        }
 
         Vector3 movement = stateMachine.CalculateMovement();
         float currentInputMagnitude = movement.magnitude;
-
+        
         stateMachine.Animator.SetFloat(FreeLookSpeedHash, currentInputMagnitude, AnimatorDampTime, deltaTime);
         stateMachine.Animator.SetFloat(AnimationSpeedHash, movement.x, AnimatorDampTime, deltaTime);
         stateMachine.Animator.SetFloat(VerticalSpeedHash, stateMachine.Controller.velocity.y, AnimatorDampTime, deltaTime);
         stateMachine.Animator.SetBool(GroundedHash, stateMachine.isGrounded);
         
-
-        // Blend tree switching basado en velocidad de input
         HandleBlendTreeTransition(currentInputMagnitude);
         if (currentInputMagnitude > RunThreshold)
         {
             FaceMovementDirection(movement, deltaTime);
         }
 
-        // Cuando termina el salto
         float jumpTime = GetNormalizedTime(stateMachine.Animator, "Jump");
-        if (jumpTime > 0.98f)
+        if(jumpTime > 0.98f)
         {
             HandleBlendTreeTransition(currentInputMagnitude);
-
+            
             if (currentInputMagnitude > RunThreshold)
             {
                 stateMachine.Animator.CrossFadeInFixedTime(StopRun, CrossFadeDuration);
             }
+            
+            // stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
         }
 
+        // stateMachine.Animator.SetFloat(FreeLookSpeedHash, movement.magnitude, AnimatorDampTime, deltaTime);
+        
+        /*if (!Equals(movement, Vector3.zero))
+        {
+            FaceMovementDirection(movement, deltaTime);
+        }*/
+        
         Move(movement * stateMachine.FreeLookMovementSpeed, deltaTime);
-
+        
         lastSpeed = currentInputMagnitude;
         lastInputMagnitude = currentInputMagnitude;
     }
 
     public override void Exit()
     {
-        stateMachine.InputReader.JumpEvent -= OnJump;
-        // stateMachine.InputReader.DashEvent -= OnDash;
-        stateMachine.InputReader.DiveEvent -= OnDiveEnter;
+        Debug.Log("Exiting PlayerBlueState");
         
-        // Camera Out
-        stateMachine.mainCamera.Priority = -1;
+        stateMachine.InputReader.JumpEvent -= OnJump;
+        stateMachine.InputReader.DiveEvent -= OnDiveEnter;
+    }
+    
+    private void FaceMovementDirection(Vector3 movement, float deltaTime)
+    {
+        stateMachine.transform.rotation = Quaternion.Lerp(
+            stateMachine.transform.rotation,
+            Quaternion.LookRotation(movement),
+            deltaTime * stateMachine.RotationSpeed);
+    }
+    
+    private void OnJump()
+    {
+        if (!CanJump()) return;
+        isJumping = true;
+        stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
+        Jump();
+    }
+    
+    private void OnDiveEnter()
+    {
+        stateMachine.SwitchState(typeof(PlayerSwimState));
     }
     
     private void HandleBlendTreeTransition(float inputMagnitude)
@@ -141,44 +155,5 @@ public class PlayerFreeLookState : PlayerBaseState
             if (lastInputMagnitude >= IdleThreshold && lastInputMagnitude < RunThreshold)
                 stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
         }
-    }
-    
-    // TODO: Check a timer for a valid TP
-    // CHECKER IF WE HAVE A PAINTED BEACON
-    private bool HasNearbyPaintedEnemy()
-    {
-        return GameManager.Instance.paintBeacon;
-    }
-    
-    private void FaceMovementDirection(Vector3 movement, float deltaTime)
-    {
-        stateMachine.transform.rotation = Quaternion.Lerp(
-            stateMachine.transform.rotation,
-            Quaternion.LookRotation(movement),
-            deltaTime * stateMachine.RotationSpeed);
-    }
-    
-    private void OnJump()
-    {
-        if (!CanJump()) return;
-        stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
-        Jump();
-    }
-
-    private void OnDiveEnter()
-    {
-        stateMachine.SwitchState(typeof(PlayerSwimState));
-    }
-
-    private void CameraRecenter()
-    {
-        CinemachineOrbitalFollow orbitalFollow = stateMachine.mainCamera.gameObject.GetComponent<CinemachineOrbitalFollow>();
-        
-        float playerYaw = stateMachine.transform.eulerAngles.y;
-        orbitalFollow.HorizontalAxis.Value = playerYaw;
-        
-        orbitalFollow.VerticalAxis.Value = orbitalFollow.VerticalAxis.Center;
-        
-        orbitalFollow.RadialAxis.Value = orbitalFollow.RadialAxis.Center;
     }
 }

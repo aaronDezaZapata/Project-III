@@ -136,8 +136,10 @@ public class PlayerStateMachineEditor : Editor
             GUI.backgroundColor = Color.white;
         }
 
+        // TODO: Remove
+        // No existe estado grey
         // GRAY LOGIC 
-        if (targetScript.playerState == PlayerStates.GREY)
+        /*if (targetScript.playerState == PlayerStates.GREY)
         {
             DrawHeader("--- GRAY STATE ---", Color.gray);
             GUI.backgroundColor = new Color(0.8f, 0.8f, 0.8f);
@@ -160,7 +162,7 @@ public class PlayerStateMachineEditor : Editor
 
             EditorGUILayout.EndVertical();
             GUI.backgroundColor = Color.white;
-        }
+        }*/
 
         // BLACK LOGIC
         if (targetScript.playerState == PlayerStates.BLACK)
