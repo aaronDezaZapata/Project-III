@@ -64,7 +64,11 @@ public class PlayerWhiteState : PlayerBaseState
     // Initial material color config
     protected virtual void SetMaterialColor()
     {
-        stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.white);
+        //stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.white);
+        //stateMachine.PlayerColorSwitch(0,Color.white);
+        stateMachine.PlayerColorSwitch(1, Color.white);
+        stateMachine.PlayerColorSwitch(2, Color.white);
+        stateMachine.StartFill(Color.white);
     }
     
     // Input events to subscribe

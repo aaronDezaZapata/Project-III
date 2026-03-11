@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -100,7 +101,7 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public Transform GunOrigin;
     [SerializeField] public Transform reticle { get; private set; } // Quad o Canvas
 
-
+    [NonSerialized] public PlayerStateMachine[] playerColorStates;
     public bool IsOnInk;
     public Vector3 CurrentInkNormal = Vector3.up;
 
@@ -574,6 +575,30 @@ public class PlayerStateMachine : StateMachine
         {
             Mat_Player.material.SetFloat(fillProperty, Mathf.Clamp01(Mat_Player.material.GetFloat(fillProperty) + Time.deltaTime * fillSpeed));
             yield return null;
+        }
+    }
+    
+    /// <summary>
+    /// Switch Colors on any index
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="color"></param>
+    public void PlayerColorSwitch(int index, Color color)
+    {
+        switch (index)
+        {
+            case 0:
+                Mat_Player.material.SetColor("_ColorA", color);
+                break;
+            case 1:
+                Mat_Player.material.SetColor("_ColorB", color);
+                break;
+            case 2:
+                Mat_Player.material.SetColor("_ColorC", color);
+                break;
+            default:
+                Debug.Log("Not enetered a valid index");
+                break;
         }
     }
 
