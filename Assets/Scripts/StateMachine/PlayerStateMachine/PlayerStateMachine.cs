@@ -399,35 +399,34 @@ public class PlayerStateMachine : StateMachine
             case "CharcoAzul":
                 SwitchState(typeof(PlayerBlueState));
                 //Mat_Player.SetColor("_Color", Color.blue);
-                if (Mat_Player != null)
+                /*if (Mat_Player != null)
                 {
                     Mat_Player.material.SetColor("_SpecularColor", Color.blue);
-                }
+                }*/
                 break;
 
             case "CharcoNegro":
                 SwitchState(typeof(PlayerWhiteState));
-                if (Mat_Player != null)
-                {
+                /*if (Mat_Player != null) {
                     Color blackColor = new Color(1 - 38f, 1 - 38f, 1 - 38f);
                     Mat_Player.material.SetColor("_SpecularColor", Color.white);
-                }
+                }*/
                 break;
             
             case "CharcoRojo":
                 SwitchState(typeof(PlayerRedState));
-                if (Mat_Player != null)
+                /*if (Mat_Player != null)
                 {
                     Mat_Player.material.SetColor("_SpecularColor", Color.red);
-                }
+                }*/
                 break;
 
             case "CharcoVerde":
                 SwitchState(typeof(PlayerGreenState));
-                if (Mat_Player != null)
+                /*if (Mat_Player != null)
                 {
                     Mat_Player.material.SetColor("_SpecularColor", Color.green);
-                }
+                }*/
                 break;
 
             case "CheckPoint":
@@ -436,18 +435,6 @@ public class PlayerStateMachine : StateMachine
 
             default:
                 break;
-        }
-    }
-
-
-    private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        switch(hit.transform.tag)
-        {
-            case "Insta":
-                GameManager.Instance.PlayerDeath();
-                break;
-                default : break;
         }
     }
     
@@ -467,6 +454,17 @@ public class PlayerStateMachine : StateMachine
             case PlayerStates.GREEN:
                 SwitchState(typeof(PlayerGreenState));
                 break;
+        }
+    }
+    
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        switch(hit.transform.tag)
+        {
+            case "Insta":
+                GameManager.Instance.PlayerDeath();
+                break;
+            default : break;
         }
     }
     

@@ -2,63 +2,37 @@ using UnityEngine;
 
 /// <summary>
 /// Player Blue State
-/// - Can do heiser movement
-/// - Player Basic Movement
+/// - Basic Movement
+/// - Can do Heiser Hability
 /// </summary>
-public class PlayerBlueState : PlayerBaseState
+public class PlayerBlueState : PlayerWhiteState
 {
-    private readonly int FreeLookSpeedHash = Animator.StringToHash("SpeedX");
-    private readonly int AnimationSpeedHash = Animator.StringToHash("AimSpeedX");
-    private readonly int VerticalSpeedHash = Animator.StringToHash("SpeedY");
-    private readonly int GroundedHash = Animator.StringToHash("IsGrounded");
-    
-    private readonly int FreeLookBlendTreeHash = Animator.StringToHash("FreeLookBlendTree");
-    private readonly int WalkingBlendTreeHash = Animator.StringToHash("WalkingBlendTree");
-    
-    private readonly int StopRun = Animator.StringToHash("StopRun");
-
-    private readonly int AnimJump = Animator.StringToHash("Impulse");
-    
-    private const float AnimatorDampTime = 0.1f;
-    private const float CrossFadeDuration = 0.1f;
-
-    private const float RunThreshold = 0.7f;
-    private const float IdleThreshold = 0.05f;
-    
-    private float lastSpeed;
-    private float lastInputMagnitude;
-    
-    // Heiser action variable
+    // Variables específicas para la habilidad Heiser
     private bool isJumping;
     private float jumpHoldTimer = 0f;
     
     public PlayerBlueState(PlayerStateMachine stateMachine) : base(stateMachine)
     { }
 
-    public override void Enter()
+    protected override void SetPlayerState()
     {
-        Debug.Log("Entering PlayerBlueState");
-        stateMachine.mainCamera.Priority = 10;
-        
+        Debug.Log("Entered PlayerBlueState");
         stateMachine.playerState = PlayerStates.BLUE;
-        
-        stateMachine.Animator.SetFloat(FreeLookSpeedHash, 0);
-        stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
-        
+    }
+    
+    protected override void SetMaterialColor()
+    {
+        stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.blue);
+    }
+    
+    protected override void InitializeAnimator()
+    {
+        base.InitializeAnimator();
         jumpHoldTimer = 0f;
-        
-        stateMachine.InputReader.JumpEvent += OnJump;
-        stateMachine.InputReader.DiveEvent += OnDiveEnter;
-        
-        stateMachine.Animator.SetFloat(FreeLookSpeedHash, 0);
-        stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
-        lastSpeed = 0f;
-        lastInputMagnitude = 0f;
     }
 
-    public override void Tick(float deltaTime)
+    protected override bool CheckColorSpecificActions(float deltaTime)
     {
-        stateMachine.CheckGrounded();
         if (!stateMachine.Controller.isGrounded && stateMachine.InputReader.isJumpHeld)
         {
             jumpHoldTimer += deltaTime;
@@ -66,71 +40,18 @@ public class PlayerBlueState : PlayerBaseState
             if (jumpHoldTimer >= stateMachine.HeiserActivationTime)
             {
                 stateMachine.SwitchState(typeof(PlayerHeiserState));
-                return;
+                return true;
             }
         }
         else
         {
             jumpHoldTimer = 0f;
         }
-
-        Vector3 movement = stateMachine.CalculateMovement();
-        float currentInputMagnitude = movement.magnitude;
         
-        stateMachine.Animator.SetFloat(FreeLookSpeedHash, currentInputMagnitude, AnimatorDampTime, deltaTime);
-        stateMachine.Animator.SetFloat(AnimationSpeedHash, movement.x, AnimatorDampTime, deltaTime);
-        stateMachine.Animator.SetFloat(VerticalSpeedHash, stateMachine.Controller.velocity.y, AnimatorDampTime, deltaTime);
-        stateMachine.Animator.SetBool(GroundedHash, stateMachine.isGrounded);
-        
-        HandleBlendTreeTransition(currentInputMagnitude);
-        if (currentInputMagnitude > RunThreshold)
-        {
-            FaceMovementDirection(movement, deltaTime);
-        }
-
-        float jumpTime = GetNormalizedTime(stateMachine.Animator, "Jump");
-        if(jumpTime > 0.98f)
-        {
-            HandleBlendTreeTransition(currentInputMagnitude);
-            
-            if (currentInputMagnitude > RunThreshold)
-            {
-                stateMachine.Animator.CrossFadeInFixedTime(StopRun, CrossFadeDuration);
-            }
-            
-            // stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
-        }
-
-        // stateMachine.Animator.SetFloat(FreeLookSpeedHash, movement.magnitude, AnimatorDampTime, deltaTime);
-        
-        /*if (!Equals(movement, Vector3.zero))
-        {
-            FaceMovementDirection(movement, deltaTime);
-        }*/
-        
-        Move(movement * stateMachine.FreeLookMovementSpeed, deltaTime);
-        
-        lastSpeed = currentInputMagnitude;
-        lastInputMagnitude = currentInputMagnitude;
-    }
-
-    public override void Exit()
-    {
-        Debug.Log("Exiting PlayerBlueState");
-        
-        stateMachine.InputReader.JumpEvent -= OnJump;
-        stateMachine.InputReader.DiveEvent -= OnDiveEnter;
+        return false; // No dash attack para Blue
     }
     
-    private void FaceMovementDirection(Vector3 movement, float deltaTime)
-    {
-        stateMachine.transform.rotation = Quaternion.Lerp(
-            stateMachine.transform.rotation,
-            Quaternion.LookRotation(movement),
-            deltaTime * stateMachine.RotationSpeed);
-    }
-    
-    private void OnJump()
+    protected override void OnJump()
     {
         if (!CanJump()) return;
         isJumping = true;
@@ -138,22 +59,7 @@ public class PlayerBlueState : PlayerBaseState
         Jump();
     }
     
-    private void OnDiveEnter()
-    {
-        stateMachine.SwitchState(typeof(PlayerSwimState));
-    }
+    // No mods on Tick right now
     
-    private void HandleBlendTreeTransition(float inputMagnitude)
-    {
-        if (inputMagnitude >= IdleThreshold && inputMagnitude < RunThreshold)
-        {
-            if (lastInputMagnitude < IdleThreshold || lastInputMagnitude >= RunThreshold)
-                stateMachine.Animator.CrossFadeInFixedTime(WalkingBlendTreeHash, CrossFadeDuration);
-        }
-        else
-        {
-            if (lastInputMagnitude >= IdleThreshold && lastInputMagnitude < RunThreshold)
-                stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
-        }
-    }
+    // No mods on Exit right now
 }
