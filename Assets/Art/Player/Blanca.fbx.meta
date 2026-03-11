@@ -17,21 +17,12 @@ ModelImporter:
     removeConstantScaleCurves: 0
     motionNodeName: 
     animationImportErrors: 
-    animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
-      might lower retargeting quality:\nNote: Activate translation DOF on avatar
-      to improve retargeting quality.\n\t'NIP_Rigging_Unity_Parent:mixamorig:Spine1'
-      has translation animation that will be discarded.\n\t'NIP_Rigging_Unity_Parent:mixamorig:Neck'
-      has translation animation that will be discarded.\n\t'NIP_Rigging_Unity_Parent:Leftear'
-      has translation animation that will be discarded.\n\t'NIP_Rigging_Unity_Parent:mixamorig:LeftArm'
-      has translation animation that will be discarded.\n\t'NIP_Rigging_Unity_Parent:mixamorig:LeftHand'
-      has translation animation that will be discarded.\n\t'NIP_Rigging_Unity_Parent:mixamorig:RightArm'
-      has translation animation that will be discarded.\n\t'NIP_Rigging_Unity_Parent:mixamorig:RightHand'
-      has translation animation that will be discarded.\n"
+    animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 3
+    animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -48,7 +39,7 @@ ModelImporter:
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
-      cycleOffset: 0
+      cycleOffset: 1
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 1
@@ -57,9 +48,9 @@ ModelImporter:
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
+      keepOriginalPositionY: 0
       keepOriginalPositionXZ: 0
-      heightFromFeet: 0
+      heightFromFeet: 1
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
@@ -114,7 +105,7 @@ ModelImporter:
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   referencedClips: []
-  importAnimation: 1
+  importAnimation: 0
   humanDescription:
     serializedVersion: 3
     human:
@@ -959,7 +950,7 @@ ModelImporter:
     feetSpacing: 0
     globalScale: 1
     rootMotionBoneName: 
-    hasTranslationDoF: 0
+    hasTranslationDoF: 1
     hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}

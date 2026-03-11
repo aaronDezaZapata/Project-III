@@ -10,13 +10,13 @@ Material:
   m_Name: M_water ball mat
   m_Shader: {fileID: -6465566751694194690, guid: 7d94d00830b19344b800acb47de1928e, type: 3}
   m_Parent: {fileID: 2100000, guid: 774a6a7e8fe6c0e42b1616f239b326d3, type: 2}
-  m_ModifiedSerializedProperties: 0
+  m_ModifiedSerializedProperties: 16
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3050
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
@@ -26,10 +26,15 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
+    - _ColorSeparation: 0.001
     - _Distortion: 1.79
+    - _FillA: 1
+    - _FillB: 1
+    - _FillC: 1
     - _VertexDisplacement: 0
     m_Colors:
     - _SpecularColor: {r: 0.1509434, g: 0.1509434, b: 0.1509434, a: 0}
+    - _VectorSeparator: {r: -0.8, g: 0.7, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &478411514385921583

@@ -21,12 +21,12 @@ public class MainCanvasManager : MonoBehaviour
 
     private void OnEnable()
     {
-        InputHandler.OnAiming += HandleShooting;
+        PlayerShootingState.isAiming += HandleShooting;
     }
 
     private void OnDisable()
     {
-        InputHandler.OnAiming -= HandleShooting;
+        PlayerShootingState.isAiming -= HandleShooting;
     }
 
     private void HandleShooting(bool isAiming)

@@ -20,6 +20,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public bool isDColorChange { get; private set; }
     public bool isGreen { get; set; }
     public bool isGray { get; set; }
+    public bool isJumpHeld { get; private set; }
 
 
     public event Action JumpEvent;
@@ -68,8 +69,15 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (!context.performed) { return; }
-        JumpEvent?.Invoke();
+        if (context.performed)
+        {
+            isJumpHeld = true;
+            JumpEvent?.Invoke();
+        }
+        else if (context.canceled)
+        {
+            isJumpHeld = false;
+        }
     }
 
     public void OnLook(InputAction.CallbackContext context)
@@ -110,13 +118,12 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public void OnAim(InputAction.CallbackContext context)
     {
         if (context.performed)
-            {isAiming = true;}
+        {isAiming = true;}
         
         else if (context.canceled)
-            {isAiming = false;}
+        {isAiming = false;}
         
         OnAiming?.Invoke(isAiming);
-        Debug.Log("isAiming");
     }
 
     

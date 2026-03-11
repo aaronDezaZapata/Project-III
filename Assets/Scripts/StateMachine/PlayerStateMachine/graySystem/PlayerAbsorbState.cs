@@ -53,7 +53,7 @@ public class PlayerAbsorbState : PlayerBaseState
                 ShootHeldObjectOnRelease();
             }
             
-            stateMachine.SwitchState(typeof(PlayerGrayState));
+            stateMachine.SwitchState(typeof(PlayerRedState));
             return;
         }
         

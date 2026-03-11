@@ -119,11 +119,18 @@ public class PlayerStateMachineEditor : Editor
             DrawHeader("--- BLUE STATE (HEISER) ---", Color.blue);
             GUI.backgroundColor = new Color(0.6f, 0.8f, 1f);
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-
+            
+            DrawHeader("Force Variable Config", Color.white);
+            DrawBackingProperty("HeiserCooldownTime");
+            
+            DrawHeader("Force Variable Config", Color.white);
             DrawBackingProperty("HoverForce");
             DrawBackingProperty("aerialMoveSpeed");
+            DrawBackingProperty("HeiserActivationTime");
+            DrawBackingProperty("HeiserInitialBoostForce");
 
             // Particles related to blue/water go here
+            DrawHeader("Visuals Config", Color.white);
             DrawBackingProperty("Water_JetParticle");
             DrawBackingProperty("WaterHeiserParticle");
             DrawBackingProperty("WaterHeiserParticleSecond");
@@ -132,8 +139,10 @@ public class PlayerStateMachineEditor : Editor
             GUI.backgroundColor = Color.white;
         }
 
+        // TODO: Remove
+        // No existe estado grey
         // GRAY LOGIC 
-        if (targetScript.playerState == PlayerStates.GREY)
+        /*if (targetScript.playerState == PlayerStates.GREY)
         {
             DrawHeader("--- GRAY STATE ---", Color.gray);
             GUI.backgroundColor = new Color(0.8f, 0.8f, 0.8f);
@@ -156,7 +165,7 @@ public class PlayerStateMachineEditor : Editor
 
             EditorGUILayout.EndVertical();
             GUI.backgroundColor = Color.white;
-        }
+        }*/
 
         // BLACK LOGIC
         if (targetScript.playerState == PlayerStates.BLACK)

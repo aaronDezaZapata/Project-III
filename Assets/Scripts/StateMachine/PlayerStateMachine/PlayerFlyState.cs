@@ -1,5 +1,10 @@
 using UnityEngine;
 
+/// <summary>
+/// Debug State: Player Fly State
+/// - Only used on debug mode
+/// - Player Fly to the desired position
+/// </summary>
 public class PlayerFlyState : PlayerBaseState
 {
     
@@ -16,7 +21,7 @@ public class PlayerFlyState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
-        // 1. Obtener dirección de la cámara (solo en el plano horizontal XZ)
+        // 1. Obtener direcciï¿½n de la cï¿½mara (solo en el plano horizontal XZ)
         Vector3 adelante = Camera.main.transform.forward;
         Vector3 derecha = Camera.main.transform.right;
 
@@ -30,10 +35,10 @@ public class PlayerFlyState : PlayerBaseState
         float h = Input.GetAxis("Horizontal"); // A, D
         float v = Input.GetAxis("Vertical");   // W, S
 
-        // 3. Calcular dirección final de WASD
+        // 3. Calcular direcciï¿½n final de WASD
         Vector3 direccionFinal = (adelante * v) + (derecha * h);
 
-        // 4. Añadir subir/bajar (Eje Y global)
+        // 4. Aï¿½adir subir/bajar (Eje Y global)
         if (Input.GetKey(KeyCode.Space))
         {
             direccionFinal.y = 1f;
