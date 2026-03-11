@@ -11,6 +11,8 @@ public class PlayerStateMachine : StateMachine
 {
     #region Variables
 
+    private Dictionary<Color, Type> colorToStateDic;
+
     [field: Header("Player State")]
     [field: SerializeField] public PlayerStates playerState;
 
@@ -325,6 +327,14 @@ public class PlayerStateMachine : StateMachine
         AddState(new PlayerAbsorbState(this));
         AddState(new PlayerFlyState(this));
 
+        colorToStateDic = new Dictionary<Color, Type>
+        {
+            { Color.red, typeof(PlayerRedState) },
+            { Color.green, typeof(PlayerGreenState) },
+            { Color.blue, typeof(PlayerBlueState) },
+            { Color.white, typeof(PlayerWhiteState) }
+        };
+
         // MUST BE PLAYERFREELOOK. CHANGES ONLY FOR TESTING
         SwitchState(typeof(PlayerWhiteState));
     }
@@ -584,32 +594,112 @@ public class PlayerStateMachine : StateMachine
 
     public void UseColor(float reduceFill)
     {
-        if (Mat_Player.material.GetFloat("_FillC") < 0.01f)
+        // Revisamos cuál es el primer Fill que tiene pintura, empezando por el C
+        if (Mat_Player.material.GetFloat("_FillC") >= 0.1f)
         {
-            Debug.Log("IS 0");
-            return;
+            StartCoroutine(EmptyColorRoutine(reduceFill, "_FillC"));
         }
-        else{
-            Debug.Log("EMPTY COLOR ROUTINE 0");
-            StartCoroutine(EmptyColorRoutine(reduceFill));
+        else if (Mat_Player.material.GetFloat("_FillB") >= 0.1f)
+        {
+            StartCoroutine(EmptyColorRoutine(reduceFill, "_FillB"));
+        }
+        else if (Mat_Player.material.GetFloat("_FillA") >= 0.1f)
+        {
+            StartCoroutine(EmptyColorRoutine(reduceFill, "_FillA"));
+        }
+        else
+        {
+            Debug.Log("No queda pintura en ningún tanque.");
         }
     }
 
-    IEnumerator EmptyColorRoutine(float reduceFill) //TODO: Pasar la string del que fill toca bajar
-                                                    //Hacer un diccionario de el color y los estados
+    IEnumerator EmptyColorRoutine(float reduceFill, string fillProperty)
     {
-        float fillC;
-        float tempFillC = Mat_Player.material.GetFloat("_FillC") - reduceFill;
-        if (tempFillC < 0.1f) tempFillC = 0.1f;
-
-        while(Mat_Player.material.GetFloat("_FillC") > tempFillC)
+        float currentFill;
+        float targetFill = Mat_Player.material.GetFloat(fillProperty) - reduceFill;
+        
+        // Si el objetivo baja del umbral (0.1f), forzamos que se vacíe por completo
+        if (targetFill < 0.1f) 
         {
-            fillC = Mat_Player.material.GetFloat("_FillC");
-            fillC -= (reduceFill * Time.deltaTime);
-            if (fillC < tempFillC) fillC = 0f;
-            Mat_Player.material.SetFloat("_FillC",fillC);
+            targetFill = 0f;
+        }
+
+        while(Mat_Player.material.GetFloat(fillProperty) > targetFill)
+        {
+            currentFill = Mat_Player.material.GetFloat(fillProperty);
+            currentFill -= (reduceFill * Time.deltaTime * 5f); // Multiplicado por 5f para que la animación de vaciado sea más rápida y fluida
+            
+            // Si nos pasamos bajando, lo ajustamos al objetivo elegido
+            if (currentFill < targetFill) 
+            {
+                currentFill = targetFill;
+            }
+            
+            Mat_Player.material.SetFloat(fillProperty, currentFill);
             yield return null;
         }
+
+        CheckAndSwitchColorState();
+    }
+
+    public void CheckAndSwitchColorState()
+    {
+        // Revisamos C primero
+        if (Mat_Player.material.GetFloat("_FillC") >= 0.1f) 
+        {
+            Color colorC = Mat_Player.material.GetColor("_ColorC");
+            SwitchToStateByColor(colorC);
+            return;
+        }
+        
+        // Si C está vacío, revisamos B
+        if (Mat_Player.material.GetFloat("_FillB") >= 0.1f) 
+        {
+            Color colorB = Mat_Player.material.GetColor("_ColorB");
+            SwitchToStateByColor(colorB);
+            return;
+        }
+
+        // Si B está vacío, revisamos A
+        if (Mat_Player.material.GetFloat("_FillA") >= 0.1f) 
+        {
+            Color colorA = Mat_Player.material.GetColor("_ColorA");
+            SwitchToStateByColor(colorA);
+            return;
+        }
+
+        // Si los 3 están vacíos, al estado por defecto:
+        SwitchState(typeof(PlayerWhiteState));
+    }
+
+    private void SwitchToStateByColor(Color c)
+    {
+        // En Unity a veces los colores del shader tienen ligeras variaciones de flotantes
+        // Buscamos una coincidencia aproximada
+        bool stateFound = false;
+        foreach (var kvp in colorToStateDic)
+        {
+            if (ColorsAreClose(kvp.Key, c))
+            {
+                SwitchState(kvp.Value);
+                stateFound = true;
+                break;
+            }
+        }
+
+        if (!stateFound)
+        {
+            SwitchState(typeof(PlayerWhiteState)); 
+        }
+    }
+
+    private bool ColorsAreClose(Color a, Color b)
+    {
+        float tolerance = 0.05f; // Margen de error para pequeñas discrepancias del shader
+        return Mathf.Abs(a.r - b.r) <= tolerance &&
+               Mathf.Abs(a.g - b.g) <= tolerance &&
+               Mathf.Abs(a.b - b.b) <= tolerance &&
+               Mathf.Abs(a.a - b.a) <= tolerance;
     }
 
 
