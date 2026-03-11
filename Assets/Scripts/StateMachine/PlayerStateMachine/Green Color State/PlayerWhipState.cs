@@ -305,7 +305,6 @@ public class PlayerWhipState : PlayerBaseState
         if (!isAttached) return;
 
         ApplyPendulumPhysics(deltaTime);
-        MaintainMinimumEnergy();
         MovePlayer(deltaTime);
         RotatePlayer(deltaTime);
         CheckRopeIntegrity();
@@ -404,26 +403,21 @@ public class PlayerWhipState : PlayerBaseState
     {
         float angularAcceleration = -(Gravity / stateMachine.SwingRadius) * Mathf.Sin(swingCurrentAngle);
         ApplySwingInput(ref angularAcceleration, deltaTime);
-        angularAcceleration += EnergyBoost * Mathf.Sign(angularVelocity);
+        
+        if (Mathf.Abs(angularVelocity) > 0.5f)
+        {
+            angularAcceleration += EnergyBoost * Mathf.Sign(angularVelocity);
+        }
 
         angularVelocity += angularAcceleration * deltaTime;
-        angularVelocity *= Damping;
+        angularVelocity *= (1f - 0.2f * deltaTime); // Amortiguación de aire
         swingCurrentAngle += angularVelocity * deltaTime;
 
-        // Limitar ángulo a 90° para evitar loops completos
-        if (Mathf.Abs(swingCurrentAngle) > Mathf.PI * 0.5f)
+        // Limitar ángulo suavemente para evitar loops completos
+        if (Mathf.Abs(swingCurrentAngle) > Mathf.PI * 0.45f)
         {
-            swingCurrentAngle = Mathf.Sign(swingCurrentAngle) * Mathf.PI * 0.5f;
-            angularVelocity = -angularVelocity * 0.8f;
-        }
-    }
-
-    private void MaintainMinimumEnergy()
-    {
-        if (Mathf.Abs(angularVelocity) < MinAngularVelocity)
-        {
-            float dir = Mathf.Sign(angularVelocity);
-            angularVelocity = MinAngularVelocity * (dir == 0 ? 1f : dir);
+            swingCurrentAngle = Mathf.Sign(swingCurrentAngle) * Mathf.PI * 0.45f;
+            angularVelocity = -angularVelocity * 0.4f; // Rebote suave
         }
     }
 
@@ -441,9 +435,31 @@ public class PlayerWhipState : PlayerBaseState
         Vector3 ropeVector = stateMachine.transform.position - grapplePosition;
         Vector3 tangentDir = Vector3.Cross(swingPlaneNormal, ropeVector).normalized;
 
-        float alignment = Vector3.Dot(inputDir, tangentDir * Mathf.Sign(angularVelocity));
-        if (alignment > 0.2f)
-            angularAcceleration += alignment * stateMachine.SwingInputForce;
+        float alignment = Vector3.Dot(inputDir, tangentDir);
+        
+        if (Mathf.Abs(alignment) > 0.1f)
+        {
+             // Si el input empuja hacia donde ya nos movemos aplicamos toda la fuerza
+             bool assistsMotion = (alignment > 0 && angularVelocity >= -0.1f) || (alignment < 0 && angularVelocity <= 0.1f);
+             float forceMultiplier = assistsMotion ? 1f : 0.4f;
+             
+             angularAcceleration += alignment * stateMachine.SwingInputForce * forceMultiplier;
+        }
+
+        // Permitir al jugador controlar la dirección del balanceo
+        Vector3 idealSwingPlaneNormal = Vector3.Cross(Vector3.up, inputDir).normalized;
+        if (idealSwingPlaneNormal.sqrMagnitude > 0.01f)
+        {
+            if (Vector3.Dot(swingPlaneNormal, idealSwingPlaneNormal) < 0)
+                idealSwingPlaneNormal = -idealSwingPlaneNormal;
+                
+            // rotar el plano en la parte baja del péndulo (Cos = 1)
+            // En los extremos del arco (Cos = 0) apenas se rota para evitar que parezcan frenazos
+            float turnFactor = Mathf.Max(0.1f, Mathf.Cos(swingCurrentAngle));
+            float turnSpeed = stateMachine.RotationSpeed * turnFactor * 1.5f;
+
+            swingPlaneNormal = Vector3.Slerp(swingPlaneNormal, idealSwingPlaneNormal, deltaTime * turnSpeed).normalized;
+        }
     }
 
     private void MovePlayer(float deltaTime)
@@ -460,14 +476,19 @@ public class PlayerWhipState : PlayerBaseState
     {
         Vector3 ropeVector = stateMachine.transform.position - grapplePosition;
         Vector3 moveDir = Vector3.Cross(swingPlaneNormal, ropeVector).normalized;
+        
+        // Determinar lado de la liana estamos usando frente al movimiento real
         if (angularVelocity < 0) moveDir = -moveDir;
 
-        if (moveDir.sqrMagnitude > 0.01f)
+        if (moveDir.sqrMagnitude > 0.01f && Mathf.Abs(angularVelocity) > 0.1f)
         {
+           
+            float dynamicRotationSpeed = stateMachine.RotationSpeed * Mathf.Clamp01(Mathf.Abs(angularVelocity));
+            
             stateMachine.transform.rotation = Quaternion.Slerp(
                 stateMachine.transform.rotation,
                 Quaternion.LookRotation(moveDir),
-                stateMachine.RotationSpeed * 2f * deltaTime
+                dynamicRotationSpeed * 2f * deltaTime
             );
         }
     }
@@ -527,13 +548,30 @@ public class PlayerWhipState : PlayerBaseState
 
     private void ExitWhipState()
     {
+        bool wasGrapple = (currentMode == WhipMode.GrappleSwing);
+
         if (currentMode == WhipMode.EnemyWhip)
             ThrowEnemy();
 
         stateMachine.SwitchState(typeof(PlayerGreenState));
+        
+        if (wasGrapple)
+        {
+            if (stateMachine.GetCurrentState() is PlayerBaseState baseState)
+            {
+                baseState.ResetDoubleJump();
+            }
+        }
     }
 
-    private void OnJump() => ExitWhipState();
+    private void OnJump()
+    {
+        if (currentMode == WhipMode.GrappleSwing)
+        {
+            stateMachine.WhipFailedLastAttempt = true; // prevent automatic re-attach on jump
+        }
+        ExitWhipState();
+    }
 
     #endregion
 }

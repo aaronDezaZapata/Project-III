@@ -21,7 +21,7 @@ public class PlayerGreenState : PlayerWhiteState
     protected override void SetMaterialColor()
     {
         //stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.green);
-        stateMachine.StartFill(Color.green);
+        //stateMachine.StartFill(Color.green);
     }
     
     protected override bool CheckColorSpecificActions(float deltaTime)
