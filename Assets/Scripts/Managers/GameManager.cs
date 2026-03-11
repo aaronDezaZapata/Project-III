@@ -55,19 +55,6 @@ public class GameManager : MonoBehaviour
         
         levelDecals.Clear();
     }
-    
-    // TODO: Remove
-    // No hay enemigos
-    /*public void AddPaintedEnemy(PaintableEnemy enemy)
-    {
-        enemiesPainted.Add(enemy);
-    }*/
-    // TODO: Remove
-    // No hay enemigos
-    /*public void RemovePaintedEnemy(PaintableEnemy enemy)
-    {
-        enemiesPainted.Remove(enemy);
-    }*/
 
     public void GetNewCheckPoint(Transform newCheckPoint)
     {

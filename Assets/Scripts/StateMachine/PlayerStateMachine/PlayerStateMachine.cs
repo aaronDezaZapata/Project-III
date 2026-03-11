@@ -309,9 +309,6 @@ public class PlayerStateMachine : StateMachine
 
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
         AddState(new PlayerWhiteState(this));
         AddState(new PlayerSwimState(this));
         AddState(new PlayerDashAttackState(this));

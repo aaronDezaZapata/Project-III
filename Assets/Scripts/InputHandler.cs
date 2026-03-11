@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 {
     InputSystem_Actions controls;
-    
 
     public Vector2 MoveVector { get; private set; }
     public Vector2 LookVector { get; private set; }
@@ -29,7 +28,8 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public event Action InteractionEvent;
     public event Action DashAttackEvent;
 
-    public static event Action<bool> OnAiming; 
+    public static event Action<bool> OnAiming;
+    public static event Action OnPauseGameEvent;
 
     void Start()
     {
@@ -85,11 +85,11 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         LookVector = context.ReadValue<Vector2>();
         
         // Detectar el dispositivo de entrada
-        if (context.control.device is UnityEngine.InputSystem.Mouse)
+        if (context.control.device is Mouse)
         {
             IsUsingGamepad = false;
         }
-        else if (context.control.device is UnityEngine.InputSystem.Gamepad)
+        else if (context.control.device is Gamepad)
         {
             IsUsingGamepad = true;
         }
@@ -136,6 +136,14 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         { isDColorChange = false; }
     }
 
+    public void OnPauseGame(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            OnPauseGameEvent?.Invoke();            
+        }
+    }
+
     public void OnColorAction(InputAction.CallbackContext context)
     {
         if (context.performed)
@@ -146,33 +154,6 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         else if (context.canceled)
         {
             isColorActing = false;
-        }
-    }
-
-    public void OnGreen(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-        {
-            isGreen = true;
-            Debug.Log("Green State Activated");
-        }
-        else if (context.canceled)
-        {
-            isGreen = false;
-            Debug.Log("Green State Deactivated");
-        }
-    }
-    public void OnGray(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-        {
-            isGray = true;
-            Debug.Log("Gray State Activated");
-        }
-        else if (context.canceled)
-        {
-            isGray = false;
-            Debug.Log("Gray State Deactivated");
         }
     }
 }
