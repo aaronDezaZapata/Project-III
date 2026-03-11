@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// Player Blue State
 /// - Basic Movement
-/// - Can do Heiser Hability
+/// - Can do Heiser
 /// </summary>
 public class PlayerBlueState : PlayerWhiteState
 {
@@ -33,14 +33,25 @@ public class PlayerBlueState : PlayerWhiteState
 
     protected override bool CheckColorSpecificActions(float deltaTime)
     {
+        UpdateHeiserCooldown(deltaTime);
+        
+        if (!stateMachine.InputReader.isJumpHeld)
+        {
+            stateMachine.wasJumpButtonReleased = true;
+        }
+        
         if (!stateMachine.Controller.isGrounded && stateMachine.InputReader.isJumpHeld)
         {
-            jumpHoldTimer += deltaTime;
-            
-            if (jumpHoldTimer >= stateMachine.HeiserActivationTime)
+            if (!stateMachine.isHeiserOnCooldown && stateMachine.wasJumpButtonReleased)
             {
-                stateMachine.SwitchState(typeof(PlayerHeiserState));
-                return true;
+                jumpHoldTimer += deltaTime;
+                
+                if (jumpHoldTimer >= stateMachine.HeiserActivationTime)
+                {
+                    Debug.Log("Blue: Activando Heiser");
+                    stateMachine.SwitchState(typeof(PlayerHeiserState));
+                    return true;
+                }
             }
         }
         else
@@ -48,7 +59,21 @@ public class PlayerBlueState : PlayerWhiteState
             jumpHoldTimer = 0f;
         }
         
-        return false; // No dash attack para Blue
+        return false;
+    }
+    
+    private void UpdateHeiserCooldown(float deltaTime)
+    {
+        if (stateMachine.isHeiserOnCooldown)
+        {
+            stateMachine.heiserCooldownTimer -= deltaTime;
+            
+            if (stateMachine.heiserCooldownTimer <= 0f)
+            {
+                stateMachine.isHeiserOnCooldown = false;
+                stateMachine.heiserCooldownTimer = 0f;
+            }
+        }
     }
     
     protected override void OnJump()
@@ -58,8 +83,4 @@ public class PlayerBlueState : PlayerWhiteState
         stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();
     }
-    
-    // No mods on Tick right now
-    
-    // No mods on Exit right now
 }

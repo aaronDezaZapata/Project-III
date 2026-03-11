@@ -1,21 +1,24 @@
 using UnityEngine;
 
 /// <summary>
-/// Heiser Movement
-/// - Just a plain vertical movement
+/// Player Heiser State (Blue Ability)
+/// - Vertical Movement
+/// - Deactivates at grounded or when jump button is released
+/// - Cooldown before reusing the ability
 /// </summary>
 public class PlayerHeiserState : PlayerBaseState
 {
     private readonly int Heiser = Animator.StringToHash("GeiserCycle");
     private const float CrossFadeDuration = 0.1f;
+    
     public PlayerHeiserState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
     }
 
     public override void Enter()
     {
-        stateMachine.CanHeiser = true;
-        stateMachine.CanHeiser = false;
+        Debug.Log("Entered PlayerHeiserState");
+        
         stateMachine.Animator.CrossFadeInFixedTime(Heiser, CrossFadeDuration);
         stateMachine.WaterHeiserParticle.gameObject.SetActive(true);
         stateMachine.WaterHeiserParticleSecond.gameObject.SetActive(true);
@@ -26,32 +29,31 @@ public class PlayerHeiserState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
-        if(stateMachine.InputReader.isJumpHeld)
+        stateMachine.CheckGrounded();
+        if (stateMachine.Controller.isGrounded)
         {
-            stateMachine.CanHeiser = true;   
-        }
-        else
-        {
-            stateMachine.CanHeiser = false;
-        }
-
-        if (!stateMachine.CanHeiser)
-        {
-            stateMachine.ReturnToMainState();
+            stateMachine.SwitchState(typeof(PlayerBlueState));
             return;
         }
-
-        //stateMachine.ForceReceiver.ResetVerticalVelocity();
+        
+        if (!stateMachine.InputReader.isJumpHeld)
+        {
+            stateMachine.SwitchState(typeof(PlayerBlueState));
+            return;
+        }
+        
         stateMachine.ForceReceiver.AddForce(Vector3.up * stateMachine.HoverForce * deltaTime);
         MoveHoverDirect(deltaTime);
     }
 
     public override void Exit()
     {
-        stateMachine.CanHeiser = true;
+        stateMachine.isHeiserOnCooldown = true;
+        stateMachine.heiserCooldownTimer = stateMachine.HeiserCooldownTime;
+        stateMachine.wasJumpButtonReleased = false;
+        
         stateMachine.WaterHeiserParticle.gameObject.SetActive(false);
         stateMachine.WaterHeiserParticleSecond.gameObject.SetActive(false);
-        //Se apagan aqui las particulas
     }
     
     private void MoveHoverDirect(float deltaTime)
