@@ -10,7 +10,7 @@ public class DecalManager : MonoBehaviour
     [SerializeField] private Material blackDecalMat;
     [SerializeField] private Material blueDecalMat;
     [SerializeField] private Material greenDecalMat;
-    [SerializeField] private Material greyDecalMat;
+    [SerializeField] private Material redDecalMat;
 
     #endregion
     
@@ -18,13 +18,13 @@ public class DecalManager : MonoBehaviour
     {
         switch (GameManager.Instance.GetPlayer().GetComponent<PlayerStateMachine>().playerState)
         {
+            case PlayerStates.RED:
+                GetComponent<DecalProjector>().material = redDecalMat;
+                break;
+            
             case PlayerStates.BLUE:
                 // GetComponent<MeshRenderer>().material.SetColor("_Color", Color.blue);
                 GetComponent<DecalProjector>().material = blueDecalMat;
-                break;
-            
-            case PlayerStates.GREY:
-                GetComponent<DecalProjector>().material = greyDecalMat;
                 break;
             
             case PlayerStates.BLACK:

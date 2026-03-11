@@ -2,8 +2,9 @@ using UnityEngine;
 
 public enum PlayerStates
 {
-    BLACK,
+    WHITE,
+    RED,
     BLUE,
     GREEN,
-    GREY
+    BLACK,
 }

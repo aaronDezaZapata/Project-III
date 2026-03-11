@@ -259,7 +259,11 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public float ReticleSurfaceOffset { get; private set; } = 0.02f;
 
     // HEISER VARIABLES
+    [field: Header("Heiser Settings")]
+    [field: Tooltip("Fuerza de flotación vertical")]
     [field: SerializeField] public float HoverForce { get; private set; } = 15f;
+    
+    [field: Tooltip("Velocidad de movimiento aéreo durante Heiser")]
     [field: SerializeField] public float aerialMoveSpeed { get; private set; } = 10f;
     
     [field: Tooltip("Tiempo en segundos que debe mantenerse el salto en el aire para activar Heiser")]
@@ -268,7 +272,13 @@ public class PlayerStateMachine : StateMachine
     [field: Tooltip("Fuerza del impulso vertical inicial al entrar al estado Heiser")]
     [field: SerializeField] public float HeiserInitialBoostForce { get; private set; } = 10f;
     
-    public bool CanHeiser { get; set; } = true;
+    [field: Tooltip("Tiempo de cooldown después de usar Heiser antes de poder usarlo de nuevo")]
+    [field: SerializeField] public float HeiserCooldownTime { get; private set; } = 1f;
+    
+    // Heiser cooldown variables
+    [HideInInspector] public float heiserCooldownTimer = 0f;
+    [HideInInspector] public bool isHeiserOnCooldown = false;
+    [HideInInspector] public bool wasJumpButtonReleased = true;
     
     /// <summary>
     /// Dash variables
@@ -302,7 +312,7 @@ public class PlayerStateMachine : StateMachine
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        AddState(new PlayerFreeLookState(this));
+        AddState(new PlayerWhiteState(this));
         AddState(new PlayerSwimState(this));
         AddState(new PlayerDashAttackState(this));
         AddState(new PlayerShootingState(this));
@@ -310,12 +320,12 @@ public class PlayerStateMachine : StateMachine
         AddState(new PlayerHeiserState(this));
         AddState(new PlayerGreenState(this));
         AddState(new PlayerWhipState(this));
-        AddState(new PlayerGrayState(this));
+        AddState(new PlayerRedState(this));
         AddState(new PlayerAbsorbState(this));
         AddState(new PlayerFlyState(this));
 
         // MUST BE PLAYERFREELOOK. CHANGES ONLY FOR TESTING
-        SwitchState(typeof(PlayerFreeLookState));
+        SwitchState(typeof(PlayerWhiteState));
     }
 
     public void StartCameraShake(float duration)
@@ -401,35 +411,34 @@ public class PlayerStateMachine : StateMachine
             case "CharcoAzul":
                 SwitchState(typeof(PlayerBlueState));
                 //Mat_Player.SetColor("_Color", Color.blue);
-                if (Mat_Player != null)
+                /*if (Mat_Player != null)
                 {
                     Mat_Player.material.SetColor("_SpecularColor", Color.blue);
-                }
+                }*/
                 break;
 
             case "CharcoNegro":
-                SwitchState(typeof(PlayerFreeLookState));
-                if (Mat_Player != null)
-                {
+                SwitchState(typeof(PlayerWhiteState));
+                /*if (Mat_Player != null) {
                     Color blackColor = new Color(1 - 38f, 1 - 38f, 1 - 38f);
                     Mat_Player.material.SetColor("_SpecularColor", Color.white);
-                }
+                }*/
                 break;
             
             case "CharcoRojo":
-                SwitchState(typeof(PlayerGrayState));
-                if (Mat_Player != null)
+                SwitchState(typeof(PlayerRedState));
+                /*if (Mat_Player != null)
                 {
                     Mat_Player.material.SetColor("_SpecularColor", Color.red);
-                }
+                }*/
                 break;
 
             case "CharcoVerde":
                 SwitchState(typeof(PlayerGreenState));
-                if (Mat_Player != null)
+                /*if (Mat_Player != null)
                 {
                     Mat_Player.material.SetColor("_SpecularColor", Color.green);
-                }
+                }*/
                 break;
 
             case "CheckPoint":
@@ -440,25 +449,16 @@ public class PlayerStateMachine : StateMachine
                 break;
         }
     }
-
-
-    private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        switch(hit.transform.tag)
-        {
-            case "Insta":
-                GameManager.Instance.PlayerDeath();
-                break;
-                default : break;
-        }
-    }
     
     public void ReturnToMainState()
     {
         switch (playerState)
         {
-            case PlayerStates.BLACK:
-                SwitchState(typeof(PlayerFreeLookState));
+            case PlayerStates.WHITE:
+                SwitchState(typeof(PlayerWhiteState));
+                break;
+            case PlayerStates.RED:
+                SwitchState(typeof(PlayerRedState));
                 break;
             case PlayerStates.BLUE:
                 SwitchState(typeof(PlayerBlueState));
@@ -466,9 +466,17 @@ public class PlayerStateMachine : StateMachine
             case PlayerStates.GREEN:
                 SwitchState(typeof(PlayerGreenState));
                 break;
-            case PlayerStates.GREY:
-                SwitchState(typeof(PlayerGrayState));
+        }
+    }
+    
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        switch(hit.transform.tag)
+        {
+            case "Insta":
+                GameManager.Instance.PlayerDeath();
                 break;
+            default : break;
         }
     }
     

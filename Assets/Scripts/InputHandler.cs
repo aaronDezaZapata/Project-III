@@ -118,13 +118,12 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public void OnAim(InputAction.CallbackContext context)
     {
         if (context.performed)
-            {isAiming = true;}
+        {isAiming = true;}
         
         else if (context.canceled)
-            {isAiming = false;}
+        {isAiming = false;}
         
         OnAiming?.Invoke(isAiming);
-        Debug.Log("isAiming");
     }
 
     

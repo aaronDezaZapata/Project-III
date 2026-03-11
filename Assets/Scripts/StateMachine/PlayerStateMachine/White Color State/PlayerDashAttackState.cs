@@ -22,7 +22,7 @@ public class PlayerDashAttackState : PlayerBaseState
         if (targetEnemy == null)
         {
             Debug.LogWarning("No painted enemy found, returning to FreeLook");
-            stateMachine.SwitchState(typeof(PlayerFreeLookState));
+            stateMachine.SwitchState(typeof(PlayerWhiteState));
             return;
         }
         
@@ -46,7 +46,7 @@ public class PlayerDashAttackState : PlayerBaseState
         if (dashTimer > maxDashTime)
         {
             Debug.Log("Dash timeout, returning to FreeLook");
-            stateMachine.SwitchState(typeof(PlayerFreeLookState));
+            stateMachine.SwitchState(typeof(PlayerWhiteState));
             return;
         }
 
@@ -60,7 +60,7 @@ public class PlayerDashAttackState : PlayerBaseState
         if (targetEnemy == null || !targetEnemy.gameObject.activeInHierarchy)
         {
             Debug.Log("Target enemy disappeared");
-            stateMachine.SwitchState(typeof(PlayerFreeLookState));
+            stateMachine.SwitchState(typeof(PlayerWhiteState));
             return;
         }
 
@@ -157,7 +157,7 @@ public class PlayerDashAttackState : PlayerBaseState
         stateMachine.StartCameraShake(0.2f);
 
         // Cambiar inmediatamente de estado para aplicar el knockback
-        stateMachine.SwitchState(typeof(PlayerFreeLookState));
+        stateMachine.SwitchState(typeof(PlayerWhiteState));
     }
     
     private void ApplyKnockback()
