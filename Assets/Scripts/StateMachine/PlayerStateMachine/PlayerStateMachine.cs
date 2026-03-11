@@ -420,6 +420,7 @@ public class PlayerStateMachine : StateMachine
 
             case "CharcoNegro":
                 SwitchState(typeof(PlayerWhiteState));
+                
                 /*if (Mat_Player != null) {
                     Color blackColor = new Color(1 - 38f, 1 - 38f, 1 - 38f);
                     Mat_Player.material.SetColor("_SpecularColor", Color.white);
@@ -428,6 +429,7 @@ public class PlayerStateMachine : StateMachine
             
             case "CharcoRojo":
                 SwitchState(typeof(PlayerRedState));
+                StartFill(Color.red);
                 /*if (Mat_Player != null)
                 {
                     Mat_Player.material.SetColor("_SpecularColor", Color.red);
@@ -436,6 +438,7 @@ public class PlayerStateMachine : StateMachine
 
             case "CharcoVerde":
                 SwitchState(typeof(PlayerGreenState));
+                StartFill(Color.green);
                 /*if (Mat_Player != null)
                 {
                     Mat_Player.material.SetColor("_SpecularColor", Color.green);
@@ -532,14 +535,14 @@ public class PlayerStateMachine : StateMachine
     {
         if (Mat_Player.material.GetColor("_ColorA") == newColor)
         {
-            if (Mat_Player.material.GetFloat("_FillA") < 1f)
+            if (Mat_Player.material.GetFloat("_FillA") < 0.99999f)
             {
                 if (fillCoroutine != null) StopCoroutine(fillCoroutine);
                 fillCoroutine = StartCoroutine(FillRoutine("_FillA"));
             }
             else if (Mat_Player.material.GetColor("_ColorB") == newColor)
             {
-                if (Mat_Player.material.GetFloat("_FillB") < 1f)
+                if (Mat_Player.material.GetFloat("_FillB") < .99999f)
                 {
                     if (fillCoroutine != null) StopCoroutine(fillCoroutine);
                     fillCoroutine = StartCoroutine(FillRoutine("_FillB"));
@@ -577,6 +580,39 @@ public class PlayerStateMachine : StateMachine
             yield return null;
         }
     }
+
+
+    public void UseColor(float reduceFill)
+    {
+        if (Mat_Player.material.GetFloat("_FillC") < 0.01f)
+        {
+            Debug.Log("IS 0");
+            return;
+        }
+        else{
+            Debug.Log("EMPTY COLOR ROUTINE 0");
+            StartCoroutine(EmptyColorRoutine(reduceFill));
+        }
+    }
+
+    IEnumerator EmptyColorRoutine(float reduceFill) //TODO: Pasar la string del que fill toca bajar
+                                                    //Hacer un diccionario de el color y los estados
+    {
+        float fillC;
+        float tempFillC = Mat_Player.material.GetFloat("_FillC") - reduceFill;
+        if (tempFillC < 0.1f) tempFillC = 0.1f;
+
+        while(Mat_Player.material.GetFloat("_FillC") > tempFillC)
+        {
+            fillC = Mat_Player.material.GetFloat("_FillC");
+            fillC -= (reduceFill * Time.deltaTime);
+            if (fillC < tempFillC) fillC = 0f;
+            Mat_Player.material.SetFloat("_FillC",fillC);
+            yield return null;
+        }
+    }
+
+
     
     /// <summary>
     /// Switch Colors on any index

@@ -58,17 +58,14 @@ public class PlayerWhiteState : PlayerBaseState
     // Overridden in other states
     protected virtual void SetPlayerState()
     {
-        stateMachine.playerState = PlayerStates.WHITE;
+        //stateMachine.playerState = PlayerStates.WHITE;
     }
     
     // Initial material color config
     protected virtual void SetMaterialColor()
     {
         //stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.white);
-        //stateMachine.PlayerColorSwitch(0,Color.white);
-        stateMachine.PlayerColorSwitch(1, Color.white);
-        stateMachine.PlayerColorSwitch(2, Color.white);
-        stateMachine.StartFill(Color.white);
+        //stateMachine.StartFill(Color.white);
     }
     
     // Input events to subscribe
@@ -93,7 +90,7 @@ public class PlayerWhiteState : PlayerBaseState
         stateMachine.Animator.SetFloat(FreeLookSpeedHash, 0);
         stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
         lastSpeed = 0f;
-        //lastInputMagnitude = 0f;
+        
     }
 
     public override void Tick(float deltaTime)
