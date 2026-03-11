@@ -30,6 +30,13 @@ public class PlayerRedState : PlayerWhiteState
             stateMachine.SwitchState(typeof(PlayerShootingState));
             return true;
         }
+
+        if (stateMachine.InputReader.isColorActing)
+        {
+            if (GameManager.Instance.paintBeacon == null) return false;
+            stateMachine.SwitchState(typeof(PlayerDashAttackState));
+            return true;
+        }
         
         return false;
     }
