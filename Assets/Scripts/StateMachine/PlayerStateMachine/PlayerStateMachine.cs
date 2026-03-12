@@ -140,9 +140,9 @@ public class PlayerStateMachine : StateMachine
     [Tooltip("Punto desde donde sale la cuerda (mano del jugador)")]
     [field: SerializeField] public Transform GrappleRopeOrigin { get; private set; }
 
-    [Header("Green Whip Mechanics (Enemy Attack)")]
-    [Tooltip("Capa de los enemigos que pueden ser capturados")]
-    [field: SerializeField] public LayerMask EnemyLayer { get; private set; }
+    [Header("Green Whip Mechanics (Object Attack)")]
+    [Tooltip("Capa de los objetos que pueden ser capturados")]
+    [field: SerializeField] public LayerMask WhipObjectLayer { get; private set; }
 
     [Tooltip("Fuerza mínima de lanzamiento (cuando gira lento)")]
     [field: SerializeField] public float WhipThrowForceMin { get; private set; } = 15f;
@@ -150,8 +150,8 @@ public class PlayerStateMachine : StateMachine
     [Tooltip("Fuerza máxima de lanzamiento (cuando gira rápido)")]
     [field: SerializeField] public float WhipThrowForceMax { get; private set; } = 40f;
 
-    [Tooltip("Distancia máxima para detectar enemigos")]
-    [field: SerializeField] public float EnemyDetectionRange { get; private set; } = 15f;
+    [Tooltip("Distancia máxima para detectar objetos")]
+    [field: SerializeField] public float WhipObjectDetectionRange { get; private set; } = 15f;
 
     [Header("Green Whip Spin Settings")]
     [Tooltip("Velocidad inicial de giro del enemigo (grados/segundo)")]

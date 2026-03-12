@@ -179,8 +179,7 @@ public class PlayerShootingState : PlayerBaseState
         
         float pitchAngle = -Mathf.Asin(aimForward.y) * Mathf.Rad2Deg;
         
-        float normalizedPitch = Mathf.InverseLerp(stateMachine.MinVerticalAngle, stateMachine.MaxVerticalAngle, pitchAngle);
-        
-        orbitalFollow.VerticalAxis.Value = normalizedPitch;
+        // Cinemachine 3 OrbitalFollow VerticalAxis expects degrees, not a 0-1 normalized value.
+        orbitalFollow.VerticalAxis.Value = pitchAngle;
     }
 }
