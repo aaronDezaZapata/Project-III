@@ -6,36 +6,34 @@ using UnityEngine.Rendering.Universal.Internal;
 
 /// <summary>
 /// Clase Black Base
-/// - Has everything on
-///  - Blue
-///  - Red
-///  - Green
+/// - Plain Shoot
+/// - Player impulses himself into enemies as attack
 /// </summary>
 public class PlayerFreeLookState : PlayerBaseState
 {
-    private readonly int FreeLookSpeedHash = Animator.StringToHash("SpeedX");
-    private readonly int AnimationSpeedHash = Animator.StringToHash("AimSpeedX");
-    private readonly int VerticalSpeedHash = Animator.StringToHash("SpeedY");
-    private readonly int GroundedHash = Animator.StringToHash("IsGrounded");
+    private readonly int FreeLookSpeedHash = Animator.StringToHash("Speed");
+    private readonly int AnimationSpeedHash = Animator.StringToHash("SpeedX");
 
     private readonly int FreeLookBlendTreeHash = Animator.StringToHash("FreeLookBlendTree");
     private readonly int WalkingBlendTreeHash = Animator.StringToHash("WalkingBlendTree");
 
     private readonly int StopRun = Animator.StringToHash("StopRun");
 
-    private readonly int AnimJump = Animator.StringToHash("Impulse");
+    private readonly int AnimJump = Animator.StringToHash("Jump");
 
     private const float CrossFadeDuration = 0.1f;
+
     private const float AnimatorDampTime = 0.1f;
 
     private const float RunThreshold = 0.7f;
     private const float IdleThreshold = 0.05f;
     
+
     private float lastSpeed = 0f;
     private float lastInputMagnitude = 0f;
-    
     public PlayerFreeLookState(PlayerStateMachine stateMachine) : base(stateMachine)
     { 
+       
     }
 
 
@@ -44,8 +42,6 @@ public class PlayerFreeLookState : PlayerBaseState
         Debug.Log("Entered PlayerFreeLookState");
 
         stateMachine.playerState = PlayerStates.BLACK;
-        
-        stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.white);
         
         stateMachine.InputReader.JumpEvent += OnJump;
 
@@ -68,6 +64,7 @@ public class PlayerFreeLookState : PlayerBaseState
     public override void Tick(float deltaTime)
     {
         stateMachine.CheckGrounded();
+
         if (stateMachine.InputReader.isColorActing && stateMachine.HasDashAttack)
         {
             if (HasNearbyPaintedEnemy())
@@ -77,22 +74,17 @@ public class PlayerFreeLookState : PlayerBaseState
             }
         }
         
-        // TODO: Remove
-        // Idle/Transparent state
-        /*if (stateMachine.InputReader.isAiming)
+        if (stateMachine.InputReader.isAiming)
         {
             stateMachine.SwitchState(typeof(PlayerShootingState));
             return;
-        }*/
+        }
 
         Vector3 movement = stateMachine.CalculateMovement();
         float currentInputMagnitude = movement.magnitude;
 
         stateMachine.Animator.SetFloat(FreeLookSpeedHash, currentInputMagnitude, AnimatorDampTime, deltaTime);
         stateMachine.Animator.SetFloat(AnimationSpeedHash, movement.x, AnimatorDampTime, deltaTime);
-        stateMachine.Animator.SetFloat(VerticalSpeedHash, stateMachine.Controller.velocity.y, AnimatorDampTime, deltaTime);
-        stateMachine.Animator.SetBool(GroundedHash, stateMachine.isGrounded);
-        
 
         // Blend tree switching basado en velocidad de input
         HandleBlendTreeTransition(currentInputMagnitude);
@@ -119,16 +111,6 @@ public class PlayerFreeLookState : PlayerBaseState
         lastInputMagnitude = currentInputMagnitude;
     }
 
-    public override void Exit()
-    {
-        stateMachine.InputReader.JumpEvent -= OnJump;
-        // stateMachine.InputReader.DashEvent -= OnDash;
-        stateMachine.InputReader.DiveEvent -= OnDiveEnter;
-        
-        // Camera Out
-        stateMachine.mainCamera.Priority = -1;
-    }
-    
     private void HandleBlendTreeTransition(float inputMagnitude)
     {
         if (inputMagnitude >= IdleThreshold && inputMagnitude < RunThreshold)
@@ -141,6 +123,16 @@ public class PlayerFreeLookState : PlayerBaseState
             if (lastInputMagnitude >= IdleThreshold && lastInputMagnitude < RunThreshold)
                 stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
         }
+    }
+
+    public override void Exit()
+    {
+        stateMachine.InputReader.JumpEvent -= OnJump;
+        // stateMachine.InputReader.DashEvent -= OnDash;
+        stateMachine.InputReader.DiveEvent -= OnDiveEnter;
+        
+        // Camera Out
+        stateMachine.mainCamera.Priority = -1;
     }
     
     // TODO: Check a timer for a valid TP

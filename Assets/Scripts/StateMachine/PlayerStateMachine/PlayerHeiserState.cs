@@ -20,13 +20,11 @@ public class PlayerHeiserState : PlayerBaseState
         stateMachine.WaterHeiserParticle.gameObject.SetActive(true);
         stateMachine.WaterHeiserParticleSecond.gameObject.SetActive(true);
         stateMachine.mainCamera.Priority = 10;
-        
-        stateMachine.ForceReceiver.Jump(stateMachine.HeiserInitialBoostForce);
     }
 
     public override void Tick(float deltaTime)
     {
-        if(stateMachine.InputReader.isJumpHeld)
+        if(stateMachine.InputReader.isColorActing)
         {
             stateMachine.CanHeiser = true;   
         }

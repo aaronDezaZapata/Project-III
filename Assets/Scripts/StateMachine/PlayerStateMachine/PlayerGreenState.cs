@@ -88,13 +88,11 @@ public class PlayerGreenState : PlayerBaseState
             stateMachine.WhipFailedLastAttempt = false;
         }
         
-        // TODO: Remove
-        // El color azul no puede apuntar/disparar
-        /*if (stateMachine.InputReader.isAiming)
+        if (stateMachine.InputReader.isAiming)
         {
             stateMachine.SwitchState(typeof(PlayerShootingState));
             return;
-        }*/
+        }
         
         Vector3 movement = stateMachine.CalculateMovement();
 

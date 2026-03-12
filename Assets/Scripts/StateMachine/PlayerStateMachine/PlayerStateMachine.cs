@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -28,10 +29,7 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public Health Health { get; private set; }
 
     [field: SerializeField] public SkinnedMeshRenderer Mat_Player { get; private set; }
-
-    private Coroutine fillCoroutine;
-    private float fillSpeed = 1f;
-
+    
     [field: Header("Camera Sensitivity")]
     [field: Tooltip("Sensibilidad de la cámara con ratón")]
     [field: Range(0.1f, 5f)]
@@ -258,15 +256,9 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public LayerMask AimLayerMask { get; private set; } = ~0;
     [field: SerializeField] public float ReticleSurfaceOffset { get; private set; } = 0.02f;
 
-    // HEISER VARIABLES
+    [field: Header("Heiser")]
     [field: SerializeField] public float HoverForce { get; private set; } = 15f;
     [field: SerializeField] public float aerialMoveSpeed { get; private set; } = 10f;
-    
-    [field: Tooltip("Tiempo en segundos que debe mantenerse el salto en el aire para activar Heiser")]
-    [field: SerializeField] public float HeiserActivationTime { get; private set; } = 0.5f;
-    
-    [field: Tooltip("Fuerza del impulso vertical inicial al entrar al estado Heiser")]
-    [field: SerializeField] public float HeiserInitialBoostForce { get; private set; } = 10f;
     
     public bool CanHeiser { get; set; } = true;
     
@@ -396,6 +388,7 @@ public class PlayerStateMachine : StateMachine
 
     private void OnTriggerEnter(Collider other)
     {
+
         switch (other.tag)
         {
             case "CharcoAzul":
@@ -412,17 +405,18 @@ public class PlayerStateMachine : StateMachine
                 if (Mat_Player != null)
                 {
                     Color blackColor = new Color(1 - 38f, 1 - 38f, 1 - 38f);
-                    Mat_Player.material.SetColor("_SpecularColor", Color.white);
+                    Mat_Player.material.SetColor("_SpecularColor", blackColor);
                 }
                 break;
             
-            case "CharcoRojo":
+            // TODO: Remove
+            /*case "CharcoGris":
                 SwitchState(typeof(PlayerGrayState));
                 if (Mat_Player != null)
                 {
-                    Mat_Player.material.SetColor("_SpecularColor", Color.red);
+                    Mat_Player.material.SetColor("_SpecularColor", Color.grey);
                 }
-                break;
+                break;*/
 
             case "CharcoVerde":
                 SwitchState(typeof(PlayerGreenState));
@@ -466,9 +460,10 @@ public class PlayerStateMachine : StateMachine
             case PlayerStates.GREEN:
                 SwitchState(typeof(PlayerGreenState));
                 break;
-            case PlayerStates.GREY:
+            // TODO: Remove
+            /*case PlayerStates.GREY:
                 SwitchState(typeof(PlayerGrayState));
-                break;
+                break;*/
         }
     }
     
@@ -498,76 +493,6 @@ public class PlayerStateMachine : StateMachine
         );
     }
 
-    public void RotateColors()
-    {
-        Color tempColor = Mat_Player.material.GetColor("_ColorA");
-        float tempFill = Mat_Player.material.GetFloat("_FillA");
-
-        Mat_Player.material.SetColor("_ColorA", Mat_Player.material.GetColor("_ColorB"));
-        Mat_Player.material.SetFloat("_FillA", Mat_Player.material.GetFloat("_FillB"));
-
-        Mat_Player.material.SetColor("_ColorB", Mat_Player.material.GetColor("_ColorC"));
-        Mat_Player.material.SetFloat("_FillB", Mat_Player.material.GetFloat("_FillC"));
-
-        Mat_Player.material.SetColor("_ColorC", tempColor);
-        Mat_Player.material.SetFloat("_FillC", tempFill);
-
-        
-    }
-
-    /// <summary>
-    /// Llenar el color del shader del player por los pies
-    /// </summary>
-    /// <param name="newColor"></param>
-    public void StartFill(Color newColor)
-    {
-        if (Mat_Player.material.GetColor("_ColorA") == newColor)
-        {
-            if (Mat_Player.material.GetFloat("_FillA") < 1f)
-            {
-                if (fillCoroutine != null) StopCoroutine(fillCoroutine);
-                fillCoroutine = StartCoroutine(FillRoutine("_FillA"));
-            }
-            else if (Mat_Player.material.GetColor("_ColorB") == newColor)
-            {
-                if (Mat_Player.material.GetFloat("_FillB") < 1f)
-                {
-                    if (fillCoroutine != null) StopCoroutine(fillCoroutine);
-                    fillCoroutine = StartCoroutine(FillRoutine("_FillB"));
-                }
-                else
-                {
-                    Mat_Player.material.SetColor("_ColorC", newColor);
-                    Mat_Player.material.SetFloat("_FillC", 0f);
-                    if (fillCoroutine != null) StopCoroutine(fillCoroutine);
-                    fillCoroutine = StartCoroutine(FillRoutine("_FillC"));
-                }
-            }
-            else
-            {
-                Mat_Player.material.SetColor("_ColorB", newColor);
-                Mat_Player.material.SetFloat("_FillB", 0f);
-                if (fillCoroutine != null) StopCoroutine(fillCoroutine);
-                fillCoroutine = StartCoroutine(FillRoutine("_FillB"));
-            }
-        }
-        else
-        {
-            Mat_Player.material.SetColor("_ColorA", newColor);
-            Mat_Player.material.SetFloat("_FillA", 0f);
-            if (fillCoroutine != null) StopCoroutine(fillCoroutine);
-            fillCoroutine = StartCoroutine(FillRoutine("_FillA"));
-        }
-    }
-
-    IEnumerator FillRoutine(string fillProperty)
-    {
-        while (Mat_Player.material.GetFloat(fillProperty) < 1f)
-        {
-            Mat_Player.material.SetFloat(fillProperty, Mathf.Clamp01(Mat_Player.material.GetFloat(fillProperty) + Time.deltaTime * fillSpeed));
-            yield return null;
-        }
-    }
 
     public void FaceMovementDirection(Vector3 movement, float deltaTime)
     {
