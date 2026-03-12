@@ -5,8 +5,10 @@ public class MainCanvasManager : MonoBehaviour
 {
     #region Variables
 
+    // Game Pause State
     [SerializeField] private bool isOnPause;
 
+    // Game Panels
     [SerializeField] private GameObject inGamePanel;
     [SerializeField] private GameObject crosshairPanel;
     [SerializeField] private GameObject pausePanel;

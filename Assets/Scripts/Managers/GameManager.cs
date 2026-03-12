@@ -14,6 +14,9 @@ public class GameManager : MonoBehaviour
     public GameObject paintBeacon;
 
     private Transform currentCheckPoint;
+    
+    // Coins
+    private int coinsCollected = 0;
 
     private void Awake()
     {
@@ -55,10 +58,21 @@ public class GameManager : MonoBehaviour
         
         levelDecals.Clear();
     }
-
+    
     public void GetNewCheckPoint(Transform newCheckPoint)
     {
         currentCheckPoint = newCheckPoint;
+    }
+
+    public void AddCoin(int amount)
+    {
+        coinsCollected += amount;
+        Debug.Log("Coins Collected: " + coinsCollected);
+    }
+
+    public void ResetCoinAmount()
+    {
+        coinsCollected = 0;
     }
 
     public void PlayerDeath()
