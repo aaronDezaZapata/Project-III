@@ -43,6 +43,7 @@ public class PlayerWhipState : PlayerBaseState
 
     public override void Enter()
     {
+        stateMachine.UseColor(0.5f);
         stateMachine.mainCamera.Priority = 10;
 
         if (TryFindAndCaptureObject())

@@ -420,39 +420,19 @@ public class PlayerStateMachine : StateMachine
         switch (other.tag)
         {
             case "CharcoAzul":
-                SwitchState(typeof(PlayerBlueState));
-                //Mat_Player.SetColor("_Color", Color.blue);
-                /*if (Mat_Player != null)
-                {
-                    Mat_Player.material.SetColor("_SpecularColor", Color.blue);
-                }*/
+                StartFill(Color.blue);
                 break;
 
             case "CharcoNegro":
                 SwitchState(typeof(PlayerWhiteState));
-                
-                /*if (Mat_Player != null) {
-                    Color blackColor = new Color(1 - 38f, 1 - 38f, 1 - 38f);
-                    Mat_Player.material.SetColor("_SpecularColor", Color.white);
-                }*/
                 break;
             
             case "CharcoRojo":
-                SwitchState(typeof(PlayerRedState));
                 StartFill(Color.red);
-                /*if (Mat_Player != null)
-                {
-                    Mat_Player.material.SetColor("_SpecularColor", Color.red);
-                }*/
                 break;
 
             case "CharcoVerde":
-                SwitchState(typeof(PlayerGreenState));
                 StartFill(Color.green);
-                /*if (Mat_Player != null)
-                {
-                    Mat_Player.material.SetColor("_SpecularColor", Color.green);
-                }*/
                 break;
 
             case "CheckPoint":
@@ -518,6 +498,12 @@ public class PlayerStateMachine : StateMachine
             groundCheckDistance,
             groundMask
         );
+
+        if (isGrounded)
+        {
+            isHeiserOnCooldown = false;
+            heiserCooldownTimer = 0f;
+        }
     }
 
     public void RotateColors()
@@ -534,7 +520,7 @@ public class PlayerStateMachine : StateMachine
         Mat_Player.material.SetColor("_ColorC", tempColor);
         Mat_Player.material.SetFloat("_FillC", tempFill);
 
-        
+        CheckAndSwitchColorState();
     }
 
     /// <summary>
@@ -543,52 +529,93 @@ public class PlayerStateMachine : StateMachine
     /// <param name="newColor"></param>
     public void StartFill(Color newColor)
     {
-        if (Mat_Player.material.GetColor("_ColorA") == newColor)
+        // Revisamos si ya tenemos este color a medio llenar (mayor a 0.01f y menor a 0.999f) para rellenarlo
+        if (ColorsAreClose(Mat_Player.material.GetColor("_ColorA"), newColor) && Mat_Player.material.GetFloat("_FillA") > 0.01f && Mat_Player.material.GetFloat("_FillA") < 0.999f)
         {
-            if (Mat_Player.material.GetFloat("_FillA") < 0.99999f)
-            {
-                if (fillCoroutine != null) StopCoroutine(fillCoroutine);
-                fillCoroutine = StartCoroutine(FillRoutine("_FillA"));
-            }
-            else if (Mat_Player.material.GetColor("_ColorB") == newColor)
-            {
-                if (Mat_Player.material.GetFloat("_FillB") < .99999f)
-                {
-                    if (fillCoroutine != null) StopCoroutine(fillCoroutine);
-                    fillCoroutine = StartCoroutine(FillRoutine("_FillB"));
-                }
-                else
-                {
-                    Mat_Player.material.SetColor("_ColorC", newColor);
-                    Mat_Player.material.SetFloat("_FillC", 0f);
-                    if (fillCoroutine != null) StopCoroutine(fillCoroutine);
-                    fillCoroutine = StartCoroutine(FillRoutine("_FillC"));
-                }
-            }
-            else
-            {
-                Mat_Player.material.SetColor("_ColorB", newColor);
-                Mat_Player.material.SetFloat("_FillB", 0f);
-                if (fillCoroutine != null) StopCoroutine(fillCoroutine);
-                fillCoroutine = StartCoroutine(FillRoutine("_FillB"));
-            }
+            if (fillCoroutine != null) StopCoroutine(fillCoroutine);
+            fillCoroutine = StartCoroutine(FillRoutine("_FillA"));
+            return;
+        }
+        if (ColorsAreClose(Mat_Player.material.GetColor("_ColorB"), newColor) && Mat_Player.material.GetFloat("_FillB") > 0.01f && Mat_Player.material.GetFloat("_FillB") < 0.999f)
+        {
+            if (fillCoroutine != null) StopCoroutine(fillCoroutine);
+            fillCoroutine = StartCoroutine(FillRoutine("_FillB"));
+            return;
+        }
+        if (ColorsAreClose(Mat_Player.material.GetColor("_ColorC"), newColor) && Mat_Player.material.GetFloat("_FillC") > 0.01f && Mat_Player.material.GetFloat("_FillC") < 0.999f)
+        {
+            if (fillCoroutine != null) StopCoroutine(fillCoroutine);
+            fillCoroutine = StartCoroutine(FillRoutine("_FillC"));
+            return;
+        }
+
+        // Es una absorción nueva. Desplazamos hacia arriba si es necesario.
+        float fillA = Mat_Player.material.GetFloat("_FillA");
+        float fillB = Mat_Player.material.GetFloat("_FillB");
+        float fillC = Mat_Player.material.GetFloat("_FillC");
+
+        if (fillA < 0.1f)
+        {
+            Mat_Player.material.SetColor("_ColorA", newColor);
+            Mat_Player.material.SetFloat("_FillA", 0.11f);
+            StartFillRoutine("_FillA");
+        }
+        else if (fillB < 0.1f)
+        {
+            // A sube a B
+            Mat_Player.material.SetColor("_ColorB", Mat_Player.material.GetColor("_ColorA"));
+            Mat_Player.material.SetFloat("_FillB", Mat_Player.material.GetFloat("_FillA"));
+            
+            Mat_Player.material.SetColor("_ColorA", newColor);
+            Mat_Player.material.SetFloat("_FillA", 0.11f);
+            StartFillRoutine("_FillA");
+        }
+        else if (fillC < 0.1f)
+        {
+            // B sube a C, A sube a B
+            Mat_Player.material.SetColor("_ColorC", Mat_Player.material.GetColor("_ColorB"));
+            Mat_Player.material.SetFloat("_FillC", Mat_Player.material.GetFloat("_FillB"));
+
+            Mat_Player.material.SetColor("_ColorB", Mat_Player.material.GetColor("_ColorA"));
+            Mat_Player.material.SetFloat("_FillB", Mat_Player.material.GetFloat("_FillA"));
+            
+            Mat_Player.material.SetColor("_ColorA", newColor);
+            Mat_Player.material.SetFloat("_FillA", 0.11f);
+            StartFillRoutine("_FillA");
         }
         else
         {
+            // Todos llenos, desplazamos todos hacia arriba (perdemos C)
+            Mat_Player.material.SetColor("_ColorC", Mat_Player.material.GetColor("_ColorB"));
+            Mat_Player.material.SetFloat("_FillC", Mat_Player.material.GetFloat("_FillB"));
+
+            Mat_Player.material.SetColor("_ColorB", Mat_Player.material.GetColor("_ColorA"));
+            Mat_Player.material.SetFloat("_FillB", Mat_Player.material.GetFloat("_FillA"));
+            
             Mat_Player.material.SetColor("_ColorA", newColor);
-            Mat_Player.material.SetFloat("_FillA", 0f);
-            if (fillCoroutine != null) StopCoroutine(fillCoroutine);
-            fillCoroutine = StartCoroutine(FillRoutine("_FillA"));
+            Mat_Player.material.SetFloat("_FillA", 0.11f);
+            StartFillRoutine("_FillA");
         }
+    }
+
+    private void StartFillRoutine(string fillProperty)
+    {
+        if (fillCoroutine != null) StopCoroutine(fillCoroutine);
+        fillCoroutine = StartCoroutine(FillRoutine(fillProperty));
+        CheckAndSwitchColorState();
     }
 
     IEnumerator FillRoutine(string fillProperty)
     {
         while (Mat_Player.material.GetFloat(fillProperty) < 1f)
         {
-            Mat_Player.material.SetFloat(fillProperty, Mathf.Clamp01(Mat_Player.material.GetFloat(fillProperty) + Time.deltaTime * fillSpeed));
+            float currentFill = Mat_Player.material.GetFloat(fillProperty);
+            float newFill = Mathf.Clamp01(currentFill + Time.deltaTime * fillSpeed);
+            Mat_Player.material.SetFloat(fillProperty, newFill);
             yield return null;
         }
+
+        CheckAndSwitchColorState();
     }
 
 
@@ -677,11 +704,13 @@ public class PlayerStateMachine : StateMachine
         // En Unity a veces los colores del shader tienen ligeras variaciones de flotantes
         // Buscamos una coincidencia aproximada
         bool stateFound = false;
+        Type targetState = null;
+
         foreach (var kvp in colorToStateDic)
         {
             if (ColorsAreClose(kvp.Key, c))
             {
-                SwitchState(kvp.Value);
+                targetState = kvp.Value;
                 stateFound = true;
                 break;
             }
@@ -689,8 +718,19 @@ public class PlayerStateMachine : StateMachine
 
         if (!stateFound)
         {
-            SwitchState(typeof(PlayerWhiteState)); 
+            SwitchState(typeof(PlayerWhiteState));
+            return;
         }
+
+        // PREVENCIÓN DE BUCLES DE COSTE:
+        // Si ya estamos en una habilidad (Heseir, Disparo, Látigo) de este color, 
+        // no forzamos el cambio al estado base para no interrumpir la acción ni cobrar doble.
+        Type currentState = GetCurrentState().GetType();
+        if (targetState == typeof(PlayerRedState) && currentState == typeof(PlayerShootingState)) return;
+        if (targetState == typeof(PlayerGreenState) && currentState == typeof(PlayerWhipState)) return;
+        if (targetState == typeof(PlayerBlueState) && currentState == typeof(PlayerHeiserState)) return;
+
+        SwitchState(targetState);
     }
 
     private bool ColorsAreClose(Color a, Color b)

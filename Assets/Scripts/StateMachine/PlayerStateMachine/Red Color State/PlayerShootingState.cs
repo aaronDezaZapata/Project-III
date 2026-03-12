@@ -80,7 +80,7 @@ public class PlayerShootingState : PlayerBaseState
         Rigidbody proj = UnityEngine.Object.Instantiate(stateMachine.ProjectilePrefab, stateMachine.FirePoint.position, Quaternion.identity);
         
         Vector3 direction = Camera.main.transform.forward;
-        stateMachine.UseColor(1f);
+        stateMachine.UseColor(0.1f);
         proj.linearVelocity = direction * speed;
         proj.useGravity = true;
         var inkProjectile = proj.GetComponent<InkProjectile>();
