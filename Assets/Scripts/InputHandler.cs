@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 {
     InputSystem_Actions controls;
-    
+    internal bool isJumpHeld;
 
     public Vector2 MoveVector { get; private set; }
     public Vector2 LookVector { get; private set; }
@@ -20,7 +20,6 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public bool isDColorChange { get; private set; }
     public bool isGreen { get; set; }
     public bool isGray { get; set; }
-    public bool isJumpHeld { get; private set; }
 
 
     public event Action JumpEvent;
@@ -69,15 +68,8 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (context.performed)
-        {
-            isJumpHeld = true;
-            JumpEvent?.Invoke();
-        }
-        else if (context.canceled)
-        {
-            isJumpHeld = false;
-        }
+        if (!context.performed) { return; }
+        JumpEvent?.Invoke();
     }
 
     public void OnLook(InputAction.CallbackContext context)
