@@ -233,7 +233,7 @@ namespace TorbellinoConsoleSystem
                 : "";
         }
 
-        // ── Logging ───────────────────────────────────────────────────
+       
 
         public void Log(string message, LogType type = LogType.Output)
         {
@@ -246,7 +246,7 @@ namespace TorbellinoConsoleSystem
             UpdateOutputDisplay();
         }
 
-        // Semantic log helpers (use activeTheme colors)
+        
         public void LogError(string msg)   => Log($"[ERROR] {msg}", LogType.Error);
         public void LogWarning(string msg) => Log($"[WARN]  {msg}", LogType.Warning);
         public void LogSuccess(string msg) => Log(msg, LogType.Success);
@@ -265,7 +265,7 @@ namespace TorbellinoConsoleSystem
                 _               => "#FFFFFF"
             };
 
-            // If activeTheme is set, use its colors instead
+           
             if (activeTheme != null)
             {
                 color = type switch
@@ -310,7 +310,7 @@ namespace TorbellinoConsoleSystem
                 scrollRect.verticalNormalizedPosition = 0f;
         }
 
-        // ── Theme ─────────────────────────────────────────────────────
+        
 
         private void ApplyTheme(ConsoleTheme theme)
         {
@@ -327,7 +327,7 @@ namespace TorbellinoConsoleSystem
             if (inputField?.textComponent != null) inputField.textComponent.color = theme.InputTextColor;
         }
 
-        // ── Unity log passthrough ─────────────────────────────────────
+       
 
         private void HandleUnityLog(string message, string stackTrace, UnityEngine.LogType type)
         {

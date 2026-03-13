@@ -182,6 +182,13 @@ public abstract class PlayerBaseState : State
         return canFirstJump || canDoubleJump;
     }
 
+    public void ResetDoubleJump()
+    {
+        _timeSinceLeftGround = 0f;
+        _hasUsedDoubleJump = false;
+        _doubleJumpAvailable = true;
+    }
+
     protected void Jump()
     {
         bool isFirstJump = stateMachine.Controller.isGrounded || _timeSinceLeftGround <= stateMachine.CoyoteTime;

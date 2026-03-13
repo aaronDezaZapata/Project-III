@@ -99,7 +99,7 @@ public class PlayerStateMachineEditor : Editor
 
             EditorGUILayout.Space(5);
             EditorGUILayout.LabelField("Whip Mechanics", EditorStyles.boldLabel);
-            DrawBackingProperty("EnemyLayer");
+            DrawBackingProperty("WhipObjectLayer");
             DrawBackingProperty("WhipThrowForceMin");
             DrawBackingProperty("WhipThrowForceMax");
             DrawBackingProperty("EnemyDetectionRange");

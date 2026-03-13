@@ -201,6 +201,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""ColorSwitch"",
+                    ""type"": ""Button"",
+                    ""id"": ""37da6e47-8bcb-4e25-86e5-53e51891b939"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""PauseGame"",
                     ""type"": ""Button"",
                     ""id"": ""02f2e95a-fb3f-451e-bd66-7e3acae803ad"",
@@ -593,6 +602,28 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""DColorChange"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""af214c50-3a11-4429-856d-093cba38fdc0"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""ColorSwitch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e1afd66f-7ff4-4694-9361-7f9ba75cc496"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""ColorSwitch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1214,6 +1245,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
         m_Player_ColorAction = m_Player.FindAction("ColorAction", throwIfNotFound: true);
         m_Player_DColorChange = m_Player.FindAction("DColorChange", throwIfNotFound: true);
+        m_Player_ColorSwitch = m_Player.FindAction("ColorSwitch", throwIfNotFound: true);
         m_Player_PauseGame = m_Player.FindAction("PauseGame", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
@@ -1320,6 +1352,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Aim;
     private readonly InputAction m_Player_ColorAction;
     private readonly InputAction m_Player_DColorChange;
+    private readonly InputAction m_Player_ColorSwitch;
     private readonly InputAction m_Player_PauseGame;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
@@ -1380,6 +1413,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/DColorChange".
         /// </summary>
         public InputAction @DColorChange => m_Wrapper.m_Player_DColorChange;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/ColorSwitch".
+        /// </summary>
+        public InputAction @ColorSwitch => m_Wrapper.m_Player_ColorSwitch;
         /// <summary>
         /// Provides access to the underlying input action "Player/PauseGame".
         /// </summary>
@@ -1446,6 +1483,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @DColorChange.started += instance.OnDColorChange;
             @DColorChange.performed += instance.OnDColorChange;
             @DColorChange.canceled += instance.OnDColorChange;
+            @ColorSwitch.started += instance.OnColorSwitch;
+            @ColorSwitch.performed += instance.OnColorSwitch;
+            @ColorSwitch.canceled += instance.OnColorSwitch;
             @PauseGame.started += instance.OnPauseGame;
             @PauseGame.performed += instance.OnPauseGame;
             @PauseGame.canceled += instance.OnPauseGame;
@@ -1496,6 +1536,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @DColorChange.started -= instance.OnDColorChange;
             @DColorChange.performed -= instance.OnDColorChange;
             @DColorChange.canceled -= instance.OnDColorChange;
+            @ColorSwitch.started -= instance.OnColorSwitch;
+            @ColorSwitch.performed -= instance.OnColorSwitch;
+            @ColorSwitch.canceled -= instance.OnColorSwitch;
             @PauseGame.started -= instance.OnPauseGame;
             @PauseGame.performed -= instance.OnPauseGame;
             @PauseGame.canceled -= instance.OnPauseGame;
@@ -1883,6 +1926,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDColorChange(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ColorSwitch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnColorSwitch(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "PauseGame" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

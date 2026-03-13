@@ -14,12 +14,14 @@ public class PlayerRedState : PlayerWhiteState
     protected override void SetPlayerState()
     {
         Debug.Log("Entered PlayerRedState");
-        stateMachine.playerState = PlayerStates.RED;
+        //stateMachine.playerState = PlayerStates.RED;
+
     }
     
     protected override void SetMaterialColor()
     {
-        stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.red);
+        //stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.red);
+        //stateMachine.StartFill(Color.red);
     }
 
     protected override bool CheckColorSpecificActions(float deltaTime)

@@ -3,7 +3,7 @@ using UnityEngine.AI;
 
 public class PlayerWhipState : PlayerBaseState
 {
-    private enum WhipMode { None, EnemyWhip, GrappleSwing }
+    private enum WhipMode { None, ObjectWhip, GrappleSwing }
     private WhipMode currentMode = WhipMode.None;
 
     #region Animation Variables
@@ -13,9 +13,9 @@ public class PlayerWhipState : PlayerBaseState
 
     #endregion
 
-    #region Enemy Whip Variables
-    private Transform capturedEnemy;
-    private EnemyStateMachine capturedEnemyStateMachine;
+    #region Object Whip Variables
+    private Transform capturedObject;
+    private Rigidbody capturedRigidbody;
 
     private float currentSpinSpeed;
     private float currentAngle;
@@ -43,12 +43,13 @@ public class PlayerWhipState : PlayerBaseState
 
     public override void Enter()
     {
+        stateMachine.UseColor(0.5f);
         stateMachine.mainCamera.Priority = 10;
 
-        if (TryFindAndCaptureEnemy())
+        if (TryFindAndCaptureObject())
         {
-            currentMode = WhipMode.EnemyWhip;
-            StartEnemyWhipMode();
+            currentMode = WhipMode.ObjectWhip;
+            StartObjectWhipMode();
         }
         else if (TryFindGrapplePoint())
         {
@@ -79,7 +80,7 @@ public class PlayerWhipState : PlayerBaseState
 
         switch (currentMode)
         {
-            case WhipMode.EnemyWhip:    TickEnemyWhip(deltaTime);    break;
+            case WhipMode.ObjectWhip:    TickObjectWhip(deltaTime);    break;
             case WhipMode.GrappleSwing: TickGrappleSwing(deltaTime); break;
         }
 
@@ -95,16 +96,16 @@ public class PlayerWhipState : PlayerBaseState
 
         switch (currentMode)
         {
-            case WhipMode.EnemyWhip:    ExitEnemyWhip();    break;
+            case WhipMode.ObjectWhip:    ExitObjectWhip();    break;
             case WhipMode.GrappleSwing: ExitGrappleSwing(); break;
         }
 
         currentMode = WhipMode.None;
     }
 
-    #region Enemy Whip Mode
+    #region Object Whip Mode
 
-    private void StartEnemyWhipMode()
+    private void StartObjectWhipMode()
     {
         currentSpinSpeed = stateMachine.WhipStartSpinSpeed;
         currentAngle = 0f;
@@ -112,18 +113,18 @@ public class PlayerWhipState : PlayerBaseState
         captureProgress = 0f;
     }
 
-    private void TickEnemyWhip(float deltaTime)
+    private void TickObjectWhip(float deltaTime)
     {
-        if (capturedEnemy == null || capturedEnemyStateMachine == null)
+        if (capturedObject == null || capturedRigidbody == null)
         {
             stateMachine.SwitchState(typeof(PlayerGreenState));
             return;
         }
 
         if (isCapturing)
-            HandleEnemyCapture(deltaTime);
+            HandleObjectCapture(deltaTime);
         else
-            HandleEnemyOrbit(deltaTime);
+            HandleObjectOrbit(deltaTime);
 
         // Movimiento reducido del jugador durante el látigo
         Vector3 movement = stateMachine.CalculateMovement();
@@ -133,56 +134,58 @@ public class PlayerWhipState : PlayerBaseState
             FaceMovementDirection(movement, deltaTime);
     }
 
-    private bool TryFindAndCaptureEnemy()
+    private bool TryFindAndCaptureObject()
     {
         Collider[] hits = Physics.OverlapSphere(
             stateMachine.transform.position,
-            stateMachine.EnemyDetectionRange,
-            stateMachine.EnemyLayer
+            stateMachine.WhipObjectDetectionRange,
+            stateMachine.WhipObjectLayer
         );
 
         if (hits.Length == 0) return false;
 
-        EnemyStateMachine closest = null;
+        Rigidbody closest = null;
         float closestDist = float.MaxValue;
 
         foreach (Collider col in hits)
         {
-            // El collider pertenece al objeto raíz; EnemyStateMachine está en un hijo
-            EnemyStateMachine esm = col.GetComponentInChildren<EnemyStateMachine>();
-            if (esm == null) continue;
+            Rigidbody rb = col.attachedRigidbody;
+            if (rb == null) continue;
+            
+            // Ignorar al propio jugador y sus hijos para no auto-capturarse
+            if (rb.transform == stateMachine.transform || rb.transform.IsChildOf(stateMachine.transform)) continue;
 
-            Vector3 dirToEnemy = col.transform.position - stateMachine.transform.position;
-            float dist = dirToEnemy.magnitude;
+            Vector3 dirToObject = col.transform.position - stateMachine.transform.position;
+            float dist = dirToObject.magnitude;
 
-            // Comprobar línea de visión: ignorar si hay un obstáculo entre medias
-            if (Physics.Raycast(stateMachine.transform.position + Vector3.up, dirToEnemy.normalized, out RaycastHit hit, dist))
+            // Comprobar línea de visión: ignorar si hay un obstáculo entre medias (excepto el propio objeto)
+            if (Physics.Raycast(stateMachine.transform.position + Vector3.up, dirToObject.normalized, out RaycastHit hit, dist))
             {
-                EnemyStateMachine hitEsm = hit.collider.GetComponentInChildren<EnemyStateMachine>()
-                                        ?? hit.collider.GetComponentInParent<EnemyStateMachine>();
-                if (hitEsm != esm) continue;
+                Rigidbody hitRb = hit.collider.attachedRigidbody;
+                if (hitRb != rb) continue;
             }
 
             if (dist < closestDist)
             {
                 closestDist = dist;
-                closest = esm;
+                closest = rb;
             }
         }
 
         if (closest == null) return false;
 
-        capturedEnemyStateMachine = closest;
-        capturedEnemy = closest.transform;
-        captureStartPosition = capturedEnemy.position;
+        capturedRigidbody = closest;
+        capturedObject = closest.transform;
+        captureStartPosition = capturedObject.position;
 
-        // Delegar desactivación de físicas al propio enemigo
-        capturedEnemyStateMachine.DisablePhysics();
-        capturedEnemyStateMachine.SwitchState(typeof(EnemyStunnedState));
+        // Desactivar físicas mientras está capturado
+        capturedRigidbody.isKinematic = true;
+        capturedRigidbody.useGravity = false;
+        
         return true;
     }
 
-    private void HandleEnemyCapture(float deltaTime)
+    private void HandleObjectCapture(float deltaTime)
     {
         captureProgress += deltaTime * stateMachine.WhipCaptureSpeed;
 
@@ -205,14 +208,14 @@ public class PlayerWhipState : PlayerBaseState
             + dirToPlayer * stateMachine.WhipHoldRadius
             + Vector3.up * stateMachine.WhipHoldHeight;
 
-        capturedEnemy.position = Vector3.Lerp(captureStartPosition, targetOrbitPos, captureProgress);
+        capturedObject.position = Vector3.Lerp(captureStartPosition, targetOrbitPos, captureProgress);
 
-        Vector3 lookDir = (capturedEnemy.position - playerPos).normalized;
+        Vector3 lookDir = (capturedObject.position - playerPos).normalized;
         if (lookDir.magnitude > 0.1f)
-            capturedEnemy.rotation = Quaternion.LookRotation(lookDir);
+            capturedObject.rotation = Quaternion.LookRotation(lookDir);
     }
 
-    private void HandleEnemyOrbit(float deltaTime)
+    private void HandleObjectOrbit(float deltaTime)
     {
         ApplySpinInput(deltaTime);
 
@@ -228,11 +231,11 @@ public class PlayerWhipState : PlayerBaseState
             Mathf.Sin(angleRad) * stateMachine.WhipHoldRadius
         );
 
-        capturedEnemy.position = playerPos + offset;
+        capturedObject.position = playerPos + offset;
 
         Vector3 tangent = new Vector3(-Mathf.Sin(angleRad), 0, Mathf.Cos(angleRad));
         if (tangent.magnitude > 0.1f)
-            capturedEnemy.rotation = Quaternion.LookRotation(tangent);
+            capturedObject.rotation = Quaternion.LookRotation(tangent);
     }
 
     private void ApplySpinInput(float deltaTime)
@@ -251,43 +254,29 @@ public class PlayerWhipState : PlayerBaseState
         }
     }
 
-    private void ThrowEnemy()
+    private void ThrowObject()
     {
-        if (capturedEnemy == null) return;
+        if (capturedObject == null || capturedRigidbody == null) return;
 
         Vector3 throwDir = Camera.main.transform.forward;
         float spinRatio = Mathf.InverseLerp(stateMachine.WhipStartSpinSpeed, stateMachine.WhipMaxSpinSpeed, currentSpinSpeed);
         float throwForce = Mathf.Lerp(stateMachine.WhipThrowForceMin, stateMachine.WhipThrowForceMax, spinRatio);
 
-        capturedEnemyStateMachine.MarkAsThrown(throwForce);
+        // Restaurar físicas y aplicar la fuerza
+        capturedRigidbody.isKinematic = false;
+        capturedRigidbody.useGravity = true;
 
-        // Restaurar físicas antes de aplicar la fuerza de lanzamiento
-        capturedEnemyStateMachine.RestorePhysics();
+        capturedRigidbody.linearVelocity = Vector3.zero;
+        capturedRigidbody.AddForce(throwDir * throwForce, ForceMode.Impulse);
 
-        if (capturedEnemyStateMachine.ForceReceiver != null)
-        {
-            capturedEnemyStateMachine.ForceReceiver.Reset();
-            capturedEnemyStateMachine.ForceReceiver.AddForce(throwDir * throwForce);
-        }
-
-        ThrownEnemyController thrownController = capturedEnemy.gameObject.AddComponent<ThrownEnemyController>();
-        thrownController.Initialize(
-            throwDir * throwForce,
-            capturedEnemyStateMachine.Controller,
-            capturedEnemyStateMachine.ForceReceiver,
-            capturedEnemyStateMachine
-        );
-
-        capturedEnemyStateMachine.SwitchState(typeof(EnemyStunnedState));
-
-        capturedEnemy = null;
-        capturedEnemyStateMachine = null;
+        capturedObject = null;
+        capturedRigidbody = null;
     }
 
-    private void ExitEnemyWhip()
+    private void ExitObjectWhip()
     {
-        if (capturedEnemy != null)
-            ThrowEnemy();
+        if (capturedObject != null)
+            ThrowObject();
     }
 
     #endregion
@@ -305,7 +294,6 @@ public class PlayerWhipState : PlayerBaseState
         if (!isAttached) return;
 
         ApplyPendulumPhysics(deltaTime);
-        MaintainMinimumEnergy();
         MovePlayer(deltaTime);
         RotatePlayer(deltaTime);
         CheckRopeIntegrity();
@@ -404,26 +392,21 @@ public class PlayerWhipState : PlayerBaseState
     {
         float angularAcceleration = -(Gravity / stateMachine.SwingRadius) * Mathf.Sin(swingCurrentAngle);
         ApplySwingInput(ref angularAcceleration, deltaTime);
-        angularAcceleration += EnergyBoost * Mathf.Sign(angularVelocity);
+        
+        if (Mathf.Abs(angularVelocity) > 0.5f)
+        {
+            angularAcceleration += EnergyBoost * Mathf.Sign(angularVelocity);
+        }
 
         angularVelocity += angularAcceleration * deltaTime;
-        angularVelocity *= Damping;
+        angularVelocity *= (1f - 0.2f * deltaTime); // Amortiguación de aire
         swingCurrentAngle += angularVelocity * deltaTime;
 
-        // Limitar ángulo a 90° para evitar loops completos
-        if (Mathf.Abs(swingCurrentAngle) > Mathf.PI * 0.5f)
+        // Limitar ángulo suavemente para evitar loops completos
+        if (Mathf.Abs(swingCurrentAngle) > Mathf.PI * 0.45f)
         {
-            swingCurrentAngle = Mathf.Sign(swingCurrentAngle) * Mathf.PI * 0.5f;
-            angularVelocity = -angularVelocity * 0.8f;
-        }
-    }
-
-    private void MaintainMinimumEnergy()
-    {
-        if (Mathf.Abs(angularVelocity) < MinAngularVelocity)
-        {
-            float dir = Mathf.Sign(angularVelocity);
-            angularVelocity = MinAngularVelocity * (dir == 0 ? 1f : dir);
+            swingCurrentAngle = Mathf.Sign(swingCurrentAngle) * Mathf.PI * 0.45f;
+            angularVelocity = -angularVelocity * 0.4f; // Rebote suave
         }
     }
 
@@ -441,9 +424,31 @@ public class PlayerWhipState : PlayerBaseState
         Vector3 ropeVector = stateMachine.transform.position - grapplePosition;
         Vector3 tangentDir = Vector3.Cross(swingPlaneNormal, ropeVector).normalized;
 
-        float alignment = Vector3.Dot(inputDir, tangentDir * Mathf.Sign(angularVelocity));
-        if (alignment > 0.2f)
-            angularAcceleration += alignment * stateMachine.SwingInputForce;
+        float alignment = Vector3.Dot(inputDir, tangentDir);
+        
+        if (Mathf.Abs(alignment) > 0.1f)
+        {
+             // Si el input empuja hacia donde ya nos movemos aplicamos toda la fuerza
+             bool assistsMotion = (alignment > 0 && angularVelocity >= -0.1f) || (alignment < 0 && angularVelocity <= 0.1f);
+             float forceMultiplier = assistsMotion ? 1f : 0.4f;
+             
+             angularAcceleration += alignment * stateMachine.SwingInputForce * forceMultiplier;
+        }
+
+        // Permitir al jugador controlar la dirección del balanceo
+        Vector3 idealSwingPlaneNormal = Vector3.Cross(Vector3.up, inputDir).normalized;
+        if (idealSwingPlaneNormal.sqrMagnitude > 0.01f)
+        {
+            if (Vector3.Dot(swingPlaneNormal, idealSwingPlaneNormal) < 0)
+                idealSwingPlaneNormal = -idealSwingPlaneNormal;
+                
+            // rotar el plano en la parte baja del péndulo (Cos = 1)
+            // En los extremos del arco (Cos = 0) apenas se rota para evitar que parezcan frenazos
+            float turnFactor = Mathf.Max(0.1f, Mathf.Cos(swingCurrentAngle));
+            float turnSpeed = stateMachine.RotationSpeed * turnFactor * 1.5f;
+
+            swingPlaneNormal = Vector3.Slerp(swingPlaneNormal, idealSwingPlaneNormal, deltaTime * turnSpeed).normalized;
+        }
     }
 
     private void MovePlayer(float deltaTime)
@@ -460,14 +465,19 @@ public class PlayerWhipState : PlayerBaseState
     {
         Vector3 ropeVector = stateMachine.transform.position - grapplePosition;
         Vector3 moveDir = Vector3.Cross(swingPlaneNormal, ropeVector).normalized;
+        
+        // Determinar lado de la liana estamos usando frente al movimiento real
         if (angularVelocity < 0) moveDir = -moveDir;
 
-        if (moveDir.sqrMagnitude > 0.01f)
+        if (moveDir.sqrMagnitude > 0.01f && Mathf.Abs(angularVelocity) > 0.1f)
         {
+           
+            float dynamicRotationSpeed = stateMachine.RotationSpeed * Mathf.Clamp01(Mathf.Abs(angularVelocity));
+            
             stateMachine.transform.rotation = Quaternion.Slerp(
                 stateMachine.transform.rotation,
                 Quaternion.LookRotation(moveDir),
-                stateMachine.RotationSpeed * 2f * deltaTime
+                dynamicRotationSpeed * 2f * deltaTime
             );
         }
     }
@@ -508,8 +518,8 @@ public class PlayerWhipState : PlayerBaseState
             ? stateMachine.GrappleRopeOrigin.position
             : stateMachine.transform.position + Vector3.up * 1.5f;
 
-        Vector3 end = currentMode == WhipMode.EnemyWhip && capturedEnemy != null
-            ? capturedEnemy.position
+        Vector3 end = currentMode == WhipMode.ObjectWhip && capturedObject != null
+            ? capturedObject.position
             : grapplePosition;
 
         stateMachine.GrappleRope.SetPosition(0, start);
@@ -527,80 +537,30 @@ public class PlayerWhipState : PlayerBaseState
 
     private void ExitWhipState()
     {
-        if (currentMode == WhipMode.EnemyWhip)
-            ThrowEnemy();
+        bool wasGrapple = (currentMode == WhipMode.GrappleSwing);
+
+        if (currentMode == WhipMode.ObjectWhip)
+            ThrowObject();
 
         stateMachine.SwitchState(typeof(PlayerGreenState));
+        
+        if (wasGrapple)
+        {
+            if (stateMachine.GetCurrentState() is PlayerBaseState baseState)
+            {
+                baseState.ResetDoubleJump();
+            }
+        }
     }
 
-    private void OnJump() => ExitWhipState();
+    private void OnJump()
+    {
+        if (currentMode == WhipMode.GrappleSwing)
+        {
+            stateMachine.WhipFailedLastAttempt = true; // prevent automatic re-attach on jump
+        }
+        ExitWhipState();
+    }
 
     #endregion
-}
-
-// Componente temporal que mueve al enemigo lanzado hasta que se detiene o expira
-public class ThrownEnemyController : MonoBehaviour
-{
-    private Vector3 velocity;
-    private CharacterController controller;
-    private ForceReceiver forceReceiver;
-    private EnemyStateMachine enemyStateMachine;
-    private float elapsed = 0f;
-    private const float Lifetime = 5f;
-    private const float Gravity = 9.81f;
-    private const float StopThreshold = 1f;
-
-    public void Initialize(Vector3 initialVelocity, CharacterController cc, ForceReceiver fr, EnemyStateMachine esm)
-    {
-        velocity = initialVelocity;
-        controller = cc;
-        forceReceiver = fr;
-        enemyStateMachine = esm;
-
-        if (forceReceiver != null)
-        {
-            forceReceiver.Reset();
-            forceReceiver.AddForce(initialVelocity);
-        }
-    }
-
-    private void Update()
-    {
-        if (controller == null || !controller.enabled)
-        {
-            Cleanup();
-            return;
-        }
-
-        if (forceReceiver != null && forceReceiver.enabled)
-        {
-            velocity = forceReceiver.Movement;
-            controller.Move(velocity * Time.deltaTime);
-        }
-        else
-        {
-            // Fallback con gravedad manual si no hay ForceReceiver
-            velocity.y -= Gravity * Time.deltaTime;
-            controller.Move(velocity * Time.deltaTime);
-        }
-
-        if (enemyStateMachine != null)
-            enemyStateMachine.thrownVelocityMagnitude = velocity.magnitude;
-
-        if (controller.isGrounded && velocity.magnitude < StopThreshold)
-        {
-            Cleanup();
-            return;
-        }
-
-        elapsed += Time.deltaTime;
-        if (elapsed >= Lifetime)
-            Cleanup();
-    }
-
-    private void Cleanup()
-    {
-        enemyStateMachine?.UnmarkAsThrown();
-        Destroy(this);
-    }
 }

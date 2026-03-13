@@ -22,7 +22,8 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public event Action JumpEvent;
     public event Action ColorActionEvent;
     public event Action DiveEvent;
-    
+    public event Action InteractionEvent;
+    public event Action SwitchColorEvent;
 
     // Static Events
     public static event Action<bool> OnAiming;
@@ -153,5 +154,11 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         {
             isColorActing = false;
         }
+    }
+
+    public void OnColorSwitch(InputAction.CallbackContext context)
+    {
+        if (!context.performed) { return; }
+        SwitchColorEvent?.Invoke();
     }
 }

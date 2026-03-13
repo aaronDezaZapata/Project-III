@@ -22,7 +22,8 @@ public class PlayerBlueState : PlayerWhiteState
     
     protected override void SetMaterialColor()
     {
-        stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.blue);
+        //stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.blue);
+        //stateMachine.StartFill(Color.blue);
     }
     
     protected override void InitializeAnimator()
