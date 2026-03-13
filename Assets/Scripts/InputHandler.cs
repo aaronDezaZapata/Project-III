@@ -28,6 +28,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public event Action DiveEvent;
     public event Action InteractionEvent;
     public event Action DashAttackEvent;
+    public event Action SwitchColorEvent;
 
     public static event Action<bool> OnAiming; 
 
@@ -178,6 +179,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public void OnColorSwitch(InputAction.CallbackContext context)
     {
-        throw new NotImplementedException();
+        if (!context.performed) { return; }
+        SwitchColorEvent?.Invoke();
     }
 }

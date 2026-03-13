@@ -73,6 +73,7 @@ public class PlayerWhiteState : PlayerBaseState
     {
         stateMachine.InputReader.JumpEvent += OnJump;
         stateMachine.InputReader.DiveEvent += OnDiveEnter;
+        stateMachine.InputReader.SwitchColorEvent += stateMachine.RotateColors;
     }
     
     // Default Camera Setup
@@ -180,6 +181,7 @@ public class PlayerWhiteState : PlayerBaseState
     {
         stateMachine.InputReader.JumpEvent -= OnJump;
         stateMachine.InputReader.DiveEvent -= OnDiveEnter;
+        stateMachine.InputReader.SwitchColorEvent -= stateMachine.RotateColors;
     }
     
     // TODO: Check

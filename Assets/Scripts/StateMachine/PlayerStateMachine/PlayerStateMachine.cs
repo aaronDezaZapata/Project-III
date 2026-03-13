@@ -722,10 +722,11 @@ public class PlayerStateMachine : StateMachine
             return;
         }
 
-        // PREVENCIÓN DE BUCLES DE COSTE:
-        // Si ya estamos en una habilidad (Heseir, Disparo, Látigo) de este color, 
-        // no forzamos el cambio al estado base para no interrumpir la acción ni cobrar doble.
+        
         Type currentState = GetCurrentState().GetType();
+
+        if (currentState == targetState) return;
+
         if (targetState == typeof(PlayerRedState) && currentState == typeof(PlayerShootingState)) return;
         if (targetState == typeof(PlayerGreenState) && currentState == typeof(PlayerWhipState)) return;
         if (targetState == typeof(PlayerBlueState) && currentState == typeof(PlayerHeiserState)) return;
