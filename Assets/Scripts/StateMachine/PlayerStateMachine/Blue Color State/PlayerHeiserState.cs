@@ -19,6 +19,7 @@ public class PlayerHeiserState : PlayerBaseState
     {
         Debug.Log("Entered PlayerHeiserState");
         
+        stateMachine.UseColor(0.5f);
         stateMachine.Animator.CrossFadeInFixedTime(Heiser, CrossFadeDuration);
         stateMachine.WaterHeiserParticle.gameObject.SetActive(true);
         stateMachine.WaterHeiserParticleSecond.gameObject.SetActive(true);

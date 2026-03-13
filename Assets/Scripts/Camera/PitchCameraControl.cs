@@ -9,12 +9,13 @@ public class PitchCameraControl : MonoBehaviour
 
     [Tooltip("Sensibilidad base de la cámara (se multiplica por Mouse/GamepadSensitivity del Player)")]
     public float baseSensitivity = 120f;
+    public bool invertCamera;
     public float minPitch = -60f;
     public float maxPitch = 80f;
 
     private float pitch;
 
-    private float EffectiveSensitivity => baseSensitivity * playerStateMachine.GetCurrentCameraSensitivity();
+    private float EffectiveSensitivity => invertCamera? -baseSensitivity: baseSensitivity * playerStateMachine.GetCurrentCameraSensitivity();
     
     public void SetPitch(float newPitch)
     {
