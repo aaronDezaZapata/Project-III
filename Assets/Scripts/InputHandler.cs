@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 {
     InputSystem_Actions controls;
-    
+    internal bool isJumpHeld;
 
     public Vector2 MoveVector { get; private set; }
     public Vector2 LookVector { get; private set; }
@@ -110,13 +110,12 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public void OnAim(InputAction.CallbackContext context)
     {
         if (context.performed)
-            {isAiming = true;}
+        {isAiming = true;}
         
         else if (context.canceled)
-            {isAiming = false;}
+        {isAiming = false;}
         
         OnAiming?.Invoke(isAiming);
-        Debug.Log("isAiming");
     }
 
     

@@ -22,7 +22,7 @@ public class PlayerDashAttackState : PlayerBaseState
         if (targetEnemy == null)
         {
             Debug.LogWarning("No painted enemy found, returning to FreeLook");
-            stateMachine.SwitchState(typeof(PlayerFreeLookState));
+            stateMachine.ReturnToMainState();
             return;
         }
         
@@ -46,7 +46,7 @@ public class PlayerDashAttackState : PlayerBaseState
         if (dashTimer > maxDashTime)
         {
             Debug.Log("Dash timeout, returning to FreeLook");
-            stateMachine.SwitchState(typeof(PlayerFreeLookState));
+            stateMachine.ReturnToMainState();
             return;
         }
 
@@ -60,7 +60,7 @@ public class PlayerDashAttackState : PlayerBaseState
         if (targetEnemy == null || !targetEnemy.gameObject.activeInHierarchy)
         {
             Debug.Log("Target enemy disappeared");
-            stateMachine.SwitchState(typeof(PlayerFreeLookState));
+            stateMachine.ReturnToMainState();
             return;
         }
 
@@ -102,35 +102,6 @@ public class PlayerDashAttackState : PlayerBaseState
             return currentPaintBeacon;
         }
         return null;
-        // TODO: Remove
-        // Ya no tenemos que hacer delimitacion de distancia de enemigos
-        /*if (GameManager.Instance.enemiesPainted.Count == 0)
-        {
-            
-        }
-        
-        List<PaintableEnemy> allPaintableEnemies = GameManager.Instance.enemiesPainted;
-        
-        Transform nearest = null;
-        
-        float minDistanceSqr = Mathf.Infinity; 
-        Vector3 currentPos = stateMachine.transform.position;
-        
-        foreach (PaintableEnemy enemy in allPaintableEnemies)
-        {
-            if (enemy == null) continue;
-
-            // Calculamos la distancia
-            Vector3 dirToEnemy = enemy.transform.position - currentPos;
-            float dSqrToTarget = dirToEnemy.sqrMagnitude;
-            
-            if (dSqrToTarget < minDistanceSqr)
-            {
-                minDistanceSqr = dSqrToTarget; // New Closest Enemy
-                nearest = enemy.transform;     // Closest Enemy
-            }
-        }
-        return nearest;*/
     }
 
     private void OnHitEnemy()
@@ -157,7 +128,7 @@ public class PlayerDashAttackState : PlayerBaseState
         stateMachine.StartCameraShake(0.2f);
 
         // Cambiar inmediatamente de estado para aplicar el knockback
-        stateMachine.SwitchState(typeof(PlayerFreeLookState));
+        stateMachine.ReturnToMainState();
     }
     
     private void ApplyKnockback()
