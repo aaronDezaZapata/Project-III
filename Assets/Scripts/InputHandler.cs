@@ -14,22 +14,21 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public bool isAiming { get; private set; }
     public bool IsFiring { get; private set; }
     public bool isColorActing { get; private set; }
-    public bool isHeiser { get; private set; }
-    public bool isColorAction { get; private set; }
+    
     public bool isDColorChange { get; private set; }
-    public bool isGreen { get; set; }
-    public bool isGray { get; set; }
     public bool isJumpHeld { get; private set; }
 
 
     public event Action JumpEvent;
     public event Action ColorActionEvent;
     public event Action DiveEvent;
-    public event Action InteractionEvent;
-    public event Action DashAttackEvent;
+    
 
+    // Static Events
     public static event Action<bool> OnAiming;
     public static event Action OnPauseGameEvent;
+    public static event Action InteractionEvent;
+    public static event Action OnPopUpEventCancel;
 
     void Start()
     {
@@ -149,7 +148,6 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         if (context.performed)
         {
             isColorActing = true;
-            DashAttackEvent?.Invoke();
         }
         else if (context.canceled)
         {
