@@ -22,14 +22,13 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public event Action JumpEvent;
     public event Action ColorActionEvent;
     public event Action DiveEvent;
-    public event Action InteractionEvent;
     public event Action SwitchColorEvent;
 
     // Static Events
     public static event Action<bool> OnAiming;
     public static event Action OnPauseGameEvent;
-    public static event Action InteractionEvent;
     public static event Action OnPopUpEventCancel;
+    public static event Action InteractionEvent;
 
     void Start()
     {
