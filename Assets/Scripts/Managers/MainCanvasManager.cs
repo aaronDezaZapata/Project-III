@@ -24,13 +24,55 @@ public class MainCanvasManager : MonoBehaviour
     private void OnEnable()
     {
         PlayerShootingState.isAiming += HandleShooting;
+        InputHandler.OnPauseGameEvent += PauseHandler;
     }
 
     private void OnDisable()
     {
-        PlayerShootingState.isAiming -= HandleShooting;
+        InputHandler.OnPauseGameEvent -= PauseHandler;
     }
 
+    private void PauseHandler()
+    {
+        if (isOnPause)
+            IdlePanelConfig();
+        else
+            PauseOpen();
+        
+    }
+    
+    // Panel control methods
+    public void IdlePanelConfig()
+    {
+        isOnPause = false;
+        
+        Time.timeScale = 1f;
+        
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        
+        crosshairPanel.SetActive(false);
+        pausePanel.SetActive(false);
+        settingsPanel.SetActive(false);
+        inGamePanel.SetActive(true);
+    }
+    
+    public void PauseOpen()
+    {
+        isOnPause = true;
+        
+        Time.timeScale = 0f;
+        
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        
+        inGamePanel.SetActive(false);
+        crosshairPanel.SetActive(false);
+        settingsPanel.SetActive(false);
+        pausePanel.SetActive(true);
+    }
+    
+    // Crosshair settings
     private void HandleShooting(bool isAiming)
     {
         if (isOnPause) return;
@@ -38,29 +80,12 @@ public class MainCanvasManager : MonoBehaviour
         if (isAiming) CrosshairOpen();
         else IdlePanelConfig();
     }
-
-    private void IdlePanelConfig()
-    {
-        inGamePanel.SetActive(true);
-        crosshairPanel.SetActive(false);
-        pausePanel.SetActive(false);
-        settingsPanel.SetActive(false);
-    }
-
+    
     private void CrosshairOpen()
     {
         inGamePanel.SetActive(false);
-        crosshairPanel.SetActive(true);
         pausePanel.SetActive(false);
         settingsPanel.SetActive(false);
-    }
-    
-    private void PauseOpen()
-    {
-        isOnPause = true;
-        inGamePanel.SetActive(false);
-        crosshairPanel.SetActive(false);
-        pausePanel.SetActive(true);
-        settingsPanel.SetActive(false);
+        crosshairPanel.SetActive(true);
     }
 }

@@ -9,9 +9,9 @@ using UnityEngine.InputSystem;
 public class PlayerStateMachine : StateMachine
 {
     #region Variables
-
     [field: Header("Player State")]
     [field: SerializeField] public PlayerStates playerState;
+    [field: SerializeField] public bool isOnEvent;
 
     [field: Header("Getters and Setters")]
     [field: SerializeField] public InputHandler InputReader { get; private set; }
@@ -309,9 +309,6 @@ public class PlayerStateMachine : StateMachine
 
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
         AddState(new PlayerWhiteState(this));
         AddState(new PlayerSwimState(this));
         AddState(new PlayerDashAttackState(this));
