@@ -280,11 +280,13 @@ public class PlayerStateMachine : StateMachine
     [HideInInspector] public float heiserCooldownTimer = 0f;
     [HideInInspector] public bool isHeiserOnCooldown = false;
     [HideInInspector] public bool wasJumpButtonReleased = true;
-    
+    private Coroutine fillCoroutine;
+    private float fillSpeed = 5f;
+
     /// <summary>
     /// Dash variables
     /// </summary>
-    
+
     // TODO: Remove
     // Ya no hay combate
     [field: Header("Black Dash Attack (Painted Enemy)")]

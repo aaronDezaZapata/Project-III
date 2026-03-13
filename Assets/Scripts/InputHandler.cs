@@ -68,8 +68,10 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (!context.performed) { return; }
-        JumpEvent?.Invoke();
+        if (context.performed) { JumpEvent?.Invoke(); isJumpHeld = true; }
+
+        if(context.canceled) { isJumpHeld = false; }
+        
     }
 
     public void OnLook(InputAction.CallbackContext context)

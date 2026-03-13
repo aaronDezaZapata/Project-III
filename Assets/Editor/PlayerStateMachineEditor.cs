@@ -122,6 +122,8 @@ public class PlayerStateMachineEditor : Editor
             
             DrawHeader("Force Variable Config", Color.white);
             DrawBackingProperty("HeiserCooldownTime");
+            DrawBackingProperty("HeiserActivationTime");
+
             
             DrawHeader("Force Variable Config", Color.white);
             DrawBackingProperty("HoverForce");
