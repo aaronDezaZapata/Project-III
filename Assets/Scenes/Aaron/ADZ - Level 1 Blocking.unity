@@ -25287,11 +25287,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5685e4297eb79e498ba45985558e491, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeBeforeFalling: 1
-  fallDistance: 10
-  respawnTime: 3
-  fallSpeed: 5
-  respawnSpeed: 2
 --- !u!54 &765108005
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -25314,8 +25309,8 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 122
   m_CollisionDetection: 0
