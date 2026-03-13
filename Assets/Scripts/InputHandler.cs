@@ -175,4 +175,9 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
             Debug.Log("Gray State Deactivated");
         }
     }
+
+    public void OnColorSwitch(InputAction.CallbackContext context)
+    {
+        throw new NotImplementedException();
+    }
 }

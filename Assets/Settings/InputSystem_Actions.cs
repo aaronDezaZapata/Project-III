@@ -199,6 +199,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ColorSwitch"",
+                    ""type"": ""Button"",
+                    ""id"": ""37da6e47-8bcb-4e25-86e5-53e51891b939"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -584,6 +593,28 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""DColorChange"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""af214c50-3a11-4429-856d-093cba38fdc0"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""ColorSwitch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e1afd66f-7ff4-4694-9361-7f9ba75cc496"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""ColorSwitch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1183,6 +1214,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
         m_Player_ColorAction = m_Player.FindAction("ColorAction", throwIfNotFound: true);
         m_Player_DColorChange = m_Player.FindAction("DColorChange", throwIfNotFound: true);
+        m_Player_ColorSwitch = m_Player.FindAction("ColorSwitch", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1288,6 +1320,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Aim;
     private readonly InputAction m_Player_ColorAction;
     private readonly InputAction m_Player_DColorChange;
+    private readonly InputAction m_Player_ColorSwitch;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1347,6 +1380,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/DColorChange".
         /// </summary>
         public InputAction @DColorChange => m_Wrapper.m_Player_DColorChange;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/ColorSwitch".
+        /// </summary>
+        public InputAction @ColorSwitch => m_Wrapper.m_Player_ColorSwitch;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1409,6 +1446,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @DColorChange.started += instance.OnDColorChange;
             @DColorChange.performed += instance.OnDColorChange;
             @DColorChange.canceled += instance.OnDColorChange;
+            @ColorSwitch.started += instance.OnColorSwitch;
+            @ColorSwitch.performed += instance.OnColorSwitch;
+            @ColorSwitch.canceled += instance.OnColorSwitch;
         }
 
         /// <summary>
@@ -1456,6 +1496,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @DColorChange.started -= instance.OnDColorChange;
             @DColorChange.performed -= instance.OnDColorChange;
             @DColorChange.canceled -= instance.OnDColorChange;
+            @ColorSwitch.started -= instance.OnColorSwitch;
+            @ColorSwitch.performed -= instance.OnColorSwitch;
+            @ColorSwitch.canceled -= instance.OnColorSwitch;
         }
 
         /// <summary>
@@ -1840,6 +1883,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDColorChange(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ColorSwitch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnColorSwitch(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
