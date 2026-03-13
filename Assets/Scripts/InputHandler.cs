@@ -20,7 +20,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public bool isDColorChange { get; private set; }
     public bool isGreen { get; set; }
     public bool isGray { get; set; }
-
+    public bool InteractPressed { get ; private set; }
 
     public event Action JumpEvent;
     public event Action ColorActionEvent;
@@ -29,6 +29,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public event Action DashAttackEvent;
 
     public static event Action<bool> OnAiming; 
+
 
     void Start()
     {
