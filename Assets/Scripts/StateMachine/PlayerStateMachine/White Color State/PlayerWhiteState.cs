@@ -94,6 +94,8 @@ public class PlayerWhiteState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
+        if (stateMachine.isOnEvent) return;
+        
         stateMachine.CheckGrounded();
         
         // Check for color-specific actions
@@ -215,14 +217,14 @@ public class PlayerWhiteState : PlayerBaseState
     
     protected virtual void OnJump()
     {
-        if (!CanJump()) return;
+        if (!CanJump() || stateMachine.isOnEvent) return;
         stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();
     }
 
     protected virtual void OnDiveEnter()
     {
-        if (stateMachine.IsOnInk)
+        if (stateMachine.IsOnInk || stateMachine.isOnEvent)
             stateMachine.SwitchState(typeof(PlayerSwimState));
     }
 
