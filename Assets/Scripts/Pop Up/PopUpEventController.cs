@@ -30,7 +30,7 @@ public class PopUpEventController : MonoBehaviour
     {
         if (!canBeTriggered) return;
         
-        currentActionAmount -= Time.deltaTime;
+        currentActionAmount -= Time.fixedDeltaTime;
         if (currentActionAmount >= actionLimit)
         {
             EventCompleted();

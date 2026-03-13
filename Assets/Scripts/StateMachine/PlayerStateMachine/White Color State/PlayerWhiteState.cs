@@ -96,11 +96,9 @@ public class PlayerWhiteState : PlayerBaseState
     {
         stateMachine.CheckGrounded();
         
-        // Check for color-specific actions - Los estados hijos pueden sobrescribir
-        if (CheckColorSpecificActions(deltaTime))
-        {
-            return; // El estado hijo manejó la transición
-        }
+        // Check for color-specific actions
+        if (CheckColorSpecificActions(deltaTime)) return; 
+        
 
         // Calculate movement
         Vector3 movement = stateMachine.CalculateMovement();
@@ -224,7 +222,8 @@ public class PlayerWhiteState : PlayerBaseState
 
     protected virtual void OnDiveEnter()
     {
-        stateMachine.SwitchState(typeof(PlayerSwimState));
+        if (stateMachine.IsOnInk)
+            stateMachine.SwitchState(typeof(PlayerSwimState));
     }
 
     protected void CameraRecenter()
