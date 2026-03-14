@@ -311,6 +311,9 @@ public class PlayerStateMachine : StateMachine
     
     #endregion
 
+    private string currentPuddleTag = "";
+
+
     private void Start()
     {
         AddState(new PlayerWhiteState(this));
@@ -418,19 +421,10 @@ public class PlayerStateMachine : StateMachine
         switch (other.tag)
         {
             case "CharcoAzul":
-                StartFill(Color.blue);
-                break;
-
             case "CharcoNegro":
-                SwitchState(typeof(PlayerWhiteState));
-                break;
-            
             case "CharcoRojo":
-                StartFill(Color.red);
-                break;
-
             case "CharcoVerde":
-                StartFill(Color.green);
+                currentPuddleTag = other.tag;
                 break;
 
             case "CheckPoint":
@@ -438,6 +432,33 @@ public class PlayerStateMachine : StateMachine
                 break;
 
             default:
+                break;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == currentPuddleTag)
+        {
+            currentPuddleTag = "";
+        }
+    }
+
+    public void HandlePuddleInteraction()
+    {
+        switch (currentPuddleTag)
+        {
+            case "CharcoAzul":
+                StartFill(Color.blue);
+                break;
+            case "CharcoNegro":
+                SwitchState(typeof(PlayerWhiteState));
+                break;
+            case "CharcoRojo":
+                StartFill(Color.red);
+                break;
+            case "CharcoVerde":
+                StartFill(Color.green);
                 break;
         }
     }
