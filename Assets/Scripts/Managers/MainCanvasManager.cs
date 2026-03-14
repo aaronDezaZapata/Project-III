@@ -23,7 +23,7 @@ public class MainCanvasManager : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerShootingState.isAiming += HandleShooting;
+        InputHandler.OnAiming += HandleShooting;
         InputHandler.OnPauseGameEvent += PauseHandler;
     }
 

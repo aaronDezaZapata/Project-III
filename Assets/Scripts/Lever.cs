@@ -11,9 +11,6 @@ public class Lever : MonoBehaviour
     [Tooltip("ID único que ha de coincidir con el leverID de la plataforma que controla.")]
     public string leverID = "lever_01";
 
-    [Header("Configuración")]
-    [SerializeField] private InputHandler input;
-
     [Tooltip("Si es true, la palanca solo se puede activar una vez.")]
     public bool oneShot = false;
 
@@ -29,14 +26,14 @@ public class Lever : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
 
-        input.InteractionEvent += Activate;
+        InputHandler.InteractionEvent += Activate;
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (!other.CompareTag("Player")) return;
 
-        input.InteractionEvent -= Activate;
+        InputHandler.InteractionEvent -= Activate;
     }
 
     // ── Lógica ──────────────────────────────────────────────────────────────
