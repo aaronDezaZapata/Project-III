@@ -5,11 +5,13 @@ public class MovingPlatformHandler : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        other.gameObject.transform.parent = transform;
+        if (other.CompareTag("Player"))
+            other.gameObject.transform.parent = transform;
     }
 
     private void OnTriggerExit(Collider other)
     {
-        other.gameObject.transform.parent = null;
+        if (other.CompareTag("Player"))
+            other.gameObject.transform.parent = null;
     }
 }
