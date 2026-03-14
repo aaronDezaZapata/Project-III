@@ -88,10 +88,11 @@ public class PlayerWhiteState : PlayerBaseState
     
     protected virtual void InitializeAnimator()
     {
-        stateMachine.Animator.SetFloat(FreeLookSpeedHash, 0);
+        float currentSpeed = stateMachine.Animator.GetFloat(FreeLookSpeedHash);
         stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
-        lastSpeed = 0f;
         
+        lastInputMagnitude = currentSpeed;
+        lastSpeed = currentSpeed;
     }
 
     public override void Tick(float deltaTime)
