@@ -1,72 +1,170 @@
-using System;
-using System.Collections;
 using UnityEngine;
 
 public class FallingPlatformController : MonoBehaviour
 {
-    public bool isActivated;
-    public float timeToFall;
-    public float timeToRegenerate;
-    public GameObject platform;
-
-    [SerializeField] private float currentTimeToFall;
-    [SerializeField] private float downfallSpeed;
-    [SerializeField] private Vector3 initialPosition;
-    [SerializeField] private Vector3 finalPosition;
+    [Header("Platform Settings")]
+    [Tooltip("If true, platform falls on touch")]
+    public bool fallsOnStay;
+    [Tooltip("Time to wait before platform falls")]
+    public float timeBeforeFalling = 1.0f;
+    [Tooltip("Time before platform respawns")]
+    public float timeBeforeRespawn = 3.0f;
+    public float movementSpeed = 2.0f;
     
-
-    private void OnEnable()
+    [Header("Debug")]
+    [SerializeField] private float currentTimer = 0f;
+    [SerializeField] private bool isCountdownActive = false;
+    [SerializeField] private bool isPlayerOnPlatform = false;
+    [SerializeField] private Vector3 originalPosition;
+    [SerializeField] private PlatformState currentState = PlatformState.Idle;
+    
+    private enum PlatformState
     {
-        initialPosition = transform.position;
-        finalPosition = new Vector3(transform.position.x, transform.position.y - 20f, transform.position.z);
-        currentTimeToFall = timeToFall;
+        Idle,
+        Countdown,
+        Falling,
+        WaitingToRespawn,
+        Rising
     }
-
-
+    
+    private Vector3 targetFallPosition;
+    private float respawnTimer = 0f;
+    
+    private void Start()
+    {
+        originalPosition = transform.position;
+        targetFallPosition = originalPosition + new Vector3(0, -3f, 0);
+    }
+    
     private void Update()
     {
-        if (!isActivated) return;
-        
-        currentTimeToFall -= Time.deltaTime;
-        if (currentTimeToFall <= 0f)
+        switch (currentState)
         {
-            FallingTrigger();
+            case PlatformState.Countdown:
+                UpdateCountdown();
+                break;
+                
+            case PlatformState.WaitingToRespawn:
+                UpdateWaitingToRespawn();
+                break;
+        }
+        
+        if (fallsOnStay && currentState == PlatformState.Countdown && !isPlayerOnPlatform)
+            CancelCountdown();
+    }
+    
+    private void FixedUpdate()
+    {
+        switch (currentState)
+        {
+            case PlatformState.Falling:
+                UpdateFalling();
+                break;
+                
+            case PlatformState.Rising:
+                UpdateRising();
+                break;
         }
     }
-
+    
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            other.gameObject.transform.parent = transform;
-            isActivated = true;
-        }
-    }
-
-    private void OnTriggerExit(Collider other) 
-    {
-        if (other.CompareTag("Player"))
-        {
-            other.gameObject.transform.parent = null;
-        }
-        
-    }
-
-    private void FallingTrigger()
-    {
-        transform.position = Vector3.MoveTowards(transform.position, finalPosition, Time.deltaTime * downfallSpeed);
-        
-        if (Vector3.Distance(transform.position, finalPosition) < 0.01f)
-        {
-            isActivated = false;
-            StartCoroutine(RegeneratePlatform());
+            isPlayerOnPlatform = true;
+            
+            if (!fallsOnStay && currentState == PlatformState.Idle || 
+                fallsOnStay && currentState == PlatformState.Idle)
+                StartCountdown();
         }
     }
     
-    private IEnumerator RegeneratePlatform()
+    private void OnTriggerExit(Collider other)
     {
-        yield return new WaitForSeconds(timeToRegenerate);
-        transform.position = initialPosition;
-        currentTimeToFall = timeToFall;
+        if (other.CompareTag("Player"))
+        {
+            isPlayerOnPlatform = false;
+        }
+    }
+    
+    private void StartCountdown()
+    {
+        currentState = PlatformState.Countdown;
+        currentTimer = timeBeforeFalling;
+        isCountdownActive = true;
+    }
+    
+    private void CancelCountdown()
+    {
+        currentState = PlatformState.Idle;
+        currentTimer = 0f;
+        isCountdownActive = false;
+    }
+    
+    private void UpdateCountdown()
+    {
+        currentTimer -= Time.deltaTime;
+        
+        if (currentTimer <= 0f)
+        {
+            currentTimer = 0f;
+            isCountdownActive = false;
+            currentState = PlatformState.Falling;
+        }
+    }
+    
+    private void UpdateFalling()
+    {
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            targetFallPosition,
+            movementSpeed * Time.fixedDeltaTime
+        );
+        
+
+        if (Vector3.Distance(transform.position, targetFallPosition) < 0.01f)
+        {
+            transform.position = targetFallPosition;
+
+            currentState = PlatformState.WaitingToRespawn;
+            respawnTimer = timeBeforeRespawn;
+        }
+    }
+    
+    private void UpdateWaitingToRespawn()
+    {
+        respawnTimer -= Time.deltaTime;
+        
+        if (respawnTimer <= 0f)
+        {
+            respawnTimer = 0f;
+            currentState = PlatformState.Rising;
+        }
+    }
+    
+    private void UpdateRising()
+    {
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            originalPosition,
+            movementSpeed * Time.fixedDeltaTime
+        );
+        
+        if (Vector3.Distance(transform.position, originalPosition) < 0.01f)
+        {
+            transform.position = originalPosition;
+            currentState = PlatformState.Idle;
+            currentTimer = 0f;
+        }
+    }
+    
+    public void ResetPlatform()
+    {
+        transform.position = originalPosition;
+        currentState = PlatformState.Idle;
+        currentTimer = 0f;
+        respawnTimer = 0f;
+        isCountdownActive = false;
+        isPlayerOnPlatform = false;
     }
 }
