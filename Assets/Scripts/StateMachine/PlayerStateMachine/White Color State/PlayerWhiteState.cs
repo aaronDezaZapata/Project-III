@@ -181,8 +181,7 @@ public class PlayerWhiteState : PlayerBaseState
         // stateMachine.InputReader.DashEvent -= OnDash;
         stateMachine.InputReader.DiveEvent -= OnDiveEnter;
 
-        // Camera Out
-        stateMachine.mainCamera.Priority = -1;
+        // stateMachine.mainCamera.Priority = -1;
         UnsubscribeFromInputEvents();
     }
     
