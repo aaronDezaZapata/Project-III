@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -11,6 +11,9 @@ public class MovingPlatform : MonoBehaviour
     [Header("Identificador de palanca")]
     [Tooltip("Ha de coincidir EXACTAMENTE con el leverID de la palanca que la controla.")]
     public string leverID = "lever_01";
+
+    [Tooltip("Si true, la plataforma comenzará a moverse sola al inicio, sin necesitar palanca.")]
+    public bool autoStart = false;
 
     [Header("Puntos de movimiento")]
     [Tooltip("Desplazamiento en mundo desde la posición inicial hasta el punto B.")]
@@ -45,6 +48,13 @@ public class MovingPlatform : MonoBehaviour
     {
         _pointA = transform.position;
         _pointB = _pointA + pointBOffset;
+
+        if (autoStart)
+        {
+            _activated = true;
+            if (loop) StartLoop();
+            else MoveToB();
+        }
     }
 
     private void OnEnable()
