@@ -50,7 +50,7 @@ public class PlayerWhiteState : PlayerBaseState
         
         SubscribeToInputEvents();
         
-        SetupCamera();
+        //SetupCamera();
         
         InitializeAnimator();
     }
@@ -75,6 +75,7 @@ public class PlayerWhiteState : PlayerBaseState
         stateMachine.InputReader.JumpEvent += OnJump;
         stateMachine.InputReader.DiveEvent += OnDiveEnter;
         stateMachine.InputReader.SwitchColorEvent += stateMachine.RotateColors;
+        InputHandler.InteractionEvent += stateMachine.HandlePuddleInteraction;
     }
     
     // Default Camera Setup
@@ -89,10 +90,11 @@ public class PlayerWhiteState : PlayerBaseState
     
     protected virtual void InitializeAnimator()
     {
-        stateMachine.Animator.SetFloat(FreeLookSpeedHash, 0);
+        float currentSpeed = stateMachine.Animator.GetFloat(FreeLookSpeedHash);
         stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
-        lastSpeed = 0f;
         
+        lastInputMagnitude = currentSpeed;
+        lastSpeed = currentSpeed;
     }
 
     public override void Tick(float deltaTime)
@@ -189,6 +191,7 @@ public class PlayerWhiteState : PlayerBaseState
         stateMachine.InputReader.JumpEvent -= OnJump;
         stateMachine.InputReader.DiveEvent -= OnDiveEnter;
         stateMachine.InputReader.SwitchColorEvent -= stateMachine.RotateColors;
+        InputHandler.InteractionEvent -= stateMachine.HandlePuddleInteraction;
     }
     
     // TODO: Check
