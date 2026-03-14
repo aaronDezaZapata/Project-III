@@ -2,20 +2,19 @@ using UnityEngine;
 
 public class FallingPlatformController : MonoBehaviour
 {
-    [Header("Timing Settings")]
-    [Tooltip("Tiempo en segundos antes de que la plataforma caiga")]
+    [Header("Platform Settings")]
+    [Tooltip("If true, platform falls on touch")]
+    public bool fallsOnStay;
+    [Tooltip("Time to wait before platform falls")]
     public float timeBeforeFalling = 1.0f;
-    
-    [Tooltip("Tiempo en segundos antes de que la plataforma vuelva a su posición")]
+    [Tooltip("Time before platform respawns")]
     public float timeBeforeRespawn = 3.0f;
-    
-    [Header("Movement Settings")]
-    [Tooltip("Velocidad a la que la plataforma cae y sube")]
     public float movementSpeed = 2.0f;
     
     [Header("Debug")]
     [SerializeField] private float currentTimer = 0f;
     [SerializeField] private bool isCountdownActive = false;
+    [SerializeField] private bool isPlayerOnPlatform = false;
     [SerializeField] private Vector3 originalPosition;
     [SerializeField] private PlatformState currentState = PlatformState.Idle;
     
@@ -33,15 +32,12 @@ public class FallingPlatformController : MonoBehaviour
     
     private void Start()
     {
-        // Guardar la posición original de la plataforma
         originalPosition = transform.position;
         targetFallPosition = originalPosition + new Vector3(0, -3f, 0);
     }
     
     private void Update()
     {
-        // Los timers se actualizan en Update porque Time.deltaTime respeta Time.timeScale
-        // Esto permite que el sistema de pausa funcione correctamente
         switch (currentState)
         {
             case PlatformState.Countdown:
@@ -52,12 +48,13 @@ public class FallingPlatformController : MonoBehaviour
                 UpdateWaitingToRespawn();
                 break;
         }
+        
+        if (fallsOnStay && currentState == PlatformState.Countdown && !isPlayerOnPlatform)
+            CancelCountdown();
     }
     
     private void FixedUpdate()
     {
-        // El movimiento de la plataforma se hace en FixedUpdate para mantener
-        // consistencia en diferentes framerates y evitar movimientos irregulares
         switch (currentState)
         {
             case PlatformState.Falling:
@@ -72,10 +69,21 @@ public class FallingPlatformController : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-        // Detecta cuando el jugador salta sobre la plataforma
-        if (other.CompareTag("Player") && currentState == PlatformState.Idle)
+        if (other.CompareTag("Player"))
         {
-            StartCountdown();
+            isPlayerOnPlatform = true;
+            
+            if (!fallsOnStay && currentState == PlatformState.Idle || 
+                fallsOnStay && currentState == PlatformState.Idle)
+                StartCountdown();
+        }
+    }
+    
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            isPlayerOnPlatform = false;
         }
     }
     
@@ -84,6 +92,13 @@ public class FallingPlatformController : MonoBehaviour
         currentState = PlatformState.Countdown;
         currentTimer = timeBeforeFalling;
         isCountdownActive = true;
+    }
+    
+    private void CancelCountdown()
+    {
+        currentState = PlatformState.Idle;
+        currentTimer = 0f;
+        isCountdownActive = false;
     }
     
     private void UpdateCountdown()
@@ -100,18 +115,17 @@ public class FallingPlatformController : MonoBehaviour
     
     private void UpdateFalling()
     {
-        // Usar Time.fixedDeltaTime para movimiento consistente en FixedUpdate
         transform.position = Vector3.MoveTowards(
             transform.position,
             targetFallPosition,
             movementSpeed * Time.fixedDeltaTime
         );
         
-        // Verificar si llegó a la posición objetivo
+
         if (Vector3.Distance(transform.position, targetFallPosition) < 0.01f)
         {
             transform.position = targetFallPosition;
-            // Iniciar el temporizador de respawn
+
             currentState = PlatformState.WaitingToRespawn;
             respawnTimer = timeBeforeRespawn;
         }
@@ -130,14 +144,12 @@ public class FallingPlatformController : MonoBehaviour
     
     private void UpdateRising()
     {
-        // Usar Time.fixedDeltaTime para movimiento consistente en FixedUpdate
         transform.position = Vector3.MoveTowards(
             transform.position,
             originalPosition,
             movementSpeed * Time.fixedDeltaTime
         );
         
-        // Verificar si llegó a la posición original
         if (Vector3.Distance(transform.position, originalPosition) < 0.01f)
         {
             transform.position = originalPosition;
@@ -146,7 +158,6 @@ public class FallingPlatformController : MonoBehaviour
         }
     }
     
-    // Método para resetear la plataforma manualmente si es necesario
     public void ResetPlatform()
     {
         transform.position = originalPosition;
@@ -154,5 +165,6 @@ public class FallingPlatformController : MonoBehaviour
         currentTimer = 0f;
         respawnTimer = 0f;
         isCountdownActive = false;
+        isPlayerOnPlatform = false;
     }
 }
