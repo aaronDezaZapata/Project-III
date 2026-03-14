@@ -14,7 +14,7 @@ public class PlayerRedState : PlayerWhiteState
     protected override void SetPlayerState()
     {
         Debug.Log("Entered PlayerRedState");
-        //stateMachine.playerState = PlayerStates.RED;
+        stateMachine.playerState = PlayerStates.RED;
 
     }
     
