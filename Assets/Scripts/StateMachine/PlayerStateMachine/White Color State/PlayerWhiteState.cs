@@ -49,7 +49,7 @@ public class PlayerWhiteState : PlayerBaseState
         
         SubscribeToInputEvents();
         
-        SetupCamera();
+        //SetupCamera();
         
         InitializeAnimator();
     }
