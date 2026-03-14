@@ -103,6 +103,7 @@ public class PlayerWhiteState : PlayerBaseState
         
         stateMachine.CheckGrounded();
         
+        
         // Check for color-specific actions
         if (CheckColorSpecificActions(deltaTime)) return; 
         
@@ -236,7 +237,9 @@ public class PlayerWhiteState : PlayerBaseState
     }
 
     protected virtual void OnDiveEnter()
-    {
+    {        
+        stateMachine.CheckForInk();
+        if (stateMachine.IsOnInk)
         if (stateMachine.IsOnInk || stateMachine.isOnEvent)
             stateMachine.SwitchState(typeof(PlayerSwimState));
     }
