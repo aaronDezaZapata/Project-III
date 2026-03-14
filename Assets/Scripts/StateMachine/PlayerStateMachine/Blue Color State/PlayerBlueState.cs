@@ -79,7 +79,7 @@ public class PlayerBlueState : PlayerWhiteState
     
     protected override void OnJump()
     {
-        if (!CanJump()) return;
+        if (!CanJump() || stateMachine.isOnEvent) return;
         isJumping = true;
         stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();

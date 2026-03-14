@@ -14,7 +14,7 @@ public class PlayerRedState : PlayerWhiteState
     protected override void SetPlayerState()
     {
         Debug.Log("Entered PlayerRedState");
-        //stateMachine.playerState = PlayerStates.RED;
+        stateMachine.playerState = PlayerStates.RED;
 
     }
     
@@ -27,13 +27,13 @@ public class PlayerRedState : PlayerWhiteState
     protected override bool CheckColorSpecificActions(float deltaTime)
     {
         // Red puede apuntar y disparar
-        if (stateMachine.InputReader.isAiming)
+        if (stateMachine.InputReader.isAiming && !stateMachine.isOnEvent)
         {
             stateMachine.SwitchState(typeof(PlayerShootingState));
             return true;
         }
 
-        if (stateMachine.InputReader.isColorActing)
+        if (stateMachine.InputReader.isColorActing && !stateMachine.isOnEvent)
         {
             if (GameManager.Instance.paintBeacon == null) return false;
             stateMachine.SwitchState(typeof(PlayerDashAttackState));

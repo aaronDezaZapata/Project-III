@@ -19,6 +19,7 @@ public class PlayerStateMachineEditor : Editor
         EditorGUILayout.Space(10);
         DrawHeader("MAIN CONFIGURATION", Color.white);
         DrawBackingProperty("playerState");
+        DrawBackingProperty("isOnEvent");
 
         EditorGUILayout.Space(5);
         DrawBackingProperty("InputReader");

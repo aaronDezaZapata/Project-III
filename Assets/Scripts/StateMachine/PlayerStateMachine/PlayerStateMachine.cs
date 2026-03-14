@@ -16,6 +16,7 @@ public class PlayerStateMachine : StateMachine
 
     [field: Header("Player State")]
     [field: SerializeField] public PlayerStates playerState;
+    [field: SerializeField] public bool isOnEvent;
 
     [field: Header("Getters and Setters")]
     [field: SerializeField] public InputHandler InputReader { get; private set; }
@@ -312,9 +313,6 @@ public class PlayerStateMachine : StateMachine
 
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
         AddState(new PlayerWhiteState(this));
         AddState(new PlayerSwimState(this));
         AddState(new PlayerDashAttackState(this));
@@ -723,10 +721,11 @@ public class PlayerStateMachine : StateMachine
             return;
         }
 
-        // PREVENCIÓN DE BUCLES DE COSTE:
-        // Si ya estamos en una habilidad (Heseir, Disparo, Látigo) de este color, 
-        // no forzamos el cambio al estado base para no interrumpir la acción ni cobrar doble.
+        
         Type currentState = GetCurrentState().GetType();
+
+        if (currentState == targetState) return;
+
         if (targetState == typeof(PlayerRedState) && currentState == typeof(PlayerShootingState)) return;
         if (targetState == typeof(PlayerGreenState) && currentState == typeof(PlayerWhipState)) return;
         if (targetState == typeof(PlayerBlueState) && currentState == typeof(PlayerHeiserState)) return;

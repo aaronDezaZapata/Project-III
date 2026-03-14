@@ -26,7 +26,7 @@ public class PlayerGreenState : PlayerWhiteState
     
     protected override bool CheckColorSpecificActions(float deltaTime)
     {
-        if (stateMachine.InputReader.isColorActing)
+        if (stateMachine.InputReader.isColorActing && !stateMachine.isOnEvent)
         {
             if (!stateMachine.WhipFailedLastAttempt)
             {
@@ -42,9 +42,6 @@ public class PlayerGreenState : PlayerWhiteState
         return false;
     }
     
-    // Tick se hereda de PlayerWhiteState con CheckColorSpecificActions sobrescrito
-    // No mods on Tick right now
-
-    // Exit se hereda de PlayerWhiteState - no necesita sobrescritura
-    // No mods on Exit right now
+    // No mods on Tick
+    // No mods on Exit 
 }
