@@ -22,7 +22,8 @@ public class PlayerBlueState : PlayerWhiteState
     
     protected override void SetMaterialColor()
     {
-        stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.blue);
+        //stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.blue);
+        //stateMachine.StartFill(Color.blue);
     }
     
     protected override void InitializeAnimator()
@@ -45,8 +46,8 @@ public class PlayerBlueState : PlayerWhiteState
             if (!stateMachine.isHeiserOnCooldown && stateMachine.wasJumpButtonReleased)
             {
                 jumpHoldTimer += deltaTime;
-                
-                if (jumpHoldTimer >= stateMachine.HeiserActivationTime)
+
+                if (jumpHoldTimer >= stateMachine.HeiserActivationTime && !CanJump() )
                 {
                     Debug.Log("Blue: Activando Heiser");
                     stateMachine.SwitchState(typeof(PlayerHeiserState));
@@ -78,7 +79,7 @@ public class PlayerBlueState : PlayerWhiteState
     
     protected override void OnJump()
     {
-        if (!CanJump()) return;
+        if (!CanJump() || stateMachine.isOnEvent) return;
         isJumping = true;
         stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();

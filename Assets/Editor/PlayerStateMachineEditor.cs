@@ -19,6 +19,7 @@ public class PlayerStateMachineEditor : Editor
         EditorGUILayout.Space(10);
         DrawHeader("MAIN CONFIGURATION", Color.white);
         DrawBackingProperty("playerState");
+        DrawBackingProperty("isOnEvent");
 
         EditorGUILayout.Space(5);
         DrawBackingProperty("InputReader");
@@ -98,7 +99,7 @@ public class PlayerStateMachineEditor : Editor
 
             EditorGUILayout.Space(5);
             EditorGUILayout.LabelField("Whip Mechanics", EditorStyles.boldLabel);
-            DrawBackingProperty("EnemyLayer");
+            DrawBackingProperty("WhipObjectLayer");
             DrawBackingProperty("WhipThrowForceMin");
             DrawBackingProperty("WhipThrowForceMax");
             DrawBackingProperty("EnemyDetectionRange");
@@ -122,6 +123,8 @@ public class PlayerStateMachineEditor : Editor
             
             DrawHeader("Force Variable Config", Color.white);
             DrawBackingProperty("HeiserCooldownTime");
+            DrawBackingProperty("HeiserActivationTime");
+
             
             DrawHeader("Force Variable Config", Color.white);
             DrawBackingProperty("HoverForce");

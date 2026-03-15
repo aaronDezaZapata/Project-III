@@ -50,7 +50,7 @@ public class PlayerWhiteState : PlayerBaseState
         
         SubscribeToInputEvents();
         
-        SetupCamera();
+        //SetupCamera();
         
         InitializeAnimator();
     }
@@ -59,13 +59,14 @@ public class PlayerWhiteState : PlayerBaseState
     // Overridden in other states
     protected virtual void SetPlayerState()
     {
-        stateMachine.playerState = PlayerStates.WHITE;
+        //stateMachine.playerState = PlayerStates.WHITE;
     }
     
     // Initial material color config
     protected virtual void SetMaterialColor()
     {
-        stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.white);
+        //stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.white);
+        //stateMachine.StartFill(Color.white);
     }
     
     // Input events to subscribe
@@ -73,6 +74,8 @@ public class PlayerWhiteState : PlayerBaseState
     {
         stateMachine.InputReader.JumpEvent += OnJump;
         stateMachine.InputReader.DiveEvent += OnDiveEnter;
+        stateMachine.InputReader.SwitchColorEvent += stateMachine.RotateColors;
+        InputHandler.InteractionEvent += stateMachine.HandlePuddleInteraction;
     }
     
     // Default Camera Setup
@@ -87,21 +90,23 @@ public class PlayerWhiteState : PlayerBaseState
     
     protected virtual void InitializeAnimator()
     {
-        stateMachine.Animator.SetFloat(FreeLookSpeedHash, 0);
+        float currentSpeed = stateMachine.Animator.GetFloat(FreeLookSpeedHash);
         stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
-        lastSpeed = 0f;
-        //lastInputMagnitude = 0f;
+        
+        lastInputMagnitude = currentSpeed;
+        lastSpeed = currentSpeed;
     }
 
     public override void Tick(float deltaTime)
     {
+        if (stateMachine.isOnEvent) return;
+        
         stateMachine.CheckGrounded();
         
-        // Check for color-specific actions - Los estados hijos pueden sobrescribir
-        if (CheckColorSpecificActions(deltaTime))
-        {
-            return; // El estado hijo manejó la transición
-        }
+        
+        // Check for color-specific actions
+        if (CheckColorSpecificActions(deltaTime)) return; 
+        
 
         // Calculate movement
         Vector3 movement = stateMachine.CalculateMovement();
@@ -177,8 +182,7 @@ public class PlayerWhiteState : PlayerBaseState
         // stateMachine.InputReader.DashEvent -= OnDash;
         stateMachine.InputReader.DiveEvent -= OnDiveEnter;
 
-        // Camera Out
-        stateMachine.mainCamera.Priority = -1;
+        // stateMachine.mainCamera.Priority = -1;
         UnsubscribeFromInputEvents();
     }
     
@@ -186,6 +190,8 @@ public class PlayerWhiteState : PlayerBaseState
     {
         stateMachine.InputReader.JumpEvent -= OnJump;
         stateMachine.InputReader.DiveEvent -= OnDiveEnter;
+        stateMachine.InputReader.SwitchColorEvent -= stateMachine.RotateColors;
+        InputHandler.InteractionEvent -= stateMachine.HandlePuddleInteraction;
     }
     
     // TODO: Check
@@ -225,14 +231,17 @@ public class PlayerWhiteState : PlayerBaseState
     
     protected virtual void OnJump()
     {
-        if (!CanJump()) return;
+        if (!CanJump() || stateMachine.isOnEvent) return;
         stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();
     }
 
     protected virtual void OnDiveEnter()
-    {
-        stateMachine.SwitchState(typeof(PlayerSwimState));
+    {        
+        stateMachine.CheckForInk();
+        if (stateMachine.IsOnInk)
+        if (stateMachine.IsOnInk || stateMachine.isOnEvent)
+            stateMachine.SwitchState(typeof(PlayerSwimState));
     }
 
     protected void CameraRecenter()
