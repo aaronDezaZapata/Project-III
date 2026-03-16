@@ -3,11 +3,8 @@ using UnityEngine;
 
 public class PitchCameraControl : MonoBehaviour
 {
-    public bool isActive;
-    
     public PlayerStateMachine playerStateMachine;
 
-    [Tooltip("Sensibilidad base de la cámara (se multiplica por Mouse/GamepadSensitivity del Player)")]
     public float baseSensitivity = 120f;
     public bool invertCamera;
     public float minPitch = -60f;
@@ -25,8 +22,6 @@ public class PitchCameraControl : MonoBehaviour
 
     private void Update()
     {
-        // if (!isActive) return;
-        
         Vector2 look = playerStateMachine.InputReader.LookVector * EffectiveSensitivity * Time.deltaTime;
         
         pitch -= look.y;

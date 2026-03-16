@@ -25,9 +25,10 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public event Action SwitchColorEvent;
 
     // Static Events
-    public static event Action<bool> OnAiming;
     public static event Action OnPauseGameEvent;
-    public static event Action OnPopUpEventCancel;
+    // TODO: TBD
+    // Evaluar necesidad
+    // public static event Action OnPopUpEventCancel;
     public static event Action InteractionEvent;
 
     void Start()
@@ -121,8 +122,6 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         
         else if (context.canceled)
         {isAiming = false;}
-        
-        OnAiming?.Invoke(isAiming);
     }
 
     
