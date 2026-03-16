@@ -13,10 +13,10 @@ GameObject:
   - component: {fileID: 6885314049208877968}
   - component: {fileID: 5609047552734194702}
   - component: {fileID: 5739203926585324407}
-  - component: {fileID: 4520833558199680878}
   - component: {fileID: 6274463589886451834}
+  - component: {fileID: 6337043627525368025}
   m_Layer: 0
-  m_Name: fruitFloat
+  m_Name: CocoFloat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,8 +30,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8441000582456216364}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -63.73, y: 122.18, z: 346.6}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -58.42486, y: 138.35, z: 317.82}
   m_LocalScale: {x: 326.5301, y: 326.53003, z: 326.53003}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -131,23 +131,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
---- !u!114 &4520833558199680878
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8441000582456216364}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18c8f6fc26a810c48b0cd8ec9d1c125c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  floatForce: 3
-  waterDrag: 2
-  maxSpeed: 8
-  inHorizontalWater: 0
-  inVerticalWater: 0
 --- !u!135 &6274463589886451834
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -169,3 +152,20 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.0029461014
   m_Center: {x: -3.4924597e-10, y: -3.4924597e-10, z: -0.000000059837475}
+--- !u!114 &6337043627525368025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8441000582456216364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a19297a9eb7604046a3b7cfdce644c9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  path: {fileID: 0}
+  speed: 10
+  rotationSpeed: 8
+  pointReachDistance: 0.2
+  destroyAtEnd: 1
