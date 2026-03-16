@@ -9,7 +9,6 @@ public class PlayerBlueState : PlayerWhiteState
 {
     // Variables específicas para la habilidad Heiser
     private bool isJumping;
-    private float jumpHoldTimer = 0f;
     
     public PlayerBlueState(PlayerStateMachine stateMachine) : base(stateMachine)
     { }
@@ -29,7 +28,6 @@ public class PlayerBlueState : PlayerWhiteState
     protected override void InitializeAnimator()
     {
         base.InitializeAnimator();
-        jumpHoldTimer = 0f;
     }
 
     protected override bool CheckColorSpecificActions(float deltaTime)
@@ -39,25 +37,6 @@ public class PlayerBlueState : PlayerWhiteState
         if (!stateMachine.InputReader.isJumpHeld)
         {
             stateMachine.wasJumpButtonReleased = true;
-        }
-        
-        if (!stateMachine.Controller.isGrounded && stateMachine.InputReader.isJumpHeld)
-        {
-            if (!stateMachine.isHeiserOnCooldown && stateMachine.wasJumpButtonReleased)
-            {
-                jumpHoldTimer += deltaTime;
-
-                if (jumpHoldTimer >= stateMachine.HeiserActivationTime && !CanJump() )
-                {
-                    Debug.Log("Blue: Activando Heiser");
-                    stateMachine.SwitchState(typeof(PlayerHeiserState));
-                    return true;
-                }
-            }
-        }
-        else
-        {
-            jumpHoldTimer = 0f;
         }
         
         return false;
@@ -79,7 +58,19 @@ public class PlayerBlueState : PlayerWhiteState
     
     protected override void OnJump()
     {
-        if (!CanJump() || stateMachine.isOnEvent) return;
+        if (stateMachine.isOnEvent) return;
+
+        if (!CanJump())
+        {
+            // Activate Heiser on 3rd jump (when standard jumps are exhausted)
+            if (!stateMachine.Controller.isGrounded && !stateMachine.isHeiserOnCooldown)
+            {
+                Debug.Log("Blue: Activando Heiser (Triple Jump)");
+                stateMachine.SwitchState(typeof(PlayerHeiserState));
+            }
+            return;
+        }
+
         isJumping = true;
         stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();
