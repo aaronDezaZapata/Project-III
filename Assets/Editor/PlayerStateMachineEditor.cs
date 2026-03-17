@@ -74,6 +74,8 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("InkLayer");
         DrawBackingProperty("GunOrigin");
         DrawBackingProperty("reticle");
+        DrawBackingProperty("OriginalMesh");
+        DrawBackingProperty("SharkFinMesh");
 
         // Referencias de disparo
         DrawBackingProperty("FirePoint");

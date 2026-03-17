@@ -42,7 +42,7 @@ public class PlayerSwimState : PlayerBaseState
         // Reset inicial
         // stateMachine.ForceReceiver.enabled = false;
 
-        SetPlayerMesh(stateMachine.SharkFinMesh);
+        TogglePlayerMesh(true);
     }
 
     public override void Tick(float deltaTime)
@@ -86,7 +86,7 @@ public class PlayerSwimState : PlayerBaseState
 
         // stateMachine.ForceReceiver.enabled = true;
 
-        SetPlayerMesh(stateMachine.OriginalMesh);
+        TogglePlayerMesh(false);
     }
 
     private void HandleSwimMovement(float deltaTime)
@@ -202,11 +202,12 @@ public class PlayerSwimState : PlayerBaseState
         stateMachine.ReturnToMainState();
     }
 
-     public void SetPlayerMesh(Mesh newMesh)
+     public void TogglePlayerMesh(bool isLow)
     {
-        if (stateMachine.Mat_Player != null && newMesh != null)
-        {
-            stateMachine.Mat_Player.sharedMesh = newMesh;
-        }
+        if (stateMachine.OriginalMesh != null)
+            stateMachine.OriginalMesh.SetActive(!isLow);
+            
+        if (stateMachine.SharkFinMesh != null)
+            stateMachine.SharkFinMesh.SetActive(isLow);
     }
 }
