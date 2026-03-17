@@ -14,7 +14,9 @@ public class GameManager : MonoBehaviour
     public GameObject paintBeacon;
 
     private Transform currentCheckPoint;
-    
+
+    public Action<string> OnLeverActivated;
+
     // Coins
     private int coinsCollected = 0;
 

@@ -29,8 +29,12 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("mainCamera");
         DrawBackingProperty("aimCamera");
         DrawBackingProperty("aimCameraPitchControl");
-        DrawBackingProperty("MouseSensitivity");
+        DrawBackingProperty("MiceSensitivity");
         DrawBackingProperty("GamepadSensitivity");
+        DrawBackingProperty("XAxisInverted");
+        DrawBackingProperty("MiceAimSensitivity");
+        DrawBackingProperty("GamepadAimSensitivity");
+        DrawBackingProperty("AimXAxisInverted");
         DrawBackingProperty("Health");
         DrawBackingProperty("Mat_Player");
 
@@ -123,15 +127,14 @@ public class PlayerStateMachineEditor : Editor
             
             DrawHeader("Force Variable Config", Color.white);
             DrawBackingProperty("HeiserCooldownTime");
+            DrawBackingProperty("HeiserActivationTime");
+
             
             DrawHeader("Force Variable Config", Color.white);
             DrawBackingProperty("HoverForce");
             DrawBackingProperty("aerialMoveSpeed");
-            DrawBackingProperty("HeiserActivationTime");
-            DrawBackingProperty("HeiserInitialBoostForce");
 
             // Particles related to blue/water go here
-            DrawHeader("Visuals Config", Color.white);
             DrawBackingProperty("Water_JetParticle");
             DrawBackingProperty("WaterHeiserParticle");
             DrawBackingProperty("WaterHeiserParticleSecond");

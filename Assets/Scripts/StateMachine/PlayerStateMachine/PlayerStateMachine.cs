@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -32,18 +33,24 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public Health Health { get; private set; }
 
     [field: SerializeField] public SkinnedMeshRenderer Mat_Player { get; private set; }
-
-    private Coroutine fillCoroutine;
-    private float fillSpeed = 1f;
-
-    [field: Header("Camera Sensitivity")]
-    [field: Tooltip("Sensibilidad de la cámara con ratón")]
-    [field: Range(0.1f, 5f)]
-    [field: SerializeField] public float MouseSensitivity { get; set; } = 1f;
     
-    [field: Tooltip("Sensibilidad de la cámara con mando/gamepad")]
+    [field: Header("Camera Sensitivity")]
+    [field: Range(0.1f, 5f)]
+    [field: SerializeField] public float MiceSensitivity { get; set; } = 1f;
+    
     [field: Range(0.1f, 5f)]
     [field: SerializeField] public float GamepadSensitivity { get; set; } = 3f;
+    
+    [field: SerializeField] public bool XAxisInverted { get; set; }
+    
+    [field: Header("Aim Camera Sensitivity")]
+    [field: Range(0.1f, 5f)]
+    [field: SerializeField] public float MiceAimSensitivity { get; set; } = 1f;
+    
+    [field: Range(0.1f, 5f)]
+    [field: SerializeField] public float GamepadAimSensitivity { get; set; } = 3f;
+
+    [field: SerializeField] public bool AimXAxisInverted { get; set; }
 
 
     [field: Header("Movement Variables")]
@@ -283,11 +290,13 @@ public class PlayerStateMachine : StateMachine
     [HideInInspector] public float heiserCooldownTimer = 0f;
     [HideInInspector] public bool isHeiserOnCooldown = false;
     [HideInInspector] public bool wasJumpButtonReleased = true;
-    
+    private Coroutine fillCoroutine;
+    private float fillSpeed = 5f;
+
     /// <summary>
     /// Dash variables
     /// </summary>
-    
+
     // TODO: Remove
     // Ya no hay combate
     [field: Header("Black Dash Attack (Painted Enemy)")]
@@ -418,6 +427,7 @@ public class PlayerStateMachine : StateMachine
 
     private void OnTriggerEnter(Collider other)
     {
+
         switch (other.tag)
         {
             case "CharcoAzul":
@@ -853,7 +863,7 @@ public class PlayerStateMachine : StateMachine
 
     public float GetCurrentCameraSensitivity()
     {
-        return InputReader.IsUsingGamepad ? GamepadSensitivity : MouseSensitivity;
+        return InputReader.IsUsingGamepad ? GamepadAimSensitivity : MiceAimSensitivity;
     }
 
     private void OnDrawGizmosSelected()
