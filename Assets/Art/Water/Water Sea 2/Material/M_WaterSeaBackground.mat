@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_WaterSea2
-  m_Shader: {fileID: -6465566751694194690, guid: 075a29970bb95674188e761b5619c229, type: 3}
+  m_Name: M_WaterSeaBackground
+  m_Shader: {fileID: -6465566751694194690, guid: 7c8a95ed24f756a429dc2968f9e7fa86, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -120,9 +120,9 @@ Material:
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
     - _CausticPowerMask: 0
-    - _CausticsContrast: 1.5
-    - _CausticsCutMax: 0.82
-    - _CausticsCutMin: 0.6
+    - _CausticsContrast: 0.1
+    - _CausticsCutMax: 0.85
+    - _CausticsCutMin: 0.65
     - _CausticsEmission: 0.93
     - _CausticsIntensity: 0.12
     - _CausticsScale: 0.15
@@ -154,9 +154,9 @@ Material:
     - _GlossyReflections: 0
     - _InnerBandEnd: 0.8
     - _InnerBandStart: 0.7
-    - _LightMaskContrast: 0.8
-    - _LightMaskCutMax: 0.6
-    - _LightMaskCutMin: 0.3
+    - _LightMaskContrast: 1
+    - _LightMaskCutMax: 0.5
+    - _LightMaskCutMin: 0.2
     - _LightMaskIntensity: 1
     - _LightMaskScale: 0.01
     - _Metallic: 0
@@ -169,6 +169,8 @@ Material:
     - _ShadowCutMax: 0.55
     - _ShadowCutMin: 0.25
     - _ShadowIntensity: 0.25
+    - _ShadowMaskIntensity: 4
+    - _ShadowMaskPower: 0.5
     - _ShadowSoftness: 0.8
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
@@ -180,8 +182,9 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - _BackgroundColor: {r: 0, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _CausticsColor: {r: 1, g: 1, b: 1, a: 0}
+    - _CausticsColor: {r: 0, g: 0.040908813, b: 1, a: 0}
     - _CausticsSpeedA: {r: 0.02, g: 0.01, b: 0, a: 0}
     - _CausticsSpeedB: {r: -0.01, g: 0.015, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
@@ -193,7 +196,7 @@ Material:
     - _LightMaskSpeed: {r: 0.005, g: 0.002, b: 0, a: 0}
     - _LightMaskTiling: {r: 0.008, g: 0.008, b: 0, a: 0}
     - _ShadllowColor: {r: 0, g: 0.9097543, b: 1, a: 0}
-    - _ShadowColor: {r: 0.046944425, g: 0, b: 0.509434, a: 0}
+    - _ShadowColor: {r: 0.38180843, g: 0.41935813, b: 0.735849, a: 0}
     - _ShadowOffset: {r: 0.03, g: -0.02, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _WaterColor: {r: 1, g: 1, b: 1, a: 0}
