@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,23 +11,27 @@ public class MainCanvasManager : MonoBehaviour
     [SerializeField] private bool isOnPause;
 
     /// Game Panels ///
+    [Header("Panels")]
     [SerializeField] private GameObject inGamePanel;
     [SerializeField] private GameObject crosshairPanel;
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private GameObject settingsPanel;
     
     /// Sliders ///
-    
+    [Header("Sliders")]
     // Camera
-    [SerializeField] private Slider camGamepadSenseSlider;
-    [SerializeField] private Slider camMouseSenseSlider;
+    [SerializeField] private Slider _gamepadSlider;
+    [SerializeField] private Slider _mouseSlider;
+    [Space(5f)]
     // Aim Camera
-    [SerializeField] private Slider aimCamGamepadSenseSlider;
-    [SerializeField] private Slider aimCamMouseSenseSlider;
+    [SerializeField] private Slider _aimGamepadSlider;
+    [SerializeField] private Slider _aimMouseSlider;
+    
+    [Space(10f)]
     
     // Audio Sliders
-    [SerializeField] private Slider musicAudioSlider;
-    [SerializeField] private Slider sfxAudioSlider;
+    [SerializeField] private Slider musicSlider;
+    [SerializeField] private Slider sfxSlider;
 
     
     ///  Default Camera Sense ///
@@ -36,14 +41,21 @@ public class MainCanvasManager : MonoBehaviour
     ///  Default Aim Camera Sense ///
     private float defaultAimGamepadSense;
     private float defaultAimMiceSense;
+    
+    private PlayerStateMachine _player;
 
     #endregion
+
+    private void Awake()
+    {
+        _player = GameManager.Instance.GetPlayer().GetComponent<PlayerStateMachine>();
+    }
 
     private void Start()
     {
         IdlePanelConfig();
-        
         GetInitialSettings();
+        SliderAddListeners();
     }
 
     private void OnEnable()
@@ -117,13 +129,13 @@ public class MainCanvasManager : MonoBehaviour
     private void OnAimGamepadSlider(float mult)
     {
         float sensitivity = mult * defaultAimGamepadSense;
-        // Set sensitivity
+        _player.GamepadAimSensitivity = sensitivity;
     }
     
     private void OnAimMiceSlider(float mult)
     {
         float sensitivity = mult * defaultAimMiceSense;
-        // Set sensitivity
+        _player.MiceAimSensitivity = sensitivity;
     }
 
     #endregion
@@ -148,11 +160,22 @@ public class MainCanvasManager : MonoBehaviour
     private void GetInitialSettings()
     {
         /// CAMERA Default Settings ///
-        defaultMiceSense = GameManager.Instance.GetPlayer().GetComponent<PlayerStateMachine>().MiceSensitivity;
-        defaultGamepadSense = GameManager.Instance.GetPlayer().GetComponent<PlayerStateMachine>().GamepadSensitivity;
+        defaultMiceSense = _player.MiceSensitivity;
+        defaultGamepadSense = _player.GamepadSensitivity;
         
         /// AIM Default Settings ///
-        defaultAimMiceSense = GameManager.Instance.GetPlayer().GetComponent<PlayerStateMachine>().MiceAimSensitivity;
-        defaultAimGamepadSense = GameManager.Instance.GetPlayer().GetComponent<PlayerStateMachine>().GamepadAimSensitivity;
+        defaultAimMiceSense = _player.MiceAimSensitivity;
+        defaultAimGamepadSense = _player.GamepadAimSensitivity;
+    }
+
+    private void SliderAddListeners()
+    {
+        _gamepadSlider.onValueChanged.AddListener(OnGamepadSlider);
+        _mouseSlider.onValueChanged.AddListener(OnMiceSlider);
+        _aimGamepadSlider.onValueChanged.AddListener(OnAimGamepadSlider);
+        _aimMouseSlider.onValueChanged.AddListener(OnAimMiceSlider);
+        // TBD
+        /*musicAudioSlider.onValueChanged.AddListener();
+        sfxAudioSlider.onValueChanged.AddListener();*/
     }
 }
