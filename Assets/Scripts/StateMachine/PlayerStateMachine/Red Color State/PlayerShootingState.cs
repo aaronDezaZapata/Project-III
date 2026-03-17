@@ -7,10 +7,10 @@ public class PlayerShootingState : PlayerBaseState
 {
     private readonly int ShootAnim = Animator.StringToHash("Shoot");
     private const float CrossFadeDuration = 0.1f;
-    float speed = 100f;
 
-    public static Action<bool> isAiming;
+    public static Action<bool> OnAiming;
     
+    float speed = 100f;
     public PlayerShootingState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
     }
@@ -27,15 +27,16 @@ public class PlayerShootingState : PlayerBaseState
         // Sincronizar la dirección de la cámara de apuntado con la orbital
         SyncAimCameraWithOrbital();
         
-        isAiming?.Invoke(true);
-        
         // CAMERA IN
         stateMachine.aimCamera.Priority = 10;
         stateMachine.Animator.CrossFadeInFixedTime(ShootAnim, CrossFadeDuration);
 
         if (stateMachine.ReticleTransform != null)
             stateMachine.ReticleTransform.gameObject.SetActive(true);
-
+        
+        // Aim Panel
+        OnAiming?.Invoke(true);
+        
         _rotationX = stateMachine.transform.eulerAngles.y;
         _rotationY = 0f;
     }
@@ -67,7 +68,7 @@ public class PlayerShootingState : PlayerBaseState
         
         stateMachine.aimCamera.Priority = -1;
         
-        isAiming?.Invoke(false);
+        OnAiming?.Invoke(false);
         
         if (stateMachine.ReticleTransform != null)
             stateMachine.ReticleTransform.gameObject.SetActive(false);

@@ -36,6 +36,7 @@ public class PlayerWhiteState : PlayerBaseState
     
     public PlayerWhiteState(PlayerStateMachine stateMachine) : base(stateMachine)
     { 
+       
     }
 
 
@@ -101,6 +102,7 @@ public class PlayerWhiteState : PlayerBaseState
         if (stateMachine.isOnEvent) return;
         
         stateMachine.CheckGrounded();
+        
         
         // Check for color-specific actions
         if (CheckColorSpecificActions(deltaTime)) return; 
@@ -176,6 +178,11 @@ public class PlayerWhiteState : PlayerBaseState
 
     public override void Exit()
     {
+        stateMachine.InputReader.JumpEvent -= OnJump;
+        // stateMachine.InputReader.DashEvent -= OnDash;
+        stateMachine.InputReader.DiveEvent -= OnDiveEnter;
+
+        // stateMachine.mainCamera.Priority = -1;
         UnsubscribeFromInputEvents();
     }
     
@@ -207,7 +214,8 @@ public class PlayerWhiteState : PlayerBaseState
                 stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
         }
     }
-    
+
+
     protected bool HasNearbyPaintedEnemy()
     {
         return GameManager.Instance.paintBeacon;
@@ -229,7 +237,9 @@ public class PlayerWhiteState : PlayerBaseState
     }
 
     protected virtual void OnDiveEnter()
-    {
+    {        
+        stateMachine.CheckForInk();
+        if (stateMachine.IsOnInk)
         if (stateMachine.IsOnInk || stateMachine.isOnEvent)
             stateMachine.SwitchState(typeof(PlayerSwimState));
     }

@@ -1,5 +1,7 @@
 using System;
+using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainCanvasManager : MonoBehaviour
 {
@@ -8,40 +10,76 @@ public class MainCanvasManager : MonoBehaviour
     // Game Pause State
     [SerializeField] private bool isOnPause;
 
-    // Game Panels
+    /// Game Panels ///
+    [Header("Panels")]
     [SerializeField] private GameObject inGamePanel;
     [SerializeField] private GameObject crosshairPanel;
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private GameObject settingsPanel;
+    
+    /// Sliders ///
+    [Header("Sliders")]
+    // Camera
+    [SerializeField] private Slider _gamepadSlider;
+    [SerializeField] private Slider _mouseSlider;
+    [Space(5f)]
+    // Aim Camera
+    [SerializeField] private Slider _aimGamepadSlider;
+    [SerializeField] private Slider _aimMouseSlider;
+    
+    [Space(10f)]
+    
+    // Audio Sliders
+    [SerializeField] private Slider musicSlider;
+    [SerializeField] private Slider sfxSlider;
+    
+    [Space(10f)]
+    [Header("Toggles")]
+    [SerializeField] private Toggle _XInvertToggle;
+    [SerializeField] private Toggle _aimXInvertToggle;
+
+    
+    ///  Default Camera Sense ///
+    private float defaultGamepadSense = 1f;
+    private float defaultMiceSense = 1f;
+    
+    ///  Default Aim Camera Sense ///
+    private float defaultAimGamepadSense;
+    private float defaultAimMiceSense;
+    
+    private PlayerStateMachine _player;
+    
+    public static Action<float> OnMiceSliderAction;
+    public static Action<float> OnGamepadSliderAction;
 
     #endregion
+
+    private void Awake()
+    {
+        _player = GameManager.Instance.GetPlayer().GetComponent<PlayerStateMachine>();
+    }
 
     private void Start()
     {
         IdlePanelConfig();
+        GetInitialSettings();
+        SetSettingsListeners();
     }
 
     private void OnEnable()
     {
-        PlayerShootingState.isAiming += HandleShooting;
+        PlayerShootingState.OnAiming += HandleShooting;
         InputHandler.OnPauseGameEvent += PauseHandler;
     }
 
     private void OnDisable()
     {
+        PlayerShootingState.OnAiming -= HandleShooting;
         InputHandler.OnPauseGameEvent -= PauseHandler;
     }
 
-    private void PauseHandler()
-    {
-        if (isOnPause)
-            IdlePanelConfig();
-        else
-            PauseOpen();
-        
-    }
-    
-    // Panel control methods
+    #region Panel States
+
     public void IdlePanelConfig()
     {
         isOnPause = false;
@@ -72,6 +110,57 @@ public class MainCanvasManager : MonoBehaviour
         pausePanel.SetActive(true);
     }
     
+    private void CrosshairOpen()
+    {
+        inGamePanel.SetActive(false);
+        pausePanel.SetActive(false);
+        settingsPanel.SetActive(false);
+        crosshairPanel.SetActive(true);
+    }
+
+    #endregion
+
+    #region Settings Methods
+
+    private void OnGamepadSlider(float mult)
+    {
+        float sensitivity = mult * defaultGamepadSense;
+        OnGamepadSliderAction?.Invoke(sensitivity);
+    }
+
+    private void OnMiceSlider(float mult)
+    {
+        float sensitivity = mult * defaultMiceSense;
+        OnMiceSliderAction?.Invoke(sensitivity);
+    }
+    
+    private void OnAimGamepadSlider(float mult)
+    {
+        float sensitivity = mult * defaultAimGamepadSense;
+        _player.GamepadAimSensitivity = sensitivity;
+    }
+    
+    private void OnAimMiceSlider(float mult)
+    {
+        float sensitivity = mult * defaultAimMiceSense;
+        _player.MiceAimSensitivity = sensitivity;
+    }
+
+    private void OnAimXInvertToggle(bool value)
+    {
+        _player.AimXAxisInverted = value;
+    }
+
+    #endregion
+    
+    private void PauseHandler()
+    {
+        if (isOnPause)
+            IdlePanelConfig();
+        else
+            PauseOpen();
+    }
+    
     // Crosshair settings
     private void HandleShooting(bool isAiming)
     {
@@ -80,12 +169,31 @@ public class MainCanvasManager : MonoBehaviour
         if (isAiming) CrosshairOpen();
         else IdlePanelConfig();
     }
-    
-    private void CrosshairOpen()
+
+    private void GetInitialSettings()
     {
-        inGamePanel.SetActive(false);
-        pausePanel.SetActive(false);
-        settingsPanel.SetActive(false);
-        crosshairPanel.SetActive(true);
+        /// CAMERA Default Settings ///
+        defaultMiceSense = _player.MiceSensitivity;
+        defaultGamepadSense = _player.GamepadSensitivity;
+        
+        /// AIM Default Settings ///
+        defaultAimMiceSense = _player.MiceAimSensitivity;
+        defaultAimGamepadSense = _player.GamepadAimSensitivity;
+    }
+
+    private void SetSettingsListeners()
+    {
+        /// Sliders Listeners ///
+        _gamepadSlider.onValueChanged.AddListener(OnGamepadSlider);
+        _mouseSlider.onValueChanged.AddListener(OnMiceSlider);
+        _aimGamepadSlider.onValueChanged.AddListener(OnAimGamepadSlider);
+        _aimMouseSlider.onValueChanged.AddListener(OnAimMiceSlider);
+        
+        /// Toggles Listeners ///
+        // _XInvertToggle.onValueChanged.AddListener(); // TBD
+        _aimXInvertToggle.onValueChanged.AddListener(OnAimXInvertToggle);
+        // TBD
+        /*musicAudioSlider.onValueChanged.AddListener();
+        sfxAudioSlider.onValueChanged.AddListener();*/
     }
 }

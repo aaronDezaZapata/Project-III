@@ -46,8 +46,8 @@ public class PlayerBlueState : PlayerWhiteState
             if (!stateMachine.isHeiserOnCooldown && stateMachine.wasJumpButtonReleased)
             {
                 jumpHoldTimer += deltaTime;
-                
-                if (jumpHoldTimer >= stateMachine.HeiserActivationTime)
+
+                if (jumpHoldTimer >= stateMachine.HeiserActivationTime && !CanJump() )
                 {
                     Debug.Log("Blue: Activando Heiser");
                     stateMachine.SwitchState(typeof(PlayerHeiserState));

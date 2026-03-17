@@ -4308,7 +4308,7 @@ Transform:
   m_GameObject: {fileID: 194241471}
   serializedVersion: 2
   m_LocalRotation: {x: 0.21239214, y: 9.443483e-19, z: -2.0525512e-19, w: 0.97718453}
-  m_LocalPosition: {x: 0, y: 10.13, z: -56.57}
+  m_LocalPosition: {x: -37.3, y: -7.88, z: -358.97}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -40186,8 +40186,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1427009301}
-  - component: {fileID: 1427009300}
   - component: {fileID: 1427009299}
+  - component: {fileID: 1427009302}
   m_Layer: 0
   m_Name: TerrainLevel_1
   m_TagString: Untagged
@@ -40213,9 +40213,24 @@ TerrainCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_TerrainData: {fileID: 15600000, guid: f1057966e5f06c54ca4397e09f2c2aae, type: 2}
+  m_TerrainData: {fileID: 15600000, guid: feacd20ac8ba01146b96b106007c0fa5, type: 2}
   m_EnableTreeColliders: 1
---- !u!218 &1427009300
+--- !u!4 &1427009301
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1427009298}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -441, y: 0, z: -279.8}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 940021882}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!218 &1427009302
 Terrain:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40224,7 +40239,7 @@ Terrain:
   m_GameObject: {fileID: 1427009298}
   m_Enabled: 1
   serializedVersion: 6
-  m_TerrainData: {fileID: 15600000, guid: f1057966e5f06c54ca4397e09f2c2aae, type: 2}
+  m_TerrainData: {fileID: 15600000, guid: feacd20ac8ba01146b96b106007c0fa5, type: 2}
   m_TreeDistance: 5000
   m_TreeBillboardDistance: 50
   m_TreeCrossFadeLength: 5
@@ -40247,29 +40262,14 @@ Terrain:
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
   m_ReceiveGI: 1
-  m_ScaleInLightmap: 0.0256
+  m_ScaleInLightmap: 1
   m_LightmapParameters: {fileID: 15203, guid: 0000000000000000f000000000000000, type: 0}
   m_GroupingID: 0
   m_RenderingLayerMask: 1
-  m_AllowAutoConnect: 1
+  m_AllowAutoConnect: 0
   m_EnableHeightmapRayTracing: 1
   m_EnableTreesAndDetailsRayTracing: 0
   m_TreeMotionVectorModeOverride: 3
---- !u!4 &1427009301
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1427009298}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -441, y: 0, z: -279.8}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 940021882}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1429150825 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3914013562841692644, guid: 874d57f8186b698439fb1898deb5e3b4, type: 3}
@@ -44804,8 +44804,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6912d79ae34f8014e96978e2ed6c41f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemiesPainted: []
   player: {fileID: 1884805548}
+  levelDecals: []
+  paintBeacon: {fileID: 0}
 --- !u!1 &1658801860
 GameObject:
   m_ObjectHideFlags: 0
