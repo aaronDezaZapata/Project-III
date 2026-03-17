@@ -69,6 +69,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _LightMaskTex:
+        m_Texture: {fileID: 2800000, guid: 161f7544424c4f545b03f665ffbbdb64, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -115,12 +119,13 @@ Material:
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
+    - _CausticPowerMask: 0
     - _CausticsContrast: 1.5
-    - _CausticsCutMax: 1.2
-    - _CausticsCutMin: 0.43
-    - _CausticsEmission: 0.43
-    - _CausticsIntensity: 0.2
-    - _CausticsScale: 0.29
+    - _CausticsCutMax: 0.85
+    - _CausticsCutMin: 0.65
+    - _CausticsEmission: 0.93
+    - _CausticsIntensity: 0.12
+    - _CausticsScale: 0.15
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -131,8 +136,8 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EdgeAlphaBoost: 1
-    - _EdgeBandEnd: 0.98
-    - _EdgeBandStart: 0.85
+    - _EdgeBandEnd: 0.54
+    - _EdgeBandStart: 1.76
     - _EdgeIntensity: 2.93
     - _EdgeSharpness: 0.02
     - _EdgeStrength: 1
@@ -149,12 +154,19 @@ Material:
     - _GlossyReflections: 0
     - _InnerBandEnd: 0.8
     - _InnerBandStart: 0.7
+    - _LightMaskContrast: 0.8
+    - _LightMaskCutMax: 0.6
+    - _LightMaskCutMin: 0.3
+    - _LightMaskIntensity: 1
+    - _LightMaskScale: 0.01
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _ShadowIntensity: 0.25
+    - _ShadowSoftness: 0.8
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -166,7 +178,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _CausticsColor: {r: 0.8349056, g: 0.9202812, b: 1, a: 0}
+    - _CausticsColor: {r: 1, g: 1, b: 1, a: 0}
     - _CausticsSpeedA: {r: 0.02, g: 0.01, b: 0, a: 0}
     - _CausticsSpeedB: {r: -0.01, g: 0.015, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
@@ -175,7 +187,10 @@ Material:
     - _EdgeColor: {r: 1, g: 1, b: 1, a: 0}
     - _EdgeTexSpeed: {r: 0.03, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _LightMaskSpeed: {r: 0.005, g: 0.002, b: 0, a: 0}
+    - _LightMaskTiling: {r: 0.008, g: 0.008, b: 0, a: 0}
     - _ShadllowColor: {r: 0, g: 0.9097543, b: 1, a: 0}
+    - _ShadowOffset: {r: 0.03, g: -0.02, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _WaterColor: {r: 1, g: 1, b: 1, a: 0}
     - _WaterSpeed: {r: 0.001, g: 0.001, b: 0, a: 0}
