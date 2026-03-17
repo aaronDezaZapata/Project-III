@@ -10,7 +10,7 @@ Material:
   m_Name: M_Carton
   m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
   m_Parent: {fileID: 2100000, guid: f141bdb4bf56bc84b997bddf01555e13, type: 2}
-  m_ModifiedSerializedProperties: 0
+  m_ModifiedSerializedProperties: 16
   m_ValidKeywords:
   - _METALLICSPECGLOSSMAP
   - _NORMALMAP
@@ -21,7 +21,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2001
   stringTagMap:
     RenderType: Opaque
   disabledShaderPasses:
@@ -58,10 +58,11 @@ Material:
     m_Floats:
     - _BumpScale: 1.8
     - _Parallax: 0.08
+    - _QueueOffset: 1
     - _Smoothness: 0.088
     m_Colors:
-    - _BaseColor: {r: 1, g: 0.92129546, b: 0.8537736, a: 1}
-    - _Color: {r: 1, g: 0.92129546, b: 0.8537736, a: 1}
+    - _BaseColor: {r: 1, g: 0.9287167, b: 0.85490197, a: 1}
+    - _Color: {r: 1, g: 0.9287167, b: 0.85490197, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &4584353474522132712
