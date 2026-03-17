@@ -10,7 +10,7 @@ public class MainCameraController : MonoBehaviour
     private float _currentMiceSense = 1f;
     private float _currentGamepadSense = 1f;
     
-    private bool _isUsingGamepad = GameManager.Instance.GetPlayer().GetComponent<PlayerStateMachine>().InputReader.IsUsingGamepad;
+    private bool _isUsingGamepad;
     
     private CinemachineInputAxisController _inputAxisController;
 
@@ -28,28 +28,49 @@ public class MainCameraController : MonoBehaviour
     {
         MainCanvasManager.OnGamepadSliderAction += SetGamepadSensitivity;
         MainCanvasManager.OnMiceSliderAction += SetMiceSensitivity;
+        InputHandler.OnInputDeviceChanged += OnInputDeviceChanged;
     }
 
     private void OnDisable()
     {
         MainCanvasManager.OnGamepadSliderAction -= SetGamepadSensitivity;
         MainCanvasManager.OnMiceSliderAction -= SetMiceSensitivity;
+        InputHandler.OnInputDeviceChanged -= OnInputDeviceChanged;
     }
 
     private void SetMiceSensitivity(float mult)
     {
         _currentMiceSense = _defaultMiceSensitivity * mult;
-        _inputAxisController.Controllers[1].Input.Gain = _currentMiceSense;
+        
+        if (!_isUsingGamepad)
+        {
+            ApplySensitivity(_currentMiceSense);
+        }
     }
     
     private void SetGamepadSensitivity(float mult)
     {
         _currentGamepadSense = _defaultGamepadSensitivity * mult;
-        _inputAxisController.Controllers[1].Input.Gain = _currentGamepadSense;
+        
+        if (_isUsingGamepad)
+        {
+            ApplySensitivity(_currentGamepadSense);
+        }
+    }
+    
+    private void OnInputDeviceChanged(bool isUsingGamepad)
+    {
+        _isUsingGamepad = isUsingGamepad;
+        
+        float targetSensitivity = _isUsingGamepad ? _currentGamepadSense : _currentMiceSense;
+        ApplySensitivity(targetSensitivity);
+    }
+    
+    private void ApplySensitivity(float sensitivity)
+    {
+        _inputAxisController.Controllers[1].Input.Gain = sensitivity;
     }
 
-    // TODO: Check
-    // Puede que no sea necesario a futuro
     private void GetDefaultGain()
     {
         float currentGain = _inputAxisController.Controllers[1].Input.Gain;

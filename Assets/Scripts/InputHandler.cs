@@ -26,6 +26,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     // Static Events
     public static event Action OnPauseGameEvent;
+    public static event Action<bool> OnInputDeviceChanged; // true = gamepad, false = mouse/keyboard
     
     public static event Action InteractionEvent;
     
@@ -87,6 +88,8 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         LookVector = context.ReadValue<Vector2>();
         
         // Detectar el dispositivo de entrada
+        bool wasUsingGamepad = IsUsingGamepad;
+        
         if (context.control.device is Mouse)
         {
             IsUsingGamepad = false;
@@ -94,6 +97,12 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         else if (context.control.device is Gamepad)
         {
             IsUsingGamepad = true;
+        }
+        
+        // Disparar evento solo si cambió el dispositivo
+        if (wasUsingGamepad != IsUsingGamepad)
+        {
+            OnInputDeviceChanged?.Invoke(IsUsingGamepad);
         }
     }
 
