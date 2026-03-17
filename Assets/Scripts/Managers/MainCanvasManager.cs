@@ -40,14 +40,17 @@ public class MainCanvasManager : MonoBehaviour
 
     
     ///  Default Camera Sense ///
-    private float defaultGamepadSense;
-    private float defaultMiceSense;
+    private float defaultGamepadSense = 1f;
+    private float defaultMiceSense = 1f;
     
     ///  Default Aim Camera Sense ///
     private float defaultAimGamepadSense;
     private float defaultAimMiceSense;
     
     private PlayerStateMachine _player;
+    
+    public static Action<float> OnMiceSliderAction;
+    public static Action<float> OnGamepadSliderAction;
 
     #endregion
 
@@ -122,13 +125,13 @@ public class MainCanvasManager : MonoBehaviour
     private void OnGamepadSlider(float mult)
     {
         float sensitivity = mult * defaultGamepadSense;
-        // Set sensitivity
+        OnGamepadSliderAction?.Invoke(sensitivity);
     }
 
     private void OnMiceSlider(float mult)
     {
         float sensitivity = mult * defaultMiceSense;
-        // Set sensitivity
+        OnMiceSliderAction?.Invoke(sensitivity);
     }
     
     private void OnAimGamepadSlider(float mult)

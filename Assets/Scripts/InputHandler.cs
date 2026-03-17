@@ -26,11 +26,13 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     // Static Events
     public static event Action OnPauseGameEvent;
+    
+    public static event Action InteractionEvent;
+    
     // TODO: TBD
     // Evaluar necesidad
     // public static event Action OnPopUpEventCancel;
-    public static event Action InteractionEvent;
-
+    
     void Start()
     {
         controls = new InputSystem_Actions();
