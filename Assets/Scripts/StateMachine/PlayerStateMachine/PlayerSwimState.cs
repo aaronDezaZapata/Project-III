@@ -41,6 +41,8 @@ public class PlayerSwimState : PlayerBaseState
 
         // Reset inicial
         // stateMachine.ForceReceiver.enabled = false;
+
+        TogglePlayerMesh(true);
     }
 
     public override void Tick(float deltaTime)
@@ -83,6 +85,8 @@ public class PlayerSwimState : PlayerBaseState
         CameraManager.Instance.ChangeCameraSwimming(false);
 
         // stateMachine.ForceReceiver.enabled = true;
+
+        TogglePlayerMesh(false);
     }
 
     private void HandleSwimMovement(float deltaTime)
@@ -196,5 +200,14 @@ public class PlayerSwimState : PlayerBaseState
         if(!stateMachine.ForceReceiver.isActiveAndEnabled)
             stateMachine.ForceReceiver.enabled = true;
         stateMachine.ReturnToMainState();
+    }
+
+     public void TogglePlayerMesh(bool isLow)
+    {
+        if (stateMachine.OriginalMesh != null)
+            stateMachine.OriginalMesh.SetActive(!isLow);
+            
+        if (stateMachine.SharkFinMesh != null)
+            stateMachine.SharkFinMesh.SetActive(isLow);
     }
 }

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -33,6 +32,10 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public Health Health { get; private set; }
 
     [field: SerializeField] public SkinnedMeshRenderer Mat_Player { get; private set; }
+    
+    [field: Header("Mesh Settings")]
+    [field: SerializeField] public GameObject OriginalMesh { get; private set; }
+    [field: SerializeField] public GameObject SharkFinMesh { get; private set; }
     
     [field: Header("Camera Sensitivity")]
     [field: Range(0.1f, 5f)]
@@ -797,6 +800,7 @@ public class PlayerStateMachine : StateMachine
                 break;
         }
     }
+
 
     public void FaceMovementDirection(Vector3 movement, float deltaTime)
     {
