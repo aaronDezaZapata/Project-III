@@ -41,12 +41,16 @@ public class PlayerStateMachine : StateMachine
     [field: Range(0.1f, 5f)]
     [field: SerializeField] public float GamepadSensitivity { get; set; } = 3f;
     
-    [field: Header("Camera Sensitivity")]
+    [field: SerializeField] public bool XAxisInverted { get; set; }
+    
+    [field: Header("Aim Camera Sensitivity")]
     [field: Range(0.1f, 5f)]
     [field: SerializeField] public float MiceAimSensitivity { get; set; } = 1f;
     
     [field: Range(0.1f, 5f)]
     [field: SerializeField] public float GamepadAimSensitivity { get; set; } = 3f;
+
+    [field: SerializeField] public bool AimXAxisInverted { get; set; }
 
 
     [field: Header("Movement Variables")]

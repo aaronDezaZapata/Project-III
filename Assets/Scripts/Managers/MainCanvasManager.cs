@@ -32,6 +32,11 @@ public class MainCanvasManager : MonoBehaviour
     // Audio Sliders
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider sfxSlider;
+    
+    [Space(10f)]
+    [Header("Toggles")]
+    [SerializeField] private Toggle _XInvertToggle;
+    [SerializeField] private Toggle _aimXInvertToggle;
 
     
     ///  Default Camera Sense ///
@@ -55,7 +60,7 @@ public class MainCanvasManager : MonoBehaviour
     {
         IdlePanelConfig();
         GetInitialSettings();
-        SliderAddListeners();
+        SetSettingsListeners();
     }
 
     private void OnEnable()
@@ -112,7 +117,7 @@ public class MainCanvasManager : MonoBehaviour
 
     #endregion
 
-    #region Slider Settings
+    #region Settings Methods
 
     private void OnGamepadSlider(float mult)
     {
@@ -136,6 +141,11 @@ public class MainCanvasManager : MonoBehaviour
     {
         float sensitivity = mult * defaultAimMiceSense;
         _player.MiceAimSensitivity = sensitivity;
+    }
+
+    private void OnAimXInvertToggle(bool value)
+    {
+        _player.AimXAxisInverted = value;
     }
 
     #endregion
@@ -168,12 +178,17 @@ public class MainCanvasManager : MonoBehaviour
         defaultAimGamepadSense = _player.GamepadAimSensitivity;
     }
 
-    private void SliderAddListeners()
+    private void SetSettingsListeners()
     {
+        /// Sliders Listeners ///
         _gamepadSlider.onValueChanged.AddListener(OnGamepadSlider);
         _mouseSlider.onValueChanged.AddListener(OnMiceSlider);
         _aimGamepadSlider.onValueChanged.AddListener(OnAimGamepadSlider);
         _aimMouseSlider.onValueChanged.AddListener(OnAimMiceSlider);
+        
+        /// Toggles Listeners ///
+        // _XInvertToggle.onValueChanged.AddListener(); // TBD
+        _aimXInvertToggle.onValueChanged.AddListener(OnAimXInvertToggle);
         // TBD
         /*musicAudioSlider.onValueChanged.AddListener();
         sfxAudioSlider.onValueChanged.AddListener();*/

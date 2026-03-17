@@ -252,10 +252,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 2316683306013559031}
   m_HandleRect: {fileID: 1028602363181992442}
   m_Direction: 0
-  m_MinValue: 0
-  m_MaxValue: 1
+  m_MinValue: 0.001
+  m_MaxValue: 2
   m_WholeNumbers: 0
-  m_Value: 0.5
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -417,10 +417,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 6928155568620495011}
   m_HandleRect: {fileID: 114887243342653528}
   m_Direction: 0
-  m_MinValue: 0
-  m_MaxValue: 1
+  m_MinValue: 0.001
+  m_MaxValue: 2
   m_WholeNumbers: 0
-  m_Value: 0.5
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1821,7 +1821,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 0
+  m_IsOn: 1
 --- !u!1 &2825140064373494781
 GameObject:
   m_ObjectHideFlags: 0
@@ -2280,10 +2280,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 1870721733919803215}
   m_HandleRect: {fileID: 7541794921313622910}
   m_Direction: 0
-  m_MinValue: 0
-  m_MaxValue: 1
+  m_MinValue: 0.001
+  m_MaxValue: 2
   m_WholeNumbers: 0
-  m_Value: 0.5
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2370,10 +2370,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 4240860226523235864}
   m_HandleRect: {fileID: 8953729623937734372}
   m_Direction: 0
-  m_MinValue: 0
-  m_MaxValue: 1
+  m_MinValue: 0.001
+  m_MaxValue: 2
   m_WholeNumbers: 0
-  m_Value: 0.5
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2411,7 +2411,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -82}
+  m_AnchoredPosition: {x: 0, y: -58}
   m_SizeDelta: {x: 780.2522, y: 116.8068}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &5339368590800144998
@@ -2469,8 +2469,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 115
-  m_fontSizeBase: 115
+  m_fontSize: 103
+  m_fontSizeBase: 103
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -5378,7 +5378,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: -110.6
+  m_Spacing: -164.48
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -5720,6 +5720,14 @@ MonoBehaviour:
   crosshairPanel: {fileID: 2023556771183714859}
   pausePanel: {fileID: 8011950417335482862}
   settingsPanel: {fileID: 3971883329507997157}
+  _gamepadSlider: {fileID: 4247554304755813349}
+  _mouseSlider: {fileID: 5480051391715998860}
+  _aimGamepadSlider: {fileID: 4160188545242745236}
+  _aimMouseSlider: {fileID: 5357622538743862337}
+  musicSlider: {fileID: 173590651303491343}
+  sfxSlider: {fileID: 7278945071615836726}
+  _XInvertToggle: {fileID: 0}
+  _aimXInvertToggle: {fileID: 7864748242233810942}
 --- !u!1 &8011950417335482862
 GameObject:
   m_ObjectHideFlags: 0
