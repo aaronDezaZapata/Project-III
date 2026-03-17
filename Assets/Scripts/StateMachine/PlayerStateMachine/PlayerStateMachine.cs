@@ -34,6 +34,10 @@ public class PlayerStateMachine : StateMachine
 
     [field: SerializeField] public SkinnedMeshRenderer Mat_Player { get; private set; }
     
+    [field: Header("Mesh Settings")]
+    [field: SerializeField] public Mesh OriginalMesh { get; private set; }
+    [field: SerializeField] public Mesh SharkFinMesh { get; private set; }
+    
     [field: Header("Camera Sensitivity")]
     [field: Range(0.1f, 5f)]
     [field: SerializeField] public float MiceSensitivity { get; set; } = 1f;
@@ -795,6 +799,14 @@ public class PlayerStateMachine : StateMachine
             default:
                 Debug.Log("Not enetered a valid index");
                 break;
+        }
+    }
+
+    public void SetPlayerMesh(Mesh newMesh)
+    {
+        if (Mat_Player != null && newMesh != null)
+        {
+            Mat_Player.sharedMesh = newMesh;
         }
     }
 
