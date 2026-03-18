@@ -1,6 +1,7 @@
 using System;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.UI;
 
 public class MainCanvasManager : MonoBehaviour
@@ -46,6 +47,8 @@ public class MainCanvasManager : MonoBehaviour
     ///  Default Aim Camera Sense ///
     private float defaultAimGamepadSense;
     private float defaultAimMiceSense;
+    
+    [SerializeField] private AudioMixer _audioMixer;
     
     private PlayerStateMachine _player;
     
@@ -122,6 +125,7 @@ public class MainCanvasManager : MonoBehaviour
 
     #region Settings Methods
 
+    // Camera Settings //
     private void OnGamepadSlider(float mult)
     {
         float sensitivity = mult * defaultGamepadSense;
@@ -134,6 +138,7 @@ public class MainCanvasManager : MonoBehaviour
         OnMiceSliderAction?.Invoke(sensitivity);
     }
     
+    // Aim Camera Settings //
     private void OnAimGamepadSlider(float mult)
     {
         float sensitivity = mult * defaultAimGamepadSense;
@@ -149,6 +154,22 @@ public class MainCanvasManager : MonoBehaviour
     private void OnAimXInvertToggle(bool value)
     {
         _player.AimXAxisInverted = value;
+    }
+    
+    // Audio Settings //
+    public void SetMasterVolume(float level)
+    {
+        _audioMixer.SetFloat("masterVolume", Mathf.Log10(level) * 20f);
+    }
+    
+    public void SetSoundFXVolume(float level)
+    {
+        _audioMixer.SetFloat("soundFXVolume", Mathf.Log10(level) * 20f);
+    }
+    
+    public void SetMusicVolume(float level)
+    {
+        _audioMixer.SetFloat("musicVolume", Mathf.Log10(level) * 20f);
     }
 
     #endregion
