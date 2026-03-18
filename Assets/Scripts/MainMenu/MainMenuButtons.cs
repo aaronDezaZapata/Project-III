@@ -37,6 +37,8 @@ public class MainMenuButtons : MonoBehaviour
     void Start()
     {
         splineAnimate.NormalizedTime = GetNodeTime(menuNode);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     void Update()
@@ -109,6 +111,6 @@ public class MainMenuButtons : MonoBehaviour
 
     void LoadGame()
     {
-        SceneManager.LoadScene(playSceneName);
+        SceneManager.LoadScene(1);
     }
 }
