@@ -53,10 +53,8 @@ public class PlayerWhiteState : PlayerBaseState
         
         //SetupCamera();
         
-        // Actualizar el estado de grounded antes de inicializar el animator
         stateMachine.CheckGrounded();
         
-        // Actualizar parámetros del animator inmediatamente para reflejar el estado actual
         Vector3 movement = stateMachine.CalculateMovement();
         UpdateAnimatorParameters(movement, movement.magnitude, Time.deltaTime);
         
@@ -223,16 +221,8 @@ public class PlayerWhiteState : PlayerBaseState
     
     protected virtual void HandleBlendTreeTransition(float inputMagnitude)
     {
-        if (inputMagnitude >= IdleThreshold && inputMagnitude < RunThreshold)
-        {
-            if (lastInputMagnitude < IdleThreshold || lastInputMagnitude >= RunThreshold)
-                stateMachine.Animator.CrossFadeInFixedTime(WalkingBlendTreeHash, CrossFadeDuration);
-        }
-        else
-        {
-            if (lastInputMagnitude >= IdleThreshold && lastInputMagnitude < RunThreshold)
-                stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
-        }
+        // PlayerWhiteState solo usa FreeLookBlendTree
+        // No hace transiciones entre diferentes blend trees, el FreeLookBlendTree maneja idle/walk/run
     }
 
 

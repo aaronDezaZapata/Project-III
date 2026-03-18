@@ -1,33 +1,35 @@
 using UnityEngine;
 
 /// <summary>
-/// Player Heiser State (Blue Ability)
+/// Player Geyser State (Blue Ability)
 /// - Vertical Movement
 /// - Deactivates at grounded or when jump button is released
 /// - Cooldown before reusing the ability
 /// </summary>
-public class PlayerHeiserState : PlayerBaseState
+public class PlayerGeyserState : PlayerBaseState
 {
-    private readonly int Heiser = Animator.StringToHash("GeiserCycle");
+    private readonly int GeyserAnim = Animator.StringToHash("GeyserCycle");
     private const float CrossFadeDuration = 0.1f;
     
-    public PlayerHeiserState(PlayerStateMachine stateMachine) : base(stateMachine)
+    public PlayerGeyserState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
     }
 
     public override void Enter()
     {
-        Debug.Log("Entered PlayerHeiserState");
+        Debug.Log("Entered PlayerGeyserState");
         
         stateMachine.UseColor(0.5f);
-        stateMachine.Animator.CrossFadeInFixedTime(Heiser, CrossFadeDuration);
-        stateMachine.WaterHeiserParticle.gameObject.SetActive(true);
-        stateMachine.WaterHeiserParticleSecond.gameObject.SetActive(true);
+        // stateMachine.Animator.CrossFadeInFixedTime(GeyserAnim, CrossFadeDuration);
+        stateMachine.WaterGeyserParticle.gameObject.SetActive(true);
+        stateMachine.WaterGeyserParticleSecond.gameObject.SetActive(true);
         stateMachine.mainCamera.Priority = 10;
     }
 
     public override void Tick(float deltaTime)
     {
+        stateMachine.Animator.CrossFadeInFixedTime(GeyserAnim, CrossFadeDuration);
+        
         stateMachine.CheckGrounded();
         if (stateMachine.Controller.isGrounded)
         {
@@ -47,12 +49,12 @@ public class PlayerHeiserState : PlayerBaseState
 
     public override void Exit()
     {
-        stateMachine.isHeiserOnCooldown = true;
-        stateMachine.heiserCooldownTimer = stateMachine.HeiserCooldownTime;
+        stateMachine.isGeyserOnCooldown = true;
+        stateMachine.geyserCooldownTimer = stateMachine.GeyserCooldownTime;
         stateMachine.wasJumpButtonReleased = false;
         
-        stateMachine.WaterHeiserParticle.gameObject.SetActive(false);
-        stateMachine.WaterHeiserParticleSecond.gameObject.SetActive(false);
+        stateMachine.WaterGeyserParticle.gameObject.SetActive(false);
+        stateMachine.WaterGeyserParticleSecond.gameObject.SetActive(false);
     }
     
     private void MoveHoverDirect(float deltaTime)

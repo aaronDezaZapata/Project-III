@@ -247,8 +247,8 @@ public class PlayerStateMachine : StateMachine
 
     [field: SerializeField] public Transform FirePoint { get; private set; }
     [field: SerializeField] public Transform Water_JetParticle { get; private set; }
-    [field: SerializeField] public Transform WaterHeiserParticle { get; private set; }
-    [field: SerializeField] public Transform WaterHeiserParticleSecond { get; private set; }
+    [field: SerializeField] public Transform WaterGeyserParticle { get; private set; }
+    [field: SerializeField] public Transform WaterGeyserParticleSecond { get; private set; }
     [field: SerializeField] public Rigidbody ProjectilePrefab { get; private set; }
     [field: SerializeField] public float FireCooldown { get; private set; } = 0.15f;
     [field: SerializeField] public float ProjectileFlightTime { get; private set; } = 0.6f;
@@ -269,26 +269,26 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public LayerMask AimLayerMask { get; private set; } = ~0;
     [field: SerializeField] public float ReticleSurfaceOffset { get; private set; } = 0.02f;
 
-    // HEISER VARIABLES
-    [field: Header("Heiser Settings")]
+    // GEYSER VARIABLES
+    [field: Header("Geyser Settings")]
     [field: Tooltip("Fuerza de flotación vertical")]
     [field: SerializeField] public float HoverForce { get; private set; } = 15f;
     
-    [field: Tooltip("Velocidad de movimiento aéreo durante Heiser")]
+    [field: Tooltip("Velocidad de movimiento aéreo durante Geyser")]
     [field: SerializeField] public float aerialMoveSpeed { get; private set; } = 10f;
     
-    [field: Tooltip("Tiempo en segundos que debe mantenerse el salto en el aire para activar Heiser")]
-    [field: SerializeField] public float HeiserActivationTime { get; private set; } = 0.5f;
+    [field: Tooltip("Tiempo en segundos que debe mantenerse el salto en el aire para activar Geyser")]
+    [field: SerializeField] public float GeyserActivationTime { get; private set; } = 0.5f;
     
-    [field: Tooltip("Fuerza del impulso vertical inicial al entrar al estado Heiser")]
-    [field: SerializeField] public float HeiserInitialBoostForce { get; private set; } = 10f;
+    [field: Tooltip("Fuerza del impulso vertical inicial al entrar al estado Geyser")]
+    [field: SerializeField] public float GeyserInitialBoostForce { get; private set; } = 10f;
     
-    [field: Tooltip("Tiempo de cooldown después de usar Heiser antes de poder usarlo de nuevo")]
-    [field: SerializeField] public float HeiserCooldownTime { get; private set; } = 1f;
+    [field: Tooltip("Tiempo de cooldown después de usar Geyser antes de poder usarlo de nuevo")]
+    [field: SerializeField] public float GeyserCooldownTime { get; private set; } = 1f;
     
-    // Heiser cooldown variables
-    [HideInInspector] public float heiserCooldownTimer = 0f;
-    [HideInInspector] public bool isHeiserOnCooldown = false;
+    // Geyser cooldown variables
+    [HideInInspector] public float geyserCooldownTimer = 0f;
+    [HideInInspector] public bool isGeyserOnCooldown = false;
     [HideInInspector] public bool wasJumpButtonReleased = true;
     private Coroutine fillCoroutine;
     private float fillSpeed = 5f;
@@ -330,7 +330,7 @@ public class PlayerStateMachine : StateMachine
         AddState(new PlayerDashAttackState(this));
         AddState(new PlayerShootingState(this));
         AddState(new PlayerBlueState(this));
-        AddState(new PlayerHeiserState(this));
+        AddState(new PlayerGeyserState(this));
         AddState(new PlayerGreenState(this));
         AddState(new PlayerWhipState(this));
         AddState(new PlayerRedState(this));
@@ -530,8 +530,8 @@ public class PlayerStateMachine : StateMachine
 
         if (isGrounded)
         {
-            isHeiserOnCooldown = false;
-            heiserCooldownTimer = 0f;
+            isGeyserOnCooldown = false;
+            geyserCooldownTimer = 0f;
         }
     }
 
@@ -758,7 +758,7 @@ public class PlayerStateMachine : StateMachine
 
         if (targetState == typeof(PlayerRedState) && currentState == typeof(PlayerShootingState)) return;
         if (targetState == typeof(PlayerGreenState) && currentState == typeof(PlayerWhipState)) return;
-        if (targetState == typeof(PlayerBlueState) && currentState == typeof(PlayerHeiserState)) return;
+        if (targetState == typeof(PlayerBlueState) && currentState == typeof(PlayerGeyserState)) return;
 
         SwitchState(targetState);
     }
