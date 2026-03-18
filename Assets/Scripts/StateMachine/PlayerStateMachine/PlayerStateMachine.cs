@@ -33,14 +33,27 @@ public class PlayerStateMachine : StateMachine
 
     [field: SerializeField] public SkinnedMeshRenderer Mat_Player { get; private set; }
     
-    [field: Header("Camera Sensitivity")]
-    [field: Tooltip("Sensibilidad de la cámara con ratón")]
-    [field: Range(0.1f, 5f)]
-    [field: SerializeField] public float MouseSensitivity { get; set; } = 1f;
+    [field: Header("Mesh Settings")]
+    [field: SerializeField] public Mesh OriginalMesh { get; private set; }
+    [field: SerializeField] public Mesh SharkFinMesh { get; private set; }
     
-    [field: Tooltip("Sensibilidad de la cámara con mando/gamepad")]
+    [field: Header("Camera Sensitivity")]
+    [field: Range(0.1f, 5f)]
+    [field: SerializeField] public float MiceSensitivity { get; set; } = 1f;
+    
     [field: Range(0.1f, 5f)]
     [field: SerializeField] public float GamepadSensitivity { get; set; } = 3f;
+    
+    [field: SerializeField] public bool XAxisInverted { get; set; }
+    
+    [field: Header("Aim Camera Sensitivity")]
+    [field: Range(0.1f, 5f)]
+    [field: SerializeField] public float MiceAimSensitivity { get; set; } = 1f;
+    
+    [field: Range(0.1f, 5f)]
+    [field: SerializeField] public float GamepadAimSensitivity { get; set; } = 3f;
+
+    [field: SerializeField] public bool AimXAxisInverted { get; set; }
 
 
     [field: Header("Movement Variables")]
@@ -788,6 +801,14 @@ public class PlayerStateMachine : StateMachine
         }
     }
 
+    public void SetPlayerMesh(Mesh newMesh)
+    {
+        if (Mat_Player != null && newMesh != null)
+        {
+            Mat_Player.sharedMesh = newMesh;
+        }
+    }
+
     public void FaceMovementDirection(Vector3 movement, float deltaTime)
     {
         transform.rotation = Quaternion.Lerp(
@@ -853,7 +874,7 @@ public class PlayerStateMachine : StateMachine
 
     public float GetCurrentCameraSensitivity()
     {
-        return InputReader.IsUsingGamepad ? GamepadSensitivity : MouseSensitivity;
+        return InputReader.IsUsingGamepad ? GamepadAimSensitivity : MiceAimSensitivity;
     }
 
     private void OnDrawGizmosSelected()

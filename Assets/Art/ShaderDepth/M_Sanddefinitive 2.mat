@@ -16,7 +16,7 @@ Material:
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3002
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
@@ -70,15 +70,18 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AlphaPower: 1
     - _Amplitude: 980
-    - _BumpScale: 2
+    - _BumpScale: 1.7
     - _ENVIRONMENTREFLECTIONS_OFF: 0
     - _LOD: 0
     - _LODThreshold: 0
-    - _OcclusionStrength: 1
+    - _OcclusionStrength: 0.528
     - _Parallax: 8000
     - _QueueControl: 0
-    - _QueueOffset: 0
+    - _QueueOffset: 2
+    - _Rotation: 0
+    - _RotationAlpha: 0
     - _Smoothness: 0.184
     - _Steps: 50
     m_Colors:

@@ -77,6 +77,27 @@ public class GameManager : MonoBehaviour
         coinsCollected = 0;
     }
 
+    private void Update()
+    {
+        // L3 + R3 simultáneamente → toggle FlyState (debug)
+        bool leftStick  = Input.GetKeyDown(KeyCode.JoystickButton8);   // L3
+        bool rightStick = Input.GetKey(KeyCode.JoystickButton9);        // R3
+
+        if (leftStick && rightStick)
+        {
+            if (GetPlayerState() is PlayerFlyState)
+            {
+                // Salir del fly state → volver al estado de color actual
+                player.GetComponent<PlayerStateMachine>().ReturnToMainState();
+            }
+            else
+            {
+                // Entrar en fly state
+                SetPlayerState<PlayerFlyState>();
+            }
+        }
+    }
+
     public void PlayerDeath()
     {
         //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);

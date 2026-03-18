@@ -21,7 +21,10 @@ public class Health : MonoBehaviour
         health = maxHealth;
         OnHealthChanged?.Invoke(); 
     }
-
+    
+    // TODO: Check
+    // Evaluar si es necesario
+    // No es usa ni en el God Mode
     public void SetInvulnerable(bool isInvulnerable)
     {
         this.isInvulnerable = isInvulnerable;
@@ -42,8 +45,11 @@ public class Health : MonoBehaviour
             OnDie?.Invoke();
         }
     }
+    
+    // TODO: Remove
+    // No se esta usando
 
-    public void Heal(int amount)
+    /*public void Heal(int amount)
     {
         if (health == maxHealth) { return; }
 
@@ -55,7 +61,5 @@ public class Health : MonoBehaviour
     public int GetHealth()
     {
         return health;
-    }
-
-
+    }*/
 }
