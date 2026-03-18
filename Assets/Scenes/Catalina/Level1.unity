@@ -4998,6 +4998,8 @@ GameObject:
   - component: {fileID: 143396691}
   - component: {fileID: 143396690}
   - component: {fileID: 143396689}
+  - component: {fileID: 143396693}
+  - component: {fileID: 143396694}
   m_Layer: 0
   m_Name: Cube (32)
   m_TagString: Untagged
@@ -5108,6 +5110,42 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 143396687}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &143396693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143396687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 472880a7283768d4fa47271105893baf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leverID: lever_02
+  oneShot: 0
+  toggle: 0
+--- !u!65 &143396694
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143396687}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.93, y: 1.45, z: 15.74}
+  m_Center: {x: 0.0000038146973, y: 0, z: 0}
 --- !u!1001 &145344475
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8112,6 +8150,10 @@ PrefabInstance:
     - target: {fileID: 7364751917014459319, guid: 874d57f8186b698439fb1898deb5e3b4, type: 3}
       propertyPath: m_Name
       value: CheckPoint 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7364751917014459319, guid: 874d57f8186b698439fb1898deb5e3b4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7393988478370717238, guid: 874d57f8186b698439fb1898deb5e3b4, type: 3}
       propertyPath: UniqueID
@@ -13600,6 +13642,8 @@ GameObject:
   - component: {fileID: 309951767}
   - component: {fileID: 309951766}
   - component: {fileID: 309951765}
+  - component: {fileID: 309951769}
+  - component: {fileID: 309951770}
   m_Layer: 0
   m_Name: Cube (30)
   m_TagString: Untagged
@@ -13710,6 +13754,42 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 309951763}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &309951769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 309951763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 472880a7283768d4fa47271105893baf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leverID: lever_03
+  oneShot: 0
+  toggle: 0
+--- !u!65 &309951770
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 309951763}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.29, y: 1.44, z: 22.15}
+  m_Center: {x: 0.0000009536743, y: 0.09, z: 0}
 --- !u!1001 &313838188
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31776,6 +31856,8 @@ GameObject:
   - component: {fileID: 688445306}
   - component: {fileID: 688445305}
   - component: {fileID: 688445304}
+  - component: {fileID: 688445309}
+  - component: {fileID: 688445308}
   m_Layer: 0
   m_Name: Cube (17)
   m_TagString: Untagged
@@ -31815,7 +31897,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -31886,6 +31968,42 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 688445302}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &688445308
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 688445302}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.02, y: 1.65, z: 20.4}
+  m_Center: {x: 0, y: 0.15, z: -7.5}
+--- !u!114 &688445309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 688445302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 472880a7283768d4fa47271105893baf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leverID: lever_01
+  oneShot: 0
+  toggle: 0
 --- !u!1 &688610499 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7791787701375805059, guid: 4b3336e1daf55f646b4f041c3a7d59c6, type: 3}
@@ -51618,6 +51736,7 @@ GameObject:
   - component: {fileID: 1080881568}
   - component: {fileID: 1080881567}
   - component: {fileID: 1080881566}
+  - component: {fileID: 1080881570}
   m_Layer: 0
   m_Name: Cube (22)
   m_TagString: Untagged
@@ -51634,7 +51753,7 @@ Transform:
   m_GameObject: {fileID: 1080881564}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0059725847, y: -0, z: -0, w: 0.99998224}
-  m_LocalPosition: {x: 20.7, y: 27.18, z: 63.27}
+  m_LocalPosition: {x: 21.07, y: 26.53, z: 92.16}
   m_LocalScale: {x: -3.0927927, y: -0.21345459, z: 41.619003}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -51719,7 +51838,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UniqueID: a3770ffb-0cbf-41d6-8914-cd9ba9ca9af5
-  hasUnsyncedChanges: 0
+  hasUnsyncedChanges: 1
 --- !u!33 &1080881569
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -51728,6 +51847,49 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1080881564}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1080881570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080881564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98f327ef8921ec247891e9a5e0e83d1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leverID: lever_03
+  autoStart: 0
+  pointBOffset: {x: 0, y: 0, z: -25}
+  speed: 5
+  easeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  returnToStart: 0
+  waitBeforeReturn: 1.5
+  loop: 0
 --- !u!4 &1082611798 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9ea2045dbfe953d4ba37aef615880958, type: 3}
@@ -67974,7 +68136,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1464650624
 Transform:
   m_ObjectHideFlags: 0
@@ -69114,6 +69276,7 @@ GameObject:
   - component: {fileID: 1491296163}
   - component: {fileID: 1491296162}
   - component: {fileID: 1491296167}
+  - component: {fileID: 1491296168}
   m_Layer: 0
   m_Name: Piedra 3 (8)
   m_TagString: Untagged
@@ -69134,7 +69297,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UniqueID: ed713865-54d5-4b9d-accd-8ae431fd6215
-  hasUnsyncedChanges: 0
+  hasUnsyncedChanges: 1
 --- !u!65 &1491296163
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -69218,7 +69381,7 @@ Transform:
   m_GameObject: {fileID: 1491296161}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.43377182, z: -0, w: 0.9010228}
-  m_LocalPosition: {x: -28.06, y: 7.3024926, z: 72.64}
+  m_LocalPosition: {x: -28.06, y: -21.4, z: 72.64}
   m_LocalScale: {x: 8.079999, y: 18.824564, z: 5.9}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -69246,6 +69409,49 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1491296168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1491296161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98f327ef8921ec247891e9a5e0e83d1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leverID: lever_02
+  autoStart: 0
+  pointBOffset: {x: 0, y: 35, z: 0}
+  speed: 6
+  easeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  returnToStart: 1
+  waitBeforeReturn: 1.5
+  loop: 1
 --- !u!1001 &1500071901
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -72149,6 +72355,7 @@ GameObject:
   - component: {fileID: 1581711342}
   - component: {fileID: 1581711341}
   - component: {fileID: 1581711340}
+  - component: {fileID: 1581711344}
   m_Layer: 0
   m_Name: Cube (19)
   m_TagString: Untagged
@@ -72165,7 +72372,7 @@ Transform:
   m_GameObject: {fileID: 1581711338}
   serializedVersion: 2
   m_LocalRotation: {x: 0.15898418, y: -0, z: -0, w: 0.9872812}
-  m_LocalPosition: {x: -4.27, y: 20.72, z: 4.18}
+  m_LocalPosition: {x: -4.27, y: -9.7, z: 4.18}
   m_LocalScale: {x: -17.127943, y: -0.21345459, z: 35.520187}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -72250,7 +72457,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UniqueID: 2dffa4ce-5fad-4fc0-8afe-e82428c3bdf3
-  hasUnsyncedChanges: 0
+  hasUnsyncedChanges: 1
 --- !u!33 &1581711343
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -72259,6 +72466,49 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1581711338}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1581711344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1581711338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98f327ef8921ec247891e9a5e0e83d1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leverID: lever_01
+  autoStart: 0
+  pointBOffset: {x: 0, y: 40, z: 0}
+  speed: 10
+  easeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  returnToStart: 1
+  waitBeforeReturn: 1.5
+  loop: 1
 --- !u!1001 &1587811451
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -92566,6 +92816,7 @@ GameObject:
   - component: {fileID: 2024080380}
   - component: {fileID: 2024080379}
   - component: {fileID: 2024080378}
+  - component: {fileID: 2024080383}
   m_Layer: 0
   m_Name: Piedra 3 (10)
   m_TagString: Untagged
@@ -92586,7 +92837,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UniqueID: 31ef9cf2-34dc-4c5c-b36f-e2a94a6e6cb2
-  hasUnsyncedChanges: 0
+  hasUnsyncedChanges: 1
 --- !u!65 &2024080379
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -92670,12 +92921,55 @@ Transform:
   m_GameObject: {fileID: 2024080377}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.23885314, z: -0, w: 0.97105575}
-  m_LocalPosition: {x: -34, y: 7.3024926, z: 89.14}
+  m_LocalPosition: {x: -34, y: -21.400002, z: 89.14}
   m_LocalScale: {x: 8.08, y: 18.824564, z: 5.8999996}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 475189982}
   m_LocalEulerAnglesHint: {x: 0, y: -27.638, z: 0}
+--- !u!114 &2024080383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2024080377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98f327ef8921ec247891e9a5e0e83d1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leverID: lever_02
+  autoStart: 0
+  pointBOffset: {x: 0, y: 35, z: 0}
+  speed: 6
+  easeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  returnToStart: 1
+  waitBeforeReturn: 1.5
+  loop: 1
 --- !u!1 &2026788966
 GameObject:
   m_ObjectHideFlags: 0

@@ -37,15 +37,16 @@ public class MovingPlatform : MonoBehaviour
     [Tooltip("Bucle infinito A→B→A. Ignora returnToStart.")]
     public bool loop = false;
 
-    // ── Variables privadas ──────────────────────────────────────────────────
+    
     private Vector3 _pointA;
     private Vector3 _pointB;
     private Coroutine _activeCoroutine;
-    private bool _activated = false;   // evita doble activación si oneShot
+    private bool _activated = false;   
 
-    // ── Unity Lifecycle ─────────────────────────────────────────────────────
+    
     private void Start()
     {
+        SubscribeToGameManager();
         _pointA = transform.position;
         _pointB = _pointA + pointBOffset;
 
@@ -57,20 +58,13 @@ public class MovingPlatform : MonoBehaviour
         }
     }
 
-    private void OnEnable()
-    {
-        // Nos suscribimos cuando el GameManager ya existe.
-        // Si el GameManager no existe aún, lo intentamos en Start también.
-        SubscribeToGameManager();
-    }
-
     private void OnDisable()
     {
         if (GameManager.Instance != null)
             GameManager.Instance.OnLeverActivated -= OnLeverActivated;
     }
 
-    // ── Suscripción ─────────────────────────────────────────────────────────
+   
     private void SubscribeToGameManager()
     {
         if (GameManager.Instance == null)
@@ -83,12 +77,12 @@ public class MovingPlatform : MonoBehaviour
         GameManager.Instance.OnLeverActivated += OnLeverActivated;
     }
 
-    // ── Callback del evento ─────────────────────────────────────────────────
+   
     private void OnLeverActivated(string id)
     {
-        if (id != leverID) return;          // no es nuestra palanca, ignorar
+        if (id != leverID) return;          
 
-        if (_activated && !loop) return;    // ya está en marcha y no es loop
+        if (_activated && !loop) return;    
 
         _activated = true;
 
@@ -96,7 +90,7 @@ public class MovingPlatform : MonoBehaviour
         else MoveToB();
     }
 
-    // ── API pública ─────────────────────────────────────────────────────────
+   
     public void MoveToB() => LaunchMove(_pointA, _pointB, OnArrivedAtB);
     public void MoveToA() => LaunchMove(_pointB, _pointA, OnArrivedAtA);
 
@@ -116,7 +110,7 @@ public class MovingPlatform : MonoBehaviour
         _activated = false;
     }
 
-    // ── Lógica interna ──────────────────────────────────────────────────────
+    
     private void LaunchMove(Vector3 from, Vector3 to, System.Action onComplete)
     {
         StopMovement();
