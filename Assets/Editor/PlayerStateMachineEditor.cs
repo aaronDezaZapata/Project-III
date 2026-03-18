@@ -120,16 +120,16 @@ public class PlayerStateMachineEditor : Editor
             GUI.backgroundColor = Color.white; // Restaurar color
         }
 
-        // BLUE LOGIC (HEISER)
+        // BLUE LOGIC (GEYSER)
         if (targetScript.playerState == PlayerStates.BLUE)
         {
-            DrawHeader("--- BLUE STATE (HEISER) ---", Color.blue);
+            DrawHeader("--- BLUE STATE (GEYSER) ---", Color.blue);
             GUI.backgroundColor = new Color(0.6f, 0.8f, 1f);
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             
             DrawHeader("Force Variable Config", Color.white);
-            DrawBackingProperty("HeiserCooldownTime");
-            DrawBackingProperty("HeiserActivationTime");
+            DrawBackingProperty("GeyserCooldownTime");
+            DrawBackingProperty("GeyserActivationTime");
 
             
             DrawHeader("Force Variable Config", Color.white);
@@ -138,8 +138,8 @@ public class PlayerStateMachineEditor : Editor
 
             // Particles related to blue/water go here
             DrawBackingProperty("Water_JetParticle");
-            DrawBackingProperty("WaterHeiserParticle");
-            DrawBackingProperty("WaterHeiserParticleSecond");
+            DrawBackingProperty("WaterGeyserParticle");
+            DrawBackingProperty("WaterGeyserParticleSecond");
 
             EditorGUILayout.EndVertical();
             GUI.backgroundColor = Color.white;

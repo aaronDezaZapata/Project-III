@@ -58,7 +58,6 @@ public class PlayerWhipState : PlayerBaseState
         }
         else
         {
-            // Sin objetivos: bloquear re-entrada mientras el botón siga pulsado
             stateMachine.WhipFailedLastAttempt = true;
             stateMachine.SwitchState(typeof(PlayerGreenState));
             return;
@@ -125,8 +124,7 @@ public class PlayerWhipState : PlayerBaseState
             HandleObjectCapture(deltaTime);
         else
             HandleObjectOrbit(deltaTime);
-
-        // Movimiento reducido del jugador durante el látigo
+        
         Vector3 movement = stateMachine.CalculateMovement();
         Move(movement * stateMachine.FreeLookMovementSpeed * 0.5f, deltaTime);
 
@@ -152,13 +150,11 @@ public class PlayerWhipState : PlayerBaseState
             Rigidbody rb = col.attachedRigidbody;
             if (rb == null) continue;
             
-            // Ignorar al propio jugador y sus hijos para no auto-capturarse
             if (rb.transform == stateMachine.transform || rb.transform.IsChildOf(stateMachine.transform)) continue;
 
             Vector3 dirToObject = col.transform.position - stateMachine.transform.position;
             float dist = dirToObject.magnitude;
-
-            // Comprobar línea de visión: ignorar si hay un obstáculo entre medias (excepto el propio objeto)
+            
             if (Physics.Raycast(stateMachine.transform.position + Vector3.up, dirToObject.normalized, out RaycastHit hit, dist))
             {
                 Rigidbody hitRb = hit.collider.attachedRigidbody;
@@ -177,8 +173,7 @@ public class PlayerWhipState : PlayerBaseState
         capturedRigidbody = closest;
         capturedObject = closest.transform;
         captureStartPosition = capturedObject.position;
-
-        // Desactivar físicas mientras está capturado
+        
         capturedRigidbody.isKinematic = true;
         capturedRigidbody.useGravity = false;
         
@@ -348,8 +343,7 @@ public class PlayerWhipState : PlayerBaseState
         isAttached = true;
 
         Vector3 toGrapple = grapplePosition - stateMachine.transform.position;
-
-        // Si estamos demasiado cerca, empujar al jugador al radio mínimo
+        
         if (toGrapple.magnitude < stateMachine.SwingRadius)
         {
             stateMachine.transform.position = grapplePosition - toGrapple.normalized * stateMachine.SwingRadius;
@@ -399,14 +393,13 @@ public class PlayerWhipState : PlayerBaseState
         }
 
         angularVelocity += angularAcceleration * deltaTime;
-        angularVelocity *= (1f - 0.2f * deltaTime); // Amortiguación de aire
+        angularVelocity *= (1f - 0.2f * deltaTime);
         swingCurrentAngle += angularVelocity * deltaTime;
-
-        // Limitar ángulo suavemente para evitar loops completos
+        
         if (Mathf.Abs(swingCurrentAngle) > Mathf.PI * 0.45f)
         {
             swingCurrentAngle = Mathf.Sign(swingCurrentAngle) * Mathf.PI * 0.45f;
-            angularVelocity = -angularVelocity * 0.4f; // Rebote suave
+            angularVelocity = -angularVelocity * 0.4f;
         }
     }
 
@@ -428,22 +421,18 @@ public class PlayerWhipState : PlayerBaseState
         
         if (Mathf.Abs(alignment) > 0.1f)
         {
-             // Si el input empuja hacia donde ya nos movemos aplicamos toda la fuerza
              bool assistsMotion = (alignment > 0 && angularVelocity >= -0.1f) || (alignment < 0 && angularVelocity <= 0.1f);
              float forceMultiplier = assistsMotion ? 1f : 0.4f;
              
              angularAcceleration += alignment * stateMachine.SwingInputForce * forceMultiplier;
         }
-
-        // Permitir al jugador controlar la dirección del balanceo
+        
         Vector3 idealSwingPlaneNormal = Vector3.Cross(Vector3.up, inputDir).normalized;
         if (idealSwingPlaneNormal.sqrMagnitude > 0.01f)
         {
             if (Vector3.Dot(swingPlaneNormal, idealSwingPlaneNormal) < 0)
                 idealSwingPlaneNormal = -idealSwingPlaneNormal;
-                
-            // rotar el plano en la parte baja del péndulo (Cos = 1)
-            // En los extremos del arco (Cos = 0) apenas se rota para evitar que parezcan frenazos
+            
             float turnFactor = Mathf.Max(0.1f, Mathf.Cos(swingCurrentAngle));
             float turnSpeed = stateMachine.RotationSpeed * turnFactor * 1.5f;
 
@@ -466,7 +455,6 @@ public class PlayerWhipState : PlayerBaseState
         Vector3 ropeVector = stateMachine.transform.position - grapplePosition;
         Vector3 moveDir = Vector3.Cross(swingPlaneNormal, ropeVector).normalized;
         
-        // Determinar lado de la liana estamos usando frente al movimiento real
         if (angularVelocity < 0) moveDir = -moveDir;
 
         if (moveDir.sqrMagnitude > 0.01f && Mathf.Abs(angularVelocity) > 0.1f)
@@ -542,6 +530,9 @@ public class PlayerWhipState : PlayerBaseState
         if (currentMode == WhipMode.ObjectWhip)
             ThrowObject();
 
+        // Asegurarse de que CheckGrounded se ejecute antes del cambio de estado
+        stateMachine.CheckGrounded();
+        
         stateMachine.SwitchState(typeof(PlayerGreenState));
         
         if (wasGrapple)

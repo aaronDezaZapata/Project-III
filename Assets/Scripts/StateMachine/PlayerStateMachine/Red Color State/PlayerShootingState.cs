@@ -6,7 +6,11 @@ using UnityEngine.Rendering.Universal;
 public class PlayerShootingState : PlayerBaseState
 {
     private readonly int ShootAnim = Animator.StringToHash("Shoot");
+    private readonly int WalkingBlendTreeHash = Animator.StringToHash("WalkingBlendTree");
+    private readonly int FreeLookBlendTreeHash = Animator.StringToHash("FreeLookBlendTree");
+    private readonly int FreeLookSpeedHash = Animator.StringToHash("SpeedX");
     private const float CrossFadeDuration = 0.1f;
+    private const float AnimatorDampTime = 0.1f;
 
     public static Action<bool> OnAiming;
     
@@ -29,7 +33,9 @@ public class PlayerShootingState : PlayerBaseState
         
         // CAMERA IN
         stateMachine.aimCamera.Priority = 10;
-        stateMachine.Animator.CrossFadeInFixedTime(ShootAnim, CrossFadeDuration);
+        
+        // Activar el WalkingBlendTree cuando entras al estado de shooting
+        stateMachine.Animator.CrossFadeInFixedTime(WalkingBlendTreeHash, CrossFadeDuration);
 
         if (stateMachine.ReticleTransform != null)
             stateMachine.ReticleTransform.gameObject.SetActive(true);
@@ -53,6 +59,9 @@ public class PlayerShootingState : PlayerBaseState
         
         HandleAimMovement(deltaTime);
 
+        // Actualizar la velocidad de movimiento en el animator
+        Vector3 movement = stateMachine.CalculateMovement();
+        stateMachine.Animator.SetFloat(FreeLookSpeedHash, movement.magnitude, AnimatorDampTime, deltaTime);
         
         if (stateMachine.InputReader.IsFiring && Time.time >= _nextFireTime)
         {
@@ -72,6 +81,9 @@ public class PlayerShootingState : PlayerBaseState
         
         if (stateMachine.ReticleTransform != null)
             stateMachine.ReticleTransform.gameObject.SetActive(false);
+        
+        // Volver al FreeLookBlendTree al salir
+        stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
     }
 
     private void Shoot()

@@ -3,11 +3,11 @@ using UnityEngine;
 /// <summary>
 /// Player Blue State
 /// - Basic Movement
-/// - Can do Heiser
+/// - Can do Geyser
 /// </summary>
 public class PlayerBlueState : PlayerWhiteState
 {
-    // Variables específicas para la habilidad Heiser
+    // Variables específicas para la habilidad Geyser
     private bool isJumping;
     private float jumpHoldTimer = 0f;
     
@@ -34,7 +34,7 @@ public class PlayerBlueState : PlayerWhiteState
 
     protected override bool CheckColorSpecificActions(float deltaTime)
     {
-        UpdateHeiserCooldown(deltaTime);
+        UpdateGeyserCooldown(deltaTime);
         
         if (!stateMachine.InputReader.isJumpHeld)
         {
@@ -43,14 +43,14 @@ public class PlayerBlueState : PlayerWhiteState
         
         if (!stateMachine.Controller.isGrounded && stateMachine.InputReader.isJumpHeld)
         {
-            if (!stateMachine.isHeiserOnCooldown && stateMachine.wasJumpButtonReleased)
+            if (!stateMachine.isGeyserOnCooldown && stateMachine.wasJumpButtonReleased)
             {
                 jumpHoldTimer += deltaTime;
 
-                if (jumpHoldTimer >= stateMachine.HeiserActivationTime && !CanJump() )
+                if (jumpHoldTimer >= stateMachine.GeyserActivationTime && !CanJump() )
                 {
-                    Debug.Log("Blue: Activando Heiser");
-                    stateMachine.SwitchState(typeof(PlayerHeiserState));
+                    Debug.Log("Blue: Activando Geyser");
+                    stateMachine.SwitchState(typeof(PlayerGeyserState));
                     return true;
                 }
             }
@@ -63,16 +63,16 @@ public class PlayerBlueState : PlayerWhiteState
         return false;
     }
     
-    private void UpdateHeiserCooldown(float deltaTime)
+    private void UpdateGeyserCooldown(float deltaTime)
     {
-        if (stateMachine.isHeiserOnCooldown)
+        if (stateMachine.isGeyserOnCooldown)
         {
-            stateMachine.heiserCooldownTimer -= deltaTime;
+            stateMachine.geyserCooldownTimer -= deltaTime;
             
-            if (stateMachine.heiserCooldownTimer <= 0f)
+            if (stateMachine.geyserCooldownTimer <= 0f)
             {
-                stateMachine.isHeiserOnCooldown = false;
-                stateMachine.heiserCooldownTimer = 0f;
+                stateMachine.isGeyserOnCooldown = false;
+                stateMachine.geyserCooldownTimer = 0f;
             }
         }
     }

@@ -15,6 +15,7 @@ public class PlayerWhiteState : PlayerBaseState
     protected readonly int AnimationSpeedHash = Animator.StringToHash("AimSpeedX");
     protected readonly int VerticalSpeedHash = Animator.StringToHash("SpeedY");
     protected readonly int GroundedHash = Animator.StringToHash("IsGrounded");
+    protected readonly int IsFallingHash = Animator.StringToHash("IsFalling");
     
     protected readonly int FreeLookBlendTreeHash = Animator.StringToHash("FreeLookBlendTree");
     protected readonly int WalkingBlendTreeHash = Animator.StringToHash("WalkingBlendTree");
@@ -35,7 +36,7 @@ public class PlayerWhiteState : PlayerBaseState
     protected float lastInputMagnitude = 0f;
     
     public PlayerWhiteState(PlayerStateMachine stateMachine) : base(stateMachine)
-    { 
+    {
        
     }
 
@@ -51,6 +52,11 @@ public class PlayerWhiteState : PlayerBaseState
         SubscribeToInputEvents();
         
         //SetupCamera();
+        
+        stateMachine.CheckGrounded();
+        
+        Vector3 movement = stateMachine.CalculateMovement();
+        UpdateAnimatorParameters(movement, movement.magnitude, Time.deltaTime);
         
         InitializeAnimator();
     }
@@ -91,7 +97,13 @@ public class PlayerWhiteState : PlayerBaseState
     protected virtual void InitializeAnimator()
     {
         float currentSpeed = stateMachine.Animator.GetFloat(FreeLookSpeedHash);
-        stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
+        
+        // No forzar transición a locomoción si el jugador está en el aire
+        // Dejar que las transiciones del Animator manejen el estado según IsGrounded y IsFalling
+        if (stateMachine.isGrounded)
+        {
+            stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
+        }
         
         lastInputMagnitude = currentSpeed;
         lastSpeed = currentSpeed;
@@ -116,7 +128,10 @@ public class PlayerWhiteState : PlayerBaseState
         UpdateAnimatorParameters(movement, currentInputMagnitude, deltaTime);
 
         // Handle blend tree transitions
-        HandleBlendTreeTransition(currentInputMagnitude);
+        if (stateMachine.isGrounded)
+        {
+            HandleBlendTreeTransition(currentInputMagnitude);
+        }
         
         // Face movement direction if running
         if (currentInputMagnitude > RunThreshold)
@@ -160,6 +175,9 @@ public class PlayerWhiteState : PlayerBaseState
         stateMachine.Animator.SetFloat(AnimationSpeedHash, movement.x, AnimatorDampTime, deltaTime);
         stateMachine.Animator.SetFloat(VerticalSpeedHash, stateMachine.Controller.velocity.y, AnimatorDampTime, deltaTime);
         stateMachine.Animator.SetBool(GroundedHash, stateMachine.isGrounded);
+        
+        bool isFalling = !stateMachine.isGrounded && stateMachine.Controller.velocity.y < -0.5f;
+        stateMachine.Animator.SetBool(IsFallingHash, isFalling);
     }
     
     protected virtual void HandleJumpLanding(float currentInputMagnitude)
@@ -169,10 +187,10 @@ public class PlayerWhiteState : PlayerBaseState
         {
             HandleBlendTreeTransition(currentInputMagnitude);
 
-            if (currentInputMagnitude > RunThreshold)
+            /*if (currentInputMagnitude > RunThreshold)
             {
                 stateMachine.Animator.CrossFadeInFixedTime(StopRun, CrossFadeDuration);
-            }
+            }*/
         }
     }
 
@@ -203,16 +221,8 @@ public class PlayerWhiteState : PlayerBaseState
     
     protected virtual void HandleBlendTreeTransition(float inputMagnitude)
     {
-        if (inputMagnitude >= IdleThreshold && inputMagnitude < RunThreshold)
-        {
-            if (lastInputMagnitude < IdleThreshold || lastInputMagnitude >= RunThreshold)
-                stateMachine.Animator.CrossFadeInFixedTime(WalkingBlendTreeHash, CrossFadeDuration);
-        }
-        else
-        {
-            if (lastInputMagnitude >= IdleThreshold && lastInputMagnitude < RunThreshold)
-                stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
-        }
+        // PlayerWhiteState solo usa FreeLookBlendTree
+        // No hace transiciones entre diferentes blend trees, el FreeLookBlendTree maneja idle/walk/run
     }
 
 
