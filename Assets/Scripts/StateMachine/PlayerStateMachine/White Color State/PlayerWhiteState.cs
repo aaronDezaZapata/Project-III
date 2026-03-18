@@ -36,7 +36,7 @@ public class PlayerWhiteState : PlayerBaseState
     protected float lastInputMagnitude = 0f;
     
     public PlayerWhiteState(PlayerStateMachine stateMachine) : base(stateMachine)
-    { 
+    {
        
     }
 
@@ -52,6 +52,13 @@ public class PlayerWhiteState : PlayerBaseState
         SubscribeToInputEvents();
         
         //SetupCamera();
+        
+        // Actualizar el estado de grounded antes de inicializar el animator
+        stateMachine.CheckGrounded();
+        
+        // Actualizar parámetros del animator inmediatamente para reflejar el estado actual
+        Vector3 movement = stateMachine.CalculateMovement();
+        UpdateAnimatorParameters(movement, movement.magnitude, Time.deltaTime);
         
         InitializeAnimator();
     }
@@ -92,7 +99,13 @@ public class PlayerWhiteState : PlayerBaseState
     protected virtual void InitializeAnimator()
     {
         float currentSpeed = stateMachine.Animator.GetFloat(FreeLookSpeedHash);
-        stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
+        
+        // No forzar transición a locomoción si el jugador está en el aire
+        // Dejar que las transiciones del Animator manejen el estado según IsGrounded y IsFalling
+        if (stateMachine.isGrounded)
+        {
+            stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
+        }
         
         lastInputMagnitude = currentSpeed;
         lastSpeed = currentSpeed;
@@ -117,7 +130,10 @@ public class PlayerWhiteState : PlayerBaseState
         UpdateAnimatorParameters(movement, currentInputMagnitude, deltaTime);
 
         // Handle blend tree transitions
-        HandleBlendTreeTransition(currentInputMagnitude);
+        if (stateMachine.isGrounded)
+        {
+            HandleBlendTreeTransition(currentInputMagnitude);
+        }
         
         // Face movement direction if running
         if (currentInputMagnitude > RunThreshold)
@@ -173,10 +189,10 @@ public class PlayerWhiteState : PlayerBaseState
         {
             HandleBlendTreeTransition(currentInputMagnitude);
 
-            if (currentInputMagnitude > RunThreshold)
+            /*if (currentInputMagnitude > RunThreshold)
             {
                 stateMachine.Animator.CrossFadeInFixedTime(StopRun, CrossFadeDuration);
-            }
+            }*/
         }
     }
 
