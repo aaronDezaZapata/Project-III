@@ -35,9 +35,11 @@ public class PlayerSwimState : PlayerBaseState
         stateMachine.Controller.center = new Vector3(0, 0.25f, 0);
 
         swimVelocity = Vector3.zero;
+        timeWithoutInk = 0f;
 
         //Camera Pull Back
         CameraManager.Instance.ChangeCameraSwimming(true);
+
 
         // Reset inicial
         // stateMachine.ForceReceiver.enabled = false;
@@ -94,18 +96,27 @@ public class PlayerSwimState : PlayerBaseState
         Vector2 input = stateMachine.InputReader.MoveVector;
         Vector3 surfaceNormal = stateMachine.CurrentInkNormal;
 
-        Vector3 cameraRight = Camera.main.transform.right;
-        
-        Vector3 rightProjected = Vector3.ProjectOnPlane(cameraRight, surfaceNormal).normalized;
+        // "Subir" en la superficie = world up proyectado sobre el plano de la tinta.
+        // Esto hace que W siempre suba por paredes y S baje, independientemente de dónde mire la cámara.
+        Vector3 surfaceUp = Vector3.ProjectOnPlane(Vector3.up, surfaceNormal);
 
-        Vector3 upProjected = Vector3.Cross(surfaceNormal, rightProjected).normalized;
-        
-        if (Vector3.Dot(upProjected, Vector3.up) < 0)
-        {
-            upProjected = -upProjected;
-        }
-        
-        Vector3 moveDir = (upProjected * input.y + rightProjected * input.x);
+        // Si la superficie es casi horizontal (suelo/techo), world up se colapsa → usamos camera forward
+        if (surfaceUp.sqrMagnitude < 0.1f)
+            surfaceUp = Vector3.ProjectOnPlane(Camera.main.transform.forward, surfaceNormal);
+
+        surfaceUp = surfaceUp.normalized;
+
+        // Eje lateral: camera right proyectado sobre el plano
+        Vector3 surfaceRight = Vector3.ProjectOnPlane(Camera.main.transform.right, surfaceNormal);
+
+        // Fallback si camera right es casi paralelo a la normal (colapsaría a cero)
+        if (surfaceRight.sqrMagnitude < 0.01f)
+            surfaceRight = Vector3.Cross(surfaceNormal, surfaceUp);
+
+        surfaceRight = surfaceRight.normalized;
+
+        // input.y → sube/baja por la superficie  |  input.x → izquierda/derecha
+        Vector3 moveDir = (surfaceUp * input.y + surfaceRight * input.x);
         
         if (moveDir.sqrMagnitude > 0.01f)
         {
@@ -136,7 +147,10 @@ public class PlayerSwimState : PlayerBaseState
             swimVelocity = Vector3.MoveTowards(swimVelocity, Vector3.zero, 40f * deltaTime);
         }
         
-        Vector3 stickForce = -surfaceNormal * 5f;
+        // Si el CharacterController ya está tocando geometría lateral (esquina, pared adyacente),
+        // eliminamos el stickForce para que no quede encallado entre la tinta y esa geometría.
+        bool hittingSideGeometry = (stateMachine.Controller.collisionFlags & CollisionFlags.Sides) != 0;
+        Vector3 stickForce = hittingSideGeometry ? Vector3.zero : -surfaceNormal * 5f;
 
         stateMachine.Controller.Move((swimVelocity + stickForce) * deltaTime);
     }

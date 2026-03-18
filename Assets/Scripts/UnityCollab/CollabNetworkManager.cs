@@ -85,7 +85,7 @@ public class CollabNetworkManager : MonoBehaviour
             if (request.result != UnityWebRequest.Result.Success) Debug.LogError($"Error subiendo: {request.error}");
         }
     }
-
+#if UNITY_EDITOR
     private double lastUpdate = 0;
     private void NetworkLoop()
     {
@@ -96,6 +96,7 @@ public class CollabNetworkManager : MonoBehaviour
             StartCoroutine(DownloadData());
         }
     }
+#endif
 
     IEnumerator DownloadData()
     {
