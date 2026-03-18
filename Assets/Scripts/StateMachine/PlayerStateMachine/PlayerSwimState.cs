@@ -35,9 +35,11 @@ public class PlayerSwimState : PlayerBaseState
         stateMachine.Controller.center = new Vector3(0, 0.25f, 0);
 
         swimVelocity = Vector3.zero;
+        timeWithoutInk = 0f;
 
         //Camera Pull Back
         CameraManager.Instance.ChangeCameraSwimming(true);
+
 
         // Reset inicial
         // stateMachine.ForceReceiver.enabled = false;
