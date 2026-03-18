@@ -15,6 +15,7 @@ public class PlayerWhiteState : PlayerBaseState
     protected readonly int AnimationSpeedHash = Animator.StringToHash("AimSpeedX");
     protected readonly int VerticalSpeedHash = Animator.StringToHash("SpeedY");
     protected readonly int GroundedHash = Animator.StringToHash("IsGrounded");
+    protected readonly int IsFallingHash = Animator.StringToHash("IsFalling");
     
     protected readonly int FreeLookBlendTreeHash = Animator.StringToHash("FreeLookBlendTree");
     protected readonly int WalkingBlendTreeHash = Animator.StringToHash("WalkingBlendTree");
@@ -160,6 +161,9 @@ public class PlayerWhiteState : PlayerBaseState
         stateMachine.Animator.SetFloat(AnimationSpeedHash, movement.x, AnimatorDampTime, deltaTime);
         stateMachine.Animator.SetFloat(VerticalSpeedHash, stateMachine.Controller.velocity.y, AnimatorDampTime, deltaTime);
         stateMachine.Animator.SetBool(GroundedHash, stateMachine.isGrounded);
+        
+        bool isFalling = !stateMachine.isGrounded && stateMachine.Controller.velocity.y < -0.5f;
+        stateMachine.Animator.SetBool(IsFallingHash, isFalling);
     }
     
     protected virtual void HandleJumpLanding(float currentInputMagnitude)
