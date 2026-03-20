@@ -149,7 +149,7 @@ public abstract class PlayerBaseState : State
 
     private void UpdateCoyoteTime(float deltaTime)
     {
-        bool isGroundedNow = stateMachine.Controller.isGrounded;
+        bool isGroundedNow = stateMachine.isGrounded;
         
         
         if (_wasGroundedLastFrame && !isGroundedNow)
@@ -175,9 +175,9 @@ public abstract class PlayerBaseState : State
     
     protected bool CanJump()
     {
-        bool canFirstJump = stateMachine.Controller.isGrounded || _timeSinceLeftGround <= stateMachine.CoyoteTime;
+        bool canFirstJump = stateMachine.isGrounded || _timeSinceLeftGround <= stateMachine.CoyoteTime;
         
-        bool canDoubleJump = stateMachine.HasDoubleJump && !stateMachine.Controller.isGrounded && _doubleJumpAvailable && !_hasUsedDoubleJump;
+        bool canDoubleJump = stateMachine.HasDoubleJump && !stateMachine.isGrounded && _doubleJumpAvailable && !_hasUsedDoubleJump;
         
         return canFirstJump || canDoubleJump;
     }
@@ -191,7 +191,7 @@ public abstract class PlayerBaseState : State
 
     protected void Jump()
     {
-        bool isFirstJump = stateMachine.Controller.isGrounded || _timeSinceLeftGround <= stateMachine.CoyoteTime;
+        bool isFirstJump = stateMachine.isGrounded || _timeSinceLeftGround <= stateMachine.CoyoteTime;
         
         if (isFirstJump)
         {
