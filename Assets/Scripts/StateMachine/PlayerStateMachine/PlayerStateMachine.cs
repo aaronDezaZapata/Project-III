@@ -522,7 +522,7 @@ public class PlayerStateMachine : StateMachine
 
     public void CheckGrounded()
     {
-        isGrounded = Physics.SphereCast(
+        bool hitGround = Physics.SphereCast(
             groundCheckOrigin.position,
             groundCheckRadius,
             Vector3.down,
@@ -530,6 +530,16 @@ public class PlayerStateMachine : StateMachine
             groundCheckDistance,
             groundMask
         );
+
+        if (hitGround)
+        {
+            float angle = Vector3.Angle(Vector3.up, hit.normal);
+            isGrounded = angle <= Controller.slopeLimit;
+        }
+        else
+        {
+            isGrounded = false;
+        }
 
         if (isGrounded)
         {
