@@ -47,7 +47,7 @@ public class PlayerBlueState : PlayerWhiteState
             {
                 jumpHoldTimer += deltaTime;
 
-                if (jumpHoldTimer >= stateMachine.GeyserActivationTime && !CanJump() )
+                if (jumpHoldTimer >= stateMachine.GeyserActivationTime )
                 {
                     Debug.Log("Blue: Activando Geyser");
                     stateMachine.SwitchState(typeof(PlayerGeyserState));
