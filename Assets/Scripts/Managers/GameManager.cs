@@ -15,6 +15,11 @@ public class GameManager : MonoBehaviour
 
     private Transform currentCheckPoint;
 
+    public Action<string> OnLeverActivated;
+
+    // Coins
+    private int coinsCollected = 0;
+
     private void Awake()
     {
         if (Instance == null)
@@ -56,22 +61,41 @@ public class GameManager : MonoBehaviour
         levelDecals.Clear();
     }
     
-    // TODO: Remove
-    // No hay enemigos
-    /*public void AddPaintedEnemy(PaintableEnemy enemy)
-    {
-        enemiesPainted.Add(enemy);
-    }*/
-    // TODO: Remove
-    // No hay enemigos
-    /*public void RemovePaintedEnemy(PaintableEnemy enemy)
-    {
-        enemiesPainted.Remove(enemy);
-    }*/
-
     public void GetNewCheckPoint(Transform newCheckPoint)
     {
         currentCheckPoint = newCheckPoint;
+    }
+
+    public void AddCoin(int amount)
+    {
+        coinsCollected += amount;
+        Debug.Log("Coins Collected: " + coinsCollected);
+    }
+
+    public void ResetCoinAmount()
+    {
+        coinsCollected = 0;
+    }
+
+    private void Update()
+    {
+        // L3 + R3 simultáneamente → toggle FlyState (debug)
+        bool leftStick  = Input.GetKeyDown(KeyCode.JoystickButton8);   // L3
+        bool rightStick = Input.GetKey(KeyCode.JoystickButton9);        // R3
+
+        if (leftStick && rightStick)
+        {
+            if (GetPlayerState() is PlayerFlyState)
+            {
+                // Salir del fly state → volver al estado de color actual
+                player.GetComponent<PlayerStateMachine>().ReturnToMainState();
+            }
+            else
+            {
+                // Entrar en fly state
+                SetPlayerState<PlayerFlyState>();
+            }
+        }
     }
 
     public void PlayerDeath()

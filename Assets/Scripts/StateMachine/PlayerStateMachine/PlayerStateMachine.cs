@@ -1,9 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,8 +11,11 @@ public class PlayerStateMachine : StateMachine
 {
     #region Variables
 
+    private Dictionary<Color, Type> colorToStateDic;
+
     [field: Header("Player State")]
     [field: SerializeField] public PlayerStates playerState;
+    [field: SerializeField] public bool isOnEvent;
 
     [field: Header("Getters and Setters")]
     [field: SerializeField] public InputHandler InputReader { get; private set; }
@@ -30,14 +33,27 @@ public class PlayerStateMachine : StateMachine
 
     [field: SerializeField] public SkinnedMeshRenderer Mat_Player { get; private set; }
     
-    [field: Header("Camera Sensitivity")]
-    [field: Tooltip("Sensibilidad de la cámara con ratón")]
-    [field: Range(0.1f, 5f)]
-    [field: SerializeField] public float MouseSensitivity { get; set; } = 1f;
+    [field: Header("Mesh Settings")]
+    [field: SerializeField] public GameObject OriginalMesh { get; private set; }
+    [field: SerializeField] public GameObject SharkFinMesh { get; private set; }
     
-    [field: Tooltip("Sensibilidad de la cámara con mando/gamepad")]
+    [field: Header("Camera Sensitivity")]
+    [field: Range(0.1f, 5f)]
+    [field: SerializeField] public float MiceSensitivity { get; set; } = 1f;
+    
     [field: Range(0.1f, 5f)]
     [field: SerializeField] public float GamepadSensitivity { get; set; } = 3f;
+    
+    [field: SerializeField] public bool XAxisInverted { get; set; }
+    
+    [field: Header("Aim Camera Sensitivity")]
+    [field: Range(0.1f, 5f)]
+    [field: SerializeField] public float MiceAimSensitivity { get; set; } = 1f;
+    
+    [field: Range(0.1f, 5f)]
+    [field: SerializeField] public float GamepadAimSensitivity { get; set; } = 3f;
+
+    [field: SerializeField] public bool AimXAxisInverted { get; set; }
 
 
     [field: Header("Movement Variables")]
@@ -98,7 +114,7 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public Transform GunOrigin;
     [SerializeField] public Transform reticle { get; private set; } // Quad o Canvas
 
-
+    [NonSerialized] public PlayerStateMachine[] playerColorStates;
     public bool IsOnInk;
     public Vector3 CurrentInkNormal = Vector3.up;
 
@@ -135,9 +151,9 @@ public class PlayerStateMachine : StateMachine
     [Tooltip("Punto desde donde sale la cuerda (mano del jugador)")]
     [field: SerializeField] public Transform GrappleRopeOrigin { get; private set; }
 
-    [Header("Green Whip Mechanics (Enemy Attack)")]
-    [Tooltip("Capa de los enemigos que pueden ser capturados")]
-    [field: SerializeField] public LayerMask EnemyLayer { get; private set; }
+    [Header("Green Whip Mechanics (Object Attack)")]
+    [Tooltip("Capa de los objetos que pueden ser capturados")]
+    [field: SerializeField] public LayerMask WhipObjectLayer { get; private set; }
 
     [Tooltip("Fuerza mínima de lanzamiento (cuando gira lento)")]
     [field: SerializeField] public float WhipThrowForceMin { get; private set; } = 15f;
@@ -145,8 +161,8 @@ public class PlayerStateMachine : StateMachine
     [Tooltip("Fuerza máxima de lanzamiento (cuando gira rápido)")]
     [field: SerializeField] public float WhipThrowForceMax { get; private set; } = 40f;
 
-    [Tooltip("Distancia máxima para detectar enemigos")]
-    [field: SerializeField] public float EnemyDetectionRange { get; private set; } = 15f;
+    [Tooltip("Distancia máxima para detectar objetos")]
+    [field: SerializeField] public float WhipObjectDetectionRange { get; private set; } = 15f;
 
     [Header("Green Whip Spin Settings")]
     [Tooltip("Velocidad inicial de giro del enemigo (grados/segundo)")]
@@ -234,8 +250,8 @@ public class PlayerStateMachine : StateMachine
 
     [field: SerializeField] public Transform FirePoint { get; private set; }
     [field: SerializeField] public Transform Water_JetParticle { get; private set; }
-    [field: SerializeField] public Transform WaterHeiserParticle { get; private set; }
-    [field: SerializeField] public Transform WaterHeiserParticleSecond { get; private set; }
+    [field: SerializeField] public Transform WaterGeyserParticle { get; private set; }
+    [field: SerializeField] public Transform WaterGeyserParticleSecond { get; private set; }
     [field: SerializeField] public Rigidbody ProjectilePrefab { get; private set; }
     [field: SerializeField] public float FireCooldown { get; private set; } = 0.15f;
     [field: SerializeField] public float ProjectileFlightTime { get; private set; } = 0.6f;
@@ -256,16 +272,34 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public LayerMask AimLayerMask { get; private set; } = ~0;
     [field: SerializeField] public float ReticleSurfaceOffset { get; private set; } = 0.02f;
 
-    [field: Header("Heiser")]
+    // GEYSER VARIABLES
+    [field: Header("Geyser Settings")]
+    [field: Tooltip("Fuerza de flotación vertical")]
     [field: SerializeField] public float HoverForce { get; private set; } = 15f;
+    
+    [field: Tooltip("Velocidad de movimiento aéreo durante Geyser")]
     [field: SerializeField] public float aerialMoveSpeed { get; private set; } = 10f;
     
-    public bool CanHeiser { get; set; } = true;
+    [field: Tooltip("Tiempo en segundos que debe mantenerse el salto en el aire para activar Geyser")]
+    [field: SerializeField] public float GeyserActivationTime { get; private set; } = 0.5f;
     
+    [field: Tooltip("Fuerza del impulso vertical inicial al entrar al estado Geyser")]
+    [field: SerializeField] public float GeyserInitialBoostForce { get; private set; } = 10f;
+    
+    [field: Tooltip("Tiempo de cooldown después de usar Geyser antes de poder usarlo de nuevo")]
+    [field: SerializeField] public float GeyserCooldownTime { get; private set; } = 1f;
+    
+    // Geyser cooldown variables
+    [HideInInspector] public float geyserCooldownTimer = 0f;
+    [HideInInspector] public bool isGeyserOnCooldown = false;
+    [HideInInspector] public bool wasJumpButtonReleased = true;
+    private Coroutine fillCoroutine;
+    private float fillSpeed = 5f;
+
     /// <summary>
     /// Dash variables
     /// </summary>
-    
+
     // TODO: Remove
     // Ya no hay combate
     [field: Header("Black Dash Attack (Painted Enemy)")]
@@ -289,25 +323,33 @@ public class PlayerStateMachine : StateMachine
     
     #endregion
 
+    private string currentPuddleTag = "";
+
+
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
-        AddState(new PlayerFreeLookState(this));
+        AddState(new PlayerWhiteState(this));
         AddState(new PlayerSwimState(this));
         AddState(new PlayerDashAttackState(this));
         AddState(new PlayerShootingState(this));
         AddState(new PlayerBlueState(this));
-        AddState(new PlayerHeiserState(this));
+        AddState(new PlayerGeyserState(this));
         AddState(new PlayerGreenState(this));
         AddState(new PlayerWhipState(this));
-        AddState(new PlayerGrayState(this));
+        AddState(new PlayerRedState(this));
         AddState(new PlayerAbsorbState(this));
         AddState(new PlayerFlyState(this));
 
+        colorToStateDic = new Dictionary<Color, Type>
+        {
+            { Color.red, typeof(PlayerRedState) },
+            { Color.green, typeof(PlayerGreenState) },
+            { Color.blue, typeof(PlayerBlueState) },
+            { Color.white, typeof(PlayerWhiteState) }
+        };
+
         // MUST BE PLAYERFREELOOK. CHANGES ONLY FOR TESTING
-        SwitchState(typeof(PlayerFreeLookState));
+        SwitchState(typeof(PlayerWhiteState));
     }
 
     public void StartCameraShake(float duration)
@@ -392,38 +434,10 @@ public class PlayerStateMachine : StateMachine
         switch (other.tag)
         {
             case "CharcoAzul":
-                SwitchState(typeof(PlayerBlueState));
-                //Mat_Player.SetColor("_Color", Color.blue);
-                if (Mat_Player != null)
-                {
-                    Mat_Player.material.SetColor("_SpecularColor", Color.blue);
-                }
-                break;
-
             case "CharcoNegro":
-                SwitchState(typeof(PlayerFreeLookState));
-                if (Mat_Player != null)
-                {
-                    Color blackColor = new Color(1 - 38f, 1 - 38f, 1 - 38f);
-                    Mat_Player.material.SetColor("_SpecularColor", blackColor);
-                }
-                break;
-            
-            // TODO: Remove
-            /*case "CharcoGris":
-                SwitchState(typeof(PlayerGrayState));
-                if (Mat_Player != null)
-                {
-                    Mat_Player.material.SetColor("_SpecularColor", Color.grey);
-                }
-                break;*/
-
+            case "CharcoRojo":
             case "CharcoVerde":
-                SwitchState(typeof(PlayerGreenState));
-                if (Mat_Player != null)
-                {
-                    Mat_Player.material.SetColor("_SpecularColor", Color.green);
-                }
+                currentPuddleTag = other.tag;
                 break;
 
             case "CheckPoint":
@@ -435,15 +449,30 @@ public class PlayerStateMachine : StateMachine
         }
     }
 
-
-    private void OnControllerColliderHit(ControllerColliderHit hit)
+    private void OnTriggerExit(Collider other)
     {
-        switch(hit.transform.tag)
+        if (other.tag == currentPuddleTag)
         {
-            case "Insta":
-                GameManager.Instance.PlayerDeath();
+            currentPuddleTag = "";
+        }
+    }
+
+    public void HandlePuddleInteraction()
+    {
+        switch (currentPuddleTag)
+        {
+            case "CharcoAzul":
+                StartFill(Color.blue);
                 break;
-                default : break;
+            case "CharcoNegro":
+                SwitchState(typeof(PlayerWhiteState));
+                break;
+            case "CharcoRojo":
+                StartFill(Color.red);
+                break;
+            case "CharcoVerde":
+                StartFill(Color.green);
+                break;
         }
     }
     
@@ -451,8 +480,11 @@ public class PlayerStateMachine : StateMachine
     {
         switch (playerState)
         {
-            case PlayerStates.BLACK:
-                SwitchState(typeof(PlayerFreeLookState));
+            case PlayerStates.WHITE:
+                SwitchState(typeof(PlayerWhiteState));
+                break;
+            case PlayerStates.RED:
+                SwitchState(typeof(PlayerRedState));
                 break;
             case PlayerStates.BLUE:
                 SwitchState(typeof(PlayerBlueState));
@@ -460,10 +492,17 @@ public class PlayerStateMachine : StateMachine
             case PlayerStates.GREEN:
                 SwitchState(typeof(PlayerGreenState));
                 break;
-            // TODO: Remove
-            /*case PlayerStates.GREY:
-                SwitchState(typeof(PlayerGrayState));
-                break;*/
+        }
+    }
+    
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        switch(hit.transform.tag)
+        {
+            case "Insta":
+                GameManager.Instance.PlayerDeath();
+                break;
+            default : break;
         }
     }
     
@@ -483,7 +522,7 @@ public class PlayerStateMachine : StateMachine
 
     public void CheckGrounded()
     {
-        isGrounded = Physics.SphereCast(
+        bool hitGround = Physics.SphereCast(
             groundCheckOrigin.position,
             groundCheckRadius,
             Vector3.down,
@@ -491,6 +530,285 @@ public class PlayerStateMachine : StateMachine
             groundCheckDistance,
             groundMask
         );
+
+        if (hitGround)
+        {
+            float angle = Vector3.Angle(Vector3.up, hit.normal);
+            isGrounded = angle <= Controller.slopeLimit;
+        }
+        else
+        {
+            isGrounded = false;
+        }
+
+        if (isGrounded)
+        {
+            isGeyserOnCooldown = false;
+            geyserCooldownTimer = 0f;
+        }
+    }
+
+    public void RotateColors()
+    {
+        Color tempColor = Mat_Player.material.GetColor("_ColorA");
+        float tempFill = Mat_Player.material.GetFloat("_FillA");
+
+        Mat_Player.material.SetColor("_ColorA", Mat_Player.material.GetColor("_ColorB"));
+        Mat_Player.material.SetFloat("_FillA", Mat_Player.material.GetFloat("_FillB"));
+
+        Mat_Player.material.SetColor("_ColorB", Mat_Player.material.GetColor("_ColorC"));
+        Mat_Player.material.SetFloat("_FillB", Mat_Player.material.GetFloat("_FillC"));
+
+        Mat_Player.material.SetColor("_ColorC", tempColor);
+        Mat_Player.material.SetFloat("_FillC", tempFill);
+
+        CheckAndSwitchColorState();
+    }
+
+    /// <summary>
+    /// Llenar el color del shader del player por los pies
+    /// </summary>
+    /// <param name="newColor"></param>
+    public void StartFill(Color newColor)
+    {
+        // Revisamos si ya tenemos este color a medio llenar (mayor a 0.01f y menor a 0.999f) para rellenarlo
+        if (ColorsAreClose(Mat_Player.material.GetColor("_ColorA"), newColor) && Mat_Player.material.GetFloat("_FillA") > 0.01f && Mat_Player.material.GetFloat("_FillA") < 0.999f)
+        {
+            if (fillCoroutine != null) StopCoroutine(fillCoroutine);
+            fillCoroutine = StartCoroutine(FillRoutine("_FillA"));
+            return;
+        }
+        if (ColorsAreClose(Mat_Player.material.GetColor("_ColorB"), newColor) && Mat_Player.material.GetFloat("_FillB") > 0.01f && Mat_Player.material.GetFloat("_FillB") < 0.999f)
+        {
+            if (fillCoroutine != null) StopCoroutine(fillCoroutine);
+            fillCoroutine = StartCoroutine(FillRoutine("_FillB"));
+            return;
+        }
+        if (ColorsAreClose(Mat_Player.material.GetColor("_ColorC"), newColor) && Mat_Player.material.GetFloat("_FillC") > 0.01f && Mat_Player.material.GetFloat("_FillC") < 0.999f)
+        {
+            if (fillCoroutine != null) StopCoroutine(fillCoroutine);
+            fillCoroutine = StartCoroutine(FillRoutine("_FillC"));
+            return;
+        }
+
+        // Es una absorción nueva. Desplazamos hacia arriba si es necesario.
+        float fillA = Mat_Player.material.GetFloat("_FillA");
+        float fillB = Mat_Player.material.GetFloat("_FillB");
+        float fillC = Mat_Player.material.GetFloat("_FillC");
+
+        if (fillA < 0.1f)
+        {
+            Mat_Player.material.SetColor("_ColorA", newColor);
+            Mat_Player.material.SetFloat("_FillA", 0.11f);
+            StartFillRoutine("_FillA");
+        }
+        else if (fillB < 0.1f)
+        {
+            // A sube a B
+            Mat_Player.material.SetColor("_ColorB", Mat_Player.material.GetColor("_ColorA"));
+            Mat_Player.material.SetFloat("_FillB", Mat_Player.material.GetFloat("_FillA"));
+            
+            Mat_Player.material.SetColor("_ColorA", newColor);
+            Mat_Player.material.SetFloat("_FillA", 0.11f);
+            StartFillRoutine("_FillA");
+        }
+        else if (fillC < 0.1f)
+        {
+            // B sube a C, A sube a B
+            Mat_Player.material.SetColor("_ColorC", Mat_Player.material.GetColor("_ColorB"));
+            Mat_Player.material.SetFloat("_FillC", Mat_Player.material.GetFloat("_FillB"));
+
+            Mat_Player.material.SetColor("_ColorB", Mat_Player.material.GetColor("_ColorA"));
+            Mat_Player.material.SetFloat("_FillB", Mat_Player.material.GetFloat("_FillA"));
+            
+            Mat_Player.material.SetColor("_ColorA", newColor);
+            Mat_Player.material.SetFloat("_FillA", 0.11f);
+            StartFillRoutine("_FillA");
+        }
+        else
+        {
+            // Todos llenos, desplazamos todos hacia arriba (perdemos C)
+            Mat_Player.material.SetColor("_ColorC", Mat_Player.material.GetColor("_ColorB"));
+            Mat_Player.material.SetFloat("_FillC", Mat_Player.material.GetFloat("_FillB"));
+
+            Mat_Player.material.SetColor("_ColorB", Mat_Player.material.GetColor("_ColorA"));
+            Mat_Player.material.SetFloat("_FillB", Mat_Player.material.GetFloat("_FillA"));
+            
+            Mat_Player.material.SetColor("_ColorA", newColor);
+            Mat_Player.material.SetFloat("_FillA", 0.11f);
+            StartFillRoutine("_FillA");
+        }
+    }
+
+    private void StartFillRoutine(string fillProperty)
+    {
+        if (fillCoroutine != null) StopCoroutine(fillCoroutine);
+        fillCoroutine = StartCoroutine(FillRoutine(fillProperty));
+        CheckAndSwitchColorState();
+    }
+
+    IEnumerator FillRoutine(string fillProperty)
+    {
+        while (Mat_Player.material.GetFloat(fillProperty) < 1f)
+        {
+            float currentFill = Mat_Player.material.GetFloat(fillProperty);
+            float newFill = Mathf.Clamp01(currentFill + Time.deltaTime * fillSpeed);
+            Mat_Player.material.SetFloat(fillProperty, newFill);
+            yield return null;
+        }
+
+        CheckAndSwitchColorState();
+    }
+
+
+    public void UseColor(float reduceFill)
+    {
+        // Revisamos cuál es el primer Fill que tiene pintura, empezando por el C
+        if (Mat_Player.material.GetFloat("_FillC") >= 0.1f)
+        {
+            StartCoroutine(EmptyColorRoutine(reduceFill, "_FillC"));
+        }
+        else if (Mat_Player.material.GetFloat("_FillB") >= 0.1f)
+        {
+            StartCoroutine(EmptyColorRoutine(reduceFill, "_FillB"));
+        }
+        else if (Mat_Player.material.GetFloat("_FillA") >= 0.1f)
+        {
+            StartCoroutine(EmptyColorRoutine(reduceFill, "_FillA"));
+        }
+        else
+        {
+            Debug.Log("No queda pintura en ningún tanque.");
+        }
+    }
+
+    IEnumerator EmptyColorRoutine(float reduceFill, string fillProperty)
+    {
+        float currentFill;
+        float targetFill = Mat_Player.material.GetFloat(fillProperty) - reduceFill;
+        
+        // Si el objetivo baja del umbral (0.1f), forzamos que se vacíe por completo
+        if (targetFill < 0.1f) 
+        {
+            targetFill = 0f;
+        }
+
+        while(Mat_Player.material.GetFloat(fillProperty) > targetFill)
+        {
+            currentFill = Mat_Player.material.GetFloat(fillProperty);
+            currentFill -= (reduceFill * Time.deltaTime * 5f); // Multiplicado por 5f para que la animación de vaciado sea más rápida y fluida
+            
+            // Si nos pasamos bajando, lo ajustamos al objetivo elegido
+            if (currentFill < targetFill) 
+            {
+                currentFill = targetFill;
+            }
+            
+            Mat_Player.material.SetFloat(fillProperty, currentFill);
+            yield return null;
+        }
+
+        CheckAndSwitchColorState();
+    }
+
+    public void CheckAndSwitchColorState()
+    {
+        // Revisamos C primero
+        if (Mat_Player.material.GetFloat("_FillC") >= 0.1f) 
+        {
+            Color colorC = Mat_Player.material.GetColor("_ColorC");
+            SwitchToStateByColor(colorC);
+            return;
+        }
+        
+        // Si C está vacío, revisamos B
+        if (Mat_Player.material.GetFloat("_FillB") >= 0.1f) 
+        {
+            Color colorB = Mat_Player.material.GetColor("_ColorB");
+            SwitchToStateByColor(colorB);
+            return;
+        }
+
+        // Si B está vacío, revisamos A
+        if (Mat_Player.material.GetFloat("_FillA") >= 0.1f) 
+        {
+            Color colorA = Mat_Player.material.GetColor("_ColorA");
+            SwitchToStateByColor(colorA);
+            return;
+        }
+
+        // Si los 3 están vacíos, al estado por defecto:
+        SwitchState(typeof(PlayerWhiteState));
+    }
+
+    private void SwitchToStateByColor(Color c)
+    {
+        // En Unity a veces los colores del shader tienen ligeras variaciones de flotantes
+        // Buscamos una coincidencia aproximada
+        bool stateFound = false;
+        Type targetState = null;
+
+        foreach (var kvp in colorToStateDic)
+        {
+            if (ColorsAreClose(kvp.Key, c))
+            {
+                targetState = kvp.Value;
+                stateFound = true;
+                break;
+            }
+        }
+
+        if (!stateFound)
+        {
+            SwitchState(typeof(PlayerWhiteState));
+            return;
+        }
+
+        
+        Type currentState = GetCurrentState().GetType();
+
+        if (currentState == targetState) return;
+
+        if (targetState == typeof(PlayerRedState) && currentState == typeof(PlayerShootingState)) return;
+        if (targetState == typeof(PlayerGreenState) && currentState == typeof(PlayerWhipState)) return;
+        if (targetState == typeof(PlayerBlueState) && currentState == typeof(PlayerGeyserState)) return;
+
+        SwitchState(targetState);
+    }
+
+    private bool ColorsAreClose(Color a, Color b)
+    {
+        float tolerance = 0.05f; // Margen de error para pequeñas discrepancias del shader
+        return Mathf.Abs(a.r - b.r) <= tolerance &&
+               Mathf.Abs(a.g - b.g) <= tolerance &&
+               Mathf.Abs(a.b - b.b) <= tolerance &&
+               Mathf.Abs(a.a - b.a) <= tolerance;
+    }
+
+
+    
+    /// <summary>
+    /// Switch Colors on any index
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="color"></param>
+    public void PlayerColorSwitch(int index, Color color)
+    {
+        switch (index)
+        {
+            case 0:
+                Mat_Player.material.SetColor("_ColorA", color);
+                break;
+            case 1:
+                Mat_Player.material.SetColor("_ColorB", color);
+                break;
+            case 2:
+                Mat_Player.material.SetColor("_ColorC", color);
+                break;
+            default:
+                Debug.Log("Not enetered a valid index");
+                break;
+        }
     }
 
 
@@ -559,7 +877,7 @@ public class PlayerStateMachine : StateMachine
 
     public float GetCurrentCameraSensitivity()
     {
-        return InputReader.IsUsingGamepad ? GamepadSensitivity : MouseSensitivity;
+        return InputReader.IsUsingGamepad ? GamepadAimSensitivity : MiceAimSensitivity;
     }
 
     private void OnDrawGizmosSelected()

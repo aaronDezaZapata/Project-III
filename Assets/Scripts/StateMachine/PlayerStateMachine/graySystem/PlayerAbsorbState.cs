@@ -53,7 +53,7 @@ public class PlayerAbsorbState : PlayerBaseState
                 ShootHeldObjectOnRelease();
             }
             
-            stateMachine.SwitchState(typeof(PlayerGrayState));
+            stateMachine.SwitchState(typeof(PlayerRedState));
             return;
         }
         
@@ -140,7 +140,7 @@ public class PlayerAbsorbState : PlayerBaseState
         Collider[] enemyHits = Physics.OverlapSphere(
             origin + direction * stateMachine.GrayAbsorbRange * 0.5f,
             stateMachine.GrayAbsorbRange,
-            stateMachine.EnemyLayer
+            stateMachine.AbsorbableLayer
         );
         
         foreach (Collider hit in enemyHits)

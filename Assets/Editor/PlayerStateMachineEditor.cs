@@ -19,6 +19,7 @@ public class PlayerStateMachineEditor : Editor
         EditorGUILayout.Space(10);
         DrawHeader("MAIN CONFIGURATION", Color.white);
         DrawBackingProperty("playerState");
+        DrawBackingProperty("isOnEvent");
 
         EditorGUILayout.Space(5);
         DrawBackingProperty("InputReader");
@@ -28,8 +29,12 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("mainCamera");
         DrawBackingProperty("aimCamera");
         DrawBackingProperty("aimCameraPitchControl");
-        DrawBackingProperty("MouseSensitivity");
+        DrawBackingProperty("MiceSensitivity");
         DrawBackingProperty("GamepadSensitivity");
+        DrawBackingProperty("XAxisInverted");
+        DrawBackingProperty("MiceAimSensitivity");
+        DrawBackingProperty("GamepadAimSensitivity");
+        DrawBackingProperty("AimXAxisInverted");
         DrawBackingProperty("Health");
         DrawBackingProperty("Mat_Player");
 
@@ -69,6 +74,8 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("InkLayer");
         DrawBackingProperty("GunOrigin");
         DrawBackingProperty("reticle");
+        DrawBackingProperty("OriginalMesh");
+        DrawBackingProperty("SharkFinMesh");
 
         // Referencias de disparo
         DrawBackingProperty("FirePoint");
@@ -98,7 +105,7 @@ public class PlayerStateMachineEditor : Editor
 
             EditorGUILayout.Space(5);
             EditorGUILayout.LabelField("Whip Mechanics", EditorStyles.boldLabel);
-            DrawBackingProperty("EnemyLayer");
+            DrawBackingProperty("WhipObjectLayer");
             DrawBackingProperty("WhipThrowForceMin");
             DrawBackingProperty("WhipThrowForceMax");
             DrawBackingProperty("EnemyDetectionRange");
@@ -113,27 +120,35 @@ public class PlayerStateMachineEditor : Editor
             GUI.backgroundColor = Color.white; // Restaurar color
         }
 
-        // BLUE LOGIC (HEISER)
+        // BLUE LOGIC (GEYSER)
         if (targetScript.playerState == PlayerStates.BLUE)
         {
-            DrawHeader("--- BLUE STATE (HEISER) ---", Color.blue);
+            DrawHeader("--- BLUE STATE (GEYSER) ---", Color.blue);
             GUI.backgroundColor = new Color(0.6f, 0.8f, 1f);
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            
+            DrawHeader("Force Variable Config", Color.white);
+            DrawBackingProperty("GeyserCooldownTime");
+            DrawBackingProperty("GeyserActivationTime");
 
+            
+            DrawHeader("Force Variable Config", Color.white);
             DrawBackingProperty("HoverForce");
             DrawBackingProperty("aerialMoveSpeed");
 
             // Particles related to blue/water go here
             DrawBackingProperty("Water_JetParticle");
-            DrawBackingProperty("WaterHeiserParticle");
-            DrawBackingProperty("WaterHeiserParticleSecond");
+            DrawBackingProperty("WaterGeyserParticle");
+            DrawBackingProperty("WaterGeyserParticleSecond");
 
             EditorGUILayout.EndVertical();
             GUI.backgroundColor = Color.white;
         }
 
+        // TODO: Remove
+        // No existe estado grey
         // GRAY LOGIC 
-        if (targetScript.playerState == PlayerStates.GREY)
+        /*if (targetScript.playerState == PlayerStates.GREY)
         {
             DrawHeader("--- GRAY STATE ---", Color.gray);
             GUI.backgroundColor = new Color(0.8f, 0.8f, 0.8f);
@@ -156,7 +171,7 @@ public class PlayerStateMachineEditor : Editor
 
             EditorGUILayout.EndVertical();
             GUI.backgroundColor = Color.white;
-        }
+        }*/
 
         // BLACK LOGIC
         if (targetScript.playerState == PlayerStates.BLACK)

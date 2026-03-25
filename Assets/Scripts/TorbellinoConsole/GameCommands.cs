@@ -48,7 +48,7 @@ namespace TorbellinoConsoleSystem.Game
 
             string stateTypeName = args[0] switch
             {
-                "0" => "PlayerFreeLookState",
+                "0" => "PlayerWhiteState",
                 "1" => "PlayerFlyState",
                 _ => null
             };
@@ -88,7 +88,7 @@ namespace TorbellinoConsoleSystem.Game
             if (stateType == null)
                 return $"<color=red>State type '{stateTypeName}' not found.</color>";
 
-            // Verificar que el tipo sea realmente un State válido
+            
             if (!typeof(State).IsAssignableFrom(stateType))
                 return $"<color=red>'{stateTypeName}' exists but is not a State subclass.</color>";
 

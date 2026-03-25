@@ -465,6 +465,7 @@ MonoBehaviour:
   - {fileID: -6288072647309666549}
   - {fileID: 7518938298396184218}
   - {fileID: -1410297666881709256}
+  - {fileID: 4190947413592380409}
 --- !u!114 &853819529557874667
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -848,6 +849,55 @@ MonoBehaviour:
   bladeRotation:
     m_OverrideState: 1
     m_Value: 0
+--- !u!114 &4190947413592380409
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c01634b4a1449ed4bb66bce3b4a5ed46, type: 3}
+  m_Name: WatercolorVolume
+  m_EditorClassIdentifier: 
+  active: 1
+  kuwaharaRadius:
+    m_OverrideState: 1
+    m_Value: 3
+  edgeThreshold:
+    m_OverrideState: 1
+    m_Value: 0.2
+  edgeStrength:
+    m_OverrideState: 1
+    m_Value: 0.6
+  edgeColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.12, g: 0.08, b: 0.05, a: 1}
+  saturation:
+    m_OverrideState: 1
+    m_Value: 1.15
+  brightness:
+    m_OverrideState: 1
+    m_Value: 1
+  colorBleed:
+    m_OverrideState: 1
+    m_Value: 0.35
+  paperStrength:
+    m_OverrideState: 1
+    m_Value: 0.45
+  paperScale:
+    m_OverrideState: 1
+    m_Value: 4
+  paperWarp:
+    m_OverrideState: 1
+    m_Value: 0.004
+  wetEdgeSpeed:
+    m_OverrideState: 1
+    m_Value: 0.3
+  wetEdgeAmount:
+    m_OverrideState: 1
+    m_Value: 0.5
 --- !u!114 &4251301726029935498
 MonoBehaviour:
   m_ObjectHideFlags: 3
