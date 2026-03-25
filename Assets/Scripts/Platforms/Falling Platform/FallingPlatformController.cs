@@ -1,5 +1,14 @@
 using UnityEngine;
 
+public enum PlatformState
+{
+    Idle,
+    Countdown,
+    Falling,
+    WaitingToRespawn,
+    Rising
+}
+
 public class FallingPlatformController : MonoBehaviour
 {
     [Header("Platform Settings")]
@@ -11,21 +20,14 @@ public class FallingPlatformController : MonoBehaviour
     public float timeBeforeRespawn = 3.0f;
     public float movementSpeed = 2.0f;
     
+    public PlatformState CurrentState => currentState;
+    
     [Header("Debug")]
-    [SerializeField] private float currentTimer = 0f;
-    [SerializeField] private bool isCountdownActive = false;
-    [SerializeField] private bool isPlayerOnPlatform = false;
+    [SerializeField] private float currentTimer;
+    [SerializeField] private bool isCountdownActive;
+    [SerializeField] private bool isPlayerOnPlatform;
     [SerializeField] private Vector3 originalPosition;
     [SerializeField] private PlatformState currentState = PlatformState.Idle;
-    
-    private enum PlatformState
-    {
-        Idle,
-        Countdown,
-        Falling,
-        WaitingToRespawn,
-        Rising
-    }
     
     private Vector3 targetFallPosition;
     private float respawnTimer = 0f;
