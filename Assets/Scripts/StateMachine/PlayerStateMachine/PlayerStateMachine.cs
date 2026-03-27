@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class PlayerStateMachine : StateMachine
 {
@@ -182,7 +184,18 @@ public class PlayerStateMachine : StateMachine
 
     [Tooltip("Velocidad a la que el enemigo es capturado")]
     [field: SerializeField] public float WhipCaptureSpeed { get; private set; } = 20f;
-    
+
+    [Tooltip("Ajustes para Shadow Drop")]
+    [field: SerializeField] public float MaxDistance { get; private set; } = 25f;
+    [field: SerializeField] public float ScaleNear { get; private set; } = 0.6f;
+    [field: SerializeField] public float ScaleFar { get; private set; } = 1.4f;
+    [field: SerializeField] public float AlphaNear { get; private set; } = 0.95f;
+    [field: SerializeField] public float AlphaFar { get; private set; } = 0.15f;
+    [field: SerializeField] public float OffsetY { get; private set; } = 0.02f; //Para el z-fighting
+    [field: SerializeField] public Transform ShadowDrop { get; private set; }
+  
+
+
     // TODO: Remove
     // No hay Gray
     [Header("Gray Vacuum Mechanics")]
@@ -827,6 +840,34 @@ public class PlayerStateMachine : StateMachine
         {
             transform.rotation = Quaternion.LookRotation(movement);
         }
+    }
+
+
+
+    public void AddShadowDrop()
+    {
+        Ray ray = new Ray(transform.position, Vector3.down);
+
+        if (!Physics.Raycast(ray, out RaycastHit hit, MaxDistance, groundMask))
+        {
+            ShadowDrop.gameObject.SetActive(false);
+            return;
+        }
+
+        ShadowDrop.gameObject.SetActive(true);
+
+        float t = hit.distance / MaxDistance;
+
+
+        ShadowDrop.position = hit.point;// + hit.normal * OffsetY;
+        ShadowDrop.position += new Vector3(0f, OffsetY,0f);
+        //ShadowDrop.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+
+        
+        //float s = Mathf.Lerp(ScaleNear, ScaleFar, t);
+        //ShadowDrop.localScale = new Vector3(s, s, 1f);
+
+        //PODRIA QUITAR ALPHA CUANTO MAS CERCA DEL SUELO ESTE
     }
 
     /*#region Gray Absorbed Objects Management

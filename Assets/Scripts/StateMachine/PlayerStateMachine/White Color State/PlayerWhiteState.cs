@@ -132,6 +132,11 @@ public class PlayerWhiteState : PlayerBaseState
         {
             HandleBlendTreeTransition(currentInputMagnitude);
         }
+
+        if(stateMachine.ShadowDrop != null)
+        {
+            stateMachine.AddShadowDrop();
+        }
         
         // Face movement direction if running
         if (currentInputMagnitude > RunThreshold)
