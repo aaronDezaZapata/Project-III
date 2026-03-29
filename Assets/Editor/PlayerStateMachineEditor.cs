@@ -54,6 +54,7 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("DoubleJumpForce");
         
         DrawBackingProperty("CoyoteTime");
+        DrawBackingProperty("ShadowDrop");
 
         //Ground Check
         EditorGUILayout.Space(10);
