@@ -133,11 +133,6 @@ public class PlayerWhiteState : PlayerBaseState
             HandleBlendTreeTransition(currentInputMagnitude);
         }
 
-        if(stateMachine.ShadowDrop != null)
-        {
-            stateMachine.AddShadowDrop();
-        }
-        
         // Face movement direction if running
         if (currentInputMagnitude > RunThreshold)
         {
@@ -149,6 +144,17 @@ public class PlayerWhiteState : PlayerBaseState
 
         // Apply movement
         Move(movement * stateMachine.FreeLookMovementSpeed, deltaTime);
+
+        if(stateMachine.ShadowDrop != null && !stateMachine.isGrounded)
+        {
+            if (!stateMachine.ShadowDrop.gameObject.activeSelf) { stateMachine.ShadowDrop.gameObject.SetActive(true); }
+
+            stateMachine.AddShadowDrop();
+        }
+        else
+        {
+            stateMachine.ShadowDrop.gameObject.SetActive(false);
+        }
 
         // Update state tracking
         lastSpeed = currentInputMagnitude;
