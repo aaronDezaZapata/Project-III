@@ -114,7 +114,7 @@ public class PlayerWhiteState : PlayerBaseState
         if (stateMachine.isOnEvent) return;
         
         stateMachine.CheckGrounded();
-        
+        stateMachine.ApplySlopeSlide();
         
         // Check for color-specific actions
         if (CheckColorSpecificActions(deltaTime)) return; 
@@ -252,7 +252,7 @@ public class PlayerWhiteState : PlayerBaseState
     
     protected virtual void OnJump()
     {
-        if (!CanJump() || stateMachine.isOnEvent) return;
+        if (!CanJump() || stateMachine.isOnEvent || stateMachine.isOnSteepSlope) return;
         stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();
     }
