@@ -99,9 +99,12 @@ public class PlayerStateMachine : StateMachine
     [SerializeField] private float groundCheckDistance = 0.2f;
     [SerializeField] private float groundCheckRadius = 0.3f; 
     [SerializeField] private LayerMask groundMask;
-    [SerializeField] private Transform groundCheckOrigin; 
+    [SerializeField] private Transform groundCheckOrigin;
+    [Tooltip("Velocidad de deslizamiento en slopes que superan el slopeLimit")]
+    [SerializeField] public float slopeSlideSpeed = 8f;
 
     public bool isGrounded;
+    public bool isOnSteepSlope;
 
 
     [field: Header("Swim Mechanics")]
@@ -558,7 +561,39 @@ public class PlayerStateMachine : StateMachine
         {
             isGeyserOnCooldown = false;
             geyserCooldownTimer = 0f;
+            isOnSteepSlope = false;
         }
+    }
+
+    /// <summary>
+    /// Aplica una fuerza de deslizamiento hacia abajo de la slope cuando
+    /// el ángulo supera el slopeLimit del CharacterController.
+    /// Llamar cada frame desde el Tick del estado activo.
+    /// </summary>
+    public void ApplySlopeSlide()
+    {
+        bool hitGround = Physics.SphereCast(
+            groundCheckOrigin.position,
+            groundCheckRadius,
+            Vector3.down,
+            out RaycastHit hit,
+            groundCheckDistance,
+            groundMask
+        );
+
+        if (!hitGround) return;
+
+        float angle = Vector3.Angle(Vector3.up, hit.normal);
+        if (angle <= Controller.slopeLimit) return;
+
+        // Estamos en una slope demasiado empinada
+        isOnSteepSlope = true;
+
+        // Calculamos la dirección de deslizamiento: proyección horizontal de la normal invertida
+        Vector3 slideDir = Vector3.ProjectOnPlane(Vector3.down, hit.normal).normalized;
+
+        // Aplicamos la fuerza de deslizamiento via ForceReceiver para que respete la gravedad existente
+        ForceReceiver.AddForce(slideDir * slopeSlideSpeed * Time.deltaTime);
     }
 
     public void RotateColors()
