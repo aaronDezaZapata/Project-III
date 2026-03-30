@@ -114,7 +114,7 @@ public class PlayerWhiteState : PlayerBaseState
         if (stateMachine.isOnEvent) return;
         
         stateMachine.CheckGrounded();
-        
+        stateMachine.ApplySlopeSlide();
         
         // Check for color-specific actions
         if (CheckColorSpecificActions(deltaTime)) return; 
@@ -132,7 +132,7 @@ public class PlayerWhiteState : PlayerBaseState
         {
             HandleBlendTreeTransition(currentInputMagnitude);
         }
-        
+
         // Face movement direction if running
         if (currentInputMagnitude > RunThreshold)
         {
@@ -144,6 +144,17 @@ public class PlayerWhiteState : PlayerBaseState
 
         // Apply movement
         Move(movement * stateMachine.FreeLookMovementSpeed, deltaTime);
+
+        if(stateMachine.ShadowDrop != null && !stateMachine.isGrounded)
+        {
+            if (!stateMachine.ShadowDrop.gameObject.activeSelf) { stateMachine.ShadowDrop.gameObject.SetActive(true); }
+
+            stateMachine.AddShadowDrop();
+        }
+        else
+        {
+            stateMachine.ShadowDrop.gameObject.SetActive(false);
+        }
 
         // Update state tracking
         lastSpeed = currentInputMagnitude;
@@ -241,7 +252,7 @@ public class PlayerWhiteState : PlayerBaseState
     
     protected virtual void OnJump()
     {
-        if (!CanJump() || stateMachine.isOnEvent) return;
+        if (!CanJump() || stateMachine.isOnEvent || stateMachine.isOnSteepSlope) return;
         stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();
     }
