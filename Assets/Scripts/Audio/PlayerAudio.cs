@@ -1,5 +1,6 @@
 using FMOD.Studio;
 using FMODUnity;
+using STOP_MODE = FMOD.Studio.STOP_MODE;
 using UnityEngine;
 
 public class PlayerAudio : MonoBehaviour
@@ -48,6 +49,9 @@ public class PlayerAudio : MonoBehaviour
 
         if (!objectSpinEvent.IsNull)
             objectSpinInstance = RuntimeManager.CreateInstance(objectSpinEvent);
+
+        if (!blackMasteryEvent.IsNull)
+            blackMasteryInstance = RuntimeManager.CreateInstance(blackMasteryEvent);
     }
 
     public void PlayJump()
@@ -161,6 +165,7 @@ public class PlayerAudio : MonoBehaviour
         ReleaseInstance(paintLoopInstance);
         ReleaseInstance(swimLoopInstance);
         ReleaseInstance(objectSpinInstance);
+        ReleaseInstance(blackMasteryInstance);
     }
 
     private void ReleaseInstance(EventInstance instance)

@@ -94,13 +94,23 @@ namespace FMODUnity
             }
 
             listeners.Add(listener);
-            RuntimeManager.StudioSystem.setNumListeners(Mathf.Clamp(listeners.Count, 1, FMOD.CONSTANTS.MAX_LISTENERS));
+            // Protegemos la llamada a StudioSystem
+            FMOD.RESULT result = RuntimeManager.StudioSystem.setNumListeners(Mathf.Clamp(listeners.Count, 1, FMOD.CONSTANTS.MAX_LISTENERS));
+            if (result != FMOD.RESULT.OK)
+            {
+                RuntimeUtils.DebugLogError(string.Format("[FMOD] setNumListeners failed : {0}", result));
+            }
         }
 
         private static void RemoveListener(StudioListener listener)
         {
             listeners.Remove(listener);
-            RuntimeManager.StudioSystem.setNumListeners(Mathf.Clamp(listeners.Count, 1, FMOD.CONSTANTS.MAX_LISTENERS));
+
+            FMOD.RESULT result = RuntimeManager.StudioSystem.setNumListeners(Mathf.Clamp(listeners.Count, 1, FMOD.CONSTANTS.MAX_LISTENERS));
+            if (result != FMOD.RESULT.OK)
+            {
+                RuntimeUtils.DebugLogError(string.Format("[FMOD] setNumListeners failed : {0}", result));
+            }
         }
 
         private void OnEnable()

@@ -86,33 +86,35 @@ public class MainCanvasManager : MonoBehaviour
     public void IdlePanelConfig()
     {
         isOnPause = false;
-        
+
         Time.timeScale = 1f;
-        
+        AudioManager.Instance?.SetPaused(false);
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        
+
         crosshairPanel.SetActive(false);
         pausePanel.SetActive(false);
         settingsPanel.SetActive(false);
         inGamePanel.SetActive(true);
     }
-    
+
     public void PauseOpen()
     {
         isOnPause = true;
-        
+
         Time.timeScale = 0f;
-        
+        AudioManager.Instance?.SetPaused(true);
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        
+
         inGamePanel.SetActive(false);
         crosshairPanel.SetActive(false);
         settingsPanel.SetActive(false);
         pausePanel.SetActive(true);
     }
-    
+
     private void CrosshairOpen()
     {
         inGamePanel.SetActive(false);

@@ -192,12 +192,14 @@ public abstract class PlayerBaseState : State
     protected void Jump()
     {
         bool isFirstJump = stateMachine.isGrounded || _timeSinceLeftGround <= stateMachine.CoyoteTime;
-        
+
         if (isFirstJump)
         {
             stateMachine.ForceReceiver.Jump(stateMachine.JumpForce);
+            stateMachine.PlayerAudio?.PlayJump();
+
             _timeSinceLeftGround = stateMachine.CoyoteTime + 1f;
-            
+
             if (stateMachine.HasDoubleJump)
             {
                 _doubleJumpAvailable = true;
@@ -207,6 +209,8 @@ public abstract class PlayerBaseState : State
         else if (stateMachine.HasDoubleJump && _doubleJumpAvailable && !_hasUsedDoubleJump)
         {
             stateMachine.ForceReceiver.Jump(stateMachine.DoubleJumpForce);
+            stateMachine.PlayerAudio?.PlayDoubleJump();
+
             _hasUsedDoubleJump = true;
         }
     }

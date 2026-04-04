@@ -14,15 +14,17 @@ public class PlayerShootingState : PlayerBaseState
 
     public static Action<bool> OnAiming;
     
-    float speed = 100f;
+    private float speed = 100f;
+    private float _nextFireTime;
+    private float _rotationX;
+    private float _rotationY;
+
+    //Audio
+    private bool wasFiringAudio;
+
     public PlayerShootingState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
     }
-
-    private float _nextFireTime;
-
-    private float _rotationX;
-    private float _rotationY;
 
     public override void Enter()
     {
@@ -45,33 +47,50 @@ public class PlayerShootingState : PlayerBaseState
         
         _rotationX = stateMachine.transform.eulerAngles.y;
         _rotationY = 0f;
+        wasFiringAudio = false;
     }
 
     public override void Tick(float deltaTime)
     {
         if (!stateMachine.InputReader.isAiming) 
         {
+            StopPaintAudio();
             stateMachine.ReturnToMainState();
             return;
         }
         
         HandleLookRotation(deltaTime);
-        
         HandleAimMovement(deltaTime);
 
         // Actualizar la velocidad de movimiento en el animator
         Vector3 movement = stateMachine.CalculateMovement();
         stateMachine.Animator.SetFloat(FreeLookSpeedHash, movement.magnitude, AnimatorDampTime, deltaTime);
-        
-        if (stateMachine.InputReader.IsFiring && Time.time >= _nextFireTime)
+
+        if (stateMachine.InputReader.IsFiring)
         {
-            Shoot();
-            _nextFireTime = Time.time + stateMachine.FireCooldown;
+            if (!wasFiringAudio)
+            {
+                stateMachine.PlayerAudio?.PlayPaintStart();
+                stateMachine.PlayerAudio?.StartPaintLoop();
+                wasFiringAudio = true;
+            }
+
+            if (Time.time >= _nextFireTime)
+            {
+                Shoot();
+                _nextFireTime = Time.time + stateMachine.FireCooldown;
+            }
+        }
+        else
+        {
+            StopPaintAudio();
         }
     }
 
     public override void Exit()
     {
+        StopPaintAudio();
+
         // Sincronizar la cámara orbital con la dirección de la cámara de apuntado
         SyncOrbitalWithAimCamera();
         
@@ -86,16 +105,31 @@ public class PlayerShootingState : PlayerBaseState
         stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
     }
 
+    private void StopPaintAudio()
+    {
+        if (!wasFiringAudio) return;
+
+        stateMachine.PlayerAudio?.StopPaintLoop();
+        stateMachine.PlayerAudio?.PlayPaintEnd();
+        wasFiringAudio = false;
+    }
+
     private void Shoot()
     {
         if (stateMachine.ProjectilePrefab == null || stateMachine.FirePoint == null) return;
-        
-        Rigidbody proj = UnityEngine.Object.Instantiate(stateMachine.ProjectilePrefab, stateMachine.FirePoint.position, Quaternion.identity);
+
+        Rigidbody proj = UnityEngine.Object.Instantiate(
+            stateMachine.ProjectilePrefab,
+            stateMachine.FirePoint.position,
+            Quaternion.identity
+        );
         
         Vector3 direction = Camera.main.transform.forward;
         stateMachine.UseColor(0.1f);
+
         proj.linearVelocity = direction * speed;
         proj.useGravity = true;
+
         var inkProjectile = proj.GetComponent<InkProjectile>();
         if (inkProjectile != null)
         {

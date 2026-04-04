@@ -34,7 +34,12 @@ public class PlayerWhiteState : PlayerBaseState
     // State tracking
     protected float lastSpeed = 0f;
     protected float lastInputMagnitude = 0f;
-    
+
+    //Audio 
+    private bool audioWasGrounded;
+    private bool fallAudioPlayed;
+    private float lastVerticalVelocity;
+
     public PlayerWhiteState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
        
@@ -44,23 +49,23 @@ public class PlayerWhiteState : PlayerBaseState
     public override void Enter()
     {
         Debug.Log("Entered PlayerWhiteState");
-        
+
         SetPlayerState();
-        
         SetMaterialColor();
-        
         SubscribeToInputEvents();
-        
-        //SetupCamera();
-        
+
         stateMachine.CheckGrounded();
-        
+
         Vector3 movement = stateMachine.CalculateMovement();
         UpdateAnimatorParameters(movement, movement.magnitude, Time.deltaTime);
-        
+
         InitializeAnimator();
+
+        audioWasGrounded = stateMachine.isGrounded;
+        fallAudioPlayed = false;
+        lastVerticalVelocity = stateMachine.Controller.velocity.y;
     }
-    
+
     // Default player state
     // Overridden in other states
     protected virtual void SetPlayerState()
@@ -126,6 +131,33 @@ public class PlayerWhiteState : PlayerBaseState
 
         // Update animator parameters
         UpdateAnimatorParameters(movement, currentInputMagnitude, deltaTime);
+
+        float moveSpeed = currentInputMagnitude * stateMachine.FreeLookMovementSpeed;
+        bool isMoving = currentInputMagnitude > IdleThreshold;
+
+        stateMachine.PlayerAudio?.UpdateFootsteps(moveSpeed, stateMachine.isGrounded, isMoving);
+
+        // Fall audio
+        if (!stateMachine.isGrounded && stateMachine.Controller.velocity.y < -0.5f && !fallAudioPlayed)
+        {
+            stateMachine.PlayerAudio?.PlayFall();
+            fallAudioPlayed = true;
+        }
+
+        // Landing audio
+        if (!audioWasGrounded && stateMachine.isGrounded)
+        {
+            if (lastVerticalVelocity < -8f)
+                stateMachine.PlayerAudio?.PlayHeavyImpact();
+
+            fallAudioPlayed = false;
+        }
+
+        if (stateMachine.isGrounded)
+            fallAudioPlayed = false;
+
+        audioWasGrounded = stateMachine.isGrounded;
+        lastVerticalVelocity = stateMachine.Controller.velocity.y;
 
         // Handle blend tree transitions
         if (stateMachine.isGrounded)

@@ -12,7 +12,7 @@ public class PlayerSwimState : PlayerBaseState
 
     public PlayerSwimState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
-        
+
     }
 
 
@@ -23,10 +23,10 @@ public class PlayerSwimState : PlayerBaseState
         stateMachine.Animator.CrossFadeInFixedTime(DiveAnim, CrossFadeDuration);
         stateMachine.InputReader.DiveEvent += OnDiveExit;
         stateMachine.InputReader.JumpEvent += PerformInkJump;
-        
+
         // Camera
         stateMachine.mainCamera.Priority = 10;
-        
+
         originalHeight = stateMachine.Controller.height;
         originalCenter = stateMachine.Controller.center;
 
@@ -45,6 +45,8 @@ public class PlayerSwimState : PlayerBaseState
         // stateMachine.ForceReceiver.enabled = false;
 
         TogglePlayerMesh(true);
+
+        stateMachine.PlayerAudio?.StartSwimLoop();
     }
 
     public override void Tick(float deltaTime)
@@ -89,6 +91,7 @@ public class PlayerSwimState : PlayerBaseState
         // stateMachine.ForceReceiver.enabled = true;
 
         TogglePlayerMesh(false);
+        stateMachine.PlayerAudio?.StopSwimLoop();
     }
 
     private void HandleSwimMovement(float deltaTime)
@@ -205,7 +208,8 @@ public class PlayerSwimState : PlayerBaseState
             stateMachine.ForceReceiver.enabled = true;
         
         stateMachine.ForceReceiver.AddForce(jumpDir * jumpForce);
-        
+        stateMachine.PlayerAudio?.PlayJump();
+
         OnDiveExit();
     }
 

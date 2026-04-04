@@ -39,17 +39,22 @@ public class PlayerWhipState : PlayerBaseState
     private const float MinAngularVelocity = 1.5f;
     #endregion
 
+    // Audio
+    private bool spinAudioStarted;
+
     public PlayerWhipState(PlayerStateMachine stateMachine) : base(stateMachine) { }
 
     public override void Enter()
     {
         stateMachine.UseColor(0.5f);
         stateMachine.mainCamera.Priority = 10;
+        spinAudioStarted = false;
 
         if (TryFindAndCaptureObject())
         {
             currentMode = WhipMode.ObjectWhip;
             StartObjectWhipMode();
+            stateMachine.PlayerAudio?.PlayObjectGrab();
         }
         else if (TryFindGrapplePoint())
         {
@@ -93,9 +98,12 @@ public class PlayerWhipState : PlayerBaseState
         if (stateMachine.GrappleRope != null)
             stateMachine.GrappleRope.enabled = false;
 
+        stateMachine.PlayerAudio?.StopObjectSpin();
+        spinAudioStarted = false;
+
         switch (currentMode)
         {
-            case WhipMode.ObjectWhip:    ExitObjectWhip();    break;
+            case WhipMode.ObjectWhip: ExitObjectWhip(); break;
             case WhipMode.GrappleSwing: ExitGrappleSwing(); break;
         }
 
@@ -188,6 +196,13 @@ public class PlayerWhipState : PlayerBaseState
         {
             captureProgress = 1f;
             isCapturing = false;
+
+            //Audio
+            if (!spinAudioStarted)
+            {
+                stateMachine.PlayerAudio?.StartObjectSpin();
+                spinAudioStarted = true;
+            }
         }
 
         Vector3 playerPos = stateMachine.transform.position;
@@ -263,6 +278,11 @@ public class PlayerWhipState : PlayerBaseState
 
         capturedRigidbody.linearVelocity = Vector3.zero;
         capturedRigidbody.AddForce(throwDir * throwForce, ForceMode.Impulse);
+
+        //Audio
+        stateMachine.PlayerAudio?.StopObjectSpin();
+        stateMachine.PlayerAudio?.PlayObjectThrow();
+        spinAudioStarted = false;
 
         capturedObject = null;
         capturedRigidbody = null;
@@ -552,6 +572,8 @@ public class PlayerWhipState : PlayerBaseState
         }
         ExitWhipState();
     }
+
+
 
     #endregion
 }
