@@ -73,8 +73,19 @@ namespace FMODUnity
                     Lookup();
                 }
 
+                if (!eventDescription.isValid())
+                {
+                    RuntimeUtils.DebugLogWarning("[FMOD] EventDescription invalid when querying MaxDistance.");
+                    return 0f;
+                }
+
                 float minDistance, maxDistance;
-                eventDescription.getMinMaxDistance(out minDistance, out maxDistance);
+                FMOD.RESULT res = eventDescription.getMinMaxDistance(out minDistance, out maxDistance);
+                if (res != FMOD.RESULT.OK)
+                {
+                    RuntimeUtils.DebugLogError($"[FMOD] getMinMaxDistance failed: {res}");
+                    return 0f;
+                }
                 return maxDistance;
             }
         }

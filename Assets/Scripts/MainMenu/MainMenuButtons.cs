@@ -58,21 +58,25 @@ public class MainMenuButtons : MonoBehaviour
 
     public void PlayButton()
     {
+        AudioManager.Instance?.PlayUIMenuConfirm();
         MoveToNode(playNode, book, LoadGame);
     }
 
     public void SettingsButton()
     {
+        AudioManager.Instance?.PlayUIMenuConfirm();
         MoveToNode(settingsNode, theater, null);
     }
 
     public void BackButton()
     {
+        AudioManager.Instance?.PlayUIMenuBack();
         MoveToNode(menuNode, null, null);
     }
 
     public void ExitButton()
     {
+        AudioManager.Instance?.PlayUIMenuConfirm();
         Application.Quit();
     }
 

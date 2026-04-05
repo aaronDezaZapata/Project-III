@@ -33,12 +33,13 @@ public class InkProjectile : MonoBehaviour
         }
 
         ContactPoint cp = collision.GetContact(0);
-        
+
         if (stateMachine != null)
         {
             stateMachine.PaintSurface(cp.point, cp.normal);
+            stateMachine.PlayerAudio?.PlayPaintSurfaceImpact();
         }
-        
+
         done = true;
         Destroy(gameObject);
     }
