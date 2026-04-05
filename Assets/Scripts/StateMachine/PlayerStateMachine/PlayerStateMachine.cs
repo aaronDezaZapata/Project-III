@@ -454,6 +454,8 @@ public class PlayerStateMachine : StateMachine
         GameObject splat = Instantiate(InkDecalPrefab, point, finalRotation);
         GameManager.Instance.levelDecals.Add(splat);
         splat.transform.position += normal * ReticleSurfaceOffset;
+
+        PlayerAudio?.PlayPaintSpread();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -491,20 +493,27 @@ public class PlayerStateMachine : StateMachine
         switch (currentPuddleTag)
         {
             case "CharcoAzul":
+                PlayerAudio?.PlayInkwell();
                 StartFill(Color.blue);
                 break;
-            case "CharcoNegro":
-                SwitchState(typeof(PlayerWhiteState));
-                break;
+
             case "CharcoRojo":
+                PlayerAudio?.PlayInkwell();
                 StartFill(Color.red);
                 break;
+
             case "CharcoVerde":
+                PlayerAudio?.PlayInkwell();
                 StartFill(Color.green);
+                break;
+
+            case "CharcoNegro":
+                PlayerAudio?.PlayInkwell();
+                SwitchState(typeof(PlayerWhiteState));
                 break;
         }
     }
-    
+
     public void ReturnToMainState()
     {
         switch (playerState)

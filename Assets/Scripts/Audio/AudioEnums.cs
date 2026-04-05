@@ -14,3 +14,12 @@ public enum InkStateType
     Green = 3,
     Black = 4
 }
+
+public enum FootstepSurfaceType
+{
+    Ink = 0,
+    Leaves = 1,
+    Rock = 2,
+    Sand = 3,
+    Wood = 4
+}

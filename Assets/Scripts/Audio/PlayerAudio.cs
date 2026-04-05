@@ -11,21 +11,37 @@ public class PlayerAudio : MonoBehaviour
     [SerializeField] private EventReference fallEvent;
     [SerializeField] private EventReference heavyImpactEvent;
     [SerializeField] private EventReference footstepsEvent;
+    [SerializeField] private EventReference landingEvent;
 
     [Header("Paint / Ink")]
+    [SerializeField] private EventReference paintSpreadEvent;
+    [SerializeField] public float paintSpreadCooldown = 0.08f;
+    private float lastPaintSpreadTime;
     [SerializeField] private EventReference paintStartEvent;
     [SerializeField] private EventReference paintLoopEvent;
     [SerializeField] private EventReference paintEndEvent;
+    [SerializeField] private EventReference tpMarkEvent;
+    [SerializeField] private EventReference tpTravelEvent;
+    [SerializeField] private EventReference tpImpactEvent;
     [SerializeField] private EventReference swimLoopEvent;
+    [SerializeField] private EventReference swimEnterEvent;
+    [SerializeField] private EventReference swimExitEvent;
+    [SerializeField] private EventReference swimBoostEvent;
     [SerializeField] private EventReference blueBoostEvent;
     [SerializeField] private EventReference objectGrabEvent;
     [SerializeField] private EventReference objectSpinEvent;
+    [SerializeField] private EventReference objectImpactEvent;
+    [SerializeField] private EventReference whipThrowEvent;
+    [SerializeField] private EventReference whipAttachEvent;
+    [SerializeField] private EventReference whipSwingEvent;
+    [SerializeField] private EventReference whipReleaseEvent;
     [SerializeField] private EventReference blackActivateEvent;
     [SerializeField] private EventReference paintSurfaceImpactEvent;
     [SerializeField] private EventReference blueActivateEvent;
     [SerializeField] private EventReference blueAirControlEvent;
     [SerializeField] private EventReference objectThrowEvent;
     [SerializeField] private EventReference blackMasteryEvent;
+    [SerializeField] private EventReference inkwellEvent;
 
     private EventInstance blackMasteryInstance;
 
@@ -33,8 +49,10 @@ public class PlayerAudio : MonoBehaviour
     private EventInstance paintLoopInstance;
     private EventInstance swimLoopInstance;
     private EventInstance objectSpinInstance;
+    private EventInstance whipSwingInstance;
 
     private const string PARAM_PLAYER_SPEED = "PlayerSpeed";
+    private const string PARAM_SURFACE_TYPE = "SurfaceType";
 
     private void Start()
     {
@@ -52,6 +70,9 @@ public class PlayerAudio : MonoBehaviour
 
         if (!blackMasteryEvent.IsNull)
             blackMasteryInstance = RuntimeManager.CreateInstance(blackMasteryEvent);
+
+        if (!whipSwingEvent.IsNull)
+            whipSwingInstance = RuntimeManager.CreateInstance(whipSwingEvent);
     }
 
     public void PlayJump()
@@ -78,6 +99,21 @@ public class PlayerAudio : MonoBehaviour
             RuntimeManager.PlayOneShot(heavyImpactEvent, transform.position);
     }
 
+    public void PlayLanding()
+    {
+        if (!landingEvent.IsNull)
+            RuntimeManager.PlayOneShot(landingEvent, transform.position);
+    }
+
+    public void PlayPaintSpread()
+    {
+        if (paintSpreadEvent.IsNull) return;
+        if (Time.time < lastPaintSpreadTime + paintSpreadCooldown) return;
+
+        lastPaintSpreadTime = Time.time;
+        RuntimeManager.PlayOneShot(paintSpreadEvent, transform.position);
+    }
+
     public void PlayPaintStart()
     {
         if (!paintStartEvent.IsNull)
@@ -96,6 +132,24 @@ public class PlayerAudio : MonoBehaviour
             paintLoopInstance.stop(STOP_MODE.ALLOWFADEOUT);
     }
 
+    public void PlayTpMark()
+    {
+        if (!tpMarkEvent.IsNull)
+            RuntimeManager.PlayOneShot(tpMarkEvent, transform.position);
+    }
+
+    public void PlayTpTravel()
+    {
+        if (!tpTravelEvent.IsNull)
+            RuntimeManager.PlayOneShot(tpTravelEvent, transform.position);
+    }
+
+    public void PlayTpImpact()
+    {
+        if (!tpImpactEvent.IsNull)
+            RuntimeManager.PlayOneShot(tpImpactEvent, transform.position);
+    }
+
     public void StartSwimLoop()
     {
         if (swimLoopInstance.isValid())
@@ -110,6 +164,24 @@ public class PlayerAudio : MonoBehaviour
             swimLoopInstance.stop(STOP_MODE.ALLOWFADEOUT);
 
         AudioManager.Instance?.SetUnderInk(false);
+    }
+
+    public void PlaySwimEnter()
+    {
+        if (!swimEnterEvent.IsNull)
+            RuntimeManager.PlayOneShot(swimEnterEvent, transform.position);
+    }
+
+    public void PlaySwimExit()
+    {
+        if (!swimExitEvent.IsNull)
+            RuntimeManager.PlayOneShot(swimExitEvent, transform.position);
+    }
+
+    public void PlaySwimBoost()
+    {
+        if (!swimBoostEvent.IsNull)
+            RuntimeManager.PlayOneShot(swimBoostEvent, transform.position);
     }
 
     public void PlayBlueBoost()
@@ -136,17 +208,54 @@ public class PlayerAudio : MonoBehaviour
             objectSpinInstance.stop(STOP_MODE.ALLOWFADEOUT);
     }
 
+    public void PlayObjectImpact(Vector3 position)
+    {
+        if (!objectImpactEvent.IsNull)
+            RuntimeManager.PlayOneShot(objectImpactEvent, position);
+    }
+
+    public void PlayWhipThrow()
+    {
+        if (!whipThrowEvent.IsNull)
+            RuntimeManager.PlayOneShot(whipThrowEvent, transform.position);
+    }
+
+    public void PlayWhipAttach()
+    {
+        if (!whipAttachEvent.IsNull)
+            RuntimeManager.PlayOneShot(whipAttachEvent, transform.position);
+    }
+
+    public void StartWhipSwing()
+    {
+        if (whipSwingInstance.isValid())
+            whipSwingInstance.start();
+    }
+
+    public void StopWhipSwing()
+    {
+        if (whipSwingInstance.isValid())
+            whipSwingInstance.stop(STOP_MODE.ALLOWFADEOUT);
+    }
+
+    public void PlayWhipRelease()
+    {
+        if (!whipReleaseEvent.IsNull)
+            RuntimeManager.PlayOneShot(whipReleaseEvent, transform.position);
+    }
+
     public void PlayBlackActivate()
     {
         if (!blackActivateEvent.IsNull)
             RuntimeManager.PlayOneShot(blackActivateEvent, transform.position);
     }
 
-    public void UpdateFootsteps(float speed, bool grounded, bool moving)
+    public void UpdateFootsteps(float speed, FootstepSurfaceType surfaceType, bool grounded, bool moving)
     {
         if (!footstepsInstance.isValid()) return;
 
         footstepsInstance.setParameterByName(PARAM_PLAYER_SPEED, speed);
+        footstepsInstance.setParameterByName(PARAM_SURFACE_TYPE, (int)surfaceType);
 
         PLAYBACK_STATE playbackState;
         footstepsInstance.getPlaybackState(out playbackState);
@@ -166,6 +275,7 @@ public class PlayerAudio : MonoBehaviour
         ReleaseInstance(swimLoopInstance);
         ReleaseInstance(objectSpinInstance);
         ReleaseInstance(blackMasteryInstance);
+        ReleaseInstance(whipSwingInstance);
     }
 
     private void ReleaseInstance(EventInstance instance)
@@ -217,5 +327,10 @@ public class PlayerAudio : MonoBehaviour
     {
         if (blackMasteryInstance.isValid())
             blackMasteryInstance.stop(STOP_MODE.ALLOWFADEOUT);
+    }
+    public void PlayInkwell()
+    {
+        if (!inkwellEvent.IsNull)
+            RuntimeManager.PlayOneShot(inkwellEvent, transform.position);
     }
 }

@@ -41,6 +41,7 @@ public class PlayerWhipState : PlayerBaseState
 
     // Audio
     private bool spinAudioStarted;
+    private bool swingLoopAudioStarted;
 
     public PlayerWhipState(PlayerStateMachine stateMachine) : base(stateMachine) { }
 
@@ -49,6 +50,7 @@ public class PlayerWhipState : PlayerBaseState
         stateMachine.UseColor(0.5f);
         stateMachine.mainCamera.Priority = 10;
         spinAudioStarted = false;
+        swingLoopAudioStarted = false;
 
         if (TryFindAndCaptureObject())
         {
@@ -59,6 +61,7 @@ public class PlayerWhipState : PlayerBaseState
         else if (TryFindGrapplePoint())
         {
             currentMode = WhipMode.GrappleSwing;
+            stateMachine.PlayerAudio?.PlayWhipThrow();
             StartGrappleSwingMode();
         }
         else
@@ -99,7 +102,10 @@ public class PlayerWhipState : PlayerBaseState
             stateMachine.GrappleRope.enabled = false;
 
         stateMachine.PlayerAudio?.StopObjectSpin();
+        stateMachine.PlayerAudio?.StopWhipSwing();
+
         spinAudioStarted = false;
+        swingLoopAudioStarted = false;
 
         switch (currentMode)
         {
@@ -279,6 +285,12 @@ public class PlayerWhipState : PlayerBaseState
         capturedRigidbody.linearVelocity = Vector3.zero;
         capturedRigidbody.AddForce(throwDir * throwForce, ForceMode.Impulse);
 
+        ThrownObjectImpact impactComponent = capturedObject.GetComponent<ThrownObjectImpact>();
+        if (impactComponent == null)
+            impactComponent = capturedObject.gameObject.AddComponent<ThrownObjectImpact>();
+
+        impactComponent.Initialize(stateMachine.PlayerAudio, 4f);
+
         //Audio
         stateMachine.PlayerAudio?.StopObjectSpin();
         stateMachine.PlayerAudio?.PlayObjectThrow();
@@ -302,11 +314,18 @@ public class PlayerWhipState : PlayerBaseState
     {
         stateMachine.ForceReceiver.enabled = false;
         AttachToGrapplePoint();
+        stateMachine.PlayerAudio?.PlayWhipAttach();
     }
 
     private void TickGrappleSwing(float deltaTime)
     {
         if (!isAttached) return;
+
+        if (!swingLoopAudioStarted)
+        {
+            stateMachine.PlayerAudio?.StartWhipSwing();
+            swingLoopAudioStarted = true;
+        }
 
         ApplyPendulumPhysics(deltaTime);
         MovePlayer(deltaTime);
@@ -508,6 +527,10 @@ public class PlayerWhipState : PlayerBaseState
     {
         float currentY = stateMachine.transform.eulerAngles.y;
         stateMachine.transform.rotation = Quaternion.Euler(0f, currentY, 0f);
+
+        stateMachine.PlayerAudio?.StopWhipSwing();
+        stateMachine.PlayerAudio?.PlayWhipRelease();
+
         stateMachine.ForceReceiver.enabled = true;
         ApplySwingMomentum();
         isAttached = false;

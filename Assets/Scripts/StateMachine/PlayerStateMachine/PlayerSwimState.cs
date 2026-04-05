@@ -46,6 +46,7 @@ public class PlayerSwimState : PlayerBaseState
 
         TogglePlayerMesh(true);
 
+        stateMachine.PlayerAudio?.PlaySwimEnter();
         stateMachine.PlayerAudio?.StartSwimLoop();
     }
 
@@ -91,6 +92,7 @@ public class PlayerSwimState : PlayerBaseState
         // stateMachine.ForceReceiver.enabled = true;
 
         TogglePlayerMesh(false);
+        stateMachine.PlayerAudio?.PlaySwimExit();
         stateMachine.PlayerAudio?.StopSwimLoop();
     }
 
@@ -208,7 +210,7 @@ public class PlayerSwimState : PlayerBaseState
             stateMachine.ForceReceiver.enabled = true;
         
         stateMachine.ForceReceiver.AddForce(jumpDir * jumpForce);
-        stateMachine.PlayerAudio?.PlayJump();
+        stateMachine.PlayerAudio?.PlaySwimBoost();
 
         OnDiveExit();
     }

@@ -12,32 +12,33 @@ public class PlayerDashAttackState : PlayerBaseState
     
     public PlayerDashAttackState(PlayerStateMachine stateMachine) : base(stateMachine)
     { }
-    
+
     public override void Enter()
     {
         Debug.Log("Entered PlayerDashAttackState");
-        
+
         targetEnemy = FindNearestPaintedTarget();
-        
+
         if (targetEnemy == null)
         {
             Debug.LogWarning("No painted enemy found, returning to FreeLook");
             stateMachine.ReturnToMainState();
             return;
         }
-        
+
         dashDirection = (targetEnemy.position - stateMachine.transform.position).normalized;
         dashSpeed = stateMachine.DashAttackSpeed;
         hasHitTarget = false;
         dashTimer = 0f;
-        
+
         FaceTarget(targetEnemy);
-        
+
         stateMachine.ForceReceiver.SetUseGravity(false);
+        stateMachine.PlayerAudio?.PlayTpTravel();
 
         Debug.Log($"Dashing towards {targetEnemy.name} at speed {dashSpeed}");
     }
-    
+
     public override void Tick(float deltaTime)
     {
         dashTimer += deltaTime;
@@ -107,6 +108,8 @@ public class PlayerDashAttackState : PlayerBaseState
     private void OnHitEnemy()
     {
         hasHitTarget = true;
+
+        stateMachine.PlayerAudio?.PlayTpImpact();
 
         // Aplicar daño al enemigo
         EnemyStateMachine enemyStateMachine = targetEnemy.GetComponent<EnemyStateMachine>();

@@ -1,3 +1,4 @@
+using FMOD.Studio;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -40,6 +41,12 @@ public class PlayerWhiteState : PlayerBaseState
     private bool fallAudioPlayed;
     private float lastVerticalVelocity;
 
+    private int inkLayer;
+    private int leavesLayer;
+    private int rockLayer;
+    private int sandLayer;
+    private int woodLayer;
+
     public PlayerWhiteState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
        
@@ -64,6 +71,12 @@ public class PlayerWhiteState : PlayerBaseState
         audioWasGrounded = stateMachine.isGrounded;
         fallAudioPlayed = false;
         lastVerticalVelocity = stateMachine.Controller.velocity.y;
+
+        inkLayer = LayerMask.NameToLayer("Ink");
+        leavesLayer = LayerMask.NameToLayer("Leaves");
+        rockLayer = LayerMask.NameToLayer("Rock");
+        sandLayer = LayerMask.NameToLayer("Sand");
+        woodLayer = LayerMask.NameToLayer("Wood");
     }
 
     // Default player state
@@ -134,8 +147,9 @@ public class PlayerWhiteState : PlayerBaseState
 
         float moveSpeed = currentInputMagnitude * stateMachine.FreeLookMovementSpeed;
         bool isMoving = currentInputMagnitude > IdleThreshold;
+        FootstepSurfaceType surfaceType = GetCurrentFootstepSurface();
 
-        stateMachine.PlayerAudio?.UpdateFootsteps(moveSpeed, stateMachine.isGrounded, isMoving);
+        stateMachine.PlayerAudio?.UpdateFootsteps(moveSpeed, surfaceType, stateMachine.isGrounded, isMoving);
 
         // Fall audio
         if (!stateMachine.isGrounded && stateMachine.Controller.velocity.y < -0.5f && !fallAudioPlayed)
@@ -149,6 +163,8 @@ public class PlayerWhiteState : PlayerBaseState
         {
             if (lastVerticalVelocity < -8f)
                 stateMachine.PlayerAudio?.PlayHeavyImpact();
+            else
+                stateMachine.PlayerAudio?.PlayLanding();
 
             fallAudioPlayed = false;
         }
@@ -235,6 +251,33 @@ public class PlayerWhiteState : PlayerBaseState
                 stateMachine.Animator.CrossFadeInFixedTime(StopRun, CrossFadeDuration);
             }*/
         }
+    }
+
+    private FootstepSurfaceType GetCurrentFootstepSurface()
+    {
+        Vector3 origin = stateMachine.transform.position + Vector3.up * 0.2f;
+
+        if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, 2f))
+        {
+            int layer = hit.collider.gameObject.layer;
+
+            if (layer == inkLayer)
+                return FootstepSurfaceType.Ink;
+
+            if (layer == leavesLayer)
+                return FootstepSurfaceType.Leaves;
+
+            if (layer == sandLayer)
+                return FootstepSurfaceType.Sand;
+
+            if (layer == woodLayer)
+                return FootstepSurfaceType.Wood;
+
+            if (layer == rockLayer)
+                return FootstepSurfaceType.Rock;
+        }
+
+        return FootstepSurfaceType.Rock;
     }
 
     public override void Exit()
