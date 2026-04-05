@@ -34,7 +34,10 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public Health Health { get; private set; }
 
     [field: SerializeField] public SkinnedMeshRenderer Mat_Player { get; private set; }
-    
+
+    [field: Header("Audio")]
+    [field: SerializeField] public PlayerAudio PlayerAudio { get; private set; }
+
     [field: Header("Mesh Settings")]
     [field: SerializeField] public GameObject OriginalMesh { get; private set; }
     [field: SerializeField] public GameObject SharkFinMesh { get; private set; }
@@ -341,6 +344,15 @@ public class PlayerStateMachine : StateMachine
 
     private string currentPuddleTag = "";
 
+    private void Awake()
+    {
+        if (PlayerAudio == null)
+        {
+            PlayerAudio = GetComponentInChildren<PlayerAudio>();
+            if (PlayerAudio == null)
+                Debug.LogError("PlayerAudio no encontrado", gameObject);
+        }
+    }
 
     private void Start()
     {
@@ -442,6 +454,8 @@ public class PlayerStateMachine : StateMachine
         GameObject splat = Instantiate(InkDecalPrefab, point, finalRotation);
         GameManager.Instance.levelDecals.Add(splat);
         splat.transform.position += normal * ReticleSurfaceOffset;
+
+        PlayerAudio?.PlayPaintSpread();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -458,6 +472,7 @@ public class PlayerStateMachine : StateMachine
 
             case "CheckPoint":
                 GameManager.Instance.GetNewCheckPoint(other.transform);
+                AudioManager.Instance?.PlayUICheckpoint();
                 break;
 
             default:
@@ -478,20 +493,27 @@ public class PlayerStateMachine : StateMachine
         switch (currentPuddleTag)
         {
             case "CharcoAzul":
+                PlayerAudio?.PlayInkwell();
                 StartFill(Color.blue);
                 break;
-            case "CharcoNegro":
-                SwitchState(typeof(PlayerWhiteState));
-                break;
+
             case "CharcoRojo":
+                PlayerAudio?.PlayInkwell();
                 StartFill(Color.red);
                 break;
+
             case "CharcoVerde":
+                PlayerAudio?.PlayInkwell();
                 StartFill(Color.green);
+                break;
+
+            case "CharcoNegro":
+                PlayerAudio?.PlayInkwell();
+                SwitchState(typeof(PlayerWhiteState));
                 break;
         }
     }
-    
+
     public void ReturnToMainState()
     {
         switch (playerState)
@@ -808,19 +830,20 @@ public class PlayerStateMachine : StateMachine
 
         if (!stateFound)
         {
+            AudioManager.Instance?.SetInkState(InkStateType.Base);
             SwitchState(typeof(PlayerWhiteState));
             return;
         }
 
-        
+
         Type currentState = GetCurrentState().GetType();
 
         if (currentState == targetState) return;
-
         if (targetState == typeof(PlayerRedState) && currentState == typeof(PlayerShootingState)) return;
         if (targetState == typeof(PlayerGreenState) && currentState == typeof(PlayerWhipState)) return;
         if (targetState == typeof(PlayerBlueState) && currentState == typeof(PlayerGeyserState)) return;
 
+        UpdateInkAudioForState(targetState);
         SwitchState(targetState);
     }
 
@@ -988,5 +1011,18 @@ public class PlayerStateMachine : StateMachine
                 Gizmos.DrawSphere(hit.point, 0.05f);
             }
         }
+    }
+
+    //helper audio 
+    private void UpdateInkAudioForState(Type targetState)
+    {
+        if (targetState == typeof(PlayerWhiteState))
+            AudioManager.Instance?.SetInkState(InkStateType.Base);
+        else if (targetState == typeof(PlayerRedState))
+            AudioManager.Instance?.SetInkState(InkStateType.Red);
+        else if (targetState == typeof(PlayerBlueState))
+            AudioManager.Instance?.SetInkState(InkStateType.Blue);
+        else if (targetState == typeof(PlayerGreenState))
+            AudioManager.Instance?.SetInkState(InkStateType.Green);
     }
 }
