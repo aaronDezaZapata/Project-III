@@ -109,6 +109,14 @@ public class PlayerStateMachine : StateMachine
     public bool isGrounded;
     public bool isOnSteepSlope;
 
+    [field: Header("Particles")]
+    [field: SerializeField] public ParticleSystem FootstepParticles1 { get; private set; }
+    [field: SerializeField] public ParticleSystem FootstepParticles2 { get; private set; }
+    [field: SerializeField] public ParticleSystem LandingParticles { get; private set; }
+    [field: SerializeField] public float MinFallVelocityToPlayLandingParticle { get; private set; } = 5f;
+
+    private int _footstepIndex = 0;
+
 
     [field: Header("Swim Mechanics")]
     [field: SerializeField] public float SwimSpeed { get; private set; } = 12f;
@@ -560,6 +568,9 @@ public class PlayerStateMachine : StateMachine
 
     public void CheckGrounded()
     {
+        bool wasGroundedBefore = isGrounded;
+        float fallVelocityBeforeLand = ForceReceiver != null ? ForceReceiver.VerticalVelocity : 0f;
+
         bool hitGround = Physics.SphereCast(
             groundCheckOrigin.position,
             groundCheckRadius,
@@ -581,9 +592,32 @@ public class PlayerStateMachine : StateMachine
 
         if (isGrounded)
         {
+            if (!wasGroundedBefore)
+            {
+                if (Mathf.Abs(fallVelocityBeforeLand) >= MinFallVelocityToPlayLandingParticle)
+                {
+                    if (LandingParticles != null)
+                        LandingParticles.Play();
+                }
+            }
+
             isGeyserOnCooldown = false;
             geyserCooldownTimer = 0f;
             isOnSteepSlope = false;
+        }
+    }
+
+    public void PlayFootstepParticle()
+    {
+        if (_footstepIndex == 0)
+        {
+            if (FootstepParticles1 != null) FootstepParticles1.Play();
+            _footstepIndex = 1;
+        }
+        else
+        {
+            if (FootstepParticles2 != null) FootstepParticles2.Play();
+            _footstepIndex = 0;
         }
     }
 
