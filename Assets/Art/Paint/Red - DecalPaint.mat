@@ -42,7 +42,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Normal_Map:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 20c9fa289263edf459a5ff7b73dda851, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
@@ -50,7 +50,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BrushNoise:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 55843075f95aefd4fb5708957f541f12, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -107,7 +107,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - Normal_Blend: 0.5
+    - Normal_Blend: 1.34
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaPower: 1.5
@@ -128,21 +128,21 @@ Material:
     - _DrawOrder: 0
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _Edge: 3
+    - _Edge: 1
     - _EdgeBreak: 0.2
     - _EdgeTintStrength: 0.15
     - _EnvironmentReflections: 1
-    - _FlowStrength: 0.05
+    - _FlowStrength: 3
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0
-    - _NormalStrength: 1.2
+    - _NormalStrength: 2.67
     - _OcclusionStrength: 1
     - _Parallax: 0.005
-    - _PlayerDistortStrength: 0.2
-    - _PlayerFalloffPower: 2
-    - _PlayerRadius: 1.2
+    - _PlayerDistortStrength: 3
+    - _PlayerFalloffPower: 1
+    - _PlayerRadius: 2
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
@@ -151,14 +151,20 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _TrailAlphaCut: 0.3
+    - _TrailDarkenStrength: 0.6
+    - _TrailFalloff: 1.5
+    - _TrailRadius: 0.8
+    - _TrailStrength: 1
+    - _WetHighlightStrength: 0.1
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _PaintColor: {r: 0, g: 0, b: 0, a: 0}
-    - _PaintColor2: {r: 0, g: 0, b: 0, a: 0}
+    - _PaintColor: {r: 1, g: 0, b: 0, a: 0}
+    - _PaintColor2: {r: 1, g: 0, b: 0, a: 0}
     - _PlayerPositionWS: {r: 0, g: 0, b: 0, a: 0}
     - _PlayerVelocityWS: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
