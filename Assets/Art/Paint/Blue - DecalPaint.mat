@@ -49,6 +49,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _BrushNoise:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -106,12 +110,14 @@ Material:
     - Normal_Blend: 0.5
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
+    - _AlphaPower: 1.5
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
+    - _ColorNoiseStrength: 0.35
     - _Cull: 2
     - _Cutoff: 0.5
     - _DecalMeshBiasType: 0
@@ -122,13 +128,24 @@ Material:
     - _DrawOrder: 0
     - _DstBlend: 0
     - _DstBlendAlpha: 0
+    - _Edge: 3
+    - _EdgeBreak: 0.2
+    - _EdgeTintStrength: 0.15
     - _EnvironmentReflections: 1
+    - _FlowStrength: 0.05
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _HighlightMoveReduction: 0.7
+    - _IdleSwirlScale: 8
+    - _IdleSwirlStrength: 0.03
     - _Metallic: 0
+    - _NormalStrength: 1.2
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _PlayerDistortStrength: 0.2
+    - _PlayerFalloffPower: 2
+    - _PlayerRadius: 1.2
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
@@ -137,12 +154,25 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _SwimSpeedMax: 2
+    - _SwimSpeedMin: 0.3
+    - _SwimTrailColorStrength: 0.2
+    - _SwimTrailNoiseStrength: 0.12
+    - _SwimTrailStretch: 1.5
+    - _TrailAlphaCut: 0.35
+    - _TrailDarkenStrength: 0.5
+    - _TrailFalloff: 1.5
+    - _TrailRadius: 0.8
+    - _WetHighlightStrength: 0.1
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 0.9811321, g: 0.9811321, b: 0.9811321, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _PaintColor: {r: 0, g: 0, b: 0, a: 0}
+    - _PaintColor2: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _SwimTrailColor: {r: 1, g: 0.40094337, b: 0.40094337, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
