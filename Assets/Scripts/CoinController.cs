@@ -12,7 +12,7 @@ public class CoinController : MonoBehaviour
     public float attractionDistance = 6f;
     public float attractionSpeed = 12f;
     public float targetHeight = 1f;
-
+    public GameObject grabParticleSystem;
     private Transform player;
     private bool collected;
 
@@ -68,8 +68,8 @@ public class CoinController : MonoBehaviour
         collected = true;
 
         GameManager.Instance.AddCoin(coinValue);
-        SoundFXManager.Instance.PlaySoundFXClipRandPitch(getCoinSound, transform, 1f, minPitch, maxPitch);
-
+        //SoundFXManager.Instance.PlaySoundFXClipRandPitch(getCoinSound, transform, 1f, minPitch, maxPitch);
+        Instantiate(grabParticleSystem,transform.position,Quaternion.identity);
         foreach (Collider c in allColliders)
             c.enabled = false;
 
