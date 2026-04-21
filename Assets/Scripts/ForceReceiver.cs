@@ -17,6 +17,8 @@ public class ForceReceiver : MonoBehaviour
 
     private bool useGravity = true;
 
+    public float VerticalVelocity => verticalVelocity;
+
     public Vector3 Movement => impact + Vector3.up * verticalVelocity;
 
     private void Update()
