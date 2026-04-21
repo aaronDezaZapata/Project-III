@@ -8,7 +8,7 @@ public class OnboardingPaperMotion : MonoBehaviour
         DoubleJump,
         Walk,
         HeiserFloat,
-        Liana,
+        Whip,
         PaintBounce,
         PullPopup
     }
@@ -151,8 +151,8 @@ public class OnboardingPaperMotion : MonoBehaviour
                 finished = AnimateHeiserFloat();
                 break;
 
-            case MotionType.Liana:
-                finished = AnimateLiana();
+            case MotionType.Whip:
+                finished = AnimateWhip();
                 break;
 
             case MotionType.PaintBounce:
@@ -166,7 +166,10 @@ public class OnboardingPaperMotion : MonoBehaviour
 
         if (finished)
         {
-            if (motionType == MotionType.Walk)
+            if (motionType == MotionType.Walk ||
+        motionType == MotionType.Jump ||
+        motionType == MotionType.DoubleJump ||
+        motionType == MotionType.Whip)
                 return;
 
             if (loop)
@@ -209,14 +212,29 @@ public class OnboardingPaperMotion : MonoBehaviour
         float duration = 1f;
         float t = Mathf.Clamp01(timer / duration);
 
-        float direction = isFacingRight ? 1f : -1f;
+        float targetX = walkForward ? horizontalDistance : -horizontalDistance;
 
-        float x = Mathf.Lerp(0f, horizontalDistance * direction, t);
+        float x = Mathf.Lerp(0f, targetX, t);
+
+        // arco de salto
         float y = 4f * verticalDistance * t * (1f - t);
 
-        ApplyTransform(new Vector3(x, y, 0f), Mathf.Sin(t * Mathf.PI) * rotationAmount);
+        float rot = Mathf.Sin(t * Mathf.PI) * rotationAmount;
 
-        return t >= 1f;
+        ApplyTransform(new Vector3(x, y, 0f), rot);
+
+        if (t >= 1f)
+        {
+            currentAnchorPos += new Vector3(targetX, 0f, 0f);
+
+            walkForward = !walkForward;
+            isFacingRight = walkForward;
+            ApplyFacingDirection();
+
+            timer = 0f;
+        }
+
+        return false;
     }
 
     private bool AnimateDoubleJump()
@@ -224,9 +242,9 @@ public class OnboardingPaperMotion : MonoBehaviour
         float duration = 1.4f;
         float t = Mathf.Clamp01(timer / duration);
 
-        float direction = isFacingRight ? 1f : -1f;
+        float targetX = walkForward ? horizontalDistance : -horizontalDistance;
+        float x = Mathf.Lerp(0f, targetX, t);
 
-        float x = Mathf.Lerp(0f, horizontalDistance * direction, t);
         float y = 0f;
 
         if (t < 0.5f)
@@ -240,9 +258,21 @@ public class OnboardingPaperMotion : MonoBehaviour
             y = 4f * verticalDistance * 0.85f * localT * (1f - localT) + verticalDistance * 0.2f;
         }
 
-        ApplyTransform(new Vector3(x, y, 0f), Mathf.Sin(t * Mathf.PI * 2f) * rotationAmount);
+        float rot = Mathf.Sin(t * Mathf.PI * 2f) * rotationAmount;
+        ApplyTransform(new Vector3(x, y, 0f), rot);
 
-        return t >= 1f;
+        if (t >= 1f)
+        {
+            currentAnchorPos += new Vector3(targetX, 0f, 0f);
+
+            walkForward = !walkForward;
+            isFacingRight = walkForward;
+            ApplyFacingDirection();
+
+            timer = 0f;
+        }
+
+        return false;
     }
 
     private bool AnimateWalk()
@@ -282,19 +312,31 @@ public class OnboardingPaperMotion : MonoBehaviour
         return false;
     }
 
-    private bool AnimateLiana()
+    private bool AnimateWhip()
     {
         float duration = 0.55f;
         float t = Mathf.Clamp01(timer / duration);
 
-        float direction = isFacingRight ? 1f : -1f;
+        float targetX = walkForward ? horizontalDistance : -horizontalDistance;
 
-        float x = Mathf.Lerp(0f, horizontalDistance * direction, t);
+        float x = Mathf.Lerp(0f, targetX, t);
         float y = Mathf.Sin(t * Mathf.PI) * sineAmplitude;
 
-        ApplyTransform(new Vector3(x, y, 0f), Mathf.Sin(t * Mathf.PI) * rotationAmount);
+        float rot = Mathf.Sin(t * Mathf.PI) * rotationAmount;
+        ApplyTransform(new Vector3(x, y, 0f), rot);
 
-        return t >= 1f;
+        if (t >= 1f)
+        {
+            currentAnchorPos += new Vector3(targetX, 0f, 0f);
+
+            walkForward = !walkForward;
+            isFacingRight = walkForward;
+            ApplyFacingDirection();
+
+            timer = 0f;
+        }
+
+        return false;
     }
 
     private bool AnimatePaintBounce()
