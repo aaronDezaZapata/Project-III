@@ -101,16 +101,22 @@ InitTestScene*.unity*
 ### FMOD Unity Integration ###
 # Never ignore DLLs in the FMOD subfolder, so make sure that the FMOD-folder is in the correct path.
 !/[Aa]ssets/Plugins/FMOD/**/*.dll
+!/[Aa]ssets/Plugins/FMOD/**/lib/
 
 # Don't ignore images and gizmos used by FMOD in the Unity Editor
-!/[Aa}ssets/Gizmos/FMOD/*
-!/[Aa}ssets/Editor Default Resources/FMOD/*
+!/[Aa]ssets/Gizmos/FMOD/*
+!/[Aa]ssets/Editor Default Resources/FMOD/*
 
 # Ignore the Cache-file since it is updated locally either way
 /[Aa]ssets/**/FMODStudioCache.asset
 /[Aa]ssets/**/FMODStudioCache.asset.meta
 /[Aa]ssets/Plugins/FMOD/Cache.meta
 /[Aa]ssets/Plugins/FMOD/Cache/Editor.meta
+/[Aa]ssets/Plugins/FMOD/Cache/*
+
+# Ignore bank files in the StreaminAssets folder
+/[Aa]ssets/StreaminAssets/**/*.bank
+/[Aa]ssets/StreaminAssets/**/*.bank.meta
 
 # Log-files
 fmod.log
@@ -119,3 +125,7 @@ fmod_editor.log
 # FMOD 1.10.x (Legacy)
 /Assets/FMODAssets/*
 /Assets/FMODStudioCache.meta
+
+# Avoid issues
+Assets/Plugins/FMOD/**/*.bundle text eol=lf
+Assets/Plugins/FMOD/**/info.plist text eol=lf
