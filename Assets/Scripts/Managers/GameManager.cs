@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int totalStarsNeeded = 3;
     [SerializeField] private int starsCollected = 0;
     [SerializeField] private PortalController portal;
+    [SerializeField] private Vector3 portalSpawnOffset = new Vector3(0f, 2f, 0f);
 
     private bool portalOpened = false;
 
@@ -78,7 +79,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Coins Collected: " + coinsCollected);
     }
 
-    public void CollectStar(int amount = 1)
+    public void CollectStar(int amount, Vector3 lastStarPosition)
     {
         starsCollected += amount;
         Debug.Log("Stars Collected: " + starsCollected + "/" + totalStarsNeeded);
@@ -89,6 +90,7 @@ public class GameManager : MonoBehaviour
 
             if (portal != null)
             {
+                portal.transform.position = lastStarPosition + portalSpawnOffset;
                 portal.OpenPortal();
             }
             else
