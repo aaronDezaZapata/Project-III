@@ -39,21 +39,29 @@ public class PlayerWhipState : PlayerBaseState
     private const float MinAngularVelocity = 1.5f;
     #endregion
 
+    // Audio
+    private bool spinAudioStarted;
+    private bool swingLoopAudioStarted;
+
     public PlayerWhipState(PlayerStateMachine stateMachine) : base(stateMachine) { }
 
     public override void Enter()
     {
         stateMachine.UseColor(0.5f);
         stateMachine.mainCamera.Priority = 10;
+        spinAudioStarted = false;
+        swingLoopAudioStarted = false;
 
         if (TryFindAndCaptureObject())
         {
             currentMode = WhipMode.ObjectWhip;
             StartObjectWhipMode();
+            stateMachine.PlayerAudio?.PlayObjectGrab();
         }
         else if (TryFindGrapplePoint())
         {
             currentMode = WhipMode.GrappleSwing;
+            stateMachine.PlayerAudio?.PlayWhipThrow();
             StartGrappleSwingMode();
         }
         else
@@ -93,9 +101,15 @@ public class PlayerWhipState : PlayerBaseState
         if (stateMachine.GrappleRope != null)
             stateMachine.GrappleRope.enabled = false;
 
+        stateMachine.PlayerAudio?.StopObjectSpin();
+        stateMachine.PlayerAudio?.StopWhipSwing();
+
+        spinAudioStarted = false;
+        swingLoopAudioStarted = false;
+
         switch (currentMode)
         {
-            case WhipMode.ObjectWhip:    ExitObjectWhip();    break;
+            case WhipMode.ObjectWhip: ExitObjectWhip(); break;
             case WhipMode.GrappleSwing: ExitGrappleSwing(); break;
         }
 
@@ -188,6 +202,13 @@ public class PlayerWhipState : PlayerBaseState
         {
             captureProgress = 1f;
             isCapturing = false;
+
+            //Audio
+            if (!spinAudioStarted)
+            {
+                stateMachine.PlayerAudio?.StartObjectSpin();
+                spinAudioStarted = true;
+            }
         }
 
         Vector3 playerPos = stateMachine.transform.position;
@@ -264,6 +285,17 @@ public class PlayerWhipState : PlayerBaseState
         capturedRigidbody.linearVelocity = Vector3.zero;
         capturedRigidbody.AddForce(throwDir * throwForce, ForceMode.Impulse);
 
+        ThrownObjectImpact impactComponent = capturedObject.GetComponent<ThrownObjectImpact>();
+        if (impactComponent == null)
+            impactComponent = capturedObject.gameObject.AddComponent<ThrownObjectImpact>();
+
+        impactComponent.Initialize(stateMachine.PlayerAudio, 4f);
+
+        //Audio
+        stateMachine.PlayerAudio?.StopObjectSpin();
+        stateMachine.PlayerAudio?.PlayObjectThrow();
+        spinAudioStarted = false;
+
         capturedObject = null;
         capturedRigidbody = null;
     }
@@ -282,11 +314,18 @@ public class PlayerWhipState : PlayerBaseState
     {
         stateMachine.ForceReceiver.enabled = false;
         AttachToGrapplePoint();
+        stateMachine.PlayerAudio?.PlayWhipAttach();
     }
 
     private void TickGrappleSwing(float deltaTime)
     {
         if (!isAttached) return;
+
+        if (!swingLoopAudioStarted)
+        {
+            stateMachine.PlayerAudio?.StartWhipSwing();
+            swingLoopAudioStarted = true;
+        }
 
         ApplyPendulumPhysics(deltaTime);
         MovePlayer(deltaTime);
@@ -488,6 +527,10 @@ public class PlayerWhipState : PlayerBaseState
     {
         float currentY = stateMachine.transform.eulerAngles.y;
         stateMachine.transform.rotation = Quaternion.Euler(0f, currentY, 0f);
+
+        stateMachine.PlayerAudio?.StopWhipSwing();
+        stateMachine.PlayerAudio?.PlayWhipRelease();
+
         stateMachine.ForceReceiver.enabled = true;
         ApplySwingMomentum();
         isAttached = false;
@@ -552,6 +595,8 @@ public class PlayerWhipState : PlayerBaseState
         }
         ExitWhipState();
     }
+
+
 
     #endregion
 }

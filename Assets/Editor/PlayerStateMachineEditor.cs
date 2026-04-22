@@ -65,6 +65,14 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("groundCheckOrigin");
         DrawBackingProperty("isGrounded");
 
+        // PARTICLES
+        EditorGUILayout.Space(10);
+        DrawHeader("Particles", Color.white);
+        DrawBackingProperty("FootstepParticles1");
+        DrawBackingProperty("FootstepParticles2");
+        DrawBackingProperty("LandingParticles");
+        DrawBackingProperty("MinFallVelocityToPlayLandingParticle");
+
         // COMMON SPLATOON & SHOOTING
         EditorGUILayout.Space(10);
         DrawHeader("SPLATOON & SHOOTING", Color.cyan);
