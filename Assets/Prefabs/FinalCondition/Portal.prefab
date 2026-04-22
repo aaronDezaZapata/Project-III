@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8956643710334477020}
+  - component: {fileID: 1730722859966733942}
   m_Layer: 0
   m_Name: Portal
   m_TagString: Untagged
@@ -33,6 +34,22 @@ Transform:
   - {fileID: 7072386682206343631}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1730722859966733942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 503905712922726726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0210a42552320fa4f96ad17b508417a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  portalVisual: {fileID: 8749546483368692449}
+  portalTrigger: {fileID: 2498547170653622902}
+  openParticles: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!1 &3850159826856276913
 GameObject:
   m_ObjectHideFlags: 0
@@ -154,7 +171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d66a54992e03a664d9fcd7612d4be135, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UniqueID: a1c5cba4-bad2-4962-9386-858d6f0be4b4
+  UniqueID: 9ac8fc6f-8e11-4d67-a039-f1c2a0d1ee5a
   hasUnsyncedChanges: 1
 --- !u!23 &3832545271466450144
 MeshRenderer:
