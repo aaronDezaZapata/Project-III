@@ -12,6 +12,7 @@ Material:
   m_Parent: {fileID: 2100000, guid: f0ce4389e673c9b4e812de78902df2e4, type: 2}
   m_ModifiedSerializedProperties: 16
   m_ValidKeywords:
+  - _DETAIL_SCALED
   - _METALLICSPECGLOSSMAP
   - _NORMALMAP
   - _OCCLUSIONMAP
@@ -38,6 +39,18 @@ Material:
         m_Texture: {fileID: 2800000, guid: 43bebe652a7e97a489ba3b4c6e618e0e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 2800000, guid: d307ec38949ee7f4eaef9fd94519f5a4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 2800000, guid: 239f18b84ec49f74f976c30c87971a22, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 2800000, guid: b5176fee5458e5a4b96c1f31201f3963, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: 5d6b9833182d4664f99c64bbbe030021, type: 3}
         m_Scale: {x: 2, y: 2}
@@ -56,7 +69,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BumpScale: 1.8
+    - _BumpScale: 3
+    - _DetailAlbedoMapScale: 0.194
     - _Parallax: 0.0102
     - _QueueOffset: 1
     - _Smoothness: 0.088
