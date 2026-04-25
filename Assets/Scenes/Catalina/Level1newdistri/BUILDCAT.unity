@@ -18061,6 +18061,18 @@ PrefabInstance:
       value: -90
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 1ad5626fd0f9a044ca7abc0a81eb4e1d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 1ad5626fd0f9a044ca7abc0a81eb4e1d, type: 3}
+      propertyPath: m_MotionVectors
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 1ad5626fd0f9a044ca7abc0a81eb4e1d, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 1ad5626fd0f9a044ca7abc0a81eb4e1d, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: ccf9b210591ae454ba5f18e7728a9a0f, type: 2}
@@ -18077,7 +18089,7 @@ PrefabInstance:
       addedObject: {fileID: 1163933271}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1ad5626fd0f9a044ca7abc0a81eb4e1d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1163933275}
+      addedObject: {fileID: 1163933280}
   m_SourcePrefab: {fileID: 100100000, guid: 1ad5626fd0f9a044ca7abc0a81eb4e1d, type: 3}
 --- !u!1 &101432472
 GameObject:
@@ -218815,28 +218827,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UniqueID: 713b68a7-2e77-4116-97b9-23ad1821508e
   hasUnsyncedChanges: 1
---- !u!64 &1163933275
-MeshCollider:
+--- !u!114 &1163933280
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1163933270}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 7450741763379908841, guid: 1ad5626fd0f9a044ca7abc0a81eb4e1d, type: 3}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9458496307c510646bdfe3332568b686, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 468937171}
+  detectionRange: 26.09
+  rotationSpeed: 5
+  rotateX: 0
+  rotateY: 1
+  rotateZ: 0
+  invertLookDirection: 0
 --- !u!1 &1163939799 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5413650559059023151, guid: 3134cf7629966d44c931806d70a24910, type: 3}
