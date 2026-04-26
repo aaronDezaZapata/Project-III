@@ -542,7 +542,23 @@ public class PlayerStateMachine : StateMachine
                 break;
         }
     }
-    
+
+    public void ForceExitSwimState(Vector3 pushDirection, float pushForce)
+    {
+        if (GetCurrentState() is not PlayerSwimState)
+            return;
+
+        if (!ForceReceiver.isActiveAndEnabled)
+            ForceReceiver.enabled = true;
+
+        ReturnToMainState();
+
+        if (pushForce > 0f)
+        {
+            ForceReceiver.AddForce(pushDirection.normalized * pushForce);
+        }
+    }
+
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         switch(hit.transform.tag)
