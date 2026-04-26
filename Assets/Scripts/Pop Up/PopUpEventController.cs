@@ -108,8 +108,9 @@ public class PopUpEventController : MonoBehaviour
     private void HandleInteraction()
     {
         if (eventDone) return;
+        if (_player == null) return;
         
-        if (!_player.isOnEvent && canBeTriggered && _player != null)
+        if (_player != null && canBeTriggered && !_player.isOnEvent)
             StartEvent();
         else if (_player.isOnEvent && eventActive)
             CancelEvent();

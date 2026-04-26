@@ -23,18 +23,10 @@ public class CoinController : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("CoinController en: " + gameObject.name);
 
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj != null)
-        {
-            player = playerObj.transform;
-            Debug.Log("Player encontrado: " + player.name);
-        }
-        else
-        {
-            Debug.LogWarning("No se encontró Player");
-        }
+
+        GameObject playerObj = GameManager.Instance.GetPlayer().gameObject;
+        
 
         allRenderers = GetComponentsInChildren<Renderer>(true);
         allAnimators = GetComponentsInChildren<Animator>(true);
