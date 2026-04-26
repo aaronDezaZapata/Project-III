@@ -1848,6 +1848,7 @@ GameObject:
   - component: {fileID: 1786461992}
   - component: {fileID: 1786461991}
   - component: {fileID: 1786461994}
+  - component: {fileID: 1786461995}
   m_Layer: 5
   m_Name: Play_BTN
   m_TagString: Untagged
@@ -1988,6 +1989,28 @@ MonoBehaviour:
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   hoverColor: {r: 1, g: 1, b: 1, a: 1}
   speed: 10
+--- !u!95 &1786461995
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1786461989}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 96c9e34d6a09c0342895c635f02b367f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1842105505 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5617719085686607207, guid: 5ee5c5a7ea33eda46ba832f8150e4629, type: 3}
