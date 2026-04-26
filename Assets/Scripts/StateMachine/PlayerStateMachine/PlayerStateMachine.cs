@@ -18,6 +18,8 @@ public class PlayerStateMachine : StateMachine
     [field: Header("Player State")]
     [field: SerializeField] public PlayerStates playerState;
     [field: SerializeField] public bool isOnEvent;
+    [field: SerializeField] public bool isRestrictedToForwardBackward;
+    [field: SerializeField] public Vector3 eventForwardDirection;
 
     [field: Header("Getters and Setters")]
     [field: SerializeField] public InputHandler InputReader { get; private set; }

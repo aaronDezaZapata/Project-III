@@ -129,6 +129,12 @@ public class PlayerWhiteState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
+        if (stateMachine.isOnEvent && stateMachine.isRestrictedToForwardBackward)
+        {
+            HandleEventMovement(deltaTime);
+            return;
+        }
+
         if (stateMachine.isOnEvent) return;
         
         stateMachine.CheckGrounded();
@@ -350,5 +356,28 @@ public class PlayerWhiteState : PlayerBaseState
         orbitalFollow.VerticalAxis.Value = orbitalFollow.VerticalAxis.Center;
         
         orbitalFollow.RadialAxis.Value = orbitalFollow.RadialAxis.Center;
+    }
+
+    protected void HandleEventMovement(float deltaTime)
+    {
+        Vector3 movement = stateMachine.CalculateMovement();
+        
+        Vector3 forward = stateMachine.eventForwardDirection;
+        Vector3 right = Vector3.Cross(forward, Vector3.up);
+        
+        float forwardInput = stateMachine.InputReader.MoveVector.y;
+        float rightInput = stateMachine.InputReader.MoveVector.x;
+        
+        Vector3 restrictedMovement = (forward * forwardInput) * stateMachine.FreeLookMovementSpeed;
+        
+        float currentInputMagnitude = Mathf.Abs(forwardInput);
+        UpdateAnimatorParameters(restrictedMovement, currentInputMagnitude, deltaTime);
+        
+        if (currentInputMagnitude > IdleThreshold)
+        {
+            FaceMovementDirection(restrictedMovement, deltaTime);
+        }
+        
+        Move(restrictedMovement, deltaTime);
     }
 }
