@@ -18,6 +18,8 @@ public class PlayerStateMachine : StateMachine
     [field: Header("Player State")]
     [field: SerializeField] public PlayerStates playerState;
     [field: SerializeField] public bool isOnEvent;
+    [field: SerializeField] public bool isRestrictedToForwardBackward;
+    [field: SerializeField] public Vector3 eventForwardDirection;
 
     [field: Header("Getters and Setters")]
     [field: SerializeField] public InputHandler InputReader { get; private set; }
@@ -540,7 +542,23 @@ public class PlayerStateMachine : StateMachine
                 break;
         }
     }
-    
+
+    public void ForceExitSwimState(Vector3 pushDirection, float pushForce)
+    {
+        if (GetCurrentState() is not PlayerSwimState)
+            return;
+
+        if (!ForceReceiver.isActiveAndEnabled)
+            ForceReceiver.enabled = true;
+
+        ReturnToMainState();
+
+        if (pushForce > 0f)
+        {
+            ForceReceiver.AddForce(pushDirection.normalized * pushForce);
+        }
+    }
+
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         switch(hit.transform.tag)
