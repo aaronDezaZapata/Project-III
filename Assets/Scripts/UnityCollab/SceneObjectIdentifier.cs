@@ -69,14 +69,7 @@ public class SceneObjectIdentifier : MonoBehaviour
 
             // Solo avisamos si ha cambiado (no si era nuevo)
             if (!string.IsNullOrEmpty(oldID))
-            {
-                #if UNITY_EDITOR
-                if (!Application.isPlaying)
-                #endif
-                    Debug.Log($"[Collab] Clon detectado. ID cambiado: {oldID} -> {UniqueID}");
-            }
-
-            
+                Debug.Log($"[Collab] Clon detectado. ID cambiado: {oldID} -> {UniqueID}");
 
             // MAGIA: Avisamos al Manager para que suba este nuevo objeto YA
 #if UNITY_EDITOR
@@ -90,10 +83,6 @@ public class SceneObjectIdentifier : MonoBehaviour
     {
         // Buscamos TODOS los identificadores en la escena
         // (Es fuerza bruta, pero seguro al 100% contra duplicados)
-        #if UNITY_EDITOR
-                if (Application.isPlaying) return false; // En runtime no checkamos duplicados
-        #endif
-
         var allIdentifiers = FindObjectsOfType<SceneObjectIdentifier>();
 
         foreach (var other in allIdentifiers)
