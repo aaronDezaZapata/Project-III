@@ -41,8 +41,6 @@ public class GrayProjectile : MonoBehaviour
     [Tooltip("Trail renderer para efecto visual (opcional)")]
     [SerializeField] private TrailRenderer trail;
     
-    [Header("Debug")]
-    [SerializeField] private bool showDebugLogs = false;
     
     private bool hasHit = false;
     private float spawnTime;
@@ -76,10 +74,6 @@ public class GrayProjectile : MonoBehaviour
             damage = owner.projectileDamage;
         }
         
-        if (showDebugLogs)
-        {
-            Debug.Log($"GrayProjectile iniciado - Daño: {damage}, Lifetime: {lifetime}");
-        }
     }
 
     private void Update()
@@ -87,10 +81,6 @@ public class GrayProjectile : MonoBehaviour
         // Auto-destruirse después del tiempo de vida
         if (Time.time - spawnTime > lifetime)
         {
-            if (showDebugLogs)
-            {
-                Debug.Log($"Proyectil auto-destruido por tiempo de vida ({lifetime}s)");
-            }
             DestroyProjectile(false);
         }
     }
@@ -103,10 +93,6 @@ public class GrayProjectile : MonoBehaviour
         // Verificar si debemos ignorar esta capa
         if (IsLayerInMask(collision.gameObject.layer, ignoreLayerMask))
         {
-            if (showDebugLogs)
-            {
-                Debug.Log($"Proyectil ignoró colisión con: {collision.gameObject.name} (capa ignorada)");
-            }
             return;
         }
         
@@ -114,11 +100,6 @@ public class GrayProjectile : MonoBehaviour
 
         Vector3 impactPoint = collision.contacts.Length > 0 ? collision.contacts[0].point : transform.position;
         Vector3 impactNormal = collision.contacts.Length > 0 ? collision.contacts[0].normal : -transform.forward;
-
-        if (showDebugLogs)
-        {
-            Debug.Log($"Proyectil colisionó con: {collision.gameObject.name}");
-        }
 
         // PRIORIDAD 1: Destruir objetos destructibles
         DestructibleObject destructible = collision.gameObject.GetComponent<DestructibleObject>();
@@ -136,7 +117,7 @@ public class GrayProjectile : MonoBehaviour
             return;
         }
 
-        // IMPACTO GENÉRICO (paredes, suelo, etc)
+        // IMPACTO GENÉRICO
         if (destroyOnAnyImpact)
         {
             HandleGenericImpact(impactPoint, impactNormal);
@@ -145,11 +126,6 @@ public class GrayProjectile : MonoBehaviour
 
     private void HandleDestructibleImpact(DestructibleObject destructible, Vector3 impactPoint)
     {
-        if (showDebugLogs)
-        {
-            Debug.Log($"Proyectil DESTRUYÓ objeto: {destructible.gameObject.name}");
-        }
-        
         // Destruir el objeto de un golpe
         destructible.DestroyInstantly(impactPoint);
         
@@ -163,18 +139,7 @@ public class GrayProjectile : MonoBehaviour
 
     private void HandleEnemyImpact(EnemyScript enemy, Vector3 impactPoint)
     {
-        if (showDebugLogs)
-        {
-            Debug.Log($"Proyectil impactó enemigo: {enemy.gameObject.name} - Daño: {damage}");
-        }
-        
-        // Aplicar daño masivo (debería matar de un golpe)
-        // enemy.TakeDamage(damage);
         enemy.GetComponent<EnemyStateMachine>();
-        
-        // Si el enemigo tiene método Die() directo, usarlo
-        // Descomenta si tu EnemyScript tiene un método Die() público
-        // enemy.Die();
         
         // Efectos especiales para enemigos
         CreateEnemyDeathEffect(impactPoint);
@@ -186,11 +151,6 @@ public class GrayProjectile : MonoBehaviour
 
     private void HandleGenericImpact(Vector3 impactPoint, Vector3 impactNormal)
     {
-        if (showDebugLogs)
-        {
-            Debug.Log($"Proyectil impactó superficie en {impactPoint}");
-        }
-        
         // Efectos de impacto
         CreateImpactEffect(impactPoint, impactNormal);
         PlayImpactSound(impactPoint);
@@ -274,11 +234,6 @@ public class GrayProjectile : MonoBehaviour
     {
         damage = customDamage;
         lifetime = customLifetime;
-        
-        if (showDebugLogs)
-        {
-            Debug.Log($"GrayProjectile configurado - Daño: {damage}, Lifetime: {lifetime}");
-        }
     }
 
     // Método para asignar efectos desde código si no están en el prefab
