@@ -21,7 +21,7 @@ public class PlayerFlyState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
-        // 1. Obtener direcci�n de la c�mara (solo en el plano horizontal XZ)
+        // 1. Obtener direccion de la camara (solo en el plano horizontal XZ)
         Vector3 adelante = Camera.main.transform.forward;
         Vector3 derecha = Camera.main.transform.right;
 
@@ -35,10 +35,10 @@ public class PlayerFlyState : PlayerBaseState
         float h = Input.GetAxis("Horizontal"); // A, D
         float v = Input.GetAxis("Vertical");   // W, S
 
-        // 3. Calcular direcci�n final de WASD
+        // 3. Calcular direccion final de WASD
         Vector3 direccionFinal = (adelante * v) + (derecha * h);
 
-        // 4. A�adir subir/bajar (Eje Y global)
+        // 4. Anadir subir/bajar (Eje Y global)
         if (Input.GetKey(KeyCode.Space))
         {
             direccionFinal.y = 1f;
@@ -56,8 +56,5 @@ public class PlayerFlyState : PlayerBaseState
     {
         stateMachine.ForceReceiver.enabled = true;
     }
-
-
-
    
 }

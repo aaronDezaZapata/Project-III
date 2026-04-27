@@ -42,13 +42,10 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         controls.Player.Enable();
     }
 
-
     void OnDestroy()
     {
         controls.Player.Disable();
     }
-
-    
 
     public void OnAttack(InputAction.CallbackContext context)
     {

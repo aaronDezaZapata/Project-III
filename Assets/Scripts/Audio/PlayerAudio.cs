@@ -56,9 +56,6 @@ public class PlayerAudio : MonoBehaviour
 
     private void Start()
     {
-        if (!footstepsEvent.IsNull)
-            footstepsInstance = RuntimeManager.CreateInstance(footstepsEvent);
-
         if (!paintLoopEvent.IsNull)
             paintLoopInstance = RuntimeManager.CreateInstance(paintLoopEvent);
 
@@ -95,14 +92,12 @@ public class PlayerAudio : MonoBehaviour
 
     public void PlayHeavyImpact()
     {
-        if (!heavyImpactEvent.IsNull)
-            RuntimeManager.PlayOneShot(heavyImpactEvent, transform.position);
+        RuntimeManager.PlayOneShot(heavyImpactEvent, transform.position);
     }
 
     public void PlayLanding()
     {
-        if (!landingEvent.IsNull)
-            RuntimeManager.PlayOneShot(landingEvent, transform.position);
+        RuntimeManager.PlayOneShot(landingEvent, transform.position);
     }
 
     public void PlayPaintSpread()
@@ -250,27 +245,46 @@ public class PlayerAudio : MonoBehaviour
             RuntimeManager.PlayOneShot(blackActivateEvent, transform.position);
     }
 
-    public void UpdateFootsteps(float speed, FootstepSurfaceType surfaceType, bool grounded, bool moving)
+    public void PlayFootstep(FootstepSurfaceType surfaceType, FootstepSpeedType speedType)
     {
-        if (!footstepsInstance.isValid()) return;
+        if (footstepsEvent.IsNull) return;
 
-        footstepsInstance.setParameterByName(PARAM_PLAYER_SPEED, speed);
-        footstepsInstance.setParameterByName(PARAM_SURFACE_TYPE, (int)surfaceType);
+        EventInstance footstepInstance = RuntimeManager.CreateInstance(footstepsEvent);
 
-        PLAYBACK_STATE playbackState;
-        footstepsInstance.getPlaybackState(out playbackState);
+        footstepInstance.set3DAttributes(RuntimeUtils.To3DAttributes(transform));
 
-        bool shouldPlay = grounded && moving;
+        footstepInstance.setParameterByNameWithLabel(PARAM_SURFACE_TYPE, GetSurfaceLabel(surfaceType));
+        footstepInstance.setParameterByNameWithLabel(PARAM_PLAYER_SPEED, GetSpeedLabel(speedType));
 
-        if (shouldPlay && playbackState != PLAYBACK_STATE.PLAYING)
-            footstepsInstance.start();
-        else if (!shouldPlay && playbackState == PLAYBACK_STATE.PLAYING)
-            footstepsInstance.stop(STOP_MODE.ALLOWFADEOUT);
+        footstepInstance.start();
+        footstepInstance.release();
+    }
+
+    private string GetSurfaceLabel(FootstepSurfaceType surfaceType)
+    {
+        return surfaceType switch
+        {
+            FootstepSurfaceType.Ink => "ink",
+            FootstepSurfaceType.Leaves => "leaves",
+            FootstepSurfaceType.Rock => "rock",
+            FootstepSurfaceType.Sand => "sand",
+            FootstepSurfaceType.Wood => "wood",
+            _ => "ink"
+        };
+    }
+
+    private string GetSpeedLabel(FootstepSpeedType speedType)
+    {
+        return speedType switch
+        {
+            FootstepSpeedType.Walk => "Walk",
+            FootstepSpeedType.Run => "Run",
+            _ => "Walk"
+        };
     }
 
     private void OnDestroy()
     {
-        ReleaseInstance(footstepsInstance);
         ReleaseInstance(paintLoopInstance);
         ReleaseInstance(swimLoopInstance);
         ReleaseInstance(objectSpinInstance);

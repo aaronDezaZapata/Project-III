@@ -18,14 +18,11 @@ public class PlayerBlueState : PlayerWhiteState
 
     protected override void SetPlayerState()
     {
-        Debug.Log("Entered PlayerBlueState");
         stateMachine.playerState = PlayerStates.BLUE;
     }
     
     protected override void SetMaterialColor()
     {
-        //stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.blue);
-        //stateMachine.StartFill(Color.blue);
     }
 
     protected override bool CheckColorSpecificActions(float deltaTime)
