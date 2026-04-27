@@ -55,8 +55,6 @@ public class PlayerWhiteState : PlayerBaseState
 
     public override void Enter()
     {
-        Debug.Log("Entered PlayerWhiteState");
-
         SetPlayerState();
         SetMaterialColor();
         SubscribeToInputEvents();
@@ -251,11 +249,6 @@ public class PlayerWhiteState : PlayerBaseState
         if (jumpTime > 0.98f)
         {
             HandleBlendTreeTransition(currentInputMagnitude);
-
-            /*if (currentInputMagnitude > RunThreshold)
-            {
-                stateMachine.Animator.CrossFadeInFixedTime(StopRun, CrossFadeDuration);
-            }*/
         }
     }
 
@@ -289,10 +282,8 @@ public class PlayerWhiteState : PlayerBaseState
     public override void Exit()
     {
         stateMachine.InputReader.JumpEvent -= OnJump;
-        // stateMachine.InputReader.DashEvent -= OnDash;
         stateMachine.InputReader.DiveEvent -= OnDiveEnter;
 
-        // stateMachine.mainCamera.Priority = -1;
         UnsubscribeFromInputEvents();
     }
     

@@ -38,16 +38,6 @@ public class StateMachine : MonoBehaviour
             currentState = newState;
             currentState.Enter();
         }
-        else
-        {
-            
-            // Si el estado no se encuentra lanzamos un error claro.
-            Debug.LogError(
-                $"El estado '{newStateType.FullName}' no se encontró en el diccionario de '{gameObject.name}'. " +
-                $"¿Olvidaste añadirlo con AddState() en el método Awake() del Enemy o Player StateMachine?"
-            );
-            // -----------------------------
-        }
     }
 
     public State GetCurrentState()

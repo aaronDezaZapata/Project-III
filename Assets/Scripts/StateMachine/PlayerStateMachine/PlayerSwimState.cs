@@ -15,11 +15,8 @@ public class PlayerSwimState : PlayerBaseState
 
     }
 
-
-
     public override void Enter()
     {
-        Debug.Log("Entered PlayerSwimState");
         stateMachine.Animator.CrossFadeInFixedTime(DiveAnim, CrossFadeDuration);
         stateMachine.InputReader.DiveEvent += OnDiveExit;
         stateMachine.InputReader.JumpEvent += PerformInkJump;
@@ -42,7 +39,6 @@ public class PlayerSwimState : PlayerBaseState
 
 
         // Reset inicial
-        // stateMachine.ForceReceiver.enabled = false;
 
         TogglePlayerMesh(true);
 
@@ -101,11 +97,8 @@ public class PlayerSwimState : PlayerBaseState
         Vector2 input = stateMachine.InputReader.MoveVector;
         Vector3 surfaceNormal = stateMachine.CurrentInkNormal;
 
-        // "Subir" en la superficie = world up proyectado sobre el plano de la tinta.
-        // Esto hace que W siempre suba por paredes y S baje, independientemente de dónde mire la cámara.
         Vector3 surfaceUp = Vector3.ProjectOnPlane(Vector3.up, surfaceNormal);
 
-        // Si la superficie es casi horizontal (suelo/techo), world up se colapsa → usamos camera forward
         if (surfaceUp.sqrMagnitude < 0.1f)
             surfaceUp = Vector3.ProjectOnPlane(Camera.main.transform.forward, surfaceNormal);
 
@@ -114,13 +107,11 @@ public class PlayerSwimState : PlayerBaseState
         // Eje lateral: camera right proyectado sobre el plano
         Vector3 surfaceRight = Vector3.ProjectOnPlane(Camera.main.transform.right, surfaceNormal);
 
-        // Fallback si camera right es casi paralelo a la normal (colapsaría a cero)
         if (surfaceRight.sqrMagnitude < 0.01f)
             surfaceRight = Vector3.Cross(surfaceNormal, surfaceUp);
 
         surfaceRight = surfaceRight.normalized;
 
-        // input.y → sube/baja por la superficie  |  input.x → izquierda/derecha
         Vector3 moveDir = (surfaceUp * input.y + surfaceRight * input.x);
         
         if (moveDir.sqrMagnitude > 0.01f)
@@ -183,7 +174,6 @@ public class PlayerSwimState : PlayerBaseState
             jumpDir = (outwardDir * horizontalComponent + upwardDir * verticalComponent).normalized;
             jumpForce = stateMachine.WallJumpForce;
             
-            Debug.Log($"Wall Jump! Angle: {surfaceAngle:F1}°, Jump Angle: {stateMachine.WallJumpAngle}°, Direction: {jumpDir}");
         }
         else
         {

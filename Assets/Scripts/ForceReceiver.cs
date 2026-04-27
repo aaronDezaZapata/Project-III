@@ -26,7 +26,6 @@ public class ForceReceiver : MonoBehaviour
         
         if (verticalVelocity < 0f && controller.isGrounded)
         {
-            // verticalVelocity = playerGravity * Time.deltaTime;
             verticalVelocity = -2f;
         }
         else
@@ -35,8 +34,6 @@ public class ForceReceiver : MonoBehaviour
         }
 
         impact = Vector3.SmoothDamp(impact, Vector3.zero, ref dampingVelocity, drag);
-
-        // controller.Move(Movement * Time.deltaTime);
     }
 
     
