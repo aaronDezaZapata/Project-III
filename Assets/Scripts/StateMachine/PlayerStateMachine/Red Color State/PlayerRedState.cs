@@ -13,7 +13,6 @@ public class PlayerRedState : PlayerWhiteState
 
     protected override void SetPlayerState()
     {
-        Debug.Log("Entered PlayerRedState");
         stateMachine.playerState = PlayerStates.RED;
 
     }
@@ -42,8 +41,4 @@ public class PlayerRedState : PlayerWhiteState
         
         return false;
     }
-
-    // No mods on Tick right now
-    
-    // No mods on Exit right now
 }

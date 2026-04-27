@@ -136,8 +136,6 @@ public class AbsorbableObject : MonoBehaviour
         isAbsorbed = false;
         isBeingHeld = false;
         
-        // ===== PARA ENEMIGOS: USAR SISTEMA DE FORCERECEIVER =====
-        
         EnemyStateMachine enemyStateMachine = GetComponent<EnemyStateMachine>();
         if (enemyStateMachine != null)
         {
@@ -147,7 +145,6 @@ public class AbsorbableObject : MonoBehaviour
             if (charController != null)
             {
                 charController.enabled = true;
-                Debug.Log($"[ShootAsProjectile] CharacterController activado en {name}");
             }
             
             // 2. Desactivar NavMeshAgent (no lo necesitamos para proyectiles)
@@ -155,7 +152,6 @@ public class AbsorbableObject : MonoBehaviour
             if (navAgent != null)
             {
                 navAgent.enabled = false;
-                Debug.Log($"[ShootAsProjectile] NavMeshAgent desactivado en {name}");
             }
             
             // 3. Activar ForceReceiver (CRÍTICO para el movimiento)
@@ -170,23 +166,14 @@ public class AbsorbableObject : MonoBehaviour
                 // Aplicar impulso usando ForceReceiver
                 Vector3 force = direction * projectileSpeed * speedMultiplier;
                 forceReceiver.AddForce(force);
-                
-                Debug.Log($"[ShootAsProjectile] ForceReceiver activado - Fuerza aplicada: {force.magnitude} en dirección {direction}");
-            }
-            else
-            {
-                Debug.LogWarning($"[ShootAsProjectile] {name} no tiene ForceReceiver!");
             }
             
             // 4. Marcar enemigo como lanzado para que las colisiones lo destruyan
             float velocity = projectileSpeed * speedMultiplier;
             enemyStateMachine.MarkAsThrown(velocity);
-            Debug.Log($"[ShootAsProjectile] Enemigo {name} marcado como lanzado con velocidad {velocity}");
         }
         else
         {
-            // ===== PARA OBJETOS NORMALES: USAR RIGIDBODY =====
-            
             if (rb != null)
             {
                 rb.isKinematic = false;
@@ -202,12 +189,6 @@ public class AbsorbableObject : MonoBehaviour
                 
                 // Añadir rotación para efecto visual
                 rb.angularVelocity = Random.insideUnitSphere * 3f;
-                
-                Debug.Log($"[ShootAsProjectile] Rigidbody - Velocidad aplicada: {rb.linearVelocity.magnitude} en dirección {direction}");
-            }
-            else
-            {
-                Debug.LogError($"[ShootAsProjectile] {name} no tiene ni EnemyStateMachine ni Rigidbody!");
             }
         }
         
@@ -216,8 +197,6 @@ public class AbsorbableObject : MonoBehaviour
         {
             col.enabled = true;
         }
-        
-        Debug.Log($"[ShootAsProjectile] {name} disparado - Velocidad: {projectileSpeed * speedMultiplier}, Dirección: {direction}");
     }
     
     private void OnDrawGizmosSelected()

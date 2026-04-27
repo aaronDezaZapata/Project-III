@@ -38,7 +38,7 @@ public class PlayerFlyState : PlayerBaseState
         // 3. Calcular direcci�n final de WASD
         Vector3 direccionFinal = (adelante * v) + (derecha * h);
 
-        // 4. A�adir subir/bajar (Eje Y global)
+        // 4. Anadir subir/bajar (Eje Y global)
         if (Input.GetKey(KeyCode.Space))
         {
             direccionFinal.y = 1f;
@@ -56,8 +56,4 @@ public class PlayerFlyState : PlayerBaseState
     {
         stateMachine.ForceReceiver.enabled = true;
     }
-
-
-
-   
 }

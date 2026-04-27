@@ -37,12 +37,9 @@ public class PaintableEnemy : MonoBehaviour
 
     public void ApplyPaint()
     {
-        Debug.Log("Enemy painted!");
         isPainted = true;
         paintTimer = paintDuration;
         
-        // GameManager.Instance.AddPaintedEnemy(this);
-
         if (paintMaterial != null && enemyRenderer != null)
         {
             enemyRenderer.material = paintMaterial;
@@ -52,7 +49,6 @@ public class PaintableEnemy : MonoBehaviour
     private void RemovePaint()
     {
         isPainted = false;
-        // GameManager.Instance.RemovePaintedEnemy(this);
         
         if (originalMaterial != null && enemyRenderer != null)
         {

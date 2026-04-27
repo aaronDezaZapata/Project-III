@@ -24,9 +24,6 @@ public static class AutoIDAssigner
             var idComponent = go.GetComponent<SceneObjectIdentifier>();
             if (idComponent == null)
             {
-                // Opcional: Solo añadirlo si el usuario quiere sincronizar este objeto
-                // Para simplificar, aquí lo añadimos a todo, pero en prod podrías filtrar.
-                // go.AddComponent<SceneObjectIdentifier>().ValidateID(); 
             }
             else
             {

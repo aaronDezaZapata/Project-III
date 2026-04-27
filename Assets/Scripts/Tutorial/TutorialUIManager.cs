@@ -46,6 +46,9 @@ public class TutorialUIManager : MonoBehaviour
             targetPosition, 
             Time.deltaTime * animationSpeed
         );
+
+    
+
     }
 
     public void ShowTutorial(string text)

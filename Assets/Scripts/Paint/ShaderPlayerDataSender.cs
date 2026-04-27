@@ -14,13 +14,11 @@ public class ShaderPlayerDataSender : MonoBehaviour
     {
         if (trackedPoint == null)
         {
-            Debug.LogError("ShaderPlayerDataSender: trackedPoint no asignado.");
             enabled = false;
             return;
         }
 
         lastPosition = trackedPoint.position;
-        Debug.Log("ShaderPlayerDataSender iniciado con trackedPoint: " + trackedPoint.name);
     }
 
     private void Update()
@@ -30,8 +28,6 @@ public class ShaderPlayerDataSender : MonoBehaviour
 
         Shader.SetGlobalVector(PlayerPositionID, currentPosition);
         Shader.SetGlobalVector(PlayerVelocityID, velocity);
-
-        Debug.Log("Tracked Pos: " + currentPosition + " | Velocity: " + velocity);
 
         lastPosition = currentPosition;
     }
