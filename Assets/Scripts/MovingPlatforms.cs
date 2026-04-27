@@ -69,6 +69,7 @@ public class MovingPlatform : MonoBehaviour
     {
         if (GameManager.Instance == null)
         {
+            Debug.LogWarning($"[MovingPlatform] '{name}': GameManager no encontrado al suscribirse.");
             return;
         }
         // Nos desuscribimos primero para evitar doble suscripción.
@@ -167,7 +168,7 @@ public class MovingPlatform : MonoBehaviour
         LaunchMove(_pointB, _pointA, OnArrivedAtA);
     }
 
-    // Gizmos 
+    // ── Gizmos ──────────────────────────────────────────────────────────────
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {

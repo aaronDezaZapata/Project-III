@@ -28,6 +28,8 @@ public class PlayerShootingState : PlayerBaseState
 
     public override void Enter()
     {
+        // stateMachine.FaceMovementDirectionInstant(Camera.main.transform.forward);
+        
         // Sincronizar la dirección de la cámara de apuntado con la orbital
         SyncAimCameraWithOrbital();
         
@@ -135,6 +137,20 @@ public class PlayerShootingState : PlayerBaseState
         }
     }
     
+    // TODO: Remove
+    // No lo usamos
+    /*private bool TryGetBallisticVelocity(Vector3 origin, Vector3 target, float time, out Vector3 velocity)
+    {
+        float g = Physics.gravity.y;
+        time = Mathf.Max(0.05f, time);
+        Vector3 delta = target - origin;
+        Vector3 deltaXZ = new Vector3(delta.x, 0f, delta.z);
+        Vector3 vXZ = deltaXZ / time;
+        float vY = (delta.y - 0.5f * g * time * time) / time;
+        velocity = vXZ + Vector3.up * vY;
+        return true;
+    }*/
+    
     private void HandleLookRotation(float deltaTime)
     {
         Vector2 lookInput = stateMachine.InputReader.LookVector;
@@ -165,6 +181,16 @@ public class PlayerShootingState : PlayerBaseState
         Vector3 moveDir = (forward * movementInput.z + right * movementInput.x);
 
         Move(moveDir * stateMachine.AimMovementSpeed, deltaTime);
+
+        /*Vector3 lookDir = forward;
+        if (lookDir != Vector3.zero)
+        {
+            stateMachine.transform.rotation = Quaternion.Slerp(
+                stateMachine.transform.rotation,
+                Quaternion.LookRotation(lookDir),
+                stateMachine.RotationSpeed * deltaTime
+            );
+        }*/
     }
 
     private void SyncAimCameraWithOrbital()
@@ -200,6 +226,7 @@ public class PlayerShootingState : PlayerBaseState
         
         float pitchAngle = -Mathf.Asin(aimForward.y) * Mathf.Rad2Deg;
         
+        // Cinemachine 3 OrbitalFollow VerticalAxis expects degrees, not a 0-1 normalized value.
         orbitalFollow.VerticalAxis.Value = pitchAngle;
     }
 }

@@ -22,12 +22,12 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    // MÉTODOS PARA MÚSICA 
+    // --- MÉTODOS PARA MÚSICA ---
     public void PlayMusic(AudioClip clip, float volume = 1f)
     {
         musicSource.clip = clip;
         musicSource.volume = volume;
-        musicSource.loop = true; 
+        musicSource.loop = true; // La música siempre en loop
         musicSource.Play();
     }
 
@@ -36,7 +36,7 @@ public class SoundManager : MonoBehaviour
         musicSource.Stop();
     }
 
-    // MÉTODOS PARA EFECTOS DE SONIDO (SFX)
+    // --- MÉTODOS PARA EFECTOS DE SONIDO (SFX) ---
     public void PlaySFX(AudioClip clip, float volume = 1f)
     {
         // PlayOneShot permite solapar sonidos sin cortarlos

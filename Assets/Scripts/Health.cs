@@ -45,4 +45,21 @@ public class Health : MonoBehaviour
             OnDie?.Invoke();
         }
     }
+    
+    // TODO: Remove
+    // No se esta usando
+
+    /*public void Heal(int amount)
+    {
+        if (health == maxHealth) { return; }
+
+        health = Mathf.Min(health + amount, maxHealth);
+
+        OnHealthChanged?.Invoke(); 
+    }
+
+    public int GetHealth()
+    {
+        return health;
+    }*/
 }

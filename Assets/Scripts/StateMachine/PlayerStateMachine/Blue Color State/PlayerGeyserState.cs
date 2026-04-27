@@ -20,8 +20,10 @@ public class PlayerGeyserState : PlayerBaseState
 
     public override void Enter()
     {
+        Debug.Log("Entered PlayerGeyserState");
         Jump();
         stateMachine.UseColor(0.5f);
+        // stateMachine.Animator.CrossFadeInFixedTime(GeyserAnim, CrossFadeDuration);
         stateMachine.WaterGeyserParticle.gameObject.SetActive(true);
         stateMachine.WaterGeyserParticleSecond.gameObject.SetActive(true);
         stateMachine.mainCamera.Priority = 10;

@@ -12,6 +12,9 @@ namespace TorbellinoConsoleSystem
         {
             string key = name.ToLower();
 
+            if (commands.ContainsKey(key))
+                UnityEngine.Debug.LogWarning($"[TorbellinoConsole] Command '{name}' already registered. Overwriting...");
+
             commands[key] = new CommandInfo
             {
                 Name        = name,

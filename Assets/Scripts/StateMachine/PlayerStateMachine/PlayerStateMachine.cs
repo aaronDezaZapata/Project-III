@@ -359,6 +359,8 @@ public class PlayerStateMachine : StateMachine
         if (PlayerAudio == null)
         {
             PlayerAudio = GetComponentInChildren<PlayerAudio>();
+            if (PlayerAudio == null)
+                Debug.LogError("PlayerAudio no encontrado", gameObject);
         }
     }
 
@@ -796,7 +798,10 @@ public class PlayerStateMachine : StateMachine
         {
             StartCoroutine(EmptyColorRoutine(reduceFill, "_FillA"));
         }
-        
+        else
+        {
+            Debug.Log("No queda pintura en ningún tanque.");
+        }
     }
 
     IEnumerator EmptyColorRoutine(float reduceFill, string fillProperty)
@@ -924,6 +929,7 @@ public class PlayerStateMachine : StateMachine
                 Mat_Player.material.SetColor("_ColorC", color);
                 break;
             default:
+                Debug.Log("Not enetered a valid index");
                 break;
         }
     }
@@ -965,7 +971,60 @@ public class PlayerStateMachine : StateMachine
 
         ShadowDrop.position = hit.point;// + hit.normal * OffsetY;
         ShadowDrop.position += new Vector3(0f, OffsetY,0f);
+        //ShadowDrop.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+
+        
+        //float s = Mathf.Lerp(ScaleNear, ScaleFar, t);
+        //ShadowDrop.localScale = new Vector3(s, s, 1f);
+
+        //PODRIA QUITAR ALPHA CUANTO MAS CERCA DEL SUELO ESTE
     }
+
+    /*#region Gray Absorbed Objects Management
+
+    /// <summary>
+    /// Añade un objeto SMALL a la lista de absorbidos (máximo 3)
+    /// </summary>
+    public bool TryAddAbsorbedObject(AbsorbableObject obj)
+    {
+        if (obj == null) return false;
+        if (absorbedObjects.Count >= MaxAbsorbedSmallObjects) return false;
+        
+        absorbedObjects.Add(obj);
+        Debug.Log($"Objeto SMALL añadido. Total: {absorbedObjects.Count}/{MaxAbsorbedSmallObjects}");
+        return true;
+    }
+    
+    /// <summary>
+    /// Verifica si hay objetos SMALL absorbidos
+    /// </summary>
+    public bool HasAbsorbedSmallObjects()
+    {
+        return absorbedObjects.Count > 0;
+    }
+    
+    /// <summary>
+    /// Obtiene el primer objeto SMALL de la lista
+    /// </summary>
+    public AbsorbableObject GetFirstAbsorbedObject()
+    {
+        if (absorbedObjects.Count == 0) return null;
+        return absorbedObjects[0];
+    }
+    
+    /// <summary>
+    /// Remueve el primer objeto SMALL de la lista después de dispararlo
+    /// </summary>
+    public void RemoveFirstAbsorbedObject()
+    {
+        if (absorbedObjects.Count > 0)
+        {
+            absorbedObjects.RemoveAt(0);
+            Debug.Log($"Objeto SMALL disparado. Restantes: {absorbedObjects.Count}/{MaxAbsorbedSmallObjects}");
+        }
+    }
+
+    #endregion*/
 
     public float GetCurrentCameraSensitivity()
     {

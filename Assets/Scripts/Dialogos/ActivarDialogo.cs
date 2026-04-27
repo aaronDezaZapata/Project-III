@@ -6,6 +6,7 @@ using UI;
 
 public class ActivarDialogo : MonoBehaviour
 {
+    //[SerializeField] MovementPlayer movementPlayer;
     [SerializeField] DialoguesAssetMenu dialogoADar;
     [SerializeField] GameObject Dialgo;
     [SerializeField] DialogueUI textDialogo;
@@ -18,6 +19,9 @@ public class ActivarDialogo : MonoBehaviour
             Dialgo.SetActive(true);
             hola.GetDialogue(dialogoADar);
             textDialogo.UpdateUI();
+            //EventForGame.instance.desactivarDialogo.AddListener(TextoAcabado);
+            
+
         }
     }
     private void OnTriggerExit(Collider other)

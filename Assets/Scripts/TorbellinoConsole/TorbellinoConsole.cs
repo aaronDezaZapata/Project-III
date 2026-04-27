@@ -180,7 +180,7 @@ namespace TorbellinoConsoleSystem
             }
         }
 
-        // History navigation 
+        // ── History navigation ────────────────────────────────────────
 
         private void HandleHistoryNavigation()
         {
@@ -341,7 +341,7 @@ namespace TorbellinoConsoleSystem
             Log(message, consoleType);
         }
 
-        // Command parsing 
+        // ── Command parsing ───────────────────────────────────────────
 
         private string[] ParseCommandLine(string commandLine)
         {
@@ -363,7 +363,7 @@ namespace TorbellinoConsoleSystem
             return parts.ToArray();
         }
 
-        // Default commands 
+        // ── Default commands ──────────────────────────────────────────
 
         private void RegisterDefaultCommands()
         {
@@ -430,7 +430,7 @@ namespace TorbellinoConsoleSystem
             });
         }
 
-        // Attribute command scanner 
+        // ── Attribute command scanner ─────────────────────────────────
 
         private void ScanForCommands()
         {
@@ -495,7 +495,7 @@ namespace TorbellinoConsoleSystem
             return result;
         }
 
-        // Static API 
+        // ── Static API ────────────────────────────────────────────────
 
         public static void RegisterCommand(string name, string description, Func<string[], string> action)
         {
