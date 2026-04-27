@@ -47,6 +47,5 @@ public class Lever : MonoBehaviour
         _used = true;
         GameManager.Instance.OnLeverActivated?.Invoke(leverID);
 
-        Debug.Log($"[Lever] '{leverID}' activada.");
     }
 }

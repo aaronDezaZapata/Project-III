@@ -15,13 +15,10 @@ public class PlayerDashAttackState : PlayerBaseState
 
     public override void Enter()
     {
-        Debug.Log("Entered PlayerDashAttackState");
-
         targetEnemy = FindNearestPaintedTarget();
 
         if (targetEnemy == null)
         {
-            Debug.LogWarning("No painted enemy found, returning to FreeLook");
             stateMachine.ReturnToMainState();
             return;
         }
@@ -36,7 +33,6 @@ public class PlayerDashAttackState : PlayerBaseState
         stateMachine.ForceReceiver.SetUseGravity(false);
         stateMachine.PlayerAudio?.PlayTpTravel();
 
-        Debug.Log($"Dashing towards {targetEnemy.name} at speed {dashSpeed}");
     }
 
     public override void Tick(float deltaTime)
@@ -46,7 +42,6 @@ public class PlayerDashAttackState : PlayerBaseState
         // Si pasó mucho tiempo, cancelar el dash
         if (dashTimer > maxDashTime)
         {
-            Debug.Log("Dash timeout, returning to FreeLook");
             stateMachine.ReturnToMainState();
             return;
         }
@@ -60,7 +55,6 @@ public class PlayerDashAttackState : PlayerBaseState
         // Si el enemigo murió o desapareció, cancelar
         if (targetEnemy == null || !targetEnemy.gameObject.activeInHierarchy)
         {
-            Debug.Log("Target enemy disappeared");
             stateMachine.ReturnToMainState();
             return;
         }
@@ -117,7 +111,6 @@ public class PlayerDashAttackState : PlayerBaseState
         {
             // Causar daño al enemigo
             enemyStateMachine.GoToDeath(); // O usa tu sistema de daño preferido
-            Debug.Log($"Damaged enemy: {targetEnemy.name}");
         }
 
         // Limpiar la pintura del enemigo
@@ -149,7 +142,5 @@ public class PlayerDashAttackState : PlayerBaseState
         // Aplicar impulso total
         Vector3 totalKnockback = horizontalKnockback + verticalKnockback;
         stateMachine.ForceReceiver.AddForce(totalKnockback);
-
-        Debug.Log($"Applied knockback: {totalKnockback}");
     }
 }
