@@ -23,3 +23,9 @@ public enum FootstepSurfaceType
     Sand = 3,
     Wood = 4
 }
+
+public enum FootstepSpeedType
+{
+    Walk = 0,
+    Run = 1
+}

@@ -8,7 +8,7 @@ public class WhipMechanic : MonoBehaviour
     public Camera mainCamera;
     public Transform handPosition; // La mano o punto de origen del látigo
     public Transform enemyHolder;  // Un objeto vacío hijo del Player (frente a él)
-    public MonoBehaviour playerMovementScript; // ARRASTRA AQUÍ TU SCRIPT DE MOVIMIENTO (ej. ThirdPersonController)
+    public MonoBehaviour playerMovementScript; 
 
     [Header("Configuración General")]
     public LayerMask enemyLayer;

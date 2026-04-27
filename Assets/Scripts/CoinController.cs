@@ -23,18 +23,12 @@ public class CoinController : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("CoinController en: " + gameObject.name);
-
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
         {
             player = playerObj.transform;
-            Debug.Log("Player encontrado: " + player.name);
         }
-        else
-        {
-            Debug.LogWarning("No se encontró Player");
-        }
+        
 
         allRenderers = GetComponentsInChildren<Renderer>(true);
         allAnimators = GetComponentsInChildren<Animator>(true);
@@ -68,7 +62,6 @@ public class CoinController : MonoBehaviour
         collected = true;
 
         GameManager.Instance.AddCoin(coinValue);
-        //SoundFXManager.Instance.PlaySoundFXClipRandPitch(getCoinSound, transform, 1f, minPitch, maxPitch);
         Instantiate(grabParticleSystem,transform.position,Quaternion.identity);
         foreach (Collider c in allColliders)
             c.enabled = false;

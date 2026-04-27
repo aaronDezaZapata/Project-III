@@ -18,6 +18,8 @@ public class PlayerStateMachine : StateMachine
     [field: Header("Player State")]
     [field: SerializeField] public PlayerStates playerState;
     [field: SerializeField] public bool isOnEvent;
+    [field: SerializeField] public bool isRestrictedToForwardBackward;
+    [field: SerializeField] public Vector3 eventForwardDirection;
 
     [field: Header("Getters and Setters")]
     [field: SerializeField] public InputHandler InputReader { get; private set; }
@@ -116,6 +118,8 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public float MinFallVelocityToPlayLandingParticle { get; private set; } = 5f;
 
     private int _footstepIndex = 0;
+    private float lastAirVerticalVelocity;
+    private bool hasBeenAirborne;
 
 
     [field: Header("Swim Mechanics")]
@@ -357,9 +361,8 @@ public class PlayerStateMachine : StateMachine
         if (PlayerAudio == null)
         {
             PlayerAudio = GetComponentInChildren<PlayerAudio>();
-            if (PlayerAudio == null)
-                Debug.LogError("PlayerAudio no encontrado", gameObject);
         }
+
     }
 
     private void Start()
@@ -540,7 +543,23 @@ public class PlayerStateMachine : StateMachine
                 break;
         }
     }
-    
+
+    public void ForceExitSwimState(Vector3 pushDirection, float pushForce)
+    {
+        if (GetCurrentState() is not PlayerSwimState)
+            return;
+
+        if (!ForceReceiver.isActiveAndEnabled)
+            ForceReceiver.enabled = true;
+
+        ReturnToMainState();
+
+        if (pushForce > 0f)
+        {
+            ForceReceiver.AddForce(pushDirection.normalized * pushForce);
+        }
+    }
+
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         switch(hit.transform.tag)
@@ -569,7 +588,6 @@ public class PlayerStateMachine : StateMachine
     public void CheckGrounded()
     {
         bool wasGroundedBefore = isGrounded;
-        float fallVelocityBeforeLand = ForceReceiver != null ? ForceReceiver.VerticalVelocity : 0f;
 
         bool hitGround = Physics.SphereCast(
             groundCheckOrigin.position,
@@ -590,17 +608,44 @@ public class PlayerStateMachine : StateMachine
             isGrounded = false;
         }
 
-        if (isGrounded)
+        // Mientras estamos en el aire, guardamos la última velocidad vertical real.
+        if (!isGrounded)
         {
-            if (!wasGroundedBefore)
+            hasBeenAirborne = true;
+
+            float controllerY = Controller != null ? Controller.velocity.y : 0f;
+            float forceReceiverY = ForceReceiver != null ? ForceReceiver.VerticalVelocity : 0f;
+
+            // Nos quedamos con la más negativa, porque representa mejor una caída.
+            lastAirVerticalVelocity = Mathf.Min(controllerY, forceReceiverY);
+        }
+
+        // Momento exacto de aterrizaje.
+        if (!wasGroundedBefore && isGrounded && hasBeenAirborne)
+        {
+            float fallSpeed = Mathf.Abs(lastAirVerticalVelocity);
+
+            if (fallSpeed >= MinFallVelocityToPlayLandingParticle)
             {
-                if (Mathf.Abs(fallVelocityBeforeLand) >= MinFallVelocityToPlayLandingParticle)
-                {
-                    if (LandingParticles != null)
-                        LandingParticles.Play();
-                }
+                if (LandingParticles != null)
+                    LandingParticles.Play();
             }
 
+            if (fallSpeed >= 8f)
+            {
+                PlayerAudio?.PlayHeavyImpact();
+            }
+            else if (fallSpeed >= 1.5f)
+            {
+                PlayerAudio?.PlayLanding();
+            }
+
+            hasBeenAirborne = false;
+            lastAirVerticalVelocity = 0f;
+        }
+
+        if (isGrounded)
+        {
             isGeyserOnCooldown = false;
             geyserCooldownTimer = 0f;
             isOnSteepSlope = false;
@@ -609,6 +654,9 @@ public class PlayerStateMachine : StateMachine
 
     public void PlayFootstepParticle()
     {
+        if (!isGrounded)
+            return;
+
         if (_footstepIndex == 0)
         {
             if (FootstepParticles1 != null) FootstepParticles1.Play();
@@ -619,6 +667,65 @@ public class PlayerStateMachine : StateMachine
             if (FootstepParticles2 != null) FootstepParticles2.Play();
             _footstepIndex = 0;
         }
+
+        FootstepSurfaceType surfaceType = DetectFootstepSurface();
+        FootstepSpeedType speedType = DetectFootstepSpeed();
+
+        Debug.Log("FOOTSTEP: " + surfaceType + " / " + speedType);
+
+        PlayerAudio?.PlayFootstep(surfaceType, speedType);
+    }
+
+    private FootstepSpeedType DetectFootstepSpeed()
+    {
+        Vector3 horizontalVelocity = new Vector3(
+            Controller.velocity.x,
+            0f,
+            Controller.velocity.z
+        );
+
+        float speed = horizontalVelocity.magnitude;
+
+        return speed >= 4.5f
+            ? FootstepSpeedType.Run
+            : FootstepSpeedType.Walk;
+    }
+
+    private FootstepSurfaceType DetectFootstepSurface()
+    {
+        if (groundCheckOrigin == null)
+            return FootstepSurfaceType.Ink;
+
+        bool hitGround = Physics.SphereCast(
+            groundCheckOrigin.position,
+            groundCheckRadius,
+            Vector3.down,
+            out RaycastHit hit,
+            groundCheckDistance + 0.3f,
+            groundMask
+        );
+
+        if (!hitGround)
+            return FootstepSurfaceType.Ink;
+
+        int layer = hit.collider.gameObject.layer;
+
+        if (layer == LayerMask.NameToLayer("Ink"))
+            return FootstepSurfaceType.Ink;
+
+        if (layer == LayerMask.NameToLayer("Leaves"))
+            return FootstepSurfaceType.Leaves;
+
+        if (layer == LayerMask.NameToLayer("Rock"))
+            return FootstepSurfaceType.Rock;
+
+        if (layer == LayerMask.NameToLayer("Sand"))
+            return FootstepSurfaceType.Sand;
+
+        if (layer == LayerMask.NameToLayer("Wood"))
+            return FootstepSurfaceType.Wood;
+
+        return FootstepSurfaceType.Ink;
     }
 
     /// <summary>
@@ -782,7 +889,6 @@ public class PlayerStateMachine : StateMachine
         }
         else
         {
-            Debug.Log("No queda pintura en ningún tanque.");
         }
     }
 
@@ -911,7 +1017,6 @@ public class PlayerStateMachine : StateMachine
                 Mat_Player.material.SetColor("_ColorC", color);
                 break;
             default:
-                Debug.Log("Not enetered a valid index");
                 break;
         }
     }
@@ -953,60 +1058,8 @@ public class PlayerStateMachine : StateMachine
 
         ShadowDrop.position = hit.point;// + hit.normal * OffsetY;
         ShadowDrop.position += new Vector3(0f, OffsetY,0f);
-        //ShadowDrop.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-
-        
-        //float s = Mathf.Lerp(ScaleNear, ScaleFar, t);
-        //ShadowDrop.localScale = new Vector3(s, s, 1f);
-
-        //PODRIA QUITAR ALPHA CUANTO MAS CERCA DEL SUELO ESTE
     }
 
-    /*#region Gray Absorbed Objects Management
-
-    /// <summary>
-    /// Añade un objeto SMALL a la lista de absorbidos (máximo 3)
-    /// </summary>
-    public bool TryAddAbsorbedObject(AbsorbableObject obj)
-    {
-        if (obj == null) return false;
-        if (absorbedObjects.Count >= MaxAbsorbedSmallObjects) return false;
-        
-        absorbedObjects.Add(obj);
-        Debug.Log($"Objeto SMALL añadido. Total: {absorbedObjects.Count}/{MaxAbsorbedSmallObjects}");
-        return true;
-    }
-    
-    /// <summary>
-    /// Verifica si hay objetos SMALL absorbidos
-    /// </summary>
-    public bool HasAbsorbedSmallObjects()
-    {
-        return absorbedObjects.Count > 0;
-    }
-    
-    /// <summary>
-    /// Obtiene el primer objeto SMALL de la lista
-    /// </summary>
-    public AbsorbableObject GetFirstAbsorbedObject()
-    {
-        if (absorbedObjects.Count == 0) return null;
-        return absorbedObjects[0];
-    }
-    
-    /// <summary>
-    /// Remueve el primer objeto SMALL de la lista después de dispararlo
-    /// </summary>
-    public void RemoveFirstAbsorbedObject()
-    {
-        if (absorbedObjects.Count > 0)
-        {
-            absorbedObjects.RemoveAt(0);
-            Debug.Log($"Objeto SMALL disparado. Restantes: {absorbedObjects.Count}/{MaxAbsorbedSmallObjects}");
-        }
-    }
-
-    #endregion*/
 
     public float GetCurrentCameraSensitivity()
     {

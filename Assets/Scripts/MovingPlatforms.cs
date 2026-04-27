@@ -69,7 +69,6 @@ public class MovingPlatform : MonoBehaviour
     {
         if (GameManager.Instance == null)
         {
-            Debug.LogWarning($"[MovingPlatform] '{name}': GameManager no encontrado al suscribirse.");
             return;
         }
         // Nos desuscribimos primero para evitar doble suscripción.
