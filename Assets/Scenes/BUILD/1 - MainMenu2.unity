@@ -1971,7 +1971,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2140440542}
         m_TargetAssemblyTypeName: MainMenuButtons, Assembly-CSharp
-        m_MethodName: SettingsButton
+        m_MethodName: ExitButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2282,7 +2282,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2140440542}
         m_TargetAssemblyTypeName: MainMenuButtons, Assembly-CSharp
-        m_MethodName: SettingsButton
+        m_MethodName: PlayButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2737,11 +2737,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f01eb59d5ab136545accddf144a7ae7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objectToMove: {fileID: 1670039039}
+  menuPosition: {fileID: 2140440541}
+  playPosition: {fileID: 1973426403}
+  settingsPosition: {fileID: 1582880350}
   theater: {fileID: 49012038}
   book: {fileID: 308495163}
   moveSpeed: 0.5
   rotationSpeed: 7
-  playSceneName: PlayGround
+  playScene: {fileID: 102900000, guid: c950e4c24193ea548b111aad1f3aca44, type: 3}
+  playScenePath: Assets/Scenes/BUILD/2 - Level1.unity
 --- !u!1001 &5146496468766266934
 PrefabInstance:
   m_ObjectHideFlags: 0
