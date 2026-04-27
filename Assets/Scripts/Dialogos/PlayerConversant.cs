@@ -35,12 +35,10 @@ namespace Dialogo
             if (children.Length > 0)
             {
                 currentNode = children[0];
-                // Aquí podrías añadir lógica: trigger de eventos, cambio de speaker, etc.
             }
             else
             {
                 // No hay más nodos, la conversación ha terminado.
-                // Opcional: Cerrar el diálogo aquí o dejar que el UI lo maneje
                 Debug.Log("Fin del diálogo");
             }
         }

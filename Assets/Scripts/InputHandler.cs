@@ -158,6 +158,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         if (context.performed)
         {
             isColorActing = true;
+            ColorActionEvent?.Invoke();
         }
         else if (context.canceled)
         {

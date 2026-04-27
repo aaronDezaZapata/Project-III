@@ -75,16 +75,11 @@ public class PlayerWhipState : PlayerBaseState
             stateMachine.GrappleRope.enabled = true;
 
         stateMachine.InputReader.JumpEvent += OnJump;
+        stateMachine.InputReader.ColorActionEvent += OnColorActionToggle;
     }
 
     public override void Tick(float deltaTime)
     {
-        if (!stateMachine.InputReader.isColorActing)
-        {
-            ExitWhipState();
-            return;
-        }
-
         switch (currentMode)
         {
             case WhipMode.ObjectWhip:    TickObjectWhip(deltaTime);    break;
@@ -97,6 +92,7 @@ public class PlayerWhipState : PlayerBaseState
     public override void Exit()
     {
         stateMachine.InputReader.JumpEvent -= OnJump;
+        stateMachine.InputReader.ColorActionEvent -= OnColorActionToggle;
 
         if (stateMachine.GrappleRope != null)
             stateMachine.GrappleRope.enabled = false;
@@ -585,6 +581,11 @@ public class PlayerWhipState : PlayerBaseState
                 baseState.ResetDoubleJump();
             }
         }
+    }
+
+    private void OnColorActionToggle()
+    {
+        ExitWhipState();
     }
 
     private void OnJump()
