@@ -23,11 +23,6 @@ public class CoinController : MonoBehaviour
 
     private void Start()
     {
-
-
-        GameObject playerObj = GameManager.Instance.GetPlayer().gameObject;
-        
-
         allRenderers = GetComponentsInChildren<Renderer>(true);
         allAnimators = GetComponentsInChildren<Animator>(true);
         allParticles = GetComponentsInChildren<ParticleSystem>(true);
@@ -36,32 +31,33 @@ public class CoinController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (collected) return;
-        if (player == null) return;
+        if(player == null) return;
 
+        FollowPlayer();
+    }
+
+    private void FollowPlayer()
+    {
         Vector3 targetPos = player.position + Vector3.up * targetHeight;
         float distance = Vector3.Distance(transform.position, targetPos);
 
-        if (distance <= attractionDistance)
-        {
-            transform.position = Vector3.MoveTowards(
-                transform.position,
-                targetPos,
-                attractionSpeed * Time.fixedDeltaTime
-            );
-        }
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            targetPos,
+            attractionSpeed * Time.fixedDeltaTime
+        );
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (collected) return;
-        if (!other.CompareTag("Player")) return;
+        player = other.transform;
+    }
 
-        collected = true;
-
+    private void OnCollisionEnter(Collision collision)
+    {
         GameManager.Instance.AddCoin(coinValue);
-        //SoundFXManager.Instance.PlaySoundFXClipRandPitch(getCoinSound, transform, 1f, minPitch, maxPitch);
-        Instantiate(grabParticleSystem,transform.position,Quaternion.identity);
+
+        Instantiate(grabParticleSystem, transform.position, Quaternion.identity);
         foreach (Collider c in allColliders)
             c.enabled = false;
 
