@@ -29,7 +29,6 @@ public class GrappleRopeSetup : MonoBehaviour
     {
         if (playerStateMachine == null)
         {
-            Debug.LogError("PlayerStateMachine no encontrado. Asigna la referencia primero.");
             return;
         }
 
@@ -41,19 +40,16 @@ public class GrappleRopeSetup : MonoBehaviour
             ropeObject = new GameObject("GrappleRope");
             ropeObject.transform.SetParent(transform);
             ropeObject.transform.localPosition = Vector3.zero;
-            Debug.Log("✓ GameObject 'GrappleRope' creado");
         }
         else
         {
             ropeObject = ropeTransform.gameObject;
-            Debug.Log("✓ GameObject 'GrappleRope' ya existe");
         }
 
         LineRenderer lineRenderer = ropeObject.GetComponent<LineRenderer>();
         if (lineRenderer == null)
         {
             lineRenderer = ropeObject.AddComponent<LineRenderer>();
-            Debug.Log("✓ LineRenderer añadido");
         }
 
         lineRenderer.positionCount = 2;
@@ -73,13 +69,11 @@ public class GrappleRopeSetup : MonoBehaviour
             Material defaultMat = new Material(Shader.Find("Sprites/Default"));
             defaultMat.color = ropeColor;
             lineRenderer.material = defaultMat;
-            Debug.Log("Material por defecto creado");
         }
 
         lineRenderer.startColor = ropeColor;
         lineRenderer.endColor = ropeColor;
 
-        Debug.Log("LineRenderer configurado correctamente");
 
         Transform originTransform = transform.Find("GrappleRopeOrigin");
         GameObject originObject;
@@ -91,32 +85,14 @@ public class GrappleRopeSetup : MonoBehaviour
             
             originObject.transform.localPosition = new Vector3(0.3f, 1.2f, 0.5f);
             
-            Debug.Log("✓ 'GrappleRopeOrigin' creado. Ajusta su posición a la mano del personaje.");
         }
         else
         {
             originObject = originTransform.gameObject;
-            Debug.Log("✓ 'GrappleRopeOrigin' ya existe");
         }
 
-        try
-        {
-            var grappleRopeProp = playerStateMachine.GetType().GetProperty("GrappleRope");
-            var grappleOriginProp = playerStateMachine.GetType().GetProperty("GrappleRopeOrigin");
-
-            if (grappleRopeProp != null && grappleOriginProp != null)
-            {
-                Debug.Log("Referencias asignadas.");
-            }
-            else
-            {
-                Debug.LogWarning("No se encontraron. " + "Asígnalas manualmente.");
-            }
-        }
-        catch
-        {
-            Debug.LogWarning("Asigna manualmente el LineRenderer y el Origin en PlayerStateMachine.");
-        }
+        var grappleRopeProp = playerStateMachine.GetType().GetProperty("GrappleRope");
+        var grappleOriginProp = playerStateMachine.GetType().GetProperty("GrappleRopeOrigin");
 
         setupComplete = true;
     }
@@ -128,18 +104,15 @@ public class GrappleRopeSetup : MonoBehaviour
         if (ropeTransform != null)
         {
             DestroyImmediate(ropeTransform.gameObject);
-            Debug.Log("✓ GrappleRope eliminado");
         }
 
         Transform originTransform = transform.Find("GrappleRopeOrigin");
         if (originTransform != null)
         {
             DestroyImmediate(originTransform.gameObject);
-            Debug.Log("✓ GrappleRopeOrigin eliminado");
         }
 
         setupComplete = false;
-        Debug.Log("Cleanup completo");
     }
 #endif
 }

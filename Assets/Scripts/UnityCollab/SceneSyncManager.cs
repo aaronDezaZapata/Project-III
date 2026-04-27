@@ -56,13 +56,11 @@ public class SceneSyncManager : MonoBehaviour
                 // Detector de clones
                 if (knownInstanceIDs.ContainsKey(currentID) && knownInstanceIDs[currentID] != currentUnityID)
                 {
-                    Debug.LogWarning($"[SceneSync] Clon detectado: {go.name}. Generando nueva ID.");
                     idComp.GenerateID();
                     UploadNewObject(go);
                 }
                 else if (!knownInstanceIDs.ContainsKey(currentID))
                 {
-                    // Debug.Log($"[SceneSync] Nuevo objeto seleccionado: {go.name}. Subiendo.");
                     UploadNewObject(go);
                 }
                 knownInstanceIDs[idComp.UniqueID] = currentUnityID;
@@ -108,8 +106,6 @@ public class SceneSyncManager : MonoBehaviour
             string s = V3ToString(go.transform.localScale);
             string simplePayload = $"{p}|{r}|{s}";
 
-            
-            //Debug.Log($"<color=yellow>[SEND] Enviando CREATE para {go.name} (ID:{id}). Payload: {simplePayload}</color>");
             
 
             SendData("create", id, simplePayload, go);
@@ -251,9 +247,6 @@ public class SceneSyncManager : MonoBehaviour
 
         if (target == null && !string.IsNullOrEmpty(prefabPath))
         {
-            // --- DEBUG LOG CRÍTICO ---
-            Debug.Log($"<color=green>[RECV] Creando objeto ID:{id} (Prefab:{prefabPath}) Pos:{pos} Rot:{rot} Scl:{scl}</color>");
-            // -------------------------
 
             SceneChangeData temp = new SceneChangeData();
             temp.objectID = id;

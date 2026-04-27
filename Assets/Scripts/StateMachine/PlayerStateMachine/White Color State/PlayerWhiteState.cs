@@ -41,22 +41,14 @@ public class PlayerWhiteState : PlayerBaseState
     private bool fallAudioPlayed;
     private float lastVerticalVelocity;
 
-    private int inkLayer;
-    private int leavesLayer;
-    private int rockLayer;
-    private int sandLayer;
-    private int woodLayer;
 
     public PlayerWhiteState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
-       
     }
 
 
     public override void Enter()
     {
-        Debug.Log("Entered PlayerWhiteState");
-
         SetPlayerState();
         SetMaterialColor();
         SubscribeToInputEvents();
@@ -72,25 +64,17 @@ public class PlayerWhiteState : PlayerBaseState
         fallAudioPlayed = false;
         lastVerticalVelocity = stateMachine.Controller.velocity.y;
 
-        inkLayer = LayerMask.NameToLayer("Ink");
-        leavesLayer = LayerMask.NameToLayer("Leaves");
-        rockLayer = LayerMask.NameToLayer("Rock");
-        sandLayer = LayerMask.NameToLayer("Sand");
-        woodLayer = LayerMask.NameToLayer("Wood");
     }
 
     // Default player state
     // Overridden in other states
     protected virtual void SetPlayerState()
     {
-        //stateMachine.playerState = PlayerStates.WHITE;
     }
     
     // Initial material color config
     protected virtual void SetMaterialColor()
     {
-        //stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.white);
-        //stateMachine.StartFill(Color.white);
     }
     
     // Input events to subscribe
@@ -150,36 +134,6 @@ public class PlayerWhiteState : PlayerBaseState
 
         // Update animator parameters
         UpdateAnimatorParameters(movement, currentInputMagnitude, deltaTime);
-
-        float moveSpeed = currentInputMagnitude * stateMachine.FreeLookMovementSpeed;
-        bool isMoving = currentInputMagnitude > IdleThreshold;
-        FootstepSurfaceType surfaceType = GetCurrentFootstepSurface();
-
-        stateMachine.PlayerAudio?.UpdateFootsteps(moveSpeed, surfaceType, stateMachine.isGrounded, isMoving);
-
-        // Fall audio
-        if (!stateMachine.isGrounded && stateMachine.Controller.velocity.y < -0.5f && !fallAudioPlayed)
-        {
-            stateMachine.PlayerAudio?.PlayFall();
-            fallAudioPlayed = true;
-        }
-
-        // Landing audio
-        if (!audioWasGrounded && stateMachine.isGrounded)
-        {
-            if (lastVerticalVelocity < -8f)
-                stateMachine.PlayerAudio?.PlayHeavyImpact();
-            else
-                stateMachine.PlayerAudio?.PlayLanding();
-
-            fallAudioPlayed = false;
-        }
-
-        if (stateMachine.isGrounded)
-            fallAudioPlayed = false;
-
-        audioWasGrounded = stateMachine.isGrounded;
-        lastVerticalVelocity = stateMachine.Controller.velocity.y;
 
         // Handle blend tree transitions
         if (stateMachine.isGrounded)
@@ -251,48 +205,14 @@ public class PlayerWhiteState : PlayerBaseState
         if (jumpTime > 0.98f)
         {
             HandleBlendTreeTransition(currentInputMagnitude);
-
-            /*if (currentInputMagnitude > RunThreshold)
-            {
-                stateMachine.Animator.CrossFadeInFixedTime(StopRun, CrossFadeDuration);
-            }*/
         }
-    }
-
-    private FootstepSurfaceType GetCurrentFootstepSurface()
-    {
-        Vector3 origin = stateMachine.transform.position + Vector3.up * 0.2f;
-
-        if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, 2f))
-        {
-            int layer = hit.collider.gameObject.layer;
-
-            if (layer == inkLayer)
-                return FootstepSurfaceType.Ink;
-
-            if (layer == leavesLayer)
-                return FootstepSurfaceType.Leaves;
-
-            if (layer == sandLayer)
-                return FootstepSurfaceType.Sand;
-
-            if (layer == woodLayer)
-                return FootstepSurfaceType.Wood;
-
-            if (layer == rockLayer)
-                return FootstepSurfaceType.Rock;
-        }
-
-        return FootstepSurfaceType.Rock;
     }
 
     public override void Exit()
     {
         stateMachine.InputReader.JumpEvent -= OnJump;
-        // stateMachine.InputReader.DashEvent -= OnDash;
         stateMachine.InputReader.DiveEvent -= OnDiveEnter;
 
-        // stateMachine.mainCamera.Priority = -1;
         UnsubscribeFromInputEvents();
     }
     
@@ -313,8 +233,6 @@ public class PlayerWhiteState : PlayerBaseState
     
     protected virtual void HandleBlendTreeTransition(float inputMagnitude)
     {
-        // PlayerWhiteState solo usa FreeLookBlendTree
-        // No hace transiciones entre diferentes blend trees, el FreeLookBlendTree maneja idle/walk/run
     }
 
 
