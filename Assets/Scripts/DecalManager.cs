@@ -23,7 +23,6 @@ public class DecalManager : MonoBehaviour
                 break;
             
             case PlayerStates.BLUE:
-                // GetComponent<MeshRenderer>().material.SetColor("_Color", Color.blue);
                 GetComponent<DecalProjector>().material = blueDecalMat;
                 break;
             

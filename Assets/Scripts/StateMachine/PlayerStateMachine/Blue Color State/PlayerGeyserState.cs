@@ -10,20 +10,26 @@ public class PlayerGeyserState : PlayerBaseState
 {
     private readonly int GeyserAnim = Animator.StringToHash("GeyserCycle");
     private const float CrossFadeDuration = 0.1f;
-    
+    private const float AirControlSfxInterval = 0.20f;
+
+    private float airControlSfxTimer;
+
     public PlayerGeyserState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
     }
 
     public override void Enter()
     {
-        Debug.Log("Entered PlayerGeyserState");
-        
+        Jump();
         stateMachine.UseColor(0.5f);
-        // stateMachine.Animator.CrossFadeInFixedTime(GeyserAnim, CrossFadeDuration);
         stateMachine.WaterGeyserParticle.gameObject.SetActive(true);
         stateMachine.WaterGeyserParticleSecond.gameObject.SetActive(true);
         stateMachine.mainCamera.Priority = 10;
+
+        stateMachine.PlayerAudio?.PlayBlueActivate();
+        stateMachine.PlayerAudio?.PlayBlueBoost();
+
+        airControlSfxTimer = 0f;
     }
 
     public override void Tick(float deltaTime)
@@ -42,7 +48,21 @@ public class PlayerGeyserState : PlayerBaseState
             stateMachine.SwitchState(typeof(PlayerBlueState));
             return;
         }
-        
+
+        if (stateMachine.InputReader.MoveVector.sqrMagnitude > 0.01f)
+        {
+            airControlSfxTimer -= deltaTime;
+            if (airControlSfxTimer <= 0f)
+            {
+                stateMachine.PlayerAudio?.PlayBlueAirControl();
+                airControlSfxTimer = AirControlSfxInterval;
+            }
+        }
+        else
+        {
+            airControlSfxTimer = 0f;
+        }
+
         stateMachine.ForceReceiver.AddForce(Vector3.up * stateMachine.HoverForce * deltaTime);
         MoveHoverDirect(deltaTime);
     }

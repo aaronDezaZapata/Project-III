@@ -1,3 +1,4 @@
+using FMOD.Studio;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -34,7 +35,18 @@ public class PlayerWhiteState : PlayerBaseState
     // State tracking
     protected float lastSpeed = 0f;
     protected float lastInputMagnitude = 0f;
-    
+
+    //Audio 
+    private bool audioWasGrounded;
+    private bool fallAudioPlayed;
+    private float lastVerticalVelocity;
+
+    private int inkLayer;
+    private int leavesLayer;
+    private int rockLayer;
+    private int sandLayer;
+    private int woodLayer;
+
     public PlayerWhiteState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
        
@@ -43,24 +55,28 @@ public class PlayerWhiteState : PlayerBaseState
 
     public override void Enter()
     {
-        Debug.Log("Entered PlayerWhiteState");
-        
         SetPlayerState();
-        
         SetMaterialColor();
-        
         SubscribeToInputEvents();
-        
-        //SetupCamera();
-        
+
         stateMachine.CheckGrounded();
-        
+
         Vector3 movement = stateMachine.CalculateMovement();
         UpdateAnimatorParameters(movement, movement.magnitude, Time.deltaTime);
-        
+
         InitializeAnimator();
+
+        audioWasGrounded = stateMachine.isGrounded;
+        fallAudioPlayed = false;
+        lastVerticalVelocity = stateMachine.Controller.velocity.y;
+
+        inkLayer = LayerMask.NameToLayer("Ink");
+        leavesLayer = LayerMask.NameToLayer("Leaves");
+        rockLayer = LayerMask.NameToLayer("Rock");
+        sandLayer = LayerMask.NameToLayer("Sand");
+        woodLayer = LayerMask.NameToLayer("Wood");
     }
-    
+
     // Default player state
     // Overridden in other states
     protected virtual void SetPlayerState()
@@ -111,6 +127,12 @@ public class PlayerWhiteState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
+        if (stateMachine.isOnEvent && stateMachine.isRestrictedToForwardBackward)
+        {
+            HandleEventMovement(deltaTime);
+            return;
+        }
+
         if (stateMachine.isOnEvent) return;
         
         stateMachine.CheckGrounded();
@@ -126,6 +148,36 @@ public class PlayerWhiteState : PlayerBaseState
 
         // Update animator parameters
         UpdateAnimatorParameters(movement, currentInputMagnitude, deltaTime);
+
+        float moveSpeed = currentInputMagnitude * stateMachine.FreeLookMovementSpeed;
+        bool isMoving = currentInputMagnitude > IdleThreshold;
+        FootstepSurfaceType surfaceType = GetCurrentFootstepSurface();
+
+        stateMachine.PlayerAudio?.UpdateFootsteps(moveSpeed, surfaceType, stateMachine.isGrounded, isMoving);
+
+        // Fall audio
+        if (!stateMachine.isGrounded && stateMachine.Controller.velocity.y < -0.5f && !fallAudioPlayed)
+        {
+            stateMachine.PlayerAudio?.PlayFall();
+            fallAudioPlayed = true;
+        }
+
+        // Landing audio
+        if (!audioWasGrounded && stateMachine.isGrounded)
+        {
+            if (lastVerticalVelocity < -8f)
+                stateMachine.PlayerAudio?.PlayHeavyImpact();
+            else
+                stateMachine.PlayerAudio?.PlayLanding();
+
+            fallAudioPlayed = false;
+        }
+
+        if (stateMachine.isGrounded)
+            fallAudioPlayed = false;
+
+        audioWasGrounded = stateMachine.isGrounded;
+        lastVerticalVelocity = stateMachine.Controller.velocity.y;
 
         // Handle blend tree transitions
         if (stateMachine.isGrounded)
@@ -197,21 +249,41 @@ public class PlayerWhiteState : PlayerBaseState
         if (jumpTime > 0.98f)
         {
             HandleBlendTreeTransition(currentInputMagnitude);
-
-            /*if (currentInputMagnitude > RunThreshold)
-            {
-                stateMachine.Animator.CrossFadeInFixedTime(StopRun, CrossFadeDuration);
-            }*/
         }
+    }
+
+    private FootstepSurfaceType GetCurrentFootstepSurface()
+    {
+        Vector3 origin = stateMachine.transform.position + Vector3.up * 0.2f;
+
+        if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, 2f))
+        {
+            int layer = hit.collider.gameObject.layer;
+
+            if (layer == inkLayer)
+                return FootstepSurfaceType.Ink;
+
+            if (layer == leavesLayer)
+                return FootstepSurfaceType.Leaves;
+
+            if (layer == sandLayer)
+                return FootstepSurfaceType.Sand;
+
+            if (layer == woodLayer)
+                return FootstepSurfaceType.Wood;
+
+            if (layer == rockLayer)
+                return FootstepSurfaceType.Rock;
+        }
+
+        return FootstepSurfaceType.Rock;
     }
 
     public override void Exit()
     {
         stateMachine.InputReader.JumpEvent -= OnJump;
-        // stateMachine.InputReader.DashEvent -= OnDash;
         stateMachine.InputReader.DiveEvent -= OnDiveEnter;
 
-        // stateMachine.mainCamera.Priority = -1;
         UnsubscribeFromInputEvents();
     }
     
@@ -275,5 +347,28 @@ public class PlayerWhiteState : PlayerBaseState
         orbitalFollow.VerticalAxis.Value = orbitalFollow.VerticalAxis.Center;
         
         orbitalFollow.RadialAxis.Value = orbitalFollow.RadialAxis.Center;
+    }
+
+    protected void HandleEventMovement(float deltaTime)
+    {
+        Vector3 movement = stateMachine.CalculateMovement();
+        
+        Vector3 forward = stateMachine.eventForwardDirection;
+        Vector3 right = Vector3.Cross(forward, Vector3.up);
+        
+        float forwardInput = stateMachine.InputReader.MoveVector.y;
+        float rightInput = stateMachine.InputReader.MoveVector.x;
+        
+        Vector3 restrictedMovement = (forward * forwardInput) * stateMachine.FreeLookMovementSpeed;
+        
+        float currentInputMagnitude = Mathf.Abs(forwardInput);
+        UpdateAnimatorParameters(restrictedMovement, currentInputMagnitude, deltaTime);
+        
+        if (currentInputMagnitude > IdleThreshold)
+        {
+            FaceMovementDirection(restrictedMovement, deltaTime);
+        }
+        
+        Move(restrictedMovement, deltaTime);
     }
 }

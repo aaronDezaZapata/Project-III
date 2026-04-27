@@ -1,8 +1,6 @@
 using System;
 using UnityEngine;
 
-
-
 public class RotatingPlatformController : MonoBehaviour
 {
     public enum RotationAxis

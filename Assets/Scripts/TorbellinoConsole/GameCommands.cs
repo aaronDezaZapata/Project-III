@@ -10,8 +10,6 @@ namespace TorbellinoConsoleSystem.Game
         private static GameObject GetPlayer()
         {
             GameObject player = GameManager.Instance.GetPlayer().gameObject;
-            if (player == null)
-                Debug.LogWarning($"[TorbellinoConsole] No GameObject named '{playerName}' found.");
             return player;
         }
 

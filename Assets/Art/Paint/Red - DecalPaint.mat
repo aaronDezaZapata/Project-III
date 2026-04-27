@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Red - DecalPaint
-  m_Shader: {fileID: -6465566751694194690, guid: 9b4e681081e2b4c469111bb649e2f7ee, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 1f1cb26f86153ba41b796ea65e024630, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -42,11 +42,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Normal_Map:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 20c9fa289263edf459a5ff7b73dda851, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BrushNoise:
+        m_Texture: {fileID: 2800000, guid: 55843075f95aefd4fb5708957f541f12, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -103,15 +107,17 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - Normal_Blend: 0.5
+    - Normal_Blend: 0.7
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
+    - _AlphaPower: 0.07
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
+    - _ColorNoiseStrength: 0.05
     - _Cull: 2
     - _Cutoff: 0.5
     - _DecalMeshBiasType: 0
@@ -122,27 +128,55 @@ Material:
     - _DrawOrder: 0
     - _DstBlend: 0
     - _DstBlendAlpha: 0
+    - _Edge: 1
+    - _EdgeBreak: 0.13
+    - _EdgeTintStrength: 0.05
     - _EnvironmentReflections: 1
+    - _FlowStrength: 3
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _HighlightMoveReduction: 0.7
+    - _IdleSwirlScale: 8
+    - _IdleSwirlStrength: 0.03
     - _Metallic: 0
+    - _NormalStrength: 0.47
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _PlayerDistortStrength: 0.5
+    - _PlayerFalloffPower: 1
+    - _PlayerRadius: 1.5
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _Roughness: 0.15
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _SwimSpeedMax: 2
+    - _SwimSpeedMin: 0.3
+    - _SwimTrailColorStrength: 0.2
+    - _SwimTrailNoiseStrength: 0.12
+    - _SwimTrailStretch: 1.5
+    - _TrailAlphaCut: 0.3
+    - _TrailDarkenStrength: 0.43
+    - _TrailFalloff: 1.5
+    - _TrailRadius: 0.8
+    - _TrailStrength: 1
+    - _WetHighlightStrength: 0.1
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _PaintColor: {r: 1, g: 0, b: 0, a: 0}
+    - _PaintColor2: {r: 1, g: 0, b: 0, a: 0}
+    - _PlayerPositionWS: {r: 0, g: 0, b: 0, a: 0}
+    - _PlayerVelocityWS: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _SwimTrailColor: {r: 1, g: 0.40094337, b: 0.40094337, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

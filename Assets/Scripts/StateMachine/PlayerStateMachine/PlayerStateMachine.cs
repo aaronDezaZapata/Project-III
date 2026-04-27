@@ -18,6 +18,8 @@ public class PlayerStateMachine : StateMachine
     [field: Header("Player State")]
     [field: SerializeField] public PlayerStates playerState;
     [field: SerializeField] public bool isOnEvent;
+    [field: SerializeField] public bool isRestrictedToForwardBackward;
+    [field: SerializeField] public Vector3 eventForwardDirection;
 
     [field: Header("Getters and Setters")]
     [field: SerializeField] public InputHandler InputReader { get; private set; }
@@ -34,7 +36,10 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public Health Health { get; private set; }
 
     [field: SerializeField] public SkinnedMeshRenderer Mat_Player { get; private set; }
-    
+
+    [field: Header("Audio")]
+    [field: SerializeField] public PlayerAudio PlayerAudio { get; private set; }
+
     [field: Header("Mesh Settings")]
     [field: SerializeField] public GameObject OriginalMesh { get; private set; }
     [field: SerializeField] public GameObject SharkFinMesh { get; private set; }
@@ -105,6 +110,14 @@ public class PlayerStateMachine : StateMachine
 
     public bool isGrounded;
     public bool isOnSteepSlope;
+
+    [field: Header("Particles")]
+    [field: SerializeField] public ParticleSystem FootstepParticles1 { get; private set; }
+    [field: SerializeField] public ParticleSystem FootstepParticles2 { get; private set; }
+    [field: SerializeField] public ParticleSystem LandingParticles { get; private set; }
+    [field: SerializeField] public float MinFallVelocityToPlayLandingParticle { get; private set; } = 5f;
+
+    private int _footstepIndex = 0;
 
 
     [field: Header("Swim Mechanics")]
@@ -341,6 +354,13 @@ public class PlayerStateMachine : StateMachine
 
     private string currentPuddleTag = "";
 
+    private void Awake()
+    {
+        if (PlayerAudio == null)
+        {
+            PlayerAudio = GetComponentInChildren<PlayerAudio>();
+        }
+    }
 
     private void Start()
     {
@@ -442,6 +462,8 @@ public class PlayerStateMachine : StateMachine
         GameObject splat = Instantiate(InkDecalPrefab, point, finalRotation);
         GameManager.Instance.levelDecals.Add(splat);
         splat.transform.position += normal * ReticleSurfaceOffset;
+
+        PlayerAudio?.PlayPaintSpread();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -458,6 +480,7 @@ public class PlayerStateMachine : StateMachine
 
             case "CheckPoint":
                 GameManager.Instance.GetNewCheckPoint(other.transform);
+                AudioManager.Instance?.PlayUICheckpoint();
                 break;
 
             default:
@@ -478,20 +501,27 @@ public class PlayerStateMachine : StateMachine
         switch (currentPuddleTag)
         {
             case "CharcoAzul":
+                PlayerAudio?.PlayInkwell();
                 StartFill(Color.blue);
                 break;
-            case "CharcoNegro":
-                SwitchState(typeof(PlayerWhiteState));
-                break;
+
             case "CharcoRojo":
+                PlayerAudio?.PlayInkwell();
                 StartFill(Color.red);
                 break;
+
             case "CharcoVerde":
+                PlayerAudio?.PlayInkwell();
                 StartFill(Color.green);
+                break;
+
+            case "CharcoNegro":
+                PlayerAudio?.PlayInkwell();
+                SwitchState(typeof(PlayerWhiteState));
                 break;
         }
     }
-    
+
     public void ReturnToMainState()
     {
         switch (playerState)
@@ -510,7 +540,23 @@ public class PlayerStateMachine : StateMachine
                 break;
         }
     }
-    
+
+    public void ForceExitSwimState(Vector3 pushDirection, float pushForce)
+    {
+        if (GetCurrentState() is not PlayerSwimState)
+            return;
+
+        if (!ForceReceiver.isActiveAndEnabled)
+            ForceReceiver.enabled = true;
+
+        ReturnToMainState();
+
+        if (pushForce > 0f)
+        {
+            ForceReceiver.AddForce(pushDirection.normalized * pushForce);
+        }
+    }
+
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         switch(hit.transform.tag)
@@ -538,6 +584,9 @@ public class PlayerStateMachine : StateMachine
 
     public void CheckGrounded()
     {
+        bool wasGroundedBefore = isGrounded;
+        float fallVelocityBeforeLand = ForceReceiver != null ? ForceReceiver.VerticalVelocity : 0f;
+
         bool hitGround = Physics.SphereCast(
             groundCheckOrigin.position,
             groundCheckRadius,
@@ -559,9 +608,32 @@ public class PlayerStateMachine : StateMachine
 
         if (isGrounded)
         {
+            if (!wasGroundedBefore)
+            {
+                if (Mathf.Abs(fallVelocityBeforeLand) >= MinFallVelocityToPlayLandingParticle)
+                {
+                    if (LandingParticles != null)
+                        LandingParticles.Play();
+                }
+            }
+
             isGeyserOnCooldown = false;
             geyserCooldownTimer = 0f;
             isOnSteepSlope = false;
+        }
+    }
+
+    public void PlayFootstepParticle()
+    {
+        if (_footstepIndex == 0)
+        {
+            if (FootstepParticles1 != null) FootstepParticles1.Play();
+            _footstepIndex = 1;
+        }
+        else
+        {
+            if (FootstepParticles2 != null) FootstepParticles2.Play();
+            _footstepIndex = 0;
         }
     }
 
@@ -724,10 +796,7 @@ public class PlayerStateMachine : StateMachine
         {
             StartCoroutine(EmptyColorRoutine(reduceFill, "_FillA"));
         }
-        else
-        {
-            Debug.Log("No queda pintura en ningún tanque.");
-        }
+        
     }
 
     IEnumerator EmptyColorRoutine(float reduceFill, string fillProperty)
@@ -808,19 +877,20 @@ public class PlayerStateMachine : StateMachine
 
         if (!stateFound)
         {
+            AudioManager.Instance?.SetInkState(InkStateType.Base);
             SwitchState(typeof(PlayerWhiteState));
             return;
         }
 
-        
+
         Type currentState = GetCurrentState().GetType();
 
         if (currentState == targetState) return;
-
         if (targetState == typeof(PlayerRedState) && currentState == typeof(PlayerShootingState)) return;
         if (targetState == typeof(PlayerGreenState) && currentState == typeof(PlayerWhipState)) return;
         if (targetState == typeof(PlayerBlueState) && currentState == typeof(PlayerGeyserState)) return;
 
+        UpdateInkAudioForState(targetState);
         SwitchState(targetState);
     }
 
@@ -854,7 +924,6 @@ public class PlayerStateMachine : StateMachine
                 Mat_Player.material.SetColor("_ColorC", color);
                 break;
             default:
-                Debug.Log("Not enetered a valid index");
                 break;
         }
     }
@@ -896,60 +965,7 @@ public class PlayerStateMachine : StateMachine
 
         ShadowDrop.position = hit.point;// + hit.normal * OffsetY;
         ShadowDrop.position += new Vector3(0f, OffsetY,0f);
-        //ShadowDrop.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-
-        
-        //float s = Mathf.Lerp(ScaleNear, ScaleFar, t);
-        //ShadowDrop.localScale = new Vector3(s, s, 1f);
-
-        //PODRIA QUITAR ALPHA CUANTO MAS CERCA DEL SUELO ESTE
     }
-
-    /*#region Gray Absorbed Objects Management
-
-    /// <summary>
-    /// Añade un objeto SMALL a la lista de absorbidos (máximo 3)
-    /// </summary>
-    public bool TryAddAbsorbedObject(AbsorbableObject obj)
-    {
-        if (obj == null) return false;
-        if (absorbedObjects.Count >= MaxAbsorbedSmallObjects) return false;
-        
-        absorbedObjects.Add(obj);
-        Debug.Log($"Objeto SMALL añadido. Total: {absorbedObjects.Count}/{MaxAbsorbedSmallObjects}");
-        return true;
-    }
-    
-    /// <summary>
-    /// Verifica si hay objetos SMALL absorbidos
-    /// </summary>
-    public bool HasAbsorbedSmallObjects()
-    {
-        return absorbedObjects.Count > 0;
-    }
-    
-    /// <summary>
-    /// Obtiene el primer objeto SMALL de la lista
-    /// </summary>
-    public AbsorbableObject GetFirstAbsorbedObject()
-    {
-        if (absorbedObjects.Count == 0) return null;
-        return absorbedObjects[0];
-    }
-    
-    /// <summary>
-    /// Remueve el primer objeto SMALL de la lista después de dispararlo
-    /// </summary>
-    public void RemoveFirstAbsorbedObject()
-    {
-        if (absorbedObjects.Count > 0)
-        {
-            absorbedObjects.RemoveAt(0);
-            Debug.Log($"Objeto SMALL disparado. Restantes: {absorbedObjects.Count}/{MaxAbsorbedSmallObjects}");
-        }
-    }
-
-    #endregion*/
 
     public float GetCurrentCameraSensitivity()
     {
@@ -988,5 +1004,18 @@ public class PlayerStateMachine : StateMachine
                 Gizmos.DrawSphere(hit.point, 0.05f);
             }
         }
+    }
+
+    //helper audio 
+    private void UpdateInkAudioForState(Type targetState)
+    {
+        if (targetState == typeof(PlayerWhiteState))
+            AudioManager.Instance?.SetInkState(InkStateType.Base);
+        else if (targetState == typeof(PlayerRedState))
+            AudioManager.Instance?.SetInkState(InkStateType.Red);
+        else if (targetState == typeof(PlayerBlueState))
+            AudioManager.Instance?.SetInkState(InkStateType.Blue);
+        else if (targetState == typeof(PlayerGreenState))
+            AudioManager.Instance?.SetInkState(InkStateType.Green);
     }
 }

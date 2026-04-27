@@ -3,20 +3,21 @@ using UnityEngine;
 /// <summary>
 /// Player Blue State
 /// - Basic Movement
-/// - Can do Geyser
+/// - Geyser se activa en el 3er salto
+///   manteniendo el botón de salto
+/// - Una vez salido del Geyser en el aire, no se puede re-entrar hasta tocar suelo
 /// </summary>
 public class PlayerBlueState : PlayerWhiteState
 {
-    // Variables específicas para la habilidad Geyser
-    private bool isJumping;
-    private float jumpHoldTimer = 0f;
+    
+    private bool geyrerReady = false;
+    private bool geyserUsedThisAirTime = false;
     
     public PlayerBlueState(PlayerStateMachine stateMachine) : base(stateMachine)
     { }
 
     protected override void SetPlayerState()
     {
-        Debug.Log("Entered PlayerBlueState");
         stateMachine.playerState = PlayerStates.BLUE;
     }
     
@@ -25,39 +26,32 @@ public class PlayerBlueState : PlayerWhiteState
         //stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.blue);
         //stateMachine.StartFill(Color.blue);
     }
-    
-    protected override void InitializeAnimator()
-    {
-        base.InitializeAnimator();
-        jumpHoldTimer = 0f;
-    }
 
     protected override bool CheckColorSpecificActions(float deltaTime)
     {
         UpdateGeyserCooldown(deltaTime);
         
-        if (!stateMachine.InputReader.isJumpHeld)
+       
+        if (stateMachine.isGrounded)
         {
-            stateMachine.wasJumpButtonReleased = true;
+            geyrerReady = false;
+            geyserUsedThisAirTime = false;
         }
         
-        if (!stateMachine.Controller.isGrounded && stateMachine.InputReader.isJumpHeld)
+        
+        if (!stateMachine.InputReader.isJumpHeld)
         {
-            if (!stateMachine.isGeyserOnCooldown && stateMachine.wasJumpButtonReleased)
-            {
-                jumpHoldTimer += deltaTime;
-
-                if (jumpHoldTimer >= stateMachine.GeyserActivationTime )
-                {
-                    Debug.Log("Blue: Activando Geyser");
-                    stateMachine.SwitchState(typeof(PlayerGeyserState));
-                    return true;
-                }
-            }
+            geyrerReady = false;
         }
-        else
+        
+        
+        if (geyrerReady && !geyserUsedThisAirTime && stateMachine.InputReader.isJumpHeld)
         {
-            jumpHoldTimer = 0f;
+            geyserUsedThisAirTime = true;
+            geyrerReady = false;
+            
+            stateMachine.SwitchState(typeof(PlayerGeyserState));
+            return true;
         }
         
         return false;
@@ -79,9 +73,19 @@ public class PlayerBlueState : PlayerWhiteState
     
     protected override void OnJump()
     {
-        if (!CanJump() || stateMachine.isOnEvent) return;
-        isJumping = true;
-        stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
-        Jump();
+        if (stateMachine.isOnEvent) return;
+        
+        if (CanJump())
+        {
+            
+            stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
+            Jump();
+        }
+        else if (!stateMachine.isGrounded && !geyserUsedThisAirTime)
+        {
+            
+            geyrerReady = true;
+            
+        }
     }
 }

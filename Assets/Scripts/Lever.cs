@@ -17,11 +17,11 @@ public class Lever : MonoBehaviour
     [Tooltip("Si es true alterna entre activar/desactivar (útil para loop).")]
     public bool toggle = false;
 
-    // ── Estado interno ──────────────────────────────────────────────────────
+    // Estado interno
     private bool _used = false;
     private bool _isOn = false;
 
-    // ── Trigger ─────────────────────────────────────────────────────────────
+    // Trigger
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player")) return;
@@ -36,7 +36,7 @@ public class Lever : MonoBehaviour
         InputHandler.InteractionEvent -= Activate;
     }
 
-    // ── Lógica ──────────────────────────────────────────────────────────────
+    // Lógica
     private void Activate()
     {
         if (oneShot && _used) return;
@@ -46,7 +46,5 @@ public class Lever : MonoBehaviour
 
         _used = true;
         GameManager.Instance.OnLeverActivated?.Invoke(leverID);
-
-        Debug.Log($"[Lever] '{leverID}' activada.");
     }
 }
