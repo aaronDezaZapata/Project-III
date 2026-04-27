@@ -13,15 +13,12 @@ public class PlayerRedState : PlayerWhiteState
 
     protected override void SetPlayerState()
     {
-        Debug.Log("Entered PlayerRedState");
         stateMachine.playerState = PlayerStates.RED;
 
     }
     
     protected override void SetMaterialColor()
     {
-        //stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.red);
-        //stateMachine.StartFill(Color.red);
     }
 
     protected override bool CheckColorSpecificActions(float deltaTime)
@@ -43,7 +40,4 @@ public class PlayerRedState : PlayerWhiteState
         return false;
     }
 
-    // No mods on Tick right now
-    
-    // No mods on Exit right now
 }

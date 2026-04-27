@@ -14,14 +14,11 @@ public class PlayerGreenState : PlayerWhiteState
     
     protected override void SetPlayerState()
     {
-        Debug.Log("Entered PlayerGreenState");
         stateMachine.playerState = PlayerStates.GREEN;
     }
     
     protected override void SetMaterialColor()
     {
-        //stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.green);
-        //stateMachine.StartFill(Color.green);
     }
     
     protected override void SubscribeToInputEvents()
@@ -55,7 +52,4 @@ public class PlayerGreenState : PlayerWhiteState
         
         return false;
     }
-    
-    // No mods on Tick
-    // No mods on Exit 
 }

@@ -62,7 +62,6 @@ public class CoinController : MonoBehaviour
         collected = true;
 
         GameManager.Instance.AddCoin(coinValue);
-        //SoundFXManager.Instance.PlaySoundFXClipRandPitch(getCoinSound, transform, 1f, minPitch, maxPitch);
         Instantiate(grabParticleSystem,transform.position,Quaternion.identity);
         foreach (Collider c in allColliders)
             c.enabled = false;

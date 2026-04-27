@@ -69,7 +69,6 @@ public class GameManager : MonoBehaviour
     public void AddCoin(int amount)
     {
         coinsCollected += amount;
-        Debug.Log("Coins Collected: " + coinsCollected);
     }
 
     public void ResetCoinAmount()
@@ -79,7 +78,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        // L3 + R3 simultáneamente → toggle FlyState (debug)
+        // L3 + R3 simultáneamente es toggle FlyState (debug)
         bool leftStick  = Input.GetKeyDown(KeyCode.JoystickButton8);   // L3
         bool rightStick = Input.GetKey(KeyCode.JoystickButton9);        // R3
 
@@ -87,7 +86,7 @@ public class GameManager : MonoBehaviour
         {
             if (GetPlayerState() is PlayerFlyState)
             {
-                // Salir del fly state → volver al estado de color actual
+                // Salir del fly state es volver al estado de color actual
                 player.GetComponent<PlayerStateMachine>().ReturnToMainState();
             }
             else
@@ -100,8 +99,6 @@ public class GameManager : MonoBehaviour
 
     public void PlayerDeath()
     {
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-
         player.transform.position = currentCheckPoint.transform.position;
         player.transform.rotation = currentCheckPoint.transform.rotation;
     }

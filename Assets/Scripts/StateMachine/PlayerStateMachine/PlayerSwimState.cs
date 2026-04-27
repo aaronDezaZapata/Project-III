@@ -12,14 +12,10 @@ public class PlayerSwimState : PlayerBaseState
 
     public PlayerSwimState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
-
     }
-
-
 
     public override void Enter()
     {
-        Debug.Log("Entered PlayerSwimState");
         stateMachine.Animator.CrossFadeInFixedTime(DiveAnim, CrossFadeDuration);
         stateMachine.InputReader.DiveEvent += OnDiveExit;
         stateMachine.InputReader.JumpEvent += PerformInkJump;
@@ -40,9 +36,6 @@ public class PlayerSwimState : PlayerBaseState
         //Camera Pull Back
         CameraManager.Instance.ChangeCameraSwimming(true);
 
-
-        // Reset inicial
-        // stateMachine.ForceReceiver.enabled = false;
 
         TogglePlayerMesh(true);
 
@@ -183,7 +176,6 @@ public class PlayerSwimState : PlayerBaseState
             jumpDir = (outwardDir * horizontalComponent + upwardDir * verticalComponent).normalized;
             jumpForce = stateMachine.WallJumpForce;
             
-            Debug.Log($"Wall Jump! Angle: {surfaceAngle:F1}°, Jump Angle: {stateMachine.WallJumpAngle}°, Direction: {jumpDir}");
         }
         else
         {
