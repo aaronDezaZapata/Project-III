@@ -6,8 +6,8 @@ using UnityEngine.Splines;
 public class MainMenuButtons : MonoBehaviour
 {
     [Header("Spline")]
-    public SplineAnimate splineAnimate;
-    public SplineContainer splineContainer;
+    //public SplineAnimate splineAnimate;
+    //public SplineContainer splineContainer;
 
     [Header("Points Of Interest")]
     [SerializeField] Transform theater;
@@ -28,22 +28,22 @@ public class MainMenuButtons : MonoBehaviour
     bool isMoving;
     Transform currentLookTarget;
 
-    float GetNodeTime(int nodeIndex)
+    /*float GetNodeTime(int nodeIndex)
     {
         int count = splineContainer.Spline.Count;
         return (float)nodeIndex / (count - 1);
-    }
+    }*/
 
     void Start()
     {
-        splineAnimate.NormalizedTime = GetNodeTime(menuNode);
+        //splineAnimate.NormalizedTime = GetNodeTime(menuNode);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
 
     void Update()
     {
-        if (currentLookTarget != null)
+        /*if (currentLookTarget != null)
         {
             Vector3 dir = currentLookTarget.position - splineAnimate.transform.position;
             Quaternion targetRot = Quaternion.LookRotation(dir);
@@ -53,7 +53,7 @@ public class MainMenuButtons : MonoBehaviour
                 targetRot,
                 Time.deltaTime * rotationSpeed
             );
-        }
+        }*/
     }
 
     public void PlayButton()
@@ -86,11 +86,11 @@ public class MainMenuButtons : MonoBehaviour
 
         currentLookTarget = lookTarget;
 
-        float targetTime = GetNodeTime(nodeIndex);
-        StartCoroutine(MoveSpline(targetTime, onArrive));
+        //float targetTime = GetNodeTime(nodeIndex);
+        //StartCoroutine(MoveSpline(targetTime, onArrive));
     }
 
-    IEnumerator MoveSpline(float target, System.Action onArrive)
+    /*IEnumerator MoveSpline(float target, System.Action onArrive)
     {
         isMoving = true;
 
@@ -111,7 +111,7 @@ public class MainMenuButtons : MonoBehaviour
         onArrive?.Invoke();
 
         isMoving = false;
-    }
+    }*/
 
     void LoadGame()
     {
