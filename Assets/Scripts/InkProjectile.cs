@@ -23,6 +23,11 @@ public class InkProjectile : MonoBehaviour
         // Paint surface or destroy after X number of hits
         if ((decalLayerMask.value & (1 << collision.gameObject.layer)) == 0)
         {
+            /*currentHits++;
+            if (currentHits >= hitsToDie)
+            {
+                Destroy(gameObject);
+            }*/
             Destroy(gameObject);
             return;
         }

@@ -215,5 +215,8 @@ public class MainCanvasManager : MonoBehaviour
         /// Toggles Listeners ///
         // _XInvertToggle.onValueChanged.AddListener(); // TBD
         _aimXInvertToggle.onValueChanged.AddListener(OnAimXInvertToggle);
+        // TBD
+        /*musicAudioSlider.onValueChanged.AddListener();
+        sfxAudioSlider.onValueChanged.AddListener();*/
     }
 }

@@ -28,6 +28,8 @@ public class PlayerAbsorbState : PlayerBaseState
 
     public override void Enter()
     {
+        Debug.Log("Entered PlayerAbsorbState - Active Vacuum Mode");
+        
         stateMachine.mainCamera.Priority = 10;
         stateMachine.Animator.CrossFadeInFixedTime(Vacuum, CrossFadeDuration);
 
@@ -79,6 +81,8 @@ public class PlayerAbsorbState : PlayerBaseState
 
     public override void Exit()
     {
+        Debug.Log("Exiting PlayerAbsorbState");
+        
         if (absorbParticles != null)
         {
             absorbParticles.Stop();
@@ -165,6 +169,7 @@ public class PlayerAbsorbState : PlayerBaseState
         {
             if (stateMachine.absorbedObjects.Count >= PlayerStateMachine.MaxAbsorbedSmallObjects)
             {
+                Debug.Log("Inventario de objetos SMALL lleno (3/3)");
                 return;
             }
         }
@@ -172,12 +177,14 @@ public class PlayerAbsorbState : PlayerBaseState
         // Para objetos LARGE, verificar si ya tiene uno
         if (obj.size == AbsorbableObject.AbsorbableSize.Large && isHoldingLarge)
         {
+            Debug.Log("Ya tienes un objeto LARGE");
             return;
         }
         
         obj.StartAbsorption();
         objectsBeingAbsorbed.Add(obj);
         
+        Debug.Log($"Absorbiendo: {obj.name} ({obj.size})");
     }
     
     private void UpdateAbsorption(float deltaTime)
@@ -228,6 +235,7 @@ public class PlayerAbsorbState : PlayerBaseState
         {
             case AbsorbableObject.AbsorbableSize.Small:
                 // Añadir a la lista del StateMachine
+                // stateMachine.TryAddAbsorbedObject(obj);
                 break;
                 
             case AbsorbableObject.AbsorbableSize.Large:
@@ -239,6 +247,7 @@ public class PlayerAbsorbState : PlayerBaseState
                 heldObject = obj;
                 obj.StartHolding();
                 isHoldingLarge = true;
+                Debug.Log($"Levantando objeto LARGE: {obj.name}");
                 break;
         }
     }
@@ -320,6 +329,8 @@ public class PlayerAbsorbState : PlayerBaseState
         stateMachine.Animator.CrossFadeInFixedTime(ShootEnemy, CrossFadeDuration);
         
         heldObject.ShootAsProjectile(shootDirection, stateMachine.GrayProjectileSpeedMultiplier);
+        
+        Debug.Log($"Lanzado objeto LARGE: {heldObject.name}");
         
         heldObject = null;
         isHoldingLarge = false;

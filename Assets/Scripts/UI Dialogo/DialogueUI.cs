@@ -12,14 +12,23 @@ namespace UI
         [SerializeField]PlayerConversant playerConversant;
         [SerializeField] TextMeshProUGUI AIText;
         [SerializeField] Button nextButton;
+        //[SerializeField]MovementPlayer playerMovement;
 
         private void Awake()
         {
+            //EventForGame.instance.activarDialogo.AddListener(UpdateUI);
+            //playerConversant = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerConversant>();
+            //playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<MovementPlayer>();
             nextButton.onClick.AddListener(Next);
+            //UpdateUI();
         }
 
         void Start()
         {
+            //playerConversant = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerConversant>();
+            //playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<MovementPlayer>();
+            //nextButton.onClick.AddListener(Next);
+            
             
         }
 
@@ -32,6 +41,11 @@ namespace UI
                 {
                     Next();
                 }
+                else
+                {
+                    //playerMovement.bikeLockControls = false;
+                }
+                
             }
         }
 
@@ -44,13 +58,17 @@ namespace UI
             }
             else
             {
+                // Si no hay más texto, cerramos la ventana
                 CloseDialogue();
             }
         }
 
         void CloseDialogue()
         {
+            // Desactivar el objeto visual o el canvas
             gameObject.SetActive(false);
+            // O si el script está en un objeto hijo del canvas raíz:
+            // transform.parent.gameObject.SetActive(false);
         }
 
         public void UpdateUI()

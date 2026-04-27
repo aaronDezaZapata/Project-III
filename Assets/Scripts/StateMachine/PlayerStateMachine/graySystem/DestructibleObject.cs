@@ -36,6 +36,8 @@ public class DestructibleObject : MonoBehaviour
         if (isDestroyed) return;
         isDestroyed = true;
 
+        Debug.Log($"{gameObject.name} destruido en {breakPoint}");
+
         // Spawn de partículas
         if (breakParticles != null)
         {
