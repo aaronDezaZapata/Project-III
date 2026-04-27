@@ -12,9 +12,9 @@ public class MainMenuButtons : MonoBehaviour
     [SerializeField] private Transform objectToMove;
 
     [Header("Menu Positions")]
-    [SerializeField] private Transform menuPosition;
+    [SerializeField] private GameObject mainMenu;
     [SerializeField] private Transform playPosition;
-    [SerializeField] private Transform settingsPosition;
+    [SerializeField] private GameObject settingsCanvas;
 
     [Header("Points Of Interest")]
     [SerializeField] private Transform theater;
@@ -56,19 +56,25 @@ public class MainMenuButtons : MonoBehaviour
     public void PlayButton()
     {
         AudioManager.Instance?.PlayUIMenuConfirm();
-        MoveToPosition(playPosition, book, LoadGame);
+        
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        //MoveToPosition(playPosition, book, LoadGame);
     }
 
     public void SettingsButton()
     {
         AudioManager.Instance?.PlayUIMenuConfirm();
-        MoveToPosition(settingsPosition, theater, null);
+        if(!settingsCanvas.activeSelf) settingsCanvas.SetActive(true);
+        if(mainMenu.activeSelf) settingsCanvas.SetActive(false);
+        //MoveToPosition(settingsPosition, theater, null);
     }
 
     public void BackButton()
     {
         AudioManager.Instance?.PlayUIMenuBack();
-        MoveToPosition(menuPosition, null, null);
+        if (settingsCanvas.activeSelf) settingsCanvas.SetActive(false);
+        if (!mainMenu.activeSelf) settingsCanvas.SetActive(true);
+
     }
 
     public void ExitButton()
