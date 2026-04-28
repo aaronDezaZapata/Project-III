@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class FruitSpawner : MonoBehaviour
 {
-    public GameObject fruitPrefab;
+    [Header("Fruit Prefabs")]
+    public GameObject[] fruitPrefabs;
+
     public FruitPath[] availablePaths;
 
     [Header("Spawn")]
@@ -38,27 +40,44 @@ public class FruitSpawner : MonoBehaviour
 
     public void SpawnFruit()
     {
-        if (fruitPrefab == null || availablePaths == null || availablePaths.Length == 0)
+        if (fruitPrefabs == null || fruitPrefabs.Length == 0)
+            return;
+
+        if (availablePaths == null || availablePaths.Length == 0)
+            return;
+
+        GameObject selectedFruitPrefab = fruitPrefabs[Random.Range(0, fruitPrefabs.Length)];
+
+        if (selectedFruitPrefab == null)
             return;
 
         FruitPath selectedPath = availablePaths[Random.Range(0, availablePaths.Length)];
-        if (selectedPath == null || selectedPath.PointCount == 0) return;
 
-        GameObject fruit = Instantiate(fruitPrefab, selectedPath.GetPoint(0), Quaternion.identity);
+        if (selectedPath == null || selectedPath.PointCount == 0)
+            return;
+
+        GameObject fruit = Instantiate(
+            selectedFruitPrefab,
+            selectedPath.GetPoint(0),
+            Quaternion.identity
+        );
 
         FruitPathFollower follower = fruit.GetComponent<FruitPathFollower>();
+
         if (follower != null)
         {
             follower.SetPath(selectedPath);
         }
 
         FruitSpawnerCounter counter = fruit.GetComponent<FruitSpawnerCounter>();
+
         if (counter == null)
         {
             counter = fruit.AddComponent<FruitSpawnerCounter>();
         }
 
         counter.spawner = this;
+
         currentAlive++;
     }
 
