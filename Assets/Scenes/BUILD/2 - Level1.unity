@@ -1089,7 +1089,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 066d3cdac0554a94c8bc909a808bc7b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  endingSceneName: EndingVideo
+  endingSceneName: VideoEnding
 --- !u!4 &9153689
 Transform:
   m_ObjectHideFlags: 0
@@ -223681,6 +223681,17 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
+--- !u!114 &1123827448 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6490587814391293607, guid: 763dea25f2678b54fbfef4d51a3f1f7a, type: 3}
+  m_PrefabInstance: {fileID: 1267902823}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28df7573dfae617409842859249b1d70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1125098812 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7615585906335091984, guid: 6cdcf6b422ad29f4290c6e99eac6e883, type: 3}
@@ -247171,6 +247182,34 @@ PrefabInstance:
     - target: {fileID: 2973115250757265412, guid: 763dea25f2678b54fbfef4d51a3f1f7a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7610139406721703463, guid: 763dea25f2678b54fbfef4d51a3f1f7a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7610139406721703463, guid: 763dea25f2678b54fbfef4d51a3f1f7a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7610139406721703463, guid: 763dea25f2678b54fbfef4d51a3f1f7a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1123827448}
+    - target: {fileID: 7610139406721703463, guid: 763dea25f2678b54fbfef4d51a3f1f7a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7610139406721703463, guid: 763dea25f2678b54fbfef4d51a3f1f7a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ExitToMainMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 7610139406721703463, guid: 763dea25f2678b54fbfef4d51a3f1f7a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MainCanvasManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7610139406721703463, guid: 763dea25f2678b54fbfef4d51a3f1f7a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 7946460538169041333, guid: 763dea25f2678b54fbfef4d51a3f1f7a, type: 3}
       propertyPath: m_Name
@@ -312533,7 +312572,7 @@ MonoBehaviour:
   totalStarsNeeded: 3
   starsCollected: 0
   portal: {fileID: 970052527}
-  portalSpawnOffset: {x: 0, y: 2, z: 0}
+  portalSpawnOffset: {x: 0, y: 0.2, z: 0.5}
 --- !u!1 &1652838465
 GameObject:
   m_ObjectHideFlags: 0
