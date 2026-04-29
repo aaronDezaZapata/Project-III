@@ -11,7 +11,7 @@ public class PopUpEventController : MonoBehaviour
 
     [Header("Player Movement Settings")]
     public float maxDistance = 5f;
-    
+
     [Header("Debug")]
     [SerializeField] private bool canBeTriggered;
     [SerializeField] private bool eventActive;
@@ -65,7 +65,7 @@ public class PopUpEventController : MonoBehaviour
         {
             CalculateDistance();
             UpdatePlatform();
-            
+
             if (currentDistance >= maxDistance)
             {
                 EventCompleted();
@@ -77,7 +77,7 @@ public class PopUpEventController : MonoBehaviour
     {
         Vector3 toPlayer = _player.transform.position - _playerStartPos;
         float signedDistance = Vector3.Dot(toPlayer, _forwardDirection);
-        
+
         if (signedDistance < 0)
             currentDistance = Mathf.Abs(signedDistance);
         else
@@ -107,13 +107,12 @@ public class PopUpEventController : MonoBehaviour
 
     private void HandleInteraction()
     {
-        if (eventDone) return;
-        
-        if (!_player.isOnEvent && canBeTriggered && _player != null)
+        if (eventDone || _player == null) return;
+
+        if (!_player.isOnEvent && canBeTriggered)
             StartEvent();
         else if (_player.isOnEvent && eventActive)
             CancelEvent();
-        
     }
 
     private void StartEvent()
@@ -167,7 +166,7 @@ public class PopUpEventController : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         if (_player == null) return;
-        
+
         canBeTriggered = false;
     }
 
