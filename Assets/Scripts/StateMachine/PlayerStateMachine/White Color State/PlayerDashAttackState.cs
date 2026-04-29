@@ -12,32 +12,29 @@ public class PlayerDashAttackState : PlayerBaseState
     
     public PlayerDashAttackState(PlayerStateMachine stateMachine) : base(stateMachine)
     { }
-    
+
     public override void Enter()
     {
-        Debug.Log("Entered PlayerDashAttackState");
-        
         targetEnemy = FindNearestPaintedTarget();
-        
+
         if (targetEnemy == null)
         {
-            Debug.LogWarning("No painted enemy found, returning to FreeLook");
             stateMachine.ReturnToMainState();
             return;
         }
-        
+
         dashDirection = (targetEnemy.position - stateMachine.transform.position).normalized;
         dashSpeed = stateMachine.DashAttackSpeed;
         hasHitTarget = false;
         dashTimer = 0f;
-        
-        FaceTarget(targetEnemy);
-        
-        stateMachine.ForceReceiver.SetUseGravity(false);
 
-        Debug.Log($"Dashing towards {targetEnemy.name} at speed {dashSpeed}");
+        FaceTarget(targetEnemy);
+
+        stateMachine.ForceReceiver.SetUseGravity(false);
+        stateMachine.PlayerAudio?.PlayTpTravel();
+
     }
-    
+
     public override void Tick(float deltaTime)
     {
         dashTimer += deltaTime;
@@ -45,7 +42,6 @@ public class PlayerDashAttackState : PlayerBaseState
         // Si pasó mucho tiempo, cancelar el dash
         if (dashTimer > maxDashTime)
         {
-            Debug.Log("Dash timeout, returning to FreeLook");
             stateMachine.ReturnToMainState();
             return;
         }
@@ -59,7 +55,6 @@ public class PlayerDashAttackState : PlayerBaseState
         // Si el enemigo murió o desapareció, cancelar
         if (targetEnemy == null || !targetEnemy.gameObject.activeInHierarchy)
         {
-            Debug.Log("Target enemy disappeared");
             stateMachine.ReturnToMainState();
             return;
         }
@@ -108,13 +103,14 @@ public class PlayerDashAttackState : PlayerBaseState
     {
         hasHitTarget = true;
 
+        stateMachine.PlayerAudio?.PlayTpImpact();
+
         // Aplicar daño al enemigo
         EnemyStateMachine enemyStateMachine = targetEnemy.GetComponent<EnemyStateMachine>();
         if (enemyStateMachine != null)
         {
             // Causar daño al enemigo
             enemyStateMachine.GoToDeath(); // O usa tu sistema de daño preferido
-            Debug.Log($"Damaged enemy: {targetEnemy.name}");
         }
 
         // Limpiar la pintura del enemigo
@@ -146,7 +142,5 @@ public class PlayerDashAttackState : PlayerBaseState
         // Aplicar impulso total
         Vector3 totalKnockback = horizontalKnockback + verticalKnockback;
         stateMachine.ForceReceiver.AddForce(totalKnockback);
-
-        Debug.Log($"Applied knockback: {totalKnockback}");
     }
 }

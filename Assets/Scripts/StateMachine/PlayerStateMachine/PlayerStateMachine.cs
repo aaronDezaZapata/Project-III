@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class PlayerStateMachine : StateMachine
 {
@@ -16,6 +18,8 @@ public class PlayerStateMachine : StateMachine
     [field: Header("Player State")]
     [field: SerializeField] public PlayerStates playerState;
     [field: SerializeField] public bool isOnEvent;
+    [field: SerializeField] public bool isRestrictedToForwardBackward;
+    [field: SerializeField] public Vector3 eventForwardDirection;
 
     [field: Header("Getters and Setters")]
     [field: SerializeField] public InputHandler InputReader { get; private set; }
@@ -32,7 +36,10 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public Health Health { get; private set; }
 
     [field: SerializeField] public SkinnedMeshRenderer Mat_Player { get; private set; }
-    
+
+    [field: Header("Audio")]
+    [field: SerializeField] public PlayerAudio PlayerAudio { get; private set; }
+
     [field: Header("Mesh Settings")]
     [field: SerializeField] public GameObject OriginalMesh { get; private set; }
     [field: SerializeField] public GameObject SharkFinMesh { get; private set; }
@@ -97,9 +104,22 @@ public class PlayerStateMachine : StateMachine
     [SerializeField] private float groundCheckDistance = 0.2f;
     [SerializeField] private float groundCheckRadius = 0.3f; 
     [SerializeField] private LayerMask groundMask;
-    [SerializeField] private Transform groundCheckOrigin; 
+    [SerializeField] private Transform groundCheckOrigin;
+    [Tooltip("Velocidad de deslizamiento en slopes que superan el slopeLimit")]
+    [SerializeField] public float slopeSlideSpeed = 8f;
 
     public bool isGrounded;
+    public bool isOnSteepSlope;
+
+    [field: Header("Particles")]
+    [field: SerializeField] public ParticleSystem FootstepParticles1 { get; private set; }
+    [field: SerializeField] public ParticleSystem FootstepParticles2 { get; private set; }
+    [field: SerializeField] public ParticleSystem LandingParticles { get; private set; }
+    [field: SerializeField] public float MinFallVelocityToPlayLandingParticle { get; private set; } = 5f;
+
+    private int _footstepIndex = 0;
+    private float lastAirVerticalVelocity;
+    private bool hasBeenAirborne;
 
 
     [field: Header("Swim Mechanics")]
@@ -182,7 +202,18 @@ public class PlayerStateMachine : StateMachine
 
     [Tooltip("Velocidad a la que el enemigo es capturado")]
     [field: SerializeField] public float WhipCaptureSpeed { get; private set; } = 20f;
-    
+
+    [Tooltip("Ajustes para Shadow Drop")]
+    [field: SerializeField] public float MaxDistance { get; private set; } = 25f;
+    [field: SerializeField] public float ScaleNear { get; private set; } = 0.6f;
+    [field: SerializeField] public float ScaleFar { get; private set; } = 1.4f;
+    [field: SerializeField] public float AlphaNear { get; private set; } = 0.95f;
+    [field: SerializeField] public float AlphaFar { get; private set; } = 0.15f;
+    [field: SerializeField] public float OffsetY { get; private set; } = 0.02f; //Para el z-fighting
+    [field: SerializeField] public Transform ShadowDrop { get; private set; }
+  
+
+
     // TODO: Remove
     // No hay Gray
     [Header("Gray Vacuum Mechanics")]
@@ -325,6 +356,14 @@ public class PlayerStateMachine : StateMachine
 
     private string currentPuddleTag = "";
 
+    private void Awake()
+    {
+        if (PlayerAudio == null)
+        {
+            PlayerAudio = GetComponentInChildren<PlayerAudio>();
+        }
+
+    }
 
     private void Start()
     {
@@ -426,6 +465,8 @@ public class PlayerStateMachine : StateMachine
         GameObject splat = Instantiate(InkDecalPrefab, point, finalRotation);
         GameManager.Instance.levelDecals.Add(splat);
         splat.transform.position += normal * ReticleSurfaceOffset;
+
+        PlayerAudio?.PlayPaintSpread();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -442,6 +483,7 @@ public class PlayerStateMachine : StateMachine
 
             case "CheckPoint":
                 GameManager.Instance.GetNewCheckPoint(other.transform);
+                AudioManager.Instance?.PlayUICheckpoint();
                 break;
 
             default:
@@ -462,20 +504,27 @@ public class PlayerStateMachine : StateMachine
         switch (currentPuddleTag)
         {
             case "CharcoAzul":
+                PlayerAudio?.PlayInkwell();
                 StartFill(Color.blue);
                 break;
-            case "CharcoNegro":
-                SwitchState(typeof(PlayerWhiteState));
-                break;
+
             case "CharcoRojo":
+                PlayerAudio?.PlayInkwell();
                 StartFill(Color.red);
                 break;
+
             case "CharcoVerde":
+                PlayerAudio?.PlayInkwell();
                 StartFill(Color.green);
+                break;
+
+            case "CharcoNegro":
+                PlayerAudio?.PlayInkwell();
+                SwitchState(typeof(PlayerWhiteState));
                 break;
         }
     }
-    
+
     public void ReturnToMainState()
     {
         switch (playerState)
@@ -494,7 +543,23 @@ public class PlayerStateMachine : StateMachine
                 break;
         }
     }
-    
+
+    public void ForceExitSwimState(Vector3 pushDirection, float pushForce)
+    {
+        if (GetCurrentState() is not PlayerSwimState)
+            return;
+
+        if (!ForceReceiver.isActiveAndEnabled)
+            ForceReceiver.enabled = true;
+
+        ReturnToMainState();
+
+        if (pushForce > 0f)
+        {
+            ForceReceiver.AddForce(pushDirection.normalized * pushForce);
+        }
+    }
+
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         switch(hit.transform.tag)
@@ -522,7 +587,9 @@ public class PlayerStateMachine : StateMachine
 
     public void CheckGrounded()
     {
-        isGrounded = Physics.SphereCast(
+        bool wasGroundedBefore = isGrounded;
+
+        bool hitGround = Physics.SphereCast(
             groundCheckOrigin.position,
             groundCheckRadius,
             Vector3.down,
@@ -531,11 +598,165 @@ public class PlayerStateMachine : StateMachine
             groundMask
         );
 
+        if (hitGround)
+        {
+            float angle = Vector3.Angle(Vector3.up, hit.normal);
+            isGrounded = angle <= Controller.slopeLimit;
+        }
+        else
+        {
+            isGrounded = false;
+        }
+
+        // Mientras estamos en el aire, guardamos la última velocidad vertical real.
+        if (!isGrounded)
+        {
+            hasBeenAirborne = true;
+
+            float controllerY = Controller != null ? Controller.velocity.y : 0f;
+            float forceReceiverY = ForceReceiver != null ? ForceReceiver.VerticalVelocity : 0f;
+
+            // Nos quedamos con la más negativa, porque representa mejor una caída.
+            lastAirVerticalVelocity = Mathf.Min(controllerY, forceReceiverY);
+        }
+
+        // Momento exacto de aterrizaje.
+        if (!wasGroundedBefore && isGrounded && hasBeenAirborne)
+        {
+            float fallSpeed = Mathf.Abs(lastAirVerticalVelocity);
+
+            if (fallSpeed >= MinFallVelocityToPlayLandingParticle)
+            {
+                if (LandingParticles != null)
+                    LandingParticles.Play();
+            }
+
+            if (fallSpeed >= 8f)
+            {
+                PlayerAudio?.PlayHeavyImpact();
+            }
+            else if (fallSpeed >= 1.5f)
+            {
+                PlayerAudio?.PlayLanding();
+            }
+
+            hasBeenAirborne = false;
+            lastAirVerticalVelocity = 0f;
+        }
+
         if (isGrounded)
         {
             isGeyserOnCooldown = false;
             geyserCooldownTimer = 0f;
+            isOnSteepSlope = false;
         }
+    }
+
+    public void PlayFootstepParticle()
+    {
+        if (!isGrounded)
+            return;
+
+        if (_footstepIndex == 0)
+        {
+            if (FootstepParticles1 != null) FootstepParticles1.Play();
+            _footstepIndex = 1;
+        }
+        else
+        {
+            if (FootstepParticles2 != null) FootstepParticles2.Play();
+            _footstepIndex = 0;
+        }
+
+        FootstepSurfaceType surfaceType = DetectFootstepSurface();
+        FootstepSpeedType speedType = DetectFootstepSpeed();
+
+        Debug.Log("FOOTSTEP: " + surfaceType + " / " + speedType);
+
+        PlayerAudio?.PlayFootstep(surfaceType, speedType);
+    }
+
+    private FootstepSpeedType DetectFootstepSpeed()
+    {
+        Vector3 horizontalVelocity = new Vector3(
+            Controller.velocity.x,
+            0f,
+            Controller.velocity.z
+        );
+
+        float speed = horizontalVelocity.magnitude;
+
+        return speed >= 4.5f
+            ? FootstepSpeedType.Run
+            : FootstepSpeedType.Walk;
+    }
+
+    private FootstepSurfaceType DetectFootstepSurface()
+    {
+        if (groundCheckOrigin == null)
+            return FootstepSurfaceType.Ink;
+
+        bool hitGround = Physics.SphereCast(
+            groundCheckOrigin.position,
+            groundCheckRadius,
+            Vector3.down,
+            out RaycastHit hit,
+            groundCheckDistance + 0.3f,
+            groundMask
+        );
+
+        if (!hitGround)
+            return FootstepSurfaceType.Ink;
+
+        int layer = hit.collider.gameObject.layer;
+
+        if (layer == LayerMask.NameToLayer("Ink"))
+            return FootstepSurfaceType.Ink;
+
+        if (layer == LayerMask.NameToLayer("Leaves"))
+            return FootstepSurfaceType.Leaves;
+
+        if (layer == LayerMask.NameToLayer("Rock"))
+            return FootstepSurfaceType.Rock;
+
+        if (layer == LayerMask.NameToLayer("Sand"))
+            return FootstepSurfaceType.Sand;
+
+        if (layer == LayerMask.NameToLayer("Wood"))
+            return FootstepSurfaceType.Wood;
+
+        return FootstepSurfaceType.Ink;
+    }
+
+    /// <summary>
+    /// Aplica una fuerza de deslizamiento hacia abajo de la slope cuando
+    /// el ángulo supera el slopeLimit del CharacterController.
+    /// Llamar cada frame desde el Tick del estado activo.
+    /// </summary>
+    public void ApplySlopeSlide()
+    {
+        bool hitGround = Physics.SphereCast(
+            groundCheckOrigin.position,
+            groundCheckRadius,
+            Vector3.down,
+            out RaycastHit hit,
+            groundCheckDistance,
+            groundMask
+        );
+
+        if (!hitGround) return;
+
+        float angle = Vector3.Angle(Vector3.up, hit.normal);
+        if (angle <= Controller.slopeLimit) return;
+
+        // Estamos en una slope demasiado empinada
+        isOnSteepSlope = true;
+
+        // Calculamos la dirección de deslizamiento: proyección horizontal de la normal invertida
+        Vector3 slideDir = Vector3.ProjectOnPlane(Vector3.down, hit.normal).normalized;
+
+        // Aplicamos la fuerza de deslizamiento via ForceReceiver para que respete la gravedad existente
+        ForceReceiver.AddForce(slideDir * slopeSlideSpeed * Time.deltaTime);
     }
 
     public void RotateColors()
@@ -668,7 +889,6 @@ public class PlayerStateMachine : StateMachine
         }
         else
         {
-            Debug.Log("No queda pintura en ningún tanque.");
         }
     }
 
@@ -750,19 +970,20 @@ public class PlayerStateMachine : StateMachine
 
         if (!stateFound)
         {
+            AudioManager.Instance?.SetInkState(InkStateType.Base);
             SwitchState(typeof(PlayerWhiteState));
             return;
         }
 
-        
+
         Type currentState = GetCurrentState().GetType();
 
         if (currentState == targetState) return;
-
         if (targetState == typeof(PlayerRedState) && currentState == typeof(PlayerShootingState)) return;
         if (targetState == typeof(PlayerGreenState) && currentState == typeof(PlayerWhipState)) return;
         if (targetState == typeof(PlayerBlueState) && currentState == typeof(PlayerGeyserState)) return;
 
+        UpdateInkAudioForState(targetState);
         SwitchState(targetState);
     }
 
@@ -796,7 +1017,6 @@ public class PlayerStateMachine : StateMachine
                 Mat_Player.material.SetColor("_ColorC", color);
                 break;
             default:
-                Debug.Log("Not enetered a valid index");
                 break;
         }
     }
@@ -819,51 +1039,27 @@ public class PlayerStateMachine : StateMachine
         }
     }
 
-    /*#region Gray Absorbed Objects Management
 
-    /// <summary>
-    /// Añade un objeto SMALL a la lista de absorbidos (máximo 3)
-    /// </summary>
-    public bool TryAddAbsorbedObject(AbsorbableObject obj)
+
+    public void AddShadowDrop()
     {
-        if (obj == null) return false;
-        if (absorbedObjects.Count >= MaxAbsorbedSmallObjects) return false;
-        
-        absorbedObjects.Add(obj);
-        Debug.Log($"Objeto SMALL añadido. Total: {absorbedObjects.Count}/{MaxAbsorbedSmallObjects}");
-        return true;
-    }
-    
-    /// <summary>
-    /// Verifica si hay objetos SMALL absorbidos
-    /// </summary>
-    public bool HasAbsorbedSmallObjects()
-    {
-        return absorbedObjects.Count > 0;
-    }
-    
-    /// <summary>
-    /// Obtiene el primer objeto SMALL de la lista
-    /// </summary>
-    public AbsorbableObject GetFirstAbsorbedObject()
-    {
-        if (absorbedObjects.Count == 0) return null;
-        return absorbedObjects[0];
-    }
-    
-    /// <summary>
-    /// Remueve el primer objeto SMALL de la lista después de dispararlo
-    /// </summary>
-    public void RemoveFirstAbsorbedObject()
-    {
-        if (absorbedObjects.Count > 0)
+        Ray ray = new Ray(transform.position, Vector3.down);
+
+        if (!Physics.Raycast(ray, out RaycastHit hit, MaxDistance, groundMask))
         {
-            absorbedObjects.RemoveAt(0);
-            Debug.Log($"Objeto SMALL disparado. Restantes: {absorbedObjects.Count}/{MaxAbsorbedSmallObjects}");
+            ShadowDrop.gameObject.SetActive(false);
+            return;
         }
+
+        ShadowDrop.gameObject.SetActive(true);
+
+        float t = hit.distance / MaxDistance;
+
+
+        ShadowDrop.position = hit.point;// + hit.normal * OffsetY;
+        ShadowDrop.position += new Vector3(0f, OffsetY,0f);
     }
 
-    #endregion*/
 
     public float GetCurrentCameraSensitivity()
     {
@@ -902,5 +1098,18 @@ public class PlayerStateMachine : StateMachine
                 Gizmos.DrawSphere(hit.point, 0.05f);
             }
         }
+    }
+
+    //helper audio 
+    private void UpdateInkAudioForState(Type targetState)
+    {
+        if (targetState == typeof(PlayerWhiteState))
+            AudioManager.Instance?.SetInkState(InkStateType.Base);
+        else if (targetState == typeof(PlayerRedState))
+            AudioManager.Instance?.SetInkState(InkStateType.Red);
+        else if (targetState == typeof(PlayerBlueState))
+            AudioManager.Instance?.SetInkState(InkStateType.Blue);
+        else if (targetState == typeof(PlayerGreenState))
+            AudioManager.Instance?.SetInkState(InkStateType.Green);
     }
 }

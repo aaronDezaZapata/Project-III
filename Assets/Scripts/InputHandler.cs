@@ -42,13 +42,10 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         controls.Player.Enable();
     }
 
-
     void OnDestroy()
     {
         controls.Player.Disable();
     }
-
-    
 
     public void OnAttack(InputAction.CallbackContext context)
     {
@@ -61,7 +58,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-        if (!context.performed) { InteractionEvent?.Invoke(); }
+        if (context.started) { InteractionEvent?.Invoke(); }
     }
 
     public void OnDive(InputAction.CallbackContext context)
@@ -158,6 +155,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         if (context.performed)
         {
             isColorActing = true;
+            ColorActionEvent?.Invoke();
         }
         else if (context.canceled)
         {

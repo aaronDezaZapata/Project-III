@@ -81,7 +81,6 @@ public class PlayerAbsorbState : PlayerBaseState
 
     public override void Exit()
     {
-        Debug.Log("Exiting PlayerAbsorbState");
         
         if (absorbParticles != null)
         {
@@ -169,7 +168,6 @@ public class PlayerAbsorbState : PlayerBaseState
         {
             if (stateMachine.absorbedObjects.Count >= PlayerStateMachine.MaxAbsorbedSmallObjects)
             {
-                Debug.Log("Inventario de objetos SMALL lleno (3/3)");
                 return;
             }
         }
@@ -177,14 +175,11 @@ public class PlayerAbsorbState : PlayerBaseState
         // Para objetos LARGE, verificar si ya tiene uno
         if (obj.size == AbsorbableObject.AbsorbableSize.Large && isHoldingLarge)
         {
-            Debug.Log("Ya tienes un objeto LARGE");
             return;
         }
         
         obj.StartAbsorption();
         objectsBeingAbsorbed.Add(obj);
-        
-        Debug.Log($"Absorbiendo: {obj.name} ({obj.size})");
     }
     
     private void UpdateAbsorption(float deltaTime)
@@ -247,7 +242,6 @@ public class PlayerAbsorbState : PlayerBaseState
                 heldObject = obj;
                 obj.StartHolding();
                 isHoldingLarge = true;
-                Debug.Log($"Levantando objeto LARGE: {obj.name}");
                 break;
         }
     }
@@ -329,8 +323,6 @@ public class PlayerAbsorbState : PlayerBaseState
         stateMachine.Animator.CrossFadeInFixedTime(ShootEnemy, CrossFadeDuration);
         
         heldObject.ShootAsProjectile(shootDirection, stateMachine.GrayProjectileSpeedMultiplier);
-        
-        Debug.Log($"Lanzado objeto LARGE: {heldObject.name}");
         
         heldObject = null;
         isHoldingLarge = false;

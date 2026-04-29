@@ -1,3 +1,4 @@
+using FMOD.Studio;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -34,45 +35,46 @@ public class PlayerWhiteState : PlayerBaseState
     // State tracking
     protected float lastSpeed = 0f;
     protected float lastInputMagnitude = 0f;
-    
+
+    //Audio 
+    private bool audioWasGrounded;
+    private bool fallAudioPlayed;
+    private float lastVerticalVelocity;
+
+
     public PlayerWhiteState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
-       
     }
 
 
     public override void Enter()
     {
-        Debug.Log("Entered PlayerWhiteState");
-        
         SetPlayerState();
-        
         SetMaterialColor();
-        
         SubscribeToInputEvents();
-        
-        //SetupCamera();
-        
+
         stateMachine.CheckGrounded();
-        
+
         Vector3 movement = stateMachine.CalculateMovement();
         UpdateAnimatorParameters(movement, movement.magnitude, Time.deltaTime);
-        
+
         InitializeAnimator();
+
+        audioWasGrounded = stateMachine.isGrounded;
+        fallAudioPlayed = false;
+        lastVerticalVelocity = stateMachine.Controller.velocity.y;
+
     }
-    
+
     // Default player state
     // Overridden in other states
     protected virtual void SetPlayerState()
     {
-        //stateMachine.playerState = PlayerStates.WHITE;
     }
     
     // Initial material color config
     protected virtual void SetMaterialColor()
     {
-        //stateMachine.Mat_Player.material.SetColor("_SpecularColor", Color.white);
-        //stateMachine.StartFill(Color.white);
     }
     
     // Input events to subscribe
@@ -111,10 +113,16 @@ public class PlayerWhiteState : PlayerBaseState
 
     public override void Tick(float deltaTime)
     {
+        if (stateMachine.isOnEvent && stateMachine.isRestrictedToForwardBackward)
+        {
+            HandleEventMovement(deltaTime);
+            return;
+        }
+
         if (stateMachine.isOnEvent) return;
         
         stateMachine.CheckGrounded();
-        
+        stateMachine.ApplySlopeSlide();
         
         // Check for color-specific actions
         if (CheckColorSpecificActions(deltaTime)) return; 
@@ -132,7 +140,7 @@ public class PlayerWhiteState : PlayerBaseState
         {
             HandleBlendTreeTransition(currentInputMagnitude);
         }
-        
+
         // Face movement direction if running
         if (currentInputMagnitude > RunThreshold)
         {
@@ -144,6 +152,17 @@ public class PlayerWhiteState : PlayerBaseState
 
         // Apply movement
         Move(movement * stateMachine.FreeLookMovementSpeed, deltaTime);
+
+        if(stateMachine.ShadowDrop != null && !stateMachine.isGrounded)
+        {
+            if (!stateMachine.ShadowDrop.gameObject.activeSelf) { stateMachine.ShadowDrop.gameObject.SetActive(true); }
+
+            stateMachine.AddShadowDrop();
+        }
+        else
+        {
+            stateMachine.ShadowDrop.gameObject.SetActive(false);
+        }
 
         // Update state tracking
         lastSpeed = currentInputMagnitude;
@@ -186,21 +205,14 @@ public class PlayerWhiteState : PlayerBaseState
         if (jumpTime > 0.98f)
         {
             HandleBlendTreeTransition(currentInputMagnitude);
-
-            /*if (currentInputMagnitude > RunThreshold)
-            {
-                stateMachine.Animator.CrossFadeInFixedTime(StopRun, CrossFadeDuration);
-            }*/
         }
     }
 
     public override void Exit()
     {
         stateMachine.InputReader.JumpEvent -= OnJump;
-        // stateMachine.InputReader.DashEvent -= OnDash;
         stateMachine.InputReader.DiveEvent -= OnDiveEnter;
 
-        // stateMachine.mainCamera.Priority = -1;
         UnsubscribeFromInputEvents();
     }
     
@@ -221,8 +233,6 @@ public class PlayerWhiteState : PlayerBaseState
     
     protected virtual void HandleBlendTreeTransition(float inputMagnitude)
     {
-        // PlayerWhiteState solo usa FreeLookBlendTree
-        // No hace transiciones entre diferentes blend trees, el FreeLookBlendTree maneja idle/walk/run
     }
 
 
@@ -241,7 +251,7 @@ public class PlayerWhiteState : PlayerBaseState
     
     protected virtual void OnJump()
     {
-        if (!CanJump() || stateMachine.isOnEvent) return;
+        if (!CanJump() || stateMachine.isOnEvent || stateMachine.isOnSteepSlope) return;
         stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();
     }
@@ -264,5 +274,28 @@ public class PlayerWhiteState : PlayerBaseState
         orbitalFollow.VerticalAxis.Value = orbitalFollow.VerticalAxis.Center;
         
         orbitalFollow.RadialAxis.Value = orbitalFollow.RadialAxis.Center;
+    }
+
+    protected void HandleEventMovement(float deltaTime)
+    {
+        Vector3 movement = stateMachine.CalculateMovement();
+        
+        Vector3 forward = stateMachine.eventForwardDirection;
+        Vector3 right = Vector3.Cross(forward, Vector3.up);
+        
+        float forwardInput = stateMachine.InputReader.MoveVector.y;
+        float rightInput = stateMachine.InputReader.MoveVector.x;
+        
+        Vector3 restrictedMovement = (forward * forwardInput) * stateMachine.FreeLookMovementSpeed;
+        
+        float currentInputMagnitude = Mathf.Abs(forwardInput);
+        UpdateAnimatorParameters(restrictedMovement, currentInputMagnitude, deltaTime);
+        
+        if (currentInputMagnitude > IdleThreshold)
+        {
+            FaceMovementDirection(restrictedMovement, deltaTime);
+        }
+        
+        Move(restrictedMovement, deltaTime);
     }
 }

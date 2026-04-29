@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_WaterSea2
-  m_Shader: {fileID: -6465566751694194690, guid: 075a29970bb95674188e761b5619c229, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 56e4382826ddd574e837f23e3fc59c9d, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -169,7 +169,10 @@ Material:
     - _ShadowCutMax: 0.55
     - _ShadowCutMin: 0.25
     - _ShadowIntensity: 0.25
+    - _ShadowMaskIntensity: 1
+    - _ShadowMaskPower: 0.6
     - _ShadowSoftness: 0.8
+    - _ShadowStrenght: 0.6
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -180,24 +183,25 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - _BackgroundColor: {r: 0.68301874, g: 0.68301874, b: 0.68301874, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _CausticsColor: {r: 1, g: 1, b: 1, a: 0}
-    - _CausticsSpeedA: {r: -0.18, g: -0.18, b: 0, a: 0}
-    - _CausticsSpeedB: {r: -0.18, g: 0.015, b: 0, a: 0}
+    - _CausticsSpeedA: {r: 0.18, g: 0.18, b: 0, a: 0}
+    - _CausticsSpeedB: {r: 0.18, g: 0.015, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DeepColor: {r: 1, g: 1, b: 1, a: 0}
     - _EdgarColor: {r: 1, g: 1, b: 1, a: 0}
     - _EdgeColor: {r: 1, g: 1, b: 1, a: 0}
-    - _EdgeTexSpeed: {r: 0.03, g: 0, b: 0, a: 0}
+    - _EdgeTexSpeed: {r: -0.03, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LightMaskSpeed: {r: 0.005, g: 0.002, b: 0, a: 0}
+    - _LightMaskSpeed: {r: -0.005, g: 0.002, b: 0, a: 0}
     - _LightMaskTiling: {r: 0.008, g: 0.008, b: 0, a: 0}
     - _ShadllowColor: {r: 0, g: 0.9097543, b: 1, a: 0}
     - _ShadowColor: {r: 0.046944425, g: 0, b: 0.509434, a: 0}
     - _ShadowOffset: {r: 0.03, g: -0.02, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _WaterColor: {r: 1, g: 1, b: 1, a: 0}
-    - _WaterSpeed: {r: 0.001, g: 0.001, b: 0, a: 0}
+    - _WaterSpeed: {r: -0.001, g: -0.001, b: 0, a: 0}
     - _WaterTiling: {r: 2, g: 2, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

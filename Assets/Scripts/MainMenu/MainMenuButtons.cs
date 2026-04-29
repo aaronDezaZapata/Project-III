@@ -1,114 +1,170 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Splines;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class MainMenuButtons : MonoBehaviour
 {
-    [Header("Spline")]
-    public SplineAnimate splineAnimate;
-    public SplineContainer splineContainer;
+    [Header("Camera / Object To Move")]
+    [SerializeField] private Transform objectToMove;
+
+    [Header("Menu Positions")]
+    [SerializeField] private GameObject mainMenu;
+    [SerializeField] private Transform playPosition;
+    [SerializeField] private GameObject settingsCanvas;
 
     [Header("Points Of Interest")]
-    [SerializeField] Transform theater;
-    [SerializeField] Transform book;
-
-    [Header("Menu Nodes")]
-    public const int menuNode = 0;
-    public const int playNode = 3;
-    public const int settingsNode = 2;
+    [SerializeField] private Transform theater;
+    [SerializeField] private Transform book;
 
     [Header("Movement")]
-    public float moveSpeed = 1.5f;
-    public float rotationSpeed = 4f;
+    [SerializeField] private float moveSpeed = 1.5f;
+    [SerializeField] private float rotationSpeed = 4f;
 
     [Header("Scene")]
-    public string playSceneName = "PlayGround";
+#if UNITY_EDITOR
+    [SerializeField] private SceneAsset playScene;
+#endif
 
-    bool isMoving;
-    Transform currentLookTarget;
+    [SerializeField, HideInInspector] private string playScenePath;
 
-    float GetNodeTime(int nodeIndex)
+    private bool isMoving;
+    private Coroutine moveCoroutine;
+
+    private void Start()
     {
-        int count = splineContainer.Spline.Count;
-        return (float)nodeIndex / (count - 1);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        if (objectToMove == null && Camera.main != null)
+            objectToMove = Camera.main.transform;
     }
 
-    void Start()
+#if UNITY_EDITOR
+    private void OnValidate()
     {
-        splineAnimate.NormalizedTime = GetNodeTime(menuNode);
-    }
-
-    void Update()
-    {
-        if (currentLookTarget != null)
+        if (playScene != null)
         {
-            Vector3 dir = currentLookTarget.position - splineAnimate.transform.position;
-            Quaternion targetRot = Quaternion.LookRotation(dir);
-
-            splineAnimate.transform.rotation = Quaternion.Slerp(
-                splineAnimate.transform.rotation,
-                targetRot,
-                Time.deltaTime * rotationSpeed
-            );
+            playScenePath = AssetDatabase.GetAssetPath(playScene);
         }
     }
+#endif
 
     public void PlayButton()
     {
-        MoveToNode(playNode, book, LoadGame);
+        AudioManager.Instance?.PlayUIMenuConfirm();
+        
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        //MoveToPosition(playPosition, book, LoadGame);
     }
 
     public void SettingsButton()
     {
-        MoveToNode(settingsNode, theater, null);
+        AudioManager.Instance?.PlayUIMenuConfirm();
+        if(!settingsCanvas.activeSelf) settingsCanvas.SetActive(true);
+        if(mainMenu.activeSelf) settingsCanvas.SetActive(false);
+        //MoveToPosition(settingsPosition, theater, null);
     }
 
     public void BackButton()
     {
-        MoveToNode(menuNode, null, null);
+        AudioManager.Instance?.PlayUIMenuBack();
+        if (settingsCanvas.activeSelf) settingsCanvas.SetActive(false);
+        if (!mainMenu.activeSelf) settingsCanvas.SetActive(true);
+
     }
 
     public void ExitButton()
     {
+        AudioManager.Instance?.PlayUIMenuConfirm();
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
         Application.Quit();
+#endif
     }
 
-    void MoveToNode(int nodeIndex, Transform lookTarget, System.Action onArrive)
+    private void MoveToPosition(Transform targetPosition, Transform lookTarget, System.Action onArrive)
     {
         if (isMoving) return;
 
-        currentLookTarget = lookTarget;
+        if (objectToMove == null)
+        {
+            Debug.LogError("No hay objectToMove asignado en MainMenuButtons.");
+            return;
+        }
 
-        float targetTime = GetNodeTime(nodeIndex);
-        StartCoroutine(MoveSpline(targetTime, onArrive));
+        if (targetPosition == null)
+        {
+            Debug.LogError("No hay targetPosition asignado en MainMenuButtons.");
+            return;
+        }
+
+        if (moveCoroutine != null)
+            StopCoroutine(moveCoroutine);
+
+        moveCoroutine = StartCoroutine(MoveRoutine(targetPosition, lookTarget, onArrive));
     }
 
-    IEnumerator MoveSpline(float target, System.Action onArrive)
+    private IEnumerator MoveRoutine(Transform targetPosition, Transform lookTarget, System.Action onArrive)
     {
         isMoving = true;
 
-        float start = splineAnimate.NormalizedTime;
-        float t = 0;
+        Vector3 startPosition = objectToMove.position;
+        Quaternion startRotation = objectToMove.rotation;
 
-        while (t < 1)
+        Vector3 finalPosition = targetPosition.position;
+        Quaternion finalRotation = targetPosition.rotation;
+
+        if (lookTarget != null)
         {
-            t += Time.deltaTime * moveSpeed;
+            Vector3 direction = lookTarget.position - finalPosition;
 
-            splineAnimate.NormalizedTime = Mathf.Lerp(start, target, t);
+            if (direction != Vector3.zero)
+                finalRotation = Quaternion.LookRotation(direction.normalized, Vector3.up);
+        }
+
+        float distance = Vector3.Distance(startPosition, finalPosition);
+        float duration = distance / moveSpeed;
+
+        if (duration <= 0.01f)
+            duration = 0.01f;
+
+        float timer = 0f;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+
+            float t = timer / duration;
+            t = Mathf.SmoothStep(0f, 1f, t);
+
+            objectToMove.position = Vector3.Lerp(startPosition, finalPosition, t);
+            objectToMove.rotation = Quaternion.Slerp(startRotation, finalRotation, t);
 
             yield return null;
         }
 
-        splineAnimate.NormalizedTime = target;
-
-        onArrive?.Invoke();
+        objectToMove.position = finalPosition;
+        objectToMove.rotation = finalRotation;
 
         isMoving = false;
+
+        onArrive?.Invoke();
     }
 
-    void LoadGame()
+    private void LoadGame()
     {
-        SceneManager.LoadScene(playSceneName);
+        if (string.IsNullOrEmpty(playScenePath))
+        {
+            Debug.LogError("No hay escena asignada en MainMenuButtons.");
+            return;
+        }
+
+        SceneManager.LoadScene(playScenePath);
     }
 }
