@@ -10,7 +10,7 @@ public class StarCollectible : MonoBehaviour
 
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.CollectStar(starValue);
+            GameManager.Instance.CollectStar(starValue,transform.position);
         }
 
         Destroy(gameObject);
