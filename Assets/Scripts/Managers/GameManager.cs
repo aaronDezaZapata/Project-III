@@ -20,6 +20,14 @@ public class GameManager : MonoBehaviour
     // Coins
     private int coinsCollected = 0;
 
+
+    [SerializeField] private int totalStarsNeeded = 3;
+    [SerializeField] private int starsCollected = 0;
+    [SerializeField] private PortalController portal;
+    [SerializeField] private Vector3 portalSpawnOffset = new Vector3(0f, 2f, 0f);
+
+    private bool portalOpened = false;
+
     private void Awake()
     {
         if (Instance == null)
@@ -69,6 +77,27 @@ public class GameManager : MonoBehaviour
     public void AddCoin(int amount)
     {
         coinsCollected += amount;
+    }
+
+    public void CollectStar(int amount, Vector3 lastStarPosition)
+    {
+        starsCollected += amount;
+        Debug.Log("Stars Collected: " + starsCollected + "/" + totalStarsNeeded);
+
+        if (!portalOpened && starsCollected >= totalStarsNeeded)
+        {
+            portalOpened = true;
+
+            if (portal != null)
+            {
+                portal.transform.position = lastStarPosition + portalSpawnOffset;
+                portal.OpenPortal();
+            }
+            else
+            {
+                Debug.LogWarning("Portal no asignado en el GameManager.");
+            }
+        }
     }
 
     public void ResetCoinAmount()
