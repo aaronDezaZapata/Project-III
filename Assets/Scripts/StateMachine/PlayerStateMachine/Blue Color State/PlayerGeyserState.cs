@@ -21,6 +21,13 @@ public class PlayerGeyserState : PlayerBaseState
     public override void Enter()
     {
         Jump();
+        
+        // Reset down velocity 
+        if (stateMachine.ForceReceiver.VerticalVelocity < 0f)
+        {
+            stateMachine.ForceReceiver.Jump(0f);
+        }
+        
         stateMachine.UseColor(0.5f);
         stateMachine.WaterGeyserParticle.gameObject.SetActive(true);
         stateMachine.WaterGeyserParticleSecond.gameObject.SetActive(true);
