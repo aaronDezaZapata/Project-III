@@ -8,7 +8,7 @@ public class CreditScroller : MonoBehaviour
     [SerializeField] RectTransform panel; // arrastra el PanelCreditos aquí
 
     float startPositionY;
-    float endPositionY;
+    [SerializeField] float endPositionY = 373f;
     bool scrolling = false;
 
     IEnumerator Start()
@@ -16,8 +16,6 @@ public class CreditScroller : MonoBehaviour
         yield return null; // espera a que el Content Size Fitter calcule
 
         startPositionY = contenedor.anchoredPosition.y;
-        // el final es cuando todo el contenido ha salido por arriba del panel
-        endPositionY = startPositionY + contenedor.rect.height + panel.rect.height;
 
         Debug.Log($"Start: {startPositionY} | End: {endPositionY} | Height: {contenedor.rect.height}");
 
@@ -34,6 +32,7 @@ public class CreditScroller : MonoBehaviour
 
         if (contenedor.anchoredPosition.y >= endPositionY)
         {
+            contenedor.anchoredPosition = new Vector2(contenedor.anchoredPosition.x, endPositionY);
             scrolling = false;
             OnCreditsFinished();
         }
