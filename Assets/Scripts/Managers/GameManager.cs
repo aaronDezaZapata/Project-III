@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Unity.Cinemachine;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -17,16 +19,28 @@ public class GameManager : MonoBehaviour
 
     public Action<string> OnLeverActivated;
 
+    // Cinemática portal
+    [SerializeField] private CinemachineCamera gameplayCamera;
+    [SerializeField] private CinemachineCamera portalCinematicCamera;
+    [SerializeField] private int gameplayCameraPriority = 10;
+    [SerializeField] private int portalCameraPriority = 20;
+    [SerializeField] private float delayBeforePortalOpens = 1f;
+    [SerializeField] private float cinematicDuration = 3f;
+
+    private bool isPortalCinematicPlaying = false;
+    private bool portalHasOpenedDuringCinematic = false;
+    private float portalCinematicTimer = 0f;
+
     // Coins
     private int coinsCollected = 0;
 
 
-    [SerializeField] private int totalStarsNeeded = 3;
+    [SerializeField] private int totalStarsNeeded = 6;
     [SerializeField] private int starsCollected = 0;
     [SerializeField] private PortalController portal;
-    [SerializeField] private Vector3 portalSpawnOffset = new Vector3(0f, 2f, 0f);
 
     private bool portalOpened = false;
+    
 
     private void Awake()
     {
@@ -79,7 +93,7 @@ public class GameManager : MonoBehaviour
         coinsCollected += amount;
     }
 
-    public void CollectStar(int amount, Vector3 lastStarPosition)
+    public void CollectStar(int amount)
     {
         starsCollected += amount;
         Debug.Log("Stars Collected: " + starsCollected + "/" + totalStarsNeeded);
@@ -90,8 +104,7 @@ public class GameManager : MonoBehaviour
 
             if (portal != null)
             {
-                portal.transform.position = lastStarPosition + portalSpawnOffset;
-                portal.OpenPortal();
+                StartPortalUnlockCinematic();
             }
             else
             {
@@ -100,6 +113,82 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void StartPortalUnlockCinematic()
+    {
+        isPortalCinematicPlaying = true;
+        portalHasOpenedDuringCinematic = false;
+        portalCinematicTimer = 0f;
+
+        // Parar movimiento del jugador
+        if (player != null)
+        {
+            PlayerStateMachine playerStateMachine = player.GetComponent<PlayerStateMachine>();
+
+            if (playerStateMachine != null)
+                playerStateMachine.enabled = false;
+
+            Rigidbody rb = player.GetComponent<Rigidbody>();
+
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
+        }
+
+        // Cambiar a cámara cinemática del portal
+        if (gameplayCamera != null)
+            gameplayCamera.Priority = 0;
+
+        if (portalCinematicCamera != null)
+            portalCinematicCamera.Priority = portalCameraPriority;
+    }
+
+    private void UpdatePortalUnlockCinematic()
+    {
+        if (!isPortalCinematicPlaying) return;
+
+        portalCinematicTimer += Time.deltaTime;
+
+        if (!portalHasOpenedDuringCinematic && portalCinematicTimer >= delayBeforePortalOpens)
+        {
+            portalHasOpenedDuringCinematic = true;
+            portal.OpenPortal();
+        }
+
+        if (portalHasOpenedDuringCinematic && portal != null && portal.IsRevealFinished)
+        {
+            if (portalCinematicTimer >= delayBeforePortalOpens + cinematicDuration)
+            {
+                EndPortalUnlockCinematic();
+            }
+        }
+    }
+
+    private void EndPortalUnlockCinematic()
+    {
+        if (portalCinematicCamera != null)
+            portalCinematicCamera.Priority = 0;
+
+        if (gameplayCamera != null)
+            gameplayCamera.Priority = gameplayCameraPriority;
+
+        // Esconder shards 
+        if (portal != null)
+            portal.HideShards();
+
+        if (player != null)
+        {
+            PlayerStateMachine playerStateMachine = player.GetComponent<PlayerStateMachine>();
+
+            if (playerStateMachine != null)
+                playerStateMachine.enabled = true;
+        }
+
+        isPortalCinematicPlaying = false;
+    }
+
+
     public void ResetCoinAmount()
     {
         coinsCollected = 0;
@@ -107,20 +196,22 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        // L3 + R3 simultáneamente es toggle FlyState (debug)
-        bool leftStick  = Input.GetKeyDown(KeyCode.JoystickButton8);   // L3
-        bool rightStick = Input.GetKey(KeyCode.JoystickButton9);        // R3
+        UpdatePortalUnlockCinematic();
+
+        if (isPortalCinematicPlaying) return;
+
+        // L3 + R3 simultáneamente es toggle FlyState debug
+        bool leftStick = Input.GetKeyDown(KeyCode.JoystickButton8);
+        bool rightStick = Input.GetKey(KeyCode.JoystickButton9);
 
         if (leftStick && rightStick)
         {
             if (GetPlayerState() is PlayerFlyState)
             {
-                // Salir del fly state es volver al estado de color actual
                 player.GetComponent<PlayerStateMachine>().ReturnToMainState();
             }
             else
             {
-                // Entrar en fly state
                 SetPlayerState<PlayerFlyState>();
             }
         }
