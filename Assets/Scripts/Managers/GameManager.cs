@@ -27,9 +27,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float delayBeforePortalOpens = 1f;
     [SerializeField] private float cinematicDuration = 3f;
 
+    [Header("Portal Camera Movement")]
+    [SerializeField] private Transform portalCameraMoveTransform;
+    [SerializeField] private Vector3 portalCameraStartOffset = new Vector3(0f, 1.5f, -1.5f);
+    [SerializeField] private Vector3 portalCameraEndOffset = new Vector3(0f, -0.3f, 0.4f);
+    [SerializeField] private float cameraMoveDuration = 2f;
+
     private bool isPortalCinematicPlaying = false;
     private bool portalHasOpenedDuringCinematic = false;
     private float portalCinematicTimer = 0f;
+    private Vector3 portalCameraBasePosition;
+    private bool hasPortalCameraBasePosition = false;
 
     // Coins
     private int coinsCollected = 0;
@@ -38,6 +46,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int totalStarsNeeded = 6;
     [SerializeField] private int starsCollected = 0;
     [SerializeField] private PortalController portal;
+
 
     private bool portalOpened = false;
     
@@ -119,7 +128,6 @@ public class GameManager : MonoBehaviour
         portalHasOpenedDuringCinematic = false;
         portalCinematicTimer = 0f;
 
-        // Parar movimiento del jugador
         if (player != null)
         {
             PlayerStateMachine playerStateMachine = player.GetComponent<PlayerStateMachine>();
@@ -136,12 +144,19 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // Cambiar a cámara cinemática del portal
         if (gameplayCamera != null)
             gameplayCamera.Priority = 0;
 
         if (portalCinematicCamera != null)
             portalCinematicCamera.Priority = portalCameraPriority;
+
+        if (portalCameraMoveTransform != null)
+        {
+            portalCameraBasePosition = portalCameraMoveTransform.position;
+            hasPortalCameraBasePosition = true;
+
+            portalCameraMoveTransform.position = portalCameraBasePosition + portalCameraStartOffset;
+        }
     }
 
     private void UpdatePortalUnlockCinematic()
@@ -149,6 +164,8 @@ public class GameManager : MonoBehaviour
         if (!isPortalCinematicPlaying) return;
 
         portalCinematicTimer += Time.deltaTime;
+
+        UpdatePortalCameraMovement();
 
         if (!portalHasOpenedDuringCinematic && portalCinematicTimer >= delayBeforePortalOpens)
         {
@@ -163,6 +180,22 @@ public class GameManager : MonoBehaviour
                 EndPortalUnlockCinematic();
             }
         }
+    }
+
+    private void UpdatePortalCameraMovement()
+    {
+        if (portalCameraMoveTransform == null) return;
+        if (!hasPortalCameraBasePosition) return;
+
+        float t = portalCinematicTimer / cameraMoveDuration;
+        t = Mathf.Clamp01(t);
+
+        t = Mathf.SmoothStep(0f, 1f, t);
+
+        Vector3 startPosition = portalCameraBasePosition + portalCameraStartOffset;
+        Vector3 endPosition = portalCameraBasePosition + portalCameraEndOffset;
+
+        portalCameraMoveTransform.position = Vector3.Lerp(startPosition, endPosition, t);
     }
 
     private void EndPortalUnlockCinematic()
