@@ -10,55 +10,55 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: fd934887ff76d984a99f52a9249a3eab, type: 3}
       propertyPath: m_LocalScale.x
-      value: 7.3286
+      value: 1.8923749
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fd934887ff76d984a99f52a9249a3eab, type: 3}
       propertyPath: m_LocalScale.y
-      value: 7.3286
+      value: 1.8923745
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fd934887ff76d984a99f52a9249a3eab, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3.2917871
+      value: 0.8499979
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fd934887ff76d984a99f52a9249a3eab, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -123.448326
+      value: 53.65
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fd934887ff76d984a99f52a9249a3eab, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 10.331664
+      value: 19.76
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fd934887ff76d984a99f52a9249a3eab, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 59.04
+      value: -41.24
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fd934887ff76d984a99f52a9249a3eab, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.70710677
+      value: -0.99953485
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fd934887ff76d984a99f52a9249a3eab, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.70710677
+      value: 0.030496966
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fd934887ff76d984a99f52a9249a3eab, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fd934887ff76d984a99f52a9249a3eab, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fd934887ff76d984a99f52a9249a3eab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 270
+      value: 356.505
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fd934887ff76d984a99f52a9249a3eab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: fd934887ff76d984a99f52a9249a3eab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: fd934887ff76d984a99f52a9249a3eab, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -83,6 +83,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fd934887ff76d984a99f52a9249a3eab, type: 3}
       insertIndex: -1
       addedObject: {fileID: 845032050390640456}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fd934887ff76d984a99f52a9249a3eab, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4391472437885267773}
   m_SourcePrefab: {fileID: 100100000, guid: fd934887ff76d984a99f52a9249a3eab, type: 3}
 --- !u!1 &3685523357055276255 stripped
 GameObject:
@@ -101,5 +104,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d66a54992e03a664d9fcd7612d4be135, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UniqueID: 894a82c1-ef09-4613-9691-45a2a27d7fc3
+  UniqueID: fe637001-40cf-4442-97df-f86381455bab
   hasUnsyncedChanges: 1
+--- !u!114 &4391472437885267773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3685523357055276255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b05deb5fea965804ea6a8ec45eaefdc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 120
+  rotationAxis: {x: 0, y: 1, z: 0}
+  playerTag: Player
+  collectVFX: {fileID: 0}

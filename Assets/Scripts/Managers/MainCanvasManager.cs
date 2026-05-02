@@ -2,6 +2,7 @@ using System;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainCanvasManager : MonoBehaviour
@@ -218,5 +219,10 @@ public class MainCanvasManager : MonoBehaviour
         // TBD
         /*musicAudioSlider.onValueChanged.AddListener();
         sfxAudioSlider.onValueChanged.AddListener();*/
+    }
+
+    public void ExitToMainMenu()
+    {
+        SceneManager.LoadScene("1 - MainMenu2 NEW");
     }
 }
