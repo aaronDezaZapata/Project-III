@@ -23,8 +23,12 @@ public class ForceReceiver : MonoBehaviour
 
     private void Update()
     {
-        
-        if (verticalVelocity < 0f && controller.isGrounded)
+        //controller.isGrounded puede ser true cuando se toca una pared lateral,
+        // reseteando la gravedad a -2f y puede el jugador se quede pegado.
+        // Solo reseteamos la gravedad si también hay colisión por abajo.
+        bool actuallyGrounded = controller.isGrounded && (controller.collisionFlags & CollisionFlags.Below) != 0;
+
+        if (verticalVelocity < 0f && actuallyGrounded)
         {
             // verticalVelocity = playerGravity * Time.deltaTime;
             verticalVelocity = -2f;
