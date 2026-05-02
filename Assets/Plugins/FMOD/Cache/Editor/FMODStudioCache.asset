@@ -69,10 +69,10 @@ MonoBehaviour:
   Path: Audio/Blot/Build/Desktop/amb.bank
   Name: amb
   StudioPath: bank:/amb
-  lastModified: 639129395249051489
+  lastModified: 639132607948620612
   FileSizes:
   - Name: Desktop
-    Value: 1050752
+    Value: 1051712
   Exists: 1
 --- !u!114 &-8154304442873351567
 MonoBehaviour:
@@ -313,7 +313,7 @@ MonoBehaviour:
   Path: Audio/Blot/Build/Desktop/player.bank
   Name: player
   StudioPath: bank:/player
-  lastModified: 639129395268064664
+  lastModified: 639132647616750905
   FileSizes:
   - Name: Desktop
     Value: 118176
@@ -413,11 +413,11 @@ MonoBehaviour:
   - {fileID: 119228371442799281}
   IsStream: 0
   Is3D: 0
-  IsOneShot: 1
+  IsOneShot: 0
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 3939
+  Length: 5139
 --- !u!114 &-3137692527018372278
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -633,6 +633,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-2103853633678869161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/interaction/object_impact
+  m_EditorClassIdentifier: 
+  Path: event:/interaction/object_impact
+  Guid:
+    Data1: -1480654723
+    Data2: 1099140278
+    Data3: -359612523
+    Data4: -1172335093
+  Banks:
+  - {fileID: 3259666628261842204}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &-2026104031856590043
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -648,10 +675,10 @@ MonoBehaviour:
   Path: Audio/Blot/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639129395250608297
+  lastModified: 639132639304362318
   FileSizes:
   - Name: Desktop
-    Value: 2964
+    Value: 3210
   Exists: 1
 --- !u!114 &-2012904241228989026
 MonoBehaviour:
@@ -727,6 +754,33 @@ MonoBehaviour:
     Data4: -1363613937
   Banks:
   - {fileID: 119228371442799281}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &-1794868772924713252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/interaction/error
+  m_EditorClassIdentifier: 
+  Path: event:/interaction/error
+  Guid:
+    Data1: 1471704608
+    Data2: 1125747242
+    Data3: 1599618958
+    Data4: 2143071499
+  Banks:
+  - {fileID: 3259666628261842204}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -845,7 +899,7 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 25265
+  Length: 25296
 --- !u!114 &-880059170524787993
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -888,7 +942,7 @@ MonoBehaviour:
   Path: Audio/Blot/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639129395250586416
+  lastModified: 639132639304353003
   FileSizes:
   - Name: Desktop
     Value: 1464
@@ -1102,6 +1156,7 @@ MonoBehaviour:
   - {fileID: 5600480078019846572}
   - {fileID: -4993922810490107572}
   - {fileID: 3746544502109102845}
+  - {fileID: 3259666628261842204}
   EditorEvents:
   - {fileID: -7555795809369648625}
   - {fileID: -902537195074687974}
@@ -1147,6 +1202,10 @@ MonoBehaviour:
   - {fileID: -2586380286146764365}
   - {fileID: -9056016985596696878}
   - {fileID: 5541879362059216569}
+  - {fileID: -1794868772924713252}
+  - {fileID: 6335511461997876573}
+  - {fileID: -2103853633678869161}
+  - {fileID: 135047236638863217}
   EditorParameters:
   - {fileID: 3417943063311627765}
   - {fileID: 8074535884100202521}
@@ -1155,7 +1214,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: -2026104031856590043}
   cacheVersion: 131858
-  cacheTime: 639129395268325626
+  cacheTime: 639132648583103880
   SerializableEventsDict:
   - key: event:/amb/volcano
     index: 0
@@ -1245,6 +1304,14 @@ MonoBehaviour:
     index: 42
   - key: event:/ui/menu_back
     index: 43
+  - key: event:/interaction/error
+    index: 44
+  - key: event:/interaction/checkpoint
+    index: 45
+  - key: event:/interaction/object_impact
+    index: 46
+  - key: event:/interaction/inkwell
+    index: 47
 --- !u!114 &119228371442799281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1260,11 +1327,38 @@ MonoBehaviour:
   Path: Audio/Blot/Build/Desktop/ink.bank
   Name: ink
   StudioPath: bank:/ink
-  lastModified: 639129395250508595
+  lastModified: 639132648583103880
   FileSizes:
   - Name: Desktop
-    Value: 174304
+    Value: 99552
   Exists: 1
+--- !u!114 &135047236638863217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/interaction/inkwell
+  m_EditorClassIdentifier: 
+  Path: event:/interaction/inkwell
+  Guid:
+    Data1: 74313386
+    Data2: 1316107647
+    Data3: -959394117
+    Data4: -1796045017
+  Banks:
+  - {fileID: 3259666628261842204}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &514577956885928275
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1428,6 +1522,26 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &3259666628261842204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/interaction.bank
+  m_EditorClassIdentifier: 
+  Path: Audio/Blot/Build/Desktop/interaction.bank
+  Name: interaction
+  StudioPath: bank:/interaction
+  lastModified: 639132639304550180
+  FileSizes:
+  - Name: Desktop
+    Value: 103232
+  Exists: 1
 --- !u!114 &3348459211828774142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1498,7 +1612,7 @@ MonoBehaviour:
   Path: Audio/Blot/Build/Desktop/ui.bank
   Name: ui
   StudioPath: bank:/ui
-  lastModified: 639129395268325626
+  lastModified: 639132607964372766
   FileSizes:
   - Name: Desktop
     Value: 4070
@@ -1707,10 +1821,10 @@ MonoBehaviour:
   Path: Audio/Blot/Build/Desktop/music.bank
   Name: music
   StudioPath: bank:/music
-  lastModified: 639129395267418878
+  lastModified: 639132607963885239
   FileSizes:
   - Name: Desktop
-    Value: 2653920
+    Value: 2653984
   Exists: 1
 --- !u!114 &5848157529081913275
 MonoBehaviour:
@@ -1759,6 +1873,33 @@ MonoBehaviour:
     Data4: -1264040866
   Banks:
   - {fileID: 119228371442799281}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &6335511461997876573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/interaction/checkpoint
+  m_EditorClassIdentifier: 
+  Path: event:/interaction/checkpoint
+  Guid:
+    Data1: -1742025376
+    Data2: 1167364723
+    Data3: 1475761819
+    Data4: 300741076
+  Banks:
+  - {fileID: 3259666628261842204}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
