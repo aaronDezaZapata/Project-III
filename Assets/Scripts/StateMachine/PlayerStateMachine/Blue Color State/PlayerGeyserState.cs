@@ -76,14 +76,14 @@ public class PlayerGeyserState : PlayerBaseState
 
     public override void Exit()
     {
-        stateMachine.Animator.SetBool(GeyserAnim, false);
-        
         stateMachine.isGeyserOnCooldown = true;
         stateMachine.geyserCooldownTimer = stateMachine.GeyserCooldownTime;
         stateMachine.wasJumpButtonReleased = false;
         
         stateMachine.WaterGeyserParticle.gameObject.SetActive(false);
         stateMachine.WaterGeyserParticleSecond.gameObject.SetActive(false);
+        
+        stateMachine.Animator.SetBool(GeyserAnim, false);
     }
     
     private void MoveHoverDirect(float deltaTime)
