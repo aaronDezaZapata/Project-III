@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 1462266984920858444}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -19.01, y: 0.16, z: 8.51}
+  m_LocalPosition: {x: -8.96, y: 9.13, z: 1.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -134,7 +134,7 @@ Transform:
   m_GameObject: {fileID: 4661720980338868877}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.6, y: 0.16, z: -19.1}
+  m_LocalPosition: {x: -8.96, y: -15.369999, z: 0.86}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -155,6 +155,7 @@ GameObject:
   - component: {fileID: 4070343963524145525}
   - component: {fileID: 2387550545760509258}
   - component: {fileID: 6297815706206088884}
+  - component: {fileID: 513813941155324003}
   m_Layer: 0
   m_Name: Platform
   m_TagString: Untagged
@@ -171,8 +172,8 @@ Transform:
   m_GameObject: {fileID: 6178410940421728735}
   serializedVersion: 2
   m_LocalRotation: {x: 0.6351669, y: -0.31074595, z: 0.31074595, w: 0.6351669}
-  m_LocalPosition: {x: -17.6, y: 0, z: 7.7}
-  m_LocalScale: {x: 55, y: 10, z: 17.4}
+  m_LocalPosition: {x: -12.07, y: 0, z: 7.7}
+  m_LocalScale: {x: 5, y: 1, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3452754592846925161}
@@ -197,7 +198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d66a54992e03a664d9fcd7612d4be135, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UniqueID: ac716079-df8b-4190-ac2d-70c9560503f9
+  UniqueID: 3a50c1e9-f34e-479c-8723-bf9289910d13
   hasUnsyncedChanges: 1
 --- !u!23 &4939642361079720199
 MeshRenderer:
@@ -299,3 +300,46 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   platformRoot: {fileID: 3452754592846925161}
+--- !u!114 &513813941155324003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6178410940421728735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98f327ef8921ec247891e9a5e0e83d1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leverID: lever_01
+  autoStart: 1
+  pointBOffset: {x: 28, y: 0, z: 0}
+  speed: 5
+  easeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  returnToStart: 0
+  waitBeforeReturn: 1.5
+  loop: 1
