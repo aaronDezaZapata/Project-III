@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;  
 
 public class CreditScroller : MonoBehaviour
 {
@@ -40,7 +41,7 @@ public class CreditScroller : MonoBehaviour
 
     void OnCreditsFinished()
     {
-        Debug.Log("Créditos terminados");
+        SceneManager.LoadScene("1 - MainMenu2 NEW");
     }
 
     public void ResetCredits()
