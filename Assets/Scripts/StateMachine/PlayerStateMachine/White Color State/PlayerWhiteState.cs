@@ -14,16 +14,12 @@ public class PlayerWhiteState : PlayerBaseState
     /// Animation Hashes ///
     // Movement
     protected readonly int SpeedX = Animator.StringToHash("SpeedX");
-    protected readonly int AimSpeedX = Animator.StringToHash("AimSpeedX");
+    protected readonly int AimSpeedX = Animator.StringToHash("AimSpeed");
     protected readonly int SpeedY = Animator.StringToHash("SpeedY");
     protected readonly int IsGrounded = Animator.StringToHash("IsGrounded");
     protected readonly int IsFalling = Animator.StringToHash("IsFalling");
     
-    protected readonly int AnimJump = Animator.StringToHash("Impulse");
-
-    // Constants
-    protected const float CrossFadeDuration = 0.1f;
-    protected const float AnimatorDampTime = 0.1f;
+    protected readonly int AnimJump = Animator.StringToHash("JumpTriggered");
 
     protected const float RunThreshold = 0.7f;
     protected const float IdleThreshold = 0.05f;
@@ -175,9 +171,9 @@ public class PlayerWhiteState : PlayerBaseState
     
     protected virtual void UpdateAnimatorParameters(Vector3 movement, float currentInputMagnitude, float deltaTime)
     {
-        stateMachine.Animator.SetFloat(SpeedX, currentInputMagnitude, AnimatorDampTime, deltaTime);
-        stateMachine.Animator.SetFloat(AimSpeedX, movement.x, AnimatorDampTime, deltaTime);
-        stateMachine.Animator.SetFloat(SpeedY, stateMachine.Controller.velocity.y, AnimatorDampTime, deltaTime);
+        stateMachine.Animator.SetFloat(SpeedX, currentInputMagnitude);
+        stateMachine.Animator.SetFloat(AimSpeedX, movement.x);
+        stateMachine.Animator.SetFloat(SpeedY, stateMachine.Controller.velocity.y);
         stateMachine.Animator.SetBool(IsGrounded, stateMachine.isGrounded);
         
         bool isFalling = !stateMachine.isGrounded && stateMachine.Controller.velocity.y < -0.5f;
