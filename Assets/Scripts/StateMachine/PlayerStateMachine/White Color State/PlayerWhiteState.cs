@@ -177,7 +177,7 @@ public class PlayerWhiteState : PlayerBaseState
     {
         float targetSpeed = currentInputMagnitude;
         
-        currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, Time.deltaTime * 10f);
+        currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, Time.deltaTime * 8f);
         
         stateMachine.Animator.SetFloat(SpeedX, Mathf.Abs(currentSpeed));
         

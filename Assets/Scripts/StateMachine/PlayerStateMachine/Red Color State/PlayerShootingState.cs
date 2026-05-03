@@ -13,6 +13,9 @@ public class PlayerShootingState : PlayerBaseState
     private float _rotationX;
     private float _rotationY;
 
+    private float _currentDirX;
+    private float _currentDirY;
+
     //Audio
     private bool wasFiringAudio;
 
@@ -53,8 +56,11 @@ public class PlayerShootingState : PlayerBaseState
         HandleLookRotation(deltaTime);
         HandleAimMovement(deltaTime);
         
-        stateMachine.Animator.SetFloat("DirX", stateMachine.InputReader.MoveVector.x);
-        stateMachine.Animator.SetFloat("DirY", stateMachine.InputReader.MoveVector.y);
+        _currentDirX = Mathf.Lerp(_currentDirX, stateMachine.InputReader.MoveVector.x, Time.deltaTime * 15f);
+        _currentDirY = Mathf.Lerp(_currentDirY, stateMachine.InputReader.MoveVector.y, Time.deltaTime * 15f);
+        
+        stateMachine.Animator.SetFloat("DirX", _currentDirX);
+        stateMachine.Animator.SetFloat("DirY", _currentDirY);
 
         // Actualizar la velocidad de movimiento en el animator
         Vector3 movement = stateMachine.CalculateMovement();
