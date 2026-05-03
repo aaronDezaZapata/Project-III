@@ -5,14 +5,9 @@ using UnityEngine.Rendering.Universal;
 
 public class PlayerShootingState : PlayerBaseState
 {
-    
-    private const float CrossFadeDuration = 0.1f;
-    private const float AnimatorDampTime = 0.1f;
-
     public static Action<bool> OnAiming;
     private static readonly int IsOnShooting = Animator.StringToHash("IsOnShooting");
     
-
     private float speed = 100f;
     private float _nextFireTime;
     private float _rotationX;
@@ -33,7 +28,6 @@ public class PlayerShootingState : PlayerBaseState
         // CAMERA IN
         stateMachine.aimCamera.Priority = 10;
         
-        // Activar el WalkingBlendTree cuando entras al estado de shooting
         stateMachine.Animator.SetBool(IsOnShooting, true);
 
         if (stateMachine.ReticleTransform != null)
@@ -100,7 +94,6 @@ public class PlayerShootingState : PlayerBaseState
         if (stateMachine.ReticleTransform != null)
             stateMachine.ReticleTransform.gameObject.SetActive(false);
         
-        // Volver al FreeLookBlendTree al salir
         stateMachine.Animator.SetBool(IsOnShooting, false);
     }
 
