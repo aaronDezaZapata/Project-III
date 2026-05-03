@@ -362,7 +362,17 @@ public class PlayerStateMachine : StateMachine
         {
             PlayerAudio = GetComponentInChildren<PlayerAudio>();
         }
-
+        // Asigno un material sin fricción.
+        CapsuleCollider extraCollider = GetComponent<CapsuleCollider>();
+        if (extraCollider != null && !extraCollider.isTrigger)
+        {
+            PhysicsMaterial noFrictionMat = new PhysicsMaterial("NoFriction");
+            noFrictionMat.dynamicFriction = 0f;
+            noFrictionMat.staticFriction = 0f;
+            noFrictionMat.frictionCombine = PhysicsMaterialCombine.Minimum;
+            noFrictionMat.bounceCombine = PhysicsMaterialCombine.Minimum;
+            extraCollider.material = noFrictionMat;
+        }
     }
 
     private void Start()
