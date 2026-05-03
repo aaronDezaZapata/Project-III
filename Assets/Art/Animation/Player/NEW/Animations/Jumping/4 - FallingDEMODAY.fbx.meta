@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: e1cbdca1860688f408ecb79aa1064d8a
+guid: 0a7711c2097a6e842b98e90698d11b70
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -18,15 +18,8 @@ ModelImporter:
     motionNodeName: 
     animationImportErrors: 
     animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
-      might lower retargeting quality:\nNote: Activate translation DOF on avatar
-      to improve retargeting quality.\n\t'Spine' has translation animation that will
-      be discarded.\n\t'Spine1' has translation animation that will be discarded.\n\t'Spine2'
-      has translation animation that will be discarded.\n\t'Neck' has translation
-      animation that will be discarded.\n\t'Head' has translation animation that
-      will be discarded.\n\t'Helmet' has translation animation that will be discarded.\n\t'LeftArm'
-      has translation animation that will be discarded.\n\t'LeftHand' has translation
-      animation that will be discarded.\n\t'RightArm' has translation animation that
-      will be discarded.\n\t'RightHand' has translation animation that will be discarded.\n"
+      might lower retargeting quality:\n\t'Helmet' has translation animation that
+      will be discarded.\n"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 1
@@ -40,20 +33,20 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: StartJump
+      name: FallingAnim
       takeName: Take 001
       internalID: 1827226128182048838
       firstFrame: 0
-      lastFrame: 10
+      lastFrame: 24
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
-      loopBlendOrientation: 1
+      loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 0
@@ -743,7 +736,7 @@ ModelImporter:
     feetSpacing: 0
     globalScale: 1
     rootMotionBoneName: 
-    hasTranslationDoF: 0
+    hasTranslationDoF: 1
     hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: f9e603f179089134097383edf43b1840, type: 3}

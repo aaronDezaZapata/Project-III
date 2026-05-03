@@ -30,12 +30,12 @@ public class PlayerGeyserState : PlayerBaseState
         stateMachine.PlayerAudio?.PlayBlueBoost();
 
         airControlSfxTimer = 0f;
+        
+        stateMachine.Animator.SetBool(GeyserAnim, true);
     }
 
     public override void Tick(float deltaTime)
     {
-        stateMachine.Animator.CrossFadeInFixedTime(GeyserAnim, CrossFadeDuration);
-        
         stateMachine.CheckGrounded();
         if (stateMachine.Controller.isGrounded)
         {
@@ -69,6 +69,8 @@ public class PlayerGeyserState : PlayerBaseState
 
     public override void Exit()
     {
+        stateMachine.Animator.SetBool(GeyserAnim, false);
+        
         stateMachine.isGeyserOnCooldown = true;
         stateMachine.geyserCooldownTimer = stateMachine.GeyserCooldownTime;
         stateMachine.wasJumpButtonReleased = false;

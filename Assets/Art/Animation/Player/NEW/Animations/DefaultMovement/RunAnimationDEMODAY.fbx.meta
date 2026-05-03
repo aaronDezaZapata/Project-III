@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 6532a7ffbde725141bdcf9ceb5f7328d
+guid: f6a603b2e1a8dff49bc94f8b2c16aeab
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -18,15 +18,8 @@ ModelImporter:
     motionNodeName: 
     animationImportErrors: 
     animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
-      might lower retargeting quality:\nNote: Activate translation DOF on avatar
-      to improve retargeting quality.\n\t'Spine' has translation animation that will
-      be discarded.\n\t'Spine1' has translation animation that will be discarded.\n\t'Spine2'
-      has translation animation that will be discarded.\n\t'Neck' has translation
-      animation that will be discarded.\n\t'Head' has translation animation that
-      will be discarded.\n\t'Rightear' has translation animation that will be discarded.\n\t'Helmet'
-      has translation animation that will be discarded.\n\t'LeftArm' has translation
-      animation that will be discarded.\n\t'RightArm' has translation animation that
-      will be discarded.\n"
+      might lower retargeting quality:\n\t'Rightear' has translation animation that
+      will be discarded.\n\t'Helmet' has translation animation that will be discarded.\n"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 1
@@ -40,7 +33,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: WalkingAnim
+      name: RunAnim
       takeName: Take 001
       internalID: 1827226128182048838
       firstFrame: 0
@@ -743,7 +736,7 @@ ModelImporter:
     feetSpacing: 0
     globalScale: 1
     rootMotionBoneName: 
-    hasTranslationDoF: 0
+    hasTranslationDoF: 1
     hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: f9e603f179089134097383edf43b1840, type: 3}
