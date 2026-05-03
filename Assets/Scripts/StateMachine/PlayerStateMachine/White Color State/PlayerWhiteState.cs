@@ -24,6 +24,10 @@ public class PlayerWhiteState : PlayerBaseState
     protected const float RunThreshold = 0.7f;
     protected const float IdleThreshold = 0.05f;
     
+    // Movement Tracking
+    protected float currentSpeed;
+    protected float smoothSpeed;
+    
     // State tracking
     protected float lastSpeed = 0f;
     protected float lastInputMagnitude = 0f;
@@ -171,7 +175,12 @@ public class PlayerWhiteState : PlayerBaseState
     
     protected virtual void UpdateAnimatorParameters(Vector3 movement, float currentInputMagnitude, float deltaTime)
     {
-        stateMachine.Animator.SetFloat(SpeedX, currentInputMagnitude);
+        float targetSpeed = currentInputMagnitude;
+        
+        currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, Time.deltaTime * 10f);
+        
+        stateMachine.Animator.SetFloat(SpeedX, Mathf.Abs(currentSpeed));
+        
         stateMachine.Animator.SetFloat(AimSpeedX, movement.x);
         stateMachine.Animator.SetFloat(SpeedY, stateMachine.Controller.velocity.y);
         stateMachine.Animator.SetBool(IsGrounded, stateMachine.isGrounded);
