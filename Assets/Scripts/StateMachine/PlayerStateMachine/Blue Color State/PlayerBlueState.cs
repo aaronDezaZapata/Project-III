@@ -70,7 +70,7 @@ public class PlayerBlueState : PlayerWhiteState
         
         if (CanJump())
         {
-            stateMachine.Animator.SetTrigger(AnimJump);
+            stateMachine.Animator.SetTrigger(JumpTriggered);
             Jump();
         }
         else if (!stateMachine.isGrounded && !geyserUsedThisAirTime)

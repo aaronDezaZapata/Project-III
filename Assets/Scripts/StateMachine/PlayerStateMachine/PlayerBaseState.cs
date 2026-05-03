@@ -20,6 +20,9 @@ public abstract class PlayerBaseState : State
     private bool _doubleJumpAvailable = true;
     private bool _hasUsedDoubleJump = false;
     
+    protected readonly int JumpTriggered = Animator.StringToHash("JumpTriggered");
+    protected readonly int DoubleJumpTriggered = Animator.StringToHash("DoubleJumpTriggered");
+    
 
     public PlayerBaseState(PlayerStateMachine stateMachine)
     {
@@ -216,6 +219,8 @@ public abstract class PlayerBaseState : State
                 _doubleJumpAvailable = true;
                 _hasUsedDoubleJump = false;
             }
+            
+            stateMachine.Animator.SetTrigger(JumpTriggered);
         }
         else if (stateMachine.HasDoubleJump && _doubleJumpAvailable && !_hasUsedDoubleJump)
         {
@@ -223,6 +228,8 @@ public abstract class PlayerBaseState : State
             stateMachine.PlayerAudio?.PlayDoubleJump();
 
             _hasUsedDoubleJump = true;
+            
+            stateMachine.Animator.SetTrigger(DoubleJumpTriggered);
         }
     }
 

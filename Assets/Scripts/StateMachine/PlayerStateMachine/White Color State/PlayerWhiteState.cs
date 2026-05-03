@@ -18,8 +18,6 @@ public class PlayerWhiteState : PlayerBaseState
     protected readonly int SpeedY = Animator.StringToHash("SpeedY");
     protected readonly int IsGrounded = Animator.StringToHash("IsGrounded");
     protected readonly int IsFalling = Animator.StringToHash("IsFalling");
-    
-    protected readonly int AnimJump = Animator.StringToHash("JumpTriggered");
 
     protected const float RunThreshold = 0.7f;
     protected const float IdleThreshold = 0.05f;
@@ -228,7 +226,6 @@ public class PlayerWhiteState : PlayerBaseState
     protected virtual void OnJump()
     {
         if (!CanJump() || stateMachine.isOnEvent || stateMachine.isOnSteepSlope) return;
-        stateMachine.Animator.SetTrigger(AnimJump);
         Jump();
     }
 
