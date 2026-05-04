@@ -36,6 +36,17 @@ public abstract class PlayerBaseState : State
         Vector3 horizontalMotion = new Vector3(motion.x, 0, motion.z);
         Vector3 verticalMotion = new Vector3(0, motion.y, 0);
 
+        // eliminar el input horizontal para que la velocidad no
+        // se acumule contra la pared y bloquee la gravedad.
+        bool hasSideCollision = (stateMachine.Controller.collisionFlags & CollisionFlags.Sides) != 0;
+        bool isTouchingWallInAir = hasSideCollision && !stateMachine.isGrounded;
+        if (isTouchingWallInAir)
+        {
+            horizontalMotion = Vector3.zero;
+            _currentMovementVelocity = Vector3.zero;
+            _movementVelocitySmoothRef = Vector3.zero;
+        }
+
         // Detectar cambio brusco de dirección
         float directionChangeAngle = 0f;
         bool hasInput = horizontalMotion.magnitude > 0.01f;
