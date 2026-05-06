@@ -8,7 +8,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerGeyserState : PlayerBaseState
 {
-    private readonly int GeyserAnim = Animator.StringToHash("GeyserCycle");
+    private readonly int IsOnGeyser = Animator.StringToHash("IsOnGeyser");
     private const float CrossFadeDuration = 0.1f;
     private const float AirControlSfxInterval = 0.20f;
 
@@ -37,12 +37,12 @@ public class PlayerGeyserState : PlayerBaseState
         stateMachine.PlayerAudio?.PlayBlueBoost();
 
         airControlSfxTimer = 0f;
+        
+        stateMachine.Animator.SetBool(IsOnGeyser, true);
     }
 
     public override void Tick(float deltaTime)
     {
-        stateMachine.Animator.CrossFadeInFixedTime(GeyserAnim, CrossFadeDuration);
-        
         stateMachine.CheckGrounded();
         if (stateMachine.Controller.isGrounded)
         {
@@ -82,6 +82,8 @@ public class PlayerGeyserState : PlayerBaseState
         
         stateMachine.WaterGeyserParticle.gameObject.SetActive(false);
         stateMachine.WaterGeyserParticleSecond.gameObject.SetActive(false);
+        
+        stateMachine.Animator.SetBool(IsOnGeyser, false);
     }
     
     private void MoveHoverDirect(float deltaTime)

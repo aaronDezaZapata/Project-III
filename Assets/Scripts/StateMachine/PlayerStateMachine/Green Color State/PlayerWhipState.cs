@@ -8,8 +8,7 @@ public class PlayerWhipState : PlayerBaseState
 
     #region Animation Variables
 
-    private readonly int FrontLianaAnim = Animator.StringToHash("FrontLiana");
-    private const float CrossFadeDuration = 0.1f;
+    private readonly int IsOnWhipGrab = Animator.StringToHash("IsOnWhipGrab");
 
     #endregion
 
@@ -311,6 +310,8 @@ public class PlayerWhipState : PlayerBaseState
         stateMachine.ForceReceiver.enabled = false;
         AttachToGrapplePoint();
         stateMachine.PlayerAudio?.PlayWhipAttach();
+        
+        stateMachine.Animator.SetBool(IsOnWhipGrab, true);
     }
 
     private void TickGrappleSwing(float deltaTime)
@@ -327,12 +328,6 @@ public class PlayerWhipState : PlayerBaseState
         MovePlayer(deltaTime);
         RotatePlayer(deltaTime);
         CheckRopeIntegrity();
-        AnimationGrapple();
-    }
-
-    private void AnimationGrapple()
-    {
-        stateMachine.Animator.CrossFadeInFixedTime(FrontLianaAnim, CrossFadeDuration);
     }
 
     private bool TryFindGrapplePoint()
@@ -531,6 +526,8 @@ public class PlayerWhipState : PlayerBaseState
         ApplySwingMomentum();
         isAttached = false;
         currentGrapplePoint = null;
+        
+        stateMachine.Animator.SetBool(IsOnWhipGrab, false);
     }
 
     #endregion

@@ -5,19 +5,16 @@ using UnityEngine.Rendering.Universal;
 
 public class PlayerShootingState : PlayerBaseState
 {
-    private readonly int ShootAnim = Animator.StringToHash("Shoot");
-    private readonly int WalkingBlendTreeHash = Animator.StringToHash("WalkingBlendTree");
-    private readonly int FreeLookBlendTreeHash = Animator.StringToHash("FreeLookBlendTree");
-    private readonly int FreeLookSpeedHash = Animator.StringToHash("SpeedX");
-    private const float CrossFadeDuration = 0.1f;
-    private const float AnimatorDampTime = 0.1f;
-
     public static Action<bool> OnAiming;
+    private static readonly int IsOnShooting = Animator.StringToHash("IsOnShooting");
     
     private float speed = 100f;
     private float _nextFireTime;
     private float _rotationX;
     private float _rotationY;
+
+    private float _currentDirX;
+    private float _currentDirY;
 
     //Audio
     private bool wasFiringAudio;
@@ -34,8 +31,7 @@ public class PlayerShootingState : PlayerBaseState
         // CAMERA IN
         stateMachine.aimCamera.Priority = 10;
         
-        // Activar el WalkingBlendTree cuando entras al estado de shooting
-        stateMachine.Animator.CrossFadeInFixedTime(WalkingBlendTreeHash, CrossFadeDuration);
+        stateMachine.Animator.SetBool(IsOnShooting, true);
 
         if (stateMachine.ReticleTransform != null)
             stateMachine.ReticleTransform.gameObject.SetActive(true);
@@ -59,10 +55,15 @@ public class PlayerShootingState : PlayerBaseState
         
         HandleLookRotation(deltaTime);
         HandleAimMovement(deltaTime);
+        
+        _currentDirX = Mathf.Lerp(_currentDirX, stateMachine.InputReader.MoveVector.x, Time.deltaTime * 15f);
+        _currentDirY = Mathf.Lerp(_currentDirY, stateMachine.InputReader.MoveVector.y, Time.deltaTime * 15f);
+        
+        stateMachine.Animator.SetFloat("DirX", _currentDirX);
+        stateMachine.Animator.SetFloat("DirY", _currentDirY);
 
         // Actualizar la velocidad de movimiento en el animator
         Vector3 movement = stateMachine.CalculateMovement();
-        stateMachine.Animator.SetFloat(FreeLookSpeedHash, movement.magnitude, AnimatorDampTime, deltaTime);
 
         if (stateMachine.InputReader.IsFiring)
         {
@@ -99,8 +100,7 @@ public class PlayerShootingState : PlayerBaseState
         if (stateMachine.ReticleTransform != null)
             stateMachine.ReticleTransform.gameObject.SetActive(false);
         
-        // Volver al FreeLookBlendTree al salir
-        stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
+        stateMachine.Animator.SetBool(IsOnShooting, false);
     }
 
     private void StopPaintAudio()

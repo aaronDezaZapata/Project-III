@@ -9,9 +9,8 @@ using UnityEngine;
 /// </summary>
 public class PlayerBlueState : PlayerWhiteState
 {
-    
-    private bool geyrerReady = false;
-    private bool geyserUsedThisAirTime = false;
+    private bool geyserReady;
+    private bool geyserUsedThisAirTime;
     
     public PlayerBlueState(PlayerStateMachine stateMachine) : base(stateMachine)
     { }
@@ -21,10 +20,6 @@ public class PlayerBlueState : PlayerWhiteState
         stateMachine.playerState = PlayerStates.BLUE;
     }
     
-    protected override void SetMaterialColor()
-    {
-    }
-
     protected override bool CheckColorSpecificActions(float deltaTime)
     {
         UpdateGeyserCooldown(deltaTime);
@@ -32,21 +27,21 @@ public class PlayerBlueState : PlayerWhiteState
        
         if (stateMachine.isGrounded)
         {
-            geyrerReady = false;
+            geyserReady = false;
             geyserUsedThisAirTime = false;
         }
         
         
         if (!stateMachine.InputReader.isJumpHeld)
         {
-            geyrerReady = false;
+            geyserReady = false;
         }
         
         
-        if (geyrerReady && !geyserUsedThisAirTime && stateMachine.InputReader.isJumpHeld)
+        if (geyserReady && !geyserUsedThisAirTime && stateMachine.InputReader.isJumpHeld)
         {
             geyserUsedThisAirTime = true;
-            geyrerReady = false;
+            geyserReady = false;
             
             stateMachine.SwitchState(typeof(PlayerGeyserState));
             return true;
@@ -75,15 +70,12 @@ public class PlayerBlueState : PlayerWhiteState
         
         if (CanJump())
         {
-            
-            stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
+            stateMachine.Animator.SetTrigger(JumpTriggered);
             Jump();
         }
         else if (!stateMachine.isGrounded && !geyserUsedThisAirTime)
         {
-            
-            geyrerReady = true;
-            
+            geyserReady = true;
         }
     }
 }

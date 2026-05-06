@@ -11,26 +11,20 @@ using UnityEngine;
 /// </summary>
 public class PlayerWhiteState : PlayerBaseState
 {
-    // Animation Hashes
-    protected readonly int FreeLookSpeedHash = Animator.StringToHash("SpeedX");
-    protected readonly int AnimationSpeedHash = Animator.StringToHash("AimSpeedX");
-    protected readonly int VerticalSpeedHash = Animator.StringToHash("SpeedY");
-    protected readonly int GroundedHash = Animator.StringToHash("IsGrounded");
-    protected readonly int IsFallingHash = Animator.StringToHash("IsFalling");
-    
-    protected readonly int FreeLookBlendTreeHash = Animator.StringToHash("FreeLookBlendTree");
-    protected readonly int WalkingBlendTreeHash = Animator.StringToHash("WalkingBlendTree");
-
-    protected readonly int StopRun = Animator.StringToHash("StopRun");
-
-    protected readonly int AnimJump = Animator.StringToHash("Impulse");
-
-    // Constants
-    protected const float CrossFadeDuration = 0.1f;
-    protected const float AnimatorDampTime = 0.1f;
+    /// Animation Hashes ///
+    // Movement
+    protected readonly int SpeedX = Animator.StringToHash("SpeedX");
+    protected readonly int AimSpeedX = Animator.StringToHash("AimSpeed");
+    protected readonly int SpeedY = Animator.StringToHash("SpeedY");
+    protected readonly int IsGrounded = Animator.StringToHash("IsGrounded");
+    protected readonly int IsFalling = Animator.StringToHash("IsFalling");
 
     protected const float RunThreshold = 0.7f;
     protected const float IdleThreshold = 0.05f;
+    
+    // Movement Tracking
+    protected float currentSpeed;
+    protected float smoothSpeed;
     
     // State tracking
     protected float lastSpeed = 0f;
@@ -98,13 +92,11 @@ public class PlayerWhiteState : PlayerBaseState
     
     protected virtual void InitializeAnimator()
     {
-        float currentSpeed = stateMachine.Animator.GetFloat(FreeLookSpeedHash);
+        float currentSpeed = stateMachine.Animator.GetFloat(SpeedX);
         
-        // No forzar transición a locomoción si el jugador está en el aire
-        // Dejar que las transiciones del Animator manejen el estado según IsGrounded y IsFalling
         if (stateMachine.isGrounded)
         {
-            stateMachine.Animator.CrossFadeInFixedTime(FreeLookBlendTreeHash, CrossFadeDuration);
+            stateMachine.Animator.SetBool(IsGrounded, true);
         }
         
         lastInputMagnitude = currentSpeed;
@@ -135,20 +127,11 @@ public class PlayerWhiteState : PlayerBaseState
         // Update animator parameters
         UpdateAnimatorParameters(movement, currentInputMagnitude, deltaTime);
 
-        // Handle blend tree transitions
-        if (stateMachine.isGrounded)
-        {
-            HandleBlendTreeTransition(currentInputMagnitude);
-        }
-
         // Face movement direction if running
         if (currentInputMagnitude > RunThreshold)
         {
             FaceMovementDirection(movement, deltaTime);
         }
-
-        // Handle jump landing
-        HandleJumpLanding(currentInputMagnitude);
 
         // Apply movement
         Move(movement * stateMachine.FreeLookMovementSpeed, deltaTime);
@@ -190,29 +173,22 @@ public class PlayerWhiteState : PlayerBaseState
     
     protected virtual void UpdateAnimatorParameters(Vector3 movement, float currentInputMagnitude, float deltaTime)
     {
-        stateMachine.Animator.SetFloat(FreeLookSpeedHash, currentInputMagnitude, AnimatorDampTime, deltaTime);
-        stateMachine.Animator.SetFloat(AnimationSpeedHash, movement.x, AnimatorDampTime, deltaTime);
-        stateMachine.Animator.SetFloat(VerticalSpeedHash, stateMachine.Controller.velocity.y, AnimatorDampTime, deltaTime);
-        stateMachine.Animator.SetBool(GroundedHash, stateMachine.isGrounded);
+        float targetSpeed = currentInputMagnitude;
+        
+        currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, Time.deltaTime * 8f);
+        
+        stateMachine.Animator.SetFloat(SpeedX, Mathf.Abs(currentSpeed));
+        
+        stateMachine.Animator.SetFloat(AimSpeedX, movement.x);
+        stateMachine.Animator.SetFloat(SpeedY, stateMachine.Controller.velocity.y);
+        stateMachine.Animator.SetBool(IsGrounded, stateMachine.isGrounded);
         
         bool isFalling = !stateMachine.isGrounded && stateMachine.Controller.velocity.y < -0.5f;
-        stateMachine.Animator.SetBool(IsFallingHash, isFalling);
+        stateMachine.Animator.SetBool(IsFalling, isFalling);
     }
     
-    protected virtual void HandleJumpLanding(float currentInputMagnitude)
-    {
-        float jumpTime = GetNormalizedTime(stateMachine.Animator, "Jump");
-        if (jumpTime > 0.98f)
-        {
-            HandleBlendTreeTransition(currentInputMagnitude);
-        }
-    }
-
     public override void Exit()
     {
-        stateMachine.InputReader.JumpEvent -= OnJump;
-        stateMachine.InputReader.DiveEvent -= OnDiveEnter;
-
         UnsubscribeFromInputEvents();
     }
     
@@ -231,11 +207,6 @@ public class PlayerWhiteState : PlayerBaseState
         stateMachine.mainCamera.Priority = -1;
     }
     
-    protected virtual void HandleBlendTreeTransition(float inputMagnitude)
-    {
-    }
-
-
     protected bool HasNearbyPaintedEnemy()
     {
         return GameManager.Instance.paintBeacon;
@@ -252,7 +223,6 @@ public class PlayerWhiteState : PlayerBaseState
     protected virtual void OnJump()
     {
         if (!CanJump() || stateMachine.isOnEvent || stateMachine.isOnSteepSlope) return;
-        stateMachine.Animator.CrossFadeInFixedTime(AnimJump, CrossFadeDuration);
         Jump();
     }
 
