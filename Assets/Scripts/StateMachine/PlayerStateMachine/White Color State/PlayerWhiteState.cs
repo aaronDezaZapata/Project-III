@@ -189,9 +189,6 @@ public class PlayerWhiteState : PlayerBaseState
     
     public override void Exit()
     {
-        stateMachine.InputReader.JumpEvent -= OnJump;
-        stateMachine.InputReader.DiveEvent -= OnDiveEnter;
-
         UnsubscribeFromInputEvents();
     }
     
