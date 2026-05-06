@@ -46,7 +46,7 @@ public class PlayerWhipState : PlayerBaseState
 
     public override void Enter()
     {
-        stateMachine.UseColor(0.5f);
+        
         stateMachine.mainCamera.Priority = 10;
         spinAudioStarted = false;
         swingLoopAudioStarted = false;
@@ -70,8 +70,11 @@ public class PlayerWhipState : PlayerBaseState
             return;
         }
 
+        stateMachine.UseColor(0.5f);
+
         if (stateMachine.GrappleRope != null)
             stateMachine.GrappleRope.enabled = true;
+
 
         stateMachine.InputReader.JumpEvent += OnJump;
         stateMachine.InputReader.ColorActionEvent += OnColorActionToggle;
