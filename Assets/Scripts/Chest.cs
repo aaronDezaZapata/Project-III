@@ -76,9 +76,9 @@ public class Chest : MonoBehaviour
 
         
 
-        int coinsToSpawn = Mathf.Min(2, targetPoints.Length);
         
-        for (int i = 0; i < coinsToSpawn; i++)
+        
+        for (int i = 0; i < targetPoints.Length; i++)
         {
             GameObject coin = Instantiate(coinPrefab, spawnPoint != null ? spawnPoint.position : transform.position, Quaternion.identity);
             
