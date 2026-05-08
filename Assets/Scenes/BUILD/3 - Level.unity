@@ -47012,8 +47012,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 194241471}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.21239205, y: 0.000011023318, z: 0.000051163413, w: 0.97718453}
-  m_LocalPosition: {x: 11.92, y: 11.97, z: -171.3}
+  m_LocalRotation: {x: 0.21239205, y: -0.00000009272115, z: 0.000000020153035, w: 0.97718453}
+  m_LocalPosition: {x: -135.28679, y: 20.108837, z: 40.286724}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -48934,6 +48934,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d66a54992e03a664d9fcd7612d4be135, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &204571874 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2303076394716410090, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+  m_PrefabInstance: {fileID: 1023578150}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &205012621
@@ -173651,6 +173662,11 @@ Transform:
   - {fileID: 1452475498}
   m_Father: {fileID: 735112647}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &747806277 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6052489448859817048, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+  m_PrefabInstance: {fileID: 1023578150}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &748480561
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -232590,6 +232606,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &971434808 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6323854393353252481, guid: 1341f86c8af8de34cbf88e8ba7fad7b2, type: 3}
+  m_PrefabInstance: {fileID: 393888462}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &971640320
 GameObject:
   m_ObjectHideFlags: 0
@@ -252493,11 +252514,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 307735242786129285, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.7099991
+      value: 0.71000004
       objectReference: {fileID: 0}
     - target: {fileID: 307735242786129285, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.7600098
+      value: -2.7599983
       objectReference: {fileID: 0}
     - target: {fileID: 3582582188568106128, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_Name
@@ -252505,15 +252526,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4048448452662245505, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.92
+      value: -135.28679
       objectReference: {fileID: 0}
     - target: {fileID: 4048448452662245505, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.85
+      value: 15.988837
       objectReference: {fileID: 0}
     - target: {fileID: 4048448452662245505, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -162.27
+      value: 49.316723
       objectReference: {fileID: 0}
     - target: {fileID: 4048448452662245505, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalRotation.w
@@ -385614,16 +385635,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6912d79ae34f8014e96978e2ed6c41f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  player: {fileID: 747806277}
   levelDecals: []
   paintBeacon: {fileID: 0}
-  gameplayCamera: {fileID: 0}
+  gameplayCamera: {fileID: 204571874}
   portalCinematicCamera: {fileID: 971434807}
   gameplayCameraPriority: 10
   portalCameraPriority: 20
   delayBeforePortalOpens: 1
   cinematicDuration: 3
-  portalCameraMoveTransform: {fileID: 0}
+  portalCameraMoveTransform: {fileID: 971434808}
   portalCameraStartOffset: {x: 0, y: 1.5, z: -1.5}
   portalCameraEndOffset: {x: 0, y: -0.3, z: 0.4}
   cameraMoveDuration: 2
