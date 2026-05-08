@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8268672334362607375}
   - component: {fileID: 6405290598564253375}
-  - component: {fileID: 2984770624609205044}
   - component: {fileID: 6235600758275184130}
   - component: {fileID: 6290315188658119184}
   - component: {fileID: 3876857594609257420}
@@ -45,20 +44,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6019578865372344439}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &2984770624609205044
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6019578865372344439}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d66a54992e03a664d9fcd7612d4be135, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UniqueID: 624ef715-c1ce-44dc-a7de-a3fb308965e2
-  hasUnsyncedChanges: 1
 --- !u!23 &6235600758275184130
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -158,6 +143,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 088324831bc8e2c4e8a5371b966d2a98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timesToBeShooted: 0
   transparentAlpha: 0.2
   opaqueAlpha: 1
+  transparentMaterial: {fileID: 0}
+  opaqueMaterial: {fileID: 0}
   tagBullet: Obstacle
