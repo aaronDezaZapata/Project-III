@@ -48,9 +48,10 @@ MonoBehaviour:
   m_RendererFeatures:
   - {fileID: 7833122117494664109}
   - {fileID: -1868265099041059824}
+  - {fileID: 461541242755943345}
   - {fileID: 3400992813979801888}
   - {fileID: 5171565767218836914}
-  m_RendererFeatureMap: ad6b866f10d7b46c10cc6579ca9612e62019ecf0f1c0322fb235a647aa17c547
+  m_RendererFeatureMap: ad6b866f10d7b46c10cc6579ca9612e6b10ba99f50b967062019ecf0f1c0322fb235a647aa17c547
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -76,6 +77,22 @@ MonoBehaviour:
   m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 0
+--- !u!114 &461541242755943345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a390c8e0256d9054198ef81b947558e6, type: 3}
+  m_Name: WatercolorRenderFeature
+  m_EditorClassIdentifier: 
+  m_Active: 0
+  settings:
+    material: {fileID: 2100000, guid: e95f9ae00be38b440b9bd54650995939, type: 2}
+    renderPassEvent: 550
 --- !u!114 &3400992813979801888
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdfbdbb87d3286943a057f7791b43141, type: 3}
   m_Name: ChannelMixer
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   redOutRedIn:
     m_OverrideState: 1
     m_Value: 100
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 558a8e2b6826cf840aae193990ba9f2e, type: 3}
   m_Name: ShadowsMidtonesHighlights
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   shadows:
     m_OverrideState: 1
     m_Value: {x: 1, y: 0.9236786, z: 0.71051097, w: 0.15930484}
@@ -161,7 +161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06437c1ff663d574d9447842ba0a72e4, type: 3}
   m_Name: ScreenSpaceLensFlare
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   intensity:
     m_OverrideState: 1
     m_Value: 5.39
@@ -366,6 +366,7 @@ MonoBehaviour:
   - {fileID: -2901922659911782264}
   - {fileID: -1956007756381064303}
   - {fileID: 6015645344480996865}
+  - {fileID: 2418812040461627299}
   - {fileID: 6929782830436566112}
 --- !u!114 &714808775479313052
 MonoBehaviour:
@@ -379,7 +380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5485954d14dfb9a4c8ead8edb0ded5b1, type: 3}
   m_Name: LiftGammaGain
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   lift:
     m_OverrideState: 1
     m_Value: {x: 1, y: 0.9774332, z: 0.9569629, w: -0.01684559}
@@ -401,7 +402,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97c23e3b12dc18c42a140437e53d3951, type: 3}
   m_Name: Tonemapping
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   mode:
     m_OverrideState: 1
     m_Value: 2
@@ -429,6 +430,55 @@ MonoBehaviour:
   maxNits:
     m_OverrideState: 0
     m_Value: 1000
+--- !u!114 &2418812040461627299
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c01634b4a1449ed4bb66bce3b4a5ed46, type: 3}
+  m_Name: WatercolorVolume
+  m_EditorClassIdentifier: 
+  active: 0
+  kuwaharaRadius:
+    m_OverrideState: 1
+    m_Value: 1
+  edgeThreshold:
+    m_OverrideState: 1
+    m_Value: 0.764
+  edgeStrength:
+    m_OverrideState: 1
+    m_Value: 1
+  edgeColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.8396226, g: 0.83441144, b: 0.8198202, a: 1}
+  saturation:
+    m_OverrideState: 1
+    m_Value: 1.085
+  brightness:
+    m_OverrideState: 1
+    m_Value: 1.037
+  colorBleed:
+    m_OverrideState: 1
+    m_Value: 0.332
+  paperStrength:
+    m_OverrideState: 1
+    m_Value: 1
+  paperScale:
+    m_OverrideState: 1
+    m_Value: 0.5
+  paperWarp:
+    m_OverrideState: 1
+    m_Value: 0.00084
+  wetEdgeSpeed:
+    m_OverrideState: 1
+    m_Value: 2
+  wetEdgeAmount:
+    m_OverrideState: 1
+    m_Value: 1
 --- !u!114 &4053109016552898819
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -715,7 +765,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70afe9e12c7a7ed47911bb608a23a8ff, type: 3}
   m_Name: SplitToning
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   shadows:
     m_OverrideState: 1
     m_Value: {r: 0.32704395, g: 0.26423025, b: 0.23551275, a: 1}
@@ -737,7 +787,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81180773991d8724ab7f2d216912b564, type: 3}
   m_Name: ChromaticAberration
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   intensity:
     m_OverrideState: 0
     m_Value: 0
@@ -758,7 +808,7 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 0
   intensity:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0
   response:
     m_OverrideState: 0
@@ -778,7 +828,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 221518ef91623a7438a71fef23660601, type: 3}
   m_Name: WhiteBalance
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   temperature:
     m_OverrideState: 1
     m_Value: -10.4
@@ -809,13 +859,13 @@ MonoBehaviour:
     m_Value: 0.04
   scatter:
     m_OverrideState: 1
-    m_Value: 0.92
+    m_Value: 1
   clamp:
     m_OverrideState: 1
     m_Value: 2
   tint:
     m_OverrideState: 1
-    m_Value: {r: 0.48977545, g: 1, b: 0.39999998, a: 1}
+    m_Value: {r: 0.40777698, g: 0.9622642, b: 0.30865076, a: 1}
   highQualityFiltering:
     m_OverrideState: 1
     m_Value: 1
