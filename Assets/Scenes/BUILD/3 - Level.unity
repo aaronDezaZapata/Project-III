@@ -13215,6 +13215,8 @@ MonoBehaviour:
   pressDownAmount: 0.5
   pressDownSpeed: 3
   recoverSpeed: 2
+  shakeMagnitude: 0.05
+  shakeSpeed: 35
 --- !u!4 &85342963 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3512827060201193188, guid: 83f52b5355bfcf248875671ba996adfa, type: 3}
@@ -31714,8 +31716,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 194241471}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.21239248, y: 0.0000002480947, z: -0.00000005392374, w: 0.9771845}
-  m_LocalPosition: {x: -39.67756, y: 16.967987, z: 52.330128}
+  m_LocalRotation: {x: 0.2123926, y: 0.0000002545397, z: -0.000000055324605, w: 0.9771844}
+  m_LocalPosition: {x: -292.20346, y: 21.48399, z: 162.24115}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -55374,6 +55376,8 @@ MonoBehaviour:
   pressDownAmount: 0.5
   pressDownSpeed: 3
   recoverSpeed: 2
+  shakeMagnitude: 0.05
+  shakeSpeed: 35
 --- !u!1 &352846397
 GameObject:
   m_ObjectHideFlags: 0
@@ -59103,6 +59107,8 @@ MonoBehaviour:
   pressDownAmount: 0.15
   pressDownSpeed: 3
   recoverSpeed: 2
+  shakeMagnitude: 0.05
+  shakeSpeed: 35
 --- !u!1 &382326814
 GameObject:
   m_ObjectHideFlags: 0
@@ -117498,6 +117504,8 @@ MonoBehaviour:
   pressDownAmount: 0.15
   pressDownSpeed: 3
   recoverSpeed: 2
+  shakeMagnitude: 0.05
+  shakeSpeed: 35
 --- !u!4 &794298207 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1edc87ac6fa5c2746bdcbb56c5e79527, type: 3}
@@ -123976,6 +123984,8 @@ MonoBehaviour:
   pressDownAmount: 0.15
   pressDownSpeed: 3
   recoverSpeed: 2
+  shakeMagnitude: 0.05
+  shakeSpeed: 35
 --- !u!65 &838474583
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -139584,6 +139594,8 @@ MonoBehaviour:
   pressDownAmount: 0.15
   pressDownSpeed: 3
   recoverSpeed: 2
+  shakeMagnitude: 0.05
+  shakeSpeed: 35
 --- !u!1001 &950203149
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -150939,11 +150951,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 307735242786129285, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.71000004
+      value: 0.710001
       objectReference: {fileID: 0}
     - target: {fileID: 307735242786129285, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.7599983
+      value: -2.7599945
       objectReference: {fileID: 0}
     - target: {fileID: 3582582188568106128, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_Name
@@ -150951,15 +150963,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4048448452662245505, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -39.67756
+      value: -292.20346
       objectReference: {fileID: 0}
     - target: {fileID: 4048448452662245505, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 12.847988
+      value: 17.36399
       objectReference: {fileID: 0}
     - target: {fileID: 4048448452662245505, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 61.360126
+      value: 171.27115
       objectReference: {fileID: 0}
     - target: {fileID: 4048448452662245505, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalRotation.w
@@ -151007,15 +151019,39 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6948610711239408795, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.21239243
+      value: 0.21239255
       objectReference: {fileID: 0}
     - target: {fileID: 6948610711239408795, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.00000024808682
+      value: 0.0000002545222
       objectReference: {fileID: 0}
     - target: {fileID: 6948610711239408795, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000000053887707
+      value: -0.000000055244186
+      objectReference: {fileID: 0}
+    - target: {fileID: 8526194884507870142, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: playerState
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8526194884507870142, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: <SwingRadius>k__BackingField
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8526194884507870142, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: <MinSwingSpeed>k__BackingField
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8526194884507870142, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: <SwingInputForce>k__BackingField
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8526194884507870142, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: <GrappleJumpForce>k__BackingField
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8526194884507870142, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: <MaxGrappleDistance>k__BackingField
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6631076228066749022, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
@@ -181508,6 +181544,8 @@ MonoBehaviour:
   pressDownAmount: 0.15
   pressDownSpeed: 3
   recoverSpeed: 2
+  shakeMagnitude: 0.05
+  shakeSpeed: 35
 --- !u!1001 &1259267806
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -187699,15 +187737,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4877988847194841735, guid: bc33d4e0ef4d1004a8e0932cfe71783b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 165.41562
+      value: 164.51
       objectReference: {fileID: 0}
     - target: {fileID: 4877988847194841735, guid: bc33d4e0ef4d1004a8e0932cfe71783b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -189.74751
+      value: -189.55
       objectReference: {fileID: 0}
     - target: {fileID: 4877988847194841735, guid: bc33d4e0ef4d1004a8e0932cfe71783b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 81.67306
+      value: 81.09
       objectReference: {fileID: 0}
     - target: {fileID: 4877988847194841735, guid: bc33d4e0ef4d1004a8e0932cfe71783b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -203093,6 +203131,10 @@ PrefabInstance:
     - target: {fileID: 6984683781497965356, guid: bc33d4e0ef4d1004a8e0932cfe71783b, type: 3}
       propertyPath: gizmoRadius
       value: 8.93
+      objectReference: {fileID: 0}
+    - target: {fileID: 8650577461723541890, guid: bc33d4e0ef4d1004a8e0932cfe71783b, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3282760914074256830, guid: bc33d4e0ef4d1004a8e0932cfe71783b, type: 3}
@@ -224678,6 +224720,8 @@ MonoBehaviour:
   pressDownAmount: 0.15
   pressDownSpeed: 3
   recoverSpeed: 2
+  shakeMagnitude: 0.05
+  shakeSpeed: 35
 --- !u!65 &1575348097
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -262357,6 +262401,8 @@ MonoBehaviour:
   pressDownAmount: 0.5
   pressDownSpeed: 2
   recoverSpeed: 2
+  shakeMagnitude: 0.05
+  shakeSpeed: 35
 --- !u!1 &1828454496
 GameObject:
   m_ObjectHideFlags: 0
@@ -293362,6 +293408,8 @@ MonoBehaviour:
   pressDownAmount: 0.5
   pressDownSpeed: 3
   recoverSpeed: 2
+  shakeMagnitude: 0.05
+  shakeSpeed: 35
 --- !u!1 &2043376451
 GameObject:
   m_ObjectHideFlags: 0
@@ -296529,7 +296577,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6984683781497965356, guid: bc33d4e0ef4d1004a8e0932cfe71783b, type: 3}
       propertyPath: gizmoRadius
-      value: 8.93
+      value: 15.98
+      objectReference: {fileID: 0}
+    - target: {fileID: 8650577461723541890, guid: bc33d4e0ef4d1004a8e0932cfe71783b, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3282760914074256830, guid: bc33d4e0ef4d1004a8e0932cfe71783b, type: 3}
