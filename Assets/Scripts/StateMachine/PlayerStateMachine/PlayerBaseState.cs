@@ -212,13 +212,15 @@ public abstract class PlayerBaseState : State
             stateMachine.ForceReceiver.Jump(stateMachine.JumpForce);
             stateMachine.PlayerAudio?.PlayJump();
 
+            // Consumimos el coyote time para evitar que se vuelva a entrar
+            // por esta rama mientras seguimos en el aire.
             _timeSinceLeftGround = stateMachine.CoyoteTime + 1f;
 
-            if (stateMachine.HasDoubleJump)
-            {
-                _doubleJumpAvailable = true;
-                _hasUsedDoubleJump = false;
-            }
+            // NO reseteamos _doubleJumpAvailable ni _hasUsedDoubleJump aquí.
+            // UpdateCoyoteTime() ya los resetea correctamente cuando el jugador
+            // aterriza (isGrounded == true). Hacerlo aquí provocaba que, en casos
+            // de borde con el coyote time, las flags se resetearan en el aire y
+            // permitieran un tercer salto.
             
             stateMachine.Animator.SetTrigger(JumpTriggered);
         }
