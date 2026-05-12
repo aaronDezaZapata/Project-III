@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7272869387890140010}
   - component: {fileID: 6943151037133224564}
-  - component: {fileID: 7002366875144618670}
   - component: {fileID: 1958734211713166632}
   - component: {fileID: 5227134487814543570}
   - component: {fileID: 3364583748988352452}
@@ -44,20 +43,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1231555080360237410}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &7002366875144618670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1231555080360237410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d66a54992e03a664d9fcd7612d4be135, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UniqueID: 30df8e1b-b243-4eca-9587-597aebc235df
-  hasUnsyncedChanges: 1
 --- !u!23 &1958734211713166632
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -351,7 +336,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7213602262615501254}
   - component: {fileID: 8650878594057351442}
-  - component: {fileID: 223157656970011016}
   - component: {fileID: 6979474708856137580}
   - component: {fileID: 1254692498992751850}
   - component: {fileID: 2308399944968178926}
@@ -386,20 +370,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8460694254712948868}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &223157656970011016
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8460694254712948868}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d66a54992e03a664d9fcd7612d4be135, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UniqueID: c675fa06-8d13-4f8e-a4a4-ab6a0ad977cb
-  hasUnsyncedChanges: 1
 --- !u!23 &6979474708856137580
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -569,12 +539,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movingPlatform: {fileID: 1231555080360237410}
-  platformTarget: {fileID: 2223473288549948398}
+  targetStateObject: {fileID: 0}
   eventVisuals: {fileID: 1375071624079989884}
   eventCamera: {fileID: 1369842292643665204}
-  actionForce: 0.25
-  decreaseSpeed: 0.1
+  maxDistance: 5
   canBeTriggered: 1
+  eventActive: 0
   eventDone: 0
-  _currentActionAmount: 0
+  currentDistance: 0
   _player: {fileID: 0}

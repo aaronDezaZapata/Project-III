@@ -67,14 +67,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movingPlatform: {fileID: 6100981501223122378}
-  platformTarget: {fileID: 5769549424326852580}
+  targetStateObject: {fileID: 0}
   eventVisuals: {fileID: 8381380839318148230}
   eventCamera: {fileID: 871126979883780972}
-  actionForce: 0.25
-  decreaseSpeed: 0.1
+  maxDistance: 5
   canBeTriggered: 1
+  eventActive: 0
   eventDone: 0
-  _currentActionAmount: 0
+  currentDistance: 0
   _player: {fileID: 0}
 --- !u!1 &3940091459847880953
 GameObject:
@@ -163,7 +163,6 @@ GameObject:
   - component: {fileID: 73289660434902561}
   - component: {fileID: 164245032335280993}
   - component: {fileID: 4239445195171985132}
-  - component: {fileID: 4039831863833457997}
   - component: {fileID: 728567464684167814}
   m_Layer: 0
   m_Name: Piedra 3 (10)
@@ -261,20 +260,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4039831863833457997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3961125161300988469}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d66a54992e03a664d9fcd7612d4be135, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UniqueID: 7586961b-6121-486d-97a4-8d7678d58dc7
-  hasUnsyncedChanges: 1
 --- !u!114 &728567464684167814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -430,7 +415,6 @@ GameObject:
   - component: {fileID: 4811245262225273773}
   - component: {fileID: 6465954100287410973}
   - component: {fileID: 7236692374407530724}
-  - component: {fileID: 8151054523146648994}
   - component: {fileID: 2248252236681547669}
   - component: {fileID: 6853099341471821286}
   m_Layer: 0
@@ -529,20 +513,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8151054523146648994
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7398336196854173416}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d66a54992e03a664d9fcd7612d4be135, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UniqueID: fff4786c-1f84-4cb9-8da1-1198869d3f91
-  hasUnsyncedChanges: 1
 --- !u!64 &2248252236681547669
 MeshCollider:
   m_ObjectHideFlags: 0

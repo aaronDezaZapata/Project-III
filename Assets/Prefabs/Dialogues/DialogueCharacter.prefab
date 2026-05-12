@@ -365,7 +365,6 @@ GameObject:
   - component: {fileID: 1807667917914740937}
   - component: {fileID: 1195128893952290036}
   - component: {fileID: 642305599706089358}
-  - component: {fileID: 866965225788471934}
   - component: {fileID: 5548104057186871448}
   - component: {fileID: 9070382428738228747}
   m_Layer: 3
@@ -517,20 +516,6 @@ NavMeshAgent:
   m_BaseOffset: 1.01
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &866965225788471934
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4746480650321843825}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d66a54992e03a664d9fcd7612d4be135, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UniqueID: 58ed8947-a7f4-4ce1-91db-cc8b61f17a58
-  hasUnsyncedChanges: 1
 --- !u!135 &5548104057186871448
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -872,9 +857,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1b5623a0a4a51374d99676f7b6c6a7ee, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1085587240593802039}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1b5623a0a4a51374d99676f7b6c6a7ee, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8015359772858347792}
   m_SourcePrefab: {fileID: 100100000, guid: 1b5623a0a4a51374d99676f7b6c6a7ee, type: 3}
 --- !u!1 &8563339858920325279 stripped
 GameObject:
@@ -903,20 +885,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &8015359772858347792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8563339858920325279}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d66a54992e03a664d9fcd7612d4be135, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UniqueID: 966e71ba-8a15-4bb6-80e0-afdf6f1fdb1c
-  hasUnsyncedChanges: 1
 --- !u!4 &9051329905049180709 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1b5623a0a4a51374d99676f7b6c6a7ee, type: 3}

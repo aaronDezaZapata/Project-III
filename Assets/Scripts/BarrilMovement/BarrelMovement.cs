@@ -20,6 +20,10 @@ public class BarrelMovement : MonoBehaviour
     public float pressDownSpeed = 3f;
     public float recoverSpeed = 2f;
 
+    [Header("Shake Animation (Aviso)")]
+    public float shakeMagnitude = 0.05f;
+    public float shakeSpeed = 35f;
+
     private enum BarrelAnimState { Idle, PressDown, Recovering, Released }
 
     private Vector3 _startPos;
@@ -29,6 +33,7 @@ public class BarrelMovement : MonoBehaviour
 
     private BarrelAnimState _animState = BarrelAnimState.Idle;
     private Vector3 _pressedPos;
+    private Vector3 currentBasePos;
 
     private void Awake()
     {
@@ -47,8 +52,12 @@ public class BarrelMovement : MonoBehaviour
         switch (_platformController.CurrentState)
         {
             case PlatformState.Countdown:
-                _pressedPos = _startPos + Vector3.down * pressDownAmount;
-                _animState = BarrelAnimState.PressDown;
+                if (_animState != BarrelAnimState.PressDown)
+                {
+                    _pressedPos = _startPos + Vector3.down * pressDownAmount;
+                    currentBasePos = transform.position;
+                    _animState = BarrelAnimState.PressDown;
+                }
                 break;
 
             case PlatformState.Falling:
@@ -106,25 +115,31 @@ public class BarrelMovement : MonoBehaviour
 
     private void PressDownAnimation()
     {
-        transform.position = Vector3.MoveTowards(
-            transform.position,
+        currentBasePos = Vector3.MoveTowards(
+            currentBasePos,
             _pressedPos,
             pressDownSpeed * Time.deltaTime
         );
+
+        float shakeX = Mathf.Sin(Time.time * shakeSpeed) * shakeMagnitude;
+        float shakeZ = Mathf.Cos(Time.time * shakeSpeed * 0.8f) * shakeMagnitude;
+
+        transform.position = currentBasePos + new Vector3(shakeX, 0f, shakeZ);
         transform.rotation = Quaternion.Slerp(transform.rotation, _startRot, pressDownSpeed * Time.deltaTime);
     }
 
     private void RecoverAnimation()
     {
-        transform.position = Vector3.MoveTowards(
-            transform.position,
+        currentBasePos = Vector3.MoveTowards(
+            currentBasePos,
             _startPos,
             recoverSpeed * Time.deltaTime
         );
 
+        transform.position = currentBasePos;
         transform.rotation = Quaternion.Slerp(transform.rotation, _startRot, recoverSpeed * Time.deltaTime);
 
-        if (Vector3.Distance(transform.position, _startPos) < 0.01f)
+        if (Vector3.Distance(currentBasePos, _startPos) < 0.01f)
         {
             transform.position = _startPos;
             transform.rotation = _startRot;
