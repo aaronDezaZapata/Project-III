@@ -41,7 +41,7 @@ public class CreditScroller : MonoBehaviour
 
     void OnCreditsFinished()
     {
-        SceneManager.LoadScene("1 - MainMenu2 NEW");
+        SceneManager.LoadScene("1 - MainMenu");
     }
 
     public void ResetCredits()
