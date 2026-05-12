@@ -223,6 +223,6 @@ public class MainCanvasManager : MonoBehaviour
 
     public void ExitToMainMenu()
     {
-        SceneManager.LoadScene("1 - MainMenu2 NEW");
+        SceneManager.LoadScene("1 - MainMenu");
     }
 }
