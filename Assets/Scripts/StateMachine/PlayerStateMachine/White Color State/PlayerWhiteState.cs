@@ -157,19 +157,7 @@ public class PlayerWhiteState : PlayerBaseState
     // Color actions scheme changed.
     // Maybe this needs to be removed???
     // Actually can be and needs to be overrided
-    protected virtual bool CheckColorSpecificActions(float deltaTime)
-    {
-        // White state: Dash Attack
-        if (stateMachine.InputReader.isColorActing && stateMachine.HasDashAttack)
-        {
-            if (HasNearbyPaintedEnemy())
-            {
-                stateMachine.SwitchState(typeof(PlayerDashAttackState));
-                return true;
-            }
-        }
-        return false;
-    }
+    protected virtual bool CheckColorSpecificActions(float deltaTime) { return false; }
     
     protected virtual void UpdateAnimatorParameters(Vector3 movement, float currentInputMagnitude, float deltaTime)
     {

@@ -211,70 +211,7 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public float AlphaFar { get; private set; } = 0.15f;
     [field: SerializeField] public float OffsetY { get; private set; } = 0.02f; //Para el z-fighting
     [field: SerializeField] public Transform ShadowDrop { get; private set; }
-  
-
-
-    // TODO: Remove
-    // No hay Gray
-    [Header("Gray Vacuum Mechanics")]
-    [Tooltip("¿El jugador tiene habilitada la habilidad gris?")]
-    [field: SerializeField] public bool HasGrayAbility { get; private set; } = true;
     
-    // TODO: Remove
-    // No hay Gray
-    [Tooltip("Capa de objetos que pueden ser absorbidos")]
-    [field: SerializeField] public LayerMask AbsorbableLayer { get; private set; }
-
-    // TODO: Remove
-    // No hay Gray
-    [Header("Gray Absorption Settings")]
-    [Tooltip("Rango de absorción (metros)")]
-    [field: SerializeField] public float GrayAbsorbRange { get; private set; } = 8f;
-
-    [Tooltip("Ángulo del cono de absorción (grados)")]
-    [Range(30f, 180f)]
-    [field: SerializeField] public float GrayAbsorbAngle { get; private set; } = 90f;
-
-    // TODO: Remove
-    // No hay Gray
-    [Tooltip("Velocidad de absorción base")]
-    [field: SerializeField] public float GrayAbsorbSpeed { get; private set; } = 5f;
-
-    // TODO: Remove
-    // No hay Gray
-    [Tooltip("Máximo de objetos absorbiendo simultáneamente")]
-    [Range(1, 10)]
-    [field: SerializeField] public int GrayMaxSimultaneousAbsorb { get; private set; } = 3;
-
-    // TODO: Remove
-    // No hay Gray
-    [Header("Gray Holding Settings")]
-    [Tooltip("Altura a la que se sostienen objetos grandes")]
-    [field: SerializeField] public float GrayHoldHeight { get; private set; } = 1.5f;
-
-    // TODO: Remove
-    // No hay Gray
-    [Tooltip("Distancia desde el jugador de objetos grandes")]
-    [field: SerializeField] public float GrayHoldDistance { get; private set; } = 2f;
-
-    // TODO: Remove
-    // No hay Gray
-    [Header("Gray Projectile Settings")]
-    [Tooltip("Multiplicador de velocidad de proyectiles")]
-    [field: SerializeField] public float GrayProjectileSpeedMultiplier { get; private set; } = 1.5f;
-
-    // TODO: Remove
-    // No hay Gray
-    [Header("Gray Visual")]
-    [Tooltip("Sistema de partículas de absorción")]
-    [field: SerializeField] public ParticleSystem GrayAbsorbParticles { get; private set; }
-    
-    // TODO: Remove
-    // No hay Gray
-    [Header("Gray Absorbed Objects")]
-    [Tooltip("Lista de objetos SMALL absorbidos (máximo 3)")]
-    public List<AbsorbableObject> absorbedObjects = new List<AbsorbableObject>();
-
     public const int MaxAbsorbedSmallObjects = 3;
 
     [Header("References")]
@@ -379,14 +316,12 @@ public class PlayerStateMachine : StateMachine
     {
         AddState(new PlayerWhiteState(this));
         AddState(new PlayerSwimState(this));
-        AddState(new PlayerDashAttackState(this));
         AddState(new PlayerShootingState(this));
         AddState(new PlayerBlueState(this));
         AddState(new PlayerGeyserState(this));
         AddState(new PlayerGreenState(this));
         AddState(new PlayerWhipState(this));
         AddState(new PlayerRedState(this));
-        AddState(new PlayerAbsorbState(this));
         AddState(new PlayerFlyState(this));
 
         colorToStateDic = new Dictionary<Color, Type>
