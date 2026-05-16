@@ -83,10 +83,10 @@ public class PlayerWhiteState : PlayerBaseState
     // Default Camera Setup
     protected virtual void SetupCamera()
     {
-        if (stateMachine.mainCamera.Priority <= 9)
+        if (stateMachine.MainCamera.Priority <= 9)
         {
             CameraRecenter();
-            stateMachine.mainCamera.Priority = 10;
+            stateMachine.MainCamera.Priority = 10;
         }
     }
     
@@ -212,7 +212,7 @@ public class PlayerWhiteState : PlayerBaseState
 
     protected void CameraRecenter()
     {
-        CinemachineOrbitalFollow orbitalFollow = stateMachine.mainCamera.gameObject.GetComponent<CinemachineOrbitalFollow>();
+        CinemachineOrbitalFollow orbitalFollow = stateMachine.MainCamera.gameObject.GetComponent<CinemachineOrbitalFollow>();
         
         float playerYaw = stateMachine.transform.eulerAngles.y;
         orbitalFollow.HorizontalAxis.Value = playerYaw;

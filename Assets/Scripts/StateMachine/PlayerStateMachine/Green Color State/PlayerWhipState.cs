@@ -41,7 +41,7 @@ public class PlayerWhipState : PlayerBaseState
 
     public override void Enter()
     {
-        stateMachine.mainCamera.Priority = 10;
+        stateMachine.MainCamera.Priority = 10;
         spinAudioStarted = false;
         swingLoopAudioStarted = false;
 

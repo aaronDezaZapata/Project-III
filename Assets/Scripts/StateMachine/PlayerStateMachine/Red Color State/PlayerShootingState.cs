@@ -27,12 +27,9 @@ public class PlayerShootingState : PlayerBaseState
     {
         SyncAimCameraWithOrbital();
         
-        stateMachine.aimCamera.Priority = 10;
+        stateMachine.AimCamera.Priority = 10;
         
         stateMachine.Animator.SetBool(IsOnShooting, true);
-
-        if (stateMachine.ReticleTransform != null)
-            stateMachine.ReticleTransform.gameObject.SetActive(true);
         
         OnAiming?.Invoke(true);
         
@@ -88,12 +85,9 @@ public class PlayerShootingState : PlayerBaseState
         
         SyncOrbitalWithAimCamera();
         
-        stateMachine.aimCamera.Priority = -1;
+        stateMachine.AimCamera.Priority = -1;
         
         OnAiming?.Invoke(false);
-        
-        if (stateMachine.ReticleTransform != null)
-            stateMachine.ReticleTransform.gameObject.SetActive(false);
         
         stateMachine.Animator.SetBool(IsOnShooting, false);
     }
@@ -135,15 +129,15 @@ public class PlayerShootingState : PlayerBaseState
         Vector2 lookInput = stateMachine.InputReader.LookVector;
         
         float currentSensitivity = stateMachine.GetCurrentCameraSensitivity();
-        float hSens = stateMachine.HorizontalSensitivity * currentSensitivity;
-        float vSens = stateMachine.VerticalSensitivity * currentSensitivity;
+        float hSens = stateMachine.horizontalSensitivity * currentSensitivity;
+        float vSens = stateMachine.verticalSensitivity * currentSensitivity;
         
         _rotationX += lookInput.x * hSens * deltaTime;
         
         stateMachine.transform.rotation = Quaternion.Euler(0f, _rotationX, 0f);
         
         _rotationY -= lookInput.y * vSens * deltaTime;
-        _rotationY = Mathf.Clamp(_rotationY, stateMachine.MinVerticalAngle, stateMachine.MaxVerticalAngle);
+        _rotationY = Mathf.Clamp(_rotationY, stateMachine.minVerticalAngle, stateMachine.maxVerticalAngle);
     }
 
     private void HandleAimMovement(float deltaTime)
@@ -159,13 +153,13 @@ public class PlayerShootingState : PlayerBaseState
 
         Vector3 moveDir = (forward * movementInput.z + right * movementInput.x);
 
-        Move(moveDir * stateMachine.AimMovementSpeed, deltaTime);
+        Move(moveDir * stateMachine.aimMovementSpeed, deltaTime);
 
     }
 
     private void SyncAimCameraWithOrbital()
     {
-        Vector3 orbitalForward = stateMachine.mainCamera.transform.forward;
+        Vector3 orbitalForward = stateMachine.MainCamera.transform.forward;
         
         Vector3 forwardFlat = new Vector3(orbitalForward.x, 0f, orbitalForward.z).normalized;
         if (forwardFlat != Vector3.zero)
@@ -178,21 +172,21 @@ public class PlayerShootingState : PlayerBaseState
         
         float pitchAngle = -Mathf.Asin(orbitalForward.y) * Mathf.Rad2Deg;
         
-        if (stateMachine.aimCameraPitchControl != null)
+        if (stateMachine.AimCameraPitchControl != null)
         {
-            stateMachine.aimCameraPitchControl.SetPitch(pitchAngle);
+            stateMachine.AimCameraPitchControl.SetPitch(pitchAngle);
         }
     }
     
     private void SyncOrbitalWithAimCamera()
     {
-        CinemachineOrbitalFollow orbitalFollow = stateMachine.mainCamera.gameObject.GetComponent<CinemachineOrbitalFollow>();
+        CinemachineOrbitalFollow orbitalFollow = stateMachine.MainCamera.gameObject.GetComponent<CinemachineOrbitalFollow>();
         if (orbitalFollow == null) return;
         
         float playerYaw = stateMachine.transform.eulerAngles.y;
         orbitalFollow.HorizontalAxis.Value = playerYaw;
         
-        Vector3 aimForward = stateMachine.aimCamera.transform.forward;
+        Vector3 aimForward = stateMachine.AimCamera.transform.forward;
         
         float pitchAngle = -Mathf.Asin(aimForward.y) * Mathf.Rad2Deg;
         

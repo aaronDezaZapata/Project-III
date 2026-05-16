@@ -1,15 +1,8 @@
 using UnityEngine;
 
-/// <summary>
-/// Player Geyser State (Blue Ability)
-/// - Vertical Movement
-/// - Deactivates at grounded or when jump button is released
-/// - Cooldown before reusing the ability
-/// </summary>
 public class PlayerGeyserState : PlayerBaseState
 {
     private readonly int IsOnGeyser = Animator.StringToHash("IsOnGeyser");
-    private const float CrossFadeDuration = 0.1f;
     private const float AirControlSfxInterval = 0.20f;
 
     private float airControlSfxTimer;
@@ -31,7 +24,7 @@ public class PlayerGeyserState : PlayerBaseState
         stateMachine.UseColor(0.5f);
         stateMachine.WaterGeyserParticle.gameObject.SetActive(true);
         stateMachine.WaterGeyserParticleSecond.gameObject.SetActive(true);
-        stateMachine.mainCamera.Priority = 10;
+        stateMachine.MainCamera.Priority = 10;
 
         stateMachine.PlayerAudio?.PlayBlueActivate();
         stateMachine.PlayerAudio?.PlayBlueBoost();
@@ -78,7 +71,6 @@ public class PlayerGeyserState : PlayerBaseState
     {
         stateMachine.isGeyserOnCooldown = true;
         stateMachine.geyserCooldownTimer = stateMachine.GeyserCooldownTime;
-        stateMachine.wasJumpButtonReleased = false;
         
         stateMachine.WaterGeyserParticle.gameObject.SetActive(false);
         stateMachine.WaterGeyserParticleSecond.gameObject.SetActive(false);

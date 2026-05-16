@@ -15,9 +15,6 @@ public class GrappleRopeSetup : MonoBehaviour
     [SerializeField] private float ropeWidth = 0.05f;
     [SerializeField] private Material ropeMaterial;
     
-    [Header("Info")]
-    [SerializeField] private bool setupComplete = false;
-
     private void Reset()
     {
         playerStateMachine = GetComponent<PlayerStateMachine>();
@@ -27,10 +24,7 @@ public class GrappleRopeSetup : MonoBehaviour
     [ContextMenu("Setup Grapple Rope")]
     private void SetupGrappleRope()
     {
-        if (playerStateMachine == null)
-        {
-            return;
-        }
+        if (playerStateMachine == null) return;
 
         Transform ropeTransform = transform.Find("GrappleRope");
         GameObject ropeObject;
@@ -42,15 +36,13 @@ public class GrappleRopeSetup : MonoBehaviour
             ropeObject.transform.localPosition = Vector3.zero;
         }
         else
-        {
             ropeObject = ropeTransform.gameObject;
-        }
+        
 
         LineRenderer lineRenderer = ropeObject.GetComponent<LineRenderer>();
+        
         if (lineRenderer == null)
-        {
             lineRenderer = ropeObject.AddComponent<LineRenderer>();
-        }
 
         lineRenderer.positionCount = 2;
         lineRenderer.SetPosition(0, Vector3.zero);
@@ -61,9 +53,8 @@ public class GrappleRopeSetup : MonoBehaviour
         lineRenderer.enabled = false; 
 
         if (ropeMaterial != null)
-        {
             lineRenderer.material = ropeMaterial;
-        }
+        
         else
         {
             Material defaultMat = new Material(Shader.Find("Sprites/Default"));
@@ -84,35 +75,20 @@ public class GrappleRopeSetup : MonoBehaviour
             originObject.transform.SetParent(transform);
             
             originObject.transform.localPosition = new Vector3(0.3f, 1.2f, 0.5f);
-            
         }
-        else
-        {
-            originObject = originTransform.gameObject;
-        }
-
-        var grappleRopeProp = playerStateMachine.GetType().GetProperty("GrappleRope");
-        var grappleOriginProp = playerStateMachine.GetType().GetProperty("GrappleRopeOrigin");
-
-        setupComplete = true;
     }
 
     [ContextMenu("Cleanup Grapple Rope")]
     private void CleanupGrappleRope()
     {
         Transform ropeTransform = transform.Find("GrappleRope");
+        
         if (ropeTransform != null)
-        {
             DestroyImmediate(ropeTransform.gameObject);
-        }
-
+        
         Transform originTransform = transform.Find("GrappleRopeOrigin");
         if (originTransform != null)
-        {
             DestroyImmediate(originTransform.gameObject);
-        }
-
-        setupComplete = false;
     }
 #endif
 }
