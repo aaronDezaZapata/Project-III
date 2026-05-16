@@ -49,7 +49,6 @@ namespace TorbellinoConsoleSystem
             RegisterDefaultCommands();
             ScanForCommands();
 
-            // Apply saved theme
             string savedTheme = PlayerPrefs.GetString(THEME_PREFS_KEY, "dark");
             ApplyTheme(ConsoleTheme.Get(savedTheme));
 
@@ -88,7 +87,7 @@ namespace TorbellinoConsoleSystem
                             inputField.ActivateInputField();
                         }
                     }
-                    catch { /* Silently ignore focus errors */ }
+                    catch { }
                 }
 
                 HandleHistoryNavigation();
@@ -103,7 +102,6 @@ namespace TorbellinoConsoleSystem
             bool isActive = !consolePanel.activeSelf;
             consolePanel.SetActive(isActive);
 
-            // Disable/enable PlayerInput so WASD doesn't bleed into the console
             var playerInput = FindPlayerInput();
             if (playerInput != null)
                 playerInput.enabled = !isActive;
@@ -116,10 +114,6 @@ namespace TorbellinoConsoleSystem
             }
         }
 
-        /// <summary>
-        /// Finds the PlayerInput component in the scene.
-        /// Change PLAYER_NAME if your GameObject has a different name.
-        /// </summary>
         private const string PLAYER_NAME = "Player";
         private UnityEngine.InputSystem.PlayerInput FindPlayerInput()
         {
@@ -179,8 +173,6 @@ namespace TorbellinoConsoleSystem
                 Log($"Unknown command: '{commandName}'. Type 'help' for available commands.", LogType.Error);
             }
         }
-
-        // ── History navigation ────────────────────────────────────────
 
         private void HandleHistoryNavigation()
         {
@@ -341,8 +333,6 @@ namespace TorbellinoConsoleSystem
             Log(message, consoleType);
         }
 
-        // ── Command parsing ───────────────────────────────────────────
-
         private string[] ParseCommandLine(string commandLine)
         {
             List<string> parts = new List<string>();
@@ -362,8 +352,6 @@ namespace TorbellinoConsoleSystem
             if (!string.IsNullOrEmpty(current)) parts.Add(current);
             return parts.ToArray();
         }
-
-        // ── Default commands ──────────────────────────────────────────
 
         private void RegisterDefaultCommands()
         {
@@ -430,8 +418,6 @@ namespace TorbellinoConsoleSystem
             });
         }
 
-        // ── Attribute command scanner ─────────────────────────────────
-
         private void ScanForCommands()
         {
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
@@ -449,7 +435,7 @@ namespace TorbellinoConsoleSystem
                         }
                     }
                 }
-                catch (ReflectionTypeLoadException) { /* Skip unloadable assemblies */ }
+                catch (ReflectionTypeLoadException) { }
             }
         }
 
@@ -494,8 +480,6 @@ namespace TorbellinoConsoleSystem
             }
             return result;
         }
-
-        // ── Static API ────────────────────────────────────────────────
 
         public static void RegisterCommand(string name, string description, Func<string[], string> action)
         {

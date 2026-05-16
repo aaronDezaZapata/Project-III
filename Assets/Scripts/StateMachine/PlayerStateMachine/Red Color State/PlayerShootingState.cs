@@ -8,7 +8,7 @@ public class PlayerShootingState : PlayerBaseState
     public static Action<bool> OnAiming;
     private static readonly int IsOnShooting = Animator.StringToHash("IsOnShooting");
     
-    private float speed = 100f;
+    private float _speed = 100f;
     private float _nextFireTime;
     private float _rotationX;
     private float _rotationY;
@@ -25,10 +25,8 @@ public class PlayerShootingState : PlayerBaseState
 
     public override void Enter()
     {
-        // Sincronizar la dirección de la cámara de apuntado con la orbital
         SyncAimCameraWithOrbital();
         
-        // CAMERA IN
         stateMachine.aimCamera.Priority = 10;
         
         stateMachine.Animator.SetBool(IsOnShooting, true);
@@ -36,7 +34,6 @@ public class PlayerShootingState : PlayerBaseState
         if (stateMachine.ReticleTransform != null)
             stateMachine.ReticleTransform.gameObject.SetActive(true);
         
-        // Aim Panel
         OnAiming?.Invoke(true);
         
         _rotationX = stateMachine.transform.eulerAngles.y;
@@ -61,8 +58,7 @@ public class PlayerShootingState : PlayerBaseState
         
         stateMachine.Animator.SetFloat("DirX", _currentDirX);
         stateMachine.Animator.SetFloat("DirY", _currentDirY);
-
-        // Actualizar la velocidad de movimiento en el animator
+        
         Vector3 movement = stateMachine.CalculateMovement();
 
         if (stateMachine.InputReader.IsFiring)
@@ -89,8 +85,7 @@ public class PlayerShootingState : PlayerBaseState
     public override void Exit()
     {
         StopPaintAudio();
-
-        // Sincronizar la cámara orbital con la dirección de la cámara de apuntado
+        
         SyncOrbitalWithAimCamera();
         
         stateMachine.aimCamera.Priority = -1;
@@ -125,7 +120,7 @@ public class PlayerShootingState : PlayerBaseState
         Vector3 direction = Camera.main.transform.forward;
         stateMachine.UseColor(0.1f);
 
-        proj.linearVelocity = direction * speed;
+        proj.linearVelocity = direction * _speed;
         proj.useGravity = true;
 
         var inkProjectile = proj.GetComponent<InkProjectile>();
@@ -201,7 +196,6 @@ public class PlayerShootingState : PlayerBaseState
         
         float pitchAngle = -Mathf.Asin(aimForward.y) * Mathf.Rad2Deg;
         
-        // Cinemachine 3 OrbitalFollow VerticalAxis expects degrees, not a 0-1 normalized value.
         orbitalFollow.VerticalAxis.Value = pitchAngle;
     }
 }

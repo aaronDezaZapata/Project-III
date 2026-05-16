@@ -188,18 +188,6 @@ public class PlayerWhiteState : PlayerBaseState
         InputHandler.InteractionEvent -= stateMachine.HandlePuddleInteraction;
     }
     
-    // TODO: Check
-    // Not being used right now
-    protected virtual void CleanupCamera()
-    {
-        stateMachine.mainCamera.Priority = -1;
-    }
-    
-    protected bool HasNearbyPaintedEnemy()
-    {
-        return GameManager.Instance.paintBeacon;
-    }
-    
     protected virtual void FaceMovementDirection(Vector3 movement, float deltaTime)
     {
         stateMachine.transform.rotation = Quaternion.Lerp(

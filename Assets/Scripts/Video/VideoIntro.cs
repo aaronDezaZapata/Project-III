@@ -4,23 +4,23 @@ using UnityEngine.Video;
 
 public class VideoIntro : MonoBehaviour
 {
-    [SerializeField] private VideoPlayer videoPlayer;
-    [SerializeField] private string nextScene;
+    [SerializeField] private VideoPlayer _videoPlayer;
+    [SerializeField] private string _nextScene;
 
-    void Start()
+    private void Start()
     {
-        videoPlayer.isLooping = false;
-        videoPlayer.loopPointReached += OnVideoEnd;
-        videoPlayer.Play();
+        _videoPlayer.isLooping = false;
+        _videoPlayer.loopPointReached += OnVideoEnd;
+        _videoPlayer.Play();
     }
 
-    void OnVideoEnd(VideoPlayer vp)
+    private void OnVideoEnd(VideoPlayer vp)
     {
-        SceneManager.LoadScene(nextScene);
+        SceneManager.LoadScene(_nextScene);
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
-        videoPlayer.loopPointReached -= OnVideoEnd;
+        _videoPlayer.loopPointReached -= OnVideoEnd;
     }
 }

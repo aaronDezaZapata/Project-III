@@ -1,27 +1,24 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PaintBeaconController : MonoBehaviour
 {
-    public bool isReusable;
-
-    [SerializeField] private bool isUsed;
+    [SerializeField] private bool _isReusable;
+    [SerializeField] private bool _isUsed;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!isReusable && isUsed) return;
+        if (!_isReusable && _isUsed) return;
 
         if (other.CompareTag("Player"))
         {
-            GameManager.Instance.paintBeacon = null;
-            isUsed = true;
+            GameManager.Instance.PaintBeacon = null;
+            _isUsed = true;
             return;
         }
 
         if (other.GetComponent<InkProjectile>() != null)
         {
-            GameManager.Instance.paintBeacon = gameObject;
+            GameManager.Instance.PaintBeacon = gameObject;
 
             PlayerStateMachine player = GameManager.Instance.GetPlayer().GetComponent<PlayerStateMachine>();
             if (player != null)

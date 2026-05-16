@@ -1,28 +1,27 @@
-using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class BarrelMovement : MonoBehaviour
 {
-    [Header("Movimiento vertical")]
-    public float floatSpeed = 1f;
-    public float floatHeight = 0.2f;
-    public float driftAmount = 0.1f;
-    public float driftSpeed = 0.5f;
+    [Header("Vertical Movement")]
+    [SerializeField] private float _floatSpeed  = 1f;
+    [SerializeField] private float _floatHeight = 0.2f;
+    [SerializeField] private float _driftAmount = 0.1f;
+    [SerializeField] private float _driftSpeed  = 0.5f;
 
-    [Header("Balanceo")]
-    public float tiltSpeed = 1.2f;
-    public float tiltAmountX = 5f;
-    public float tiltAmountZ = 5f;
+    [Header("Tilt")]
+    [SerializeField] private float _tiltSpeed   = 1.2f;
+    [SerializeField] private float _tiltAmountX = 5f;
+    [SerializeField] private float _tiltAmountZ = 5f;
 
     [Header("Press Down Animation")]
-    public float pressDownAmount = 0.15f;
-    public float pressDownSpeed = 3f;
-    public float recoverSpeed = 2f;
+    [SerializeField] private float _pressDownAmount = 0.15f;
+    [SerializeField] private float _pressDownSpeed  = 3f;
+    [SerializeField] private float _recoverSpeed    = 2f;
 
-    [Header("Shake Animation (Aviso)")]
-    public float shakeMagnitude = 0.05f;
-    public float shakeSpeed = 35f;
+    [Header("Shake Animation")]
+    [SerializeField] private float _shakeMagnitude = 0.05f;
+    [SerializeField] private float _shakeSpeed     = 35f;
 
     private enum BarrelAnimState { Idle, PressDown, Recovering, Released }
 
@@ -33,7 +32,7 @@ public class BarrelMovement : MonoBehaviour
 
     private BarrelAnimState _animState = BarrelAnimState.Idle;
     private Vector3 _pressedPos;
-    private Vector3 currentBasePos;
+    private Vector3 _currentBasePos;
 
     private void Awake()
     {
@@ -42,9 +41,9 @@ public class BarrelMovement : MonoBehaviour
 
     private void Start()
     {
-        _startPos = transform.position;
-        _startRot = transform.rotation;
-        _randomOffset = Random.Range(0f, 100f);
+        _startPos      = transform.position;
+        _startRot      = transform.rotation;
+        _randomOffset  = Random.Range(0f, 100f);
     }
 
     private void Update()
@@ -54,9 +53,9 @@ public class BarrelMovement : MonoBehaviour
             case PlatformState.Countdown:
                 if (_animState != BarrelAnimState.PressDown)
                 {
-                    _pressedPos = _startPos + Vector3.down * pressDownAmount;
-                    currentBasePos = transform.position;
-                    _animState = BarrelAnimState.PressDown;
+                    _pressedPos    = _startPos + Vector3.down * _pressDownAmount;
+                    _currentBasePos = transform.position;
+                    _animState     = BarrelAnimState.PressDown;
                 }
                 break;
 
@@ -71,7 +70,7 @@ public class BarrelMovement : MonoBehaviour
                     _animState = BarrelAnimState.Recovering;
                 else if (_animState == BarrelAnimState.Released)
                 {
-                    _startPos = transform.position;
+                    _startPos  = transform.position;
                     _animState = BarrelAnimState.Idle;
                 }
                 break;
@@ -88,8 +87,6 @@ public class BarrelMovement : MonoBehaviour
             case BarrelAnimState.Recovering:
                 RecoverAnimation();
                 break;
-            case BarrelAnimState.Released:
-                break;
         }
     }
 
@@ -97,9 +94,9 @@ public class BarrelMovement : MonoBehaviour
     {
         float t = Time.time + _randomOffset;
 
-        float xOffset = Mathf.Sin(t * driftSpeed) * driftAmount;
-        float yOffset = Mathf.Sin(t * floatSpeed) * floatHeight;
-        float zOffset = Mathf.Sin(t * driftSpeed * 0.7f) * driftAmount;
+        float xOffset = Mathf.Sin(t * _driftSpeed) * _driftAmount;
+        float yOffset = Mathf.Sin(t * _floatSpeed) * _floatHeight;
+        float zOffset = Mathf.Sin(t * _driftSpeed * 0.7f) * _driftAmount;
 
         transform.position = new Vector3(
             _startPos.x + xOffset,
@@ -107,43 +104,43 @@ public class BarrelMovement : MonoBehaviour
             _startPos.z + zOffset
         );
 
-        float rotX = Mathf.Sin(Time.time * tiltSpeed) * tiltAmountX;
-        float rotZ = Mathf.Cos(Time.time * tiltSpeed * 0.8f) * tiltAmountZ;
+        float rotX = Mathf.Sin(Time.time * _tiltSpeed) * _tiltAmountX;
+        float rotZ = Mathf.Cos(Time.time * _tiltSpeed * 0.8f) * _tiltAmountZ;
 
         transform.rotation = _startRot * Quaternion.Euler(rotX, 0f, rotZ);
     }
 
     private void PressDownAnimation()
     {
-        currentBasePos = Vector3.MoveTowards(
-            currentBasePos,
+        _currentBasePos = Vector3.MoveTowards(
+            _currentBasePos,
             _pressedPos,
-            pressDownSpeed * Time.deltaTime
+            _pressDownSpeed * Time.deltaTime
         );
 
-        float shakeX = Mathf.Sin(Time.time * shakeSpeed) * shakeMagnitude;
-        float shakeZ = Mathf.Cos(Time.time * shakeSpeed * 0.8f) * shakeMagnitude;
+        float shakeX = Mathf.Sin(Time.time * _shakeSpeed) * _shakeMagnitude;
+        float shakeZ = Mathf.Cos(Time.time * _shakeSpeed * 0.8f) * _shakeMagnitude;
 
-        transform.position = currentBasePos + new Vector3(shakeX, 0f, shakeZ);
-        transform.rotation = Quaternion.Slerp(transform.rotation, _startRot, pressDownSpeed * Time.deltaTime);
+        transform.position = _currentBasePos + new Vector3(shakeX, 0f, shakeZ);
+        transform.rotation = Quaternion.Slerp(transform.rotation, _startRot, _pressDownSpeed * Time.deltaTime);
     }
 
     private void RecoverAnimation()
     {
-        currentBasePos = Vector3.MoveTowards(
-            currentBasePos,
+        _currentBasePos = Vector3.MoveTowards(
+            _currentBasePos,
             _startPos,
-            recoverSpeed * Time.deltaTime
+            _recoverSpeed * Time.deltaTime
         );
 
-        transform.position = currentBasePos;
-        transform.rotation = Quaternion.Slerp(transform.rotation, _startRot, recoverSpeed * Time.deltaTime);
+        transform.position = _currentBasePos;
+        transform.rotation = Quaternion.Slerp(transform.rotation, _startRot, _recoverSpeed * Time.deltaTime);
 
-        if (Vector3.Distance(currentBasePos, _startPos) < 0.01f)
+        if (Vector3.Distance(_currentBasePos, _startPos) < 0.01f)
         {
             transform.position = _startPos;
             transform.rotation = _startRot;
-            _animState = BarrelAnimState.Idle;
+            _animState         = BarrelAnimState.Idle;
         }
     }
 }

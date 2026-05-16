@@ -2,13 +2,10 @@ using UnityEngine;
 
 public class FruitSpawnerCounter : MonoBehaviour
 {
-    public FruitSpawner spawner;
+    public FruitSpawner Spawner { get; set; }
 
     private void OnDestroy()
     {
-        if (spawner != null)
-        {
-            spawner.NotifyFruitDestroyed();
-        }
+        Spawner?.NotifyFruitDestroyed();
     }
 }

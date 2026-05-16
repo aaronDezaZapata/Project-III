@@ -5,138 +5,128 @@ public class FruitPathFollower : MonoBehaviour
     [System.Serializable]
     public class SpeedRange
     {
-        [Tooltip("Desde este punto empieza este rango")]
-        public int startPointIndex = 0;
+        [Tooltip("Starting point index for this range")]
+        public int startPointIndex;
 
-        [Tooltip("Hasta este punto se aplica este rango")]
+        [Tooltip("Ending point index for this range")]
         public int endPointIndex = 1;
 
-        [Tooltip("Velocidad objetivo en este tramo")]
+        [Tooltip("Target speed in this segment")]
         public float targetSpeed = 5f;
 
-        [Tooltip("Qué tan rápido acelera hacia esa velocidad")]
+        [Tooltip("How fast the speed accelerates toward the target")]
         public float acceleration = 2f;
     }
 
-    public FruitPath path;
+    [SerializeField] private FruitPath _path;
 
-    [Header("Movimiento general")]
-    public float baseSpeed = 3f;
-    public float currentSpeed = 3f;
-    public float rotationSpeed = 8f;
-    public float pointReachDistance = 0.2f;
-    public bool destroyAtEnd = true;
+    [Header("Movement")]
+    [SerializeField] private float _baseSpeed          = 3f;
+    [SerializeField] private float _rotationSpeed      = 8f;
+    [SerializeField] private float _pointReachDistance = 0.2f;
+    [SerializeField] private bool  _destroyAtEnd       = true;
 
-    [Header("Sube y baja")]
-    public float bobHeight = 0.3f;
-    public float bobSpeed = 2f;
-    public float tiltAmount = 8f;
-    public float tiltSpeed = 2f;
+    [Header("Bobbing")]
+    [SerializeField] private float _bobHeight = 0.3f;
+    [SerializeField] private float _bobSpeed  = 2f;
+    [SerializeField] private float _tiltAmount = 8f;
+    [SerializeField] private float _tiltSpeed  = 2f;
 
-    [Header("Tramos de velocidad")]
-    public SpeedRange[] speedRanges;
+    [Header("Speed Ranges")]
+    [SerializeField] private SpeedRange[] _speedRanges;
 
-    private int currentPointIndex = 0;
-    private Vector3 basePosition;
-    private float randomOffset;
+    private float _currentSpeed;
+    private int   _currentPointIndex;
+    private Vector3 _basePosition;
+    private float _randomOffset;
 
     public void SetPath(FruitPath newPath)
     {
-        path = newPath;
-        currentPointIndex = 0;
-        randomOffset = Random.Range(0f, 100f);
+        _path              = newPath;
+        _currentPointIndex = 0;
+        _randomOffset      = Random.Range(0f, 100f);
+        _currentSpeed      = _baseSpeed;
 
-        currentSpeed = baseSpeed;
-
-        if (path != null && path.PointCount > 0)
+        if (_path != null && _path.PointCount > 0)
         {
-            transform.position = path.GetPoint(0);
-            basePosition = transform.position;
+            transform.position = _path.GetPoint(0);
+            _basePosition      = transform.position;
         }
     }
 
     private void Start()
     {
-        randomOffset = Random.Range(0f, 100f);
-        currentSpeed = baseSpeed;
+        _randomOffset = Random.Range(0f, 100f);
+        _currentSpeed = _baseSpeed;
 
-        if (path != null && path.PointCount > 0)
-        {
-            basePosition = transform.position;
-        }
+        if (_path != null && _path.PointCount > 0)
+            _basePosition = transform.position;
     }
 
     private void Update()
     {
-        if (path == null || path.PointCount == 0) return;
-        if (currentPointIndex >= path.PointCount) return;
+        if (_path == null || _path.PointCount == 0) return;
+        if (_currentPointIndex >= _path.PointCount) return;
 
         UpdateSpeedByRange();
 
-        Vector3 target = path.GetPoint(currentPointIndex);
-        Vector3 flatDirection = target - basePosition;
+        Vector3 target        = _path.GetPoint(_currentPointIndex);
+        Vector3 flatDirection = target - _basePosition;
 
-        if (flatDirection.magnitude <= pointReachDistance)
+        if (flatDirection.magnitude <= _pointReachDistance)
         {
-            currentPointIndex++;
+            _currentPointIndex++;
 
-            if (currentPointIndex >= path.PointCount)
+            if (_currentPointIndex >= _path.PointCount)
             {
-                if (destroyAtEnd)
-                    Destroy(gameObject);
-
+                if (_destroyAtEnd) Destroy(gameObject);
                 return;
             }
 
-            target = path.GetPoint(currentPointIndex);
-            flatDirection = target - basePosition;
+            target        = _path.GetPoint(_currentPointIndex);
+            flatDirection = target - _basePosition;
         }
 
         Vector3 moveDir = flatDirection.normalized;
-        basePosition += moveDir * currentSpeed * Time.deltaTime;
+        _basePosition  += moveDir * _currentSpeed * Time.deltaTime;
 
-        float bobOffset = Mathf.Sin((Time.time + randomOffset) * bobSpeed) * bobHeight;
-        Vector3 finalPosition = basePosition + Vector3.up * bobOffset;
-        transform.position = finalPosition;
+        float bobOffset = Mathf.Sin((Time.time + _randomOffset) * _bobSpeed) * _bobHeight;
+        transform.position = _basePosition + Vector3.up * bobOffset;
 
         if (moveDir != Vector3.zero)
         {
-            Quaternion lookRot = Quaternion.LookRotation(moveDir);
-
-            float tiltZ = Mathf.Sin((Time.time + randomOffset) * tiltSpeed) * tiltAmount;
-            Quaternion tiltRot = Quaternion.Euler(0f, 0f, tiltZ);
-
-            Quaternion targetRot = lookRot * tiltRot;
+            Quaternion lookRot  = Quaternion.LookRotation(moveDir);
+            float tiltZ         = Mathf.Sin((Time.time + _randomOffset) * _tiltSpeed) * _tiltAmount;
+            Quaternion tiltRot  = Quaternion.Euler(0f, 0f, tiltZ);
 
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
-                targetRot,
-                rotationSpeed * Time.deltaTime
+                lookRot * tiltRot,
+                _rotationSpeed * Time.deltaTime
             );
         }
     }
 
     private void UpdateSpeedByRange()
     {
-        float targetSpeed = baseSpeed;
-        float accel = 999f; 
+        float targetSpeed = _baseSpeed;
+        float accel       = 999f;
 
-        if (speedRanges != null)
+        if (_speedRanges != null)
         {
-            for (int i = 0; i < speedRanges.Length; i++)
+            foreach (SpeedRange range in _speedRanges)
             {
-                SpeedRange range = speedRanges[i];
                 if (range == null) continue;
 
-                if (currentPointIndex >= range.startPointIndex && currentPointIndex <= range.endPointIndex)
+                if (_currentPointIndex >= range.startPointIndex && _currentPointIndex <= range.endPointIndex)
                 {
                     targetSpeed = range.targetSpeed;
-                    accel = range.acceleration;
+                    accel       = range.acceleration;
                     break;
                 }
             }
         }
 
-        currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, accel * Time.deltaTime);
+        _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, accel * Time.deltaTime);
     }
 }

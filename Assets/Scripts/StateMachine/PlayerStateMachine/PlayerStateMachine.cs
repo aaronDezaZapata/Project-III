@@ -1,13 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 public class PlayerStateMachine : StateMachine
 {
@@ -408,7 +403,6 @@ public class PlayerStateMachine : StateMachine
         Quaternion finalRotation = alignmentRotation * fixRotation;
 
         GameObject splat = Instantiate(InkDecalPrefab, point, finalRotation);
-        GameManager.Instance.levelDecals.Add(splat);
         splat.transform.position += normal * ReticleSurfaceOffset;
 
         PlayerAudio?.PlayPaintSpread();
@@ -832,9 +826,6 @@ public class PlayerStateMachine : StateMachine
         {
             StartCoroutine(EmptyColorRoutine(reduceFill, "_FillA"));
         }
-        else
-        {
-        }
     }
 
     IEnumerator EmptyColorRoutine(float reduceFill, string fillProperty)
@@ -941,51 +932,6 @@ public class PlayerStateMachine : StateMachine
                Mathf.Abs(a.a - b.a) <= tolerance;
     }
 
-
-    
-    /// <summary>
-    /// Switch Colors on any index
-    /// </summary>
-    /// <param name="index"></param>
-    /// <param name="color"></param>
-    public void PlayerColorSwitch(int index, Color color)
-    {
-        switch (index)
-        {
-            case 0:
-                Mat_Player.material.SetColor("_ColorA", color);
-                break;
-            case 1:
-                Mat_Player.material.SetColor("_ColorB", color);
-                break;
-            case 2:
-                Mat_Player.material.SetColor("_ColorC", color);
-                break;
-            default:
-                break;
-        }
-    }
-
-
-    public void FaceMovementDirection(Vector3 movement, float deltaTime)
-    {
-        transform.rotation = Quaternion.Lerp(
-            transform.rotation,
-            Quaternion.LookRotation(movement),
-            deltaTime * RotationSpeed);
-    }
-
-    public void FaceMovementDirectionInstant(Vector3 movement)
-    {
-        // Verificamos que haya movimiento para evitar errores de LookRotation
-        if (movement != Vector3.zero)
-        {
-            transform.rotation = Quaternion.LookRotation(movement);
-        }
-    }
-
-
-
     public void AddShadowDrop()
     {
         Ray ray = new Ray(transform.position, Vector3.down);
@@ -1010,7 +956,8 @@ public class PlayerStateMachine : StateMachine
     {
         return InputReader.IsUsingGamepad ? GamepadAimSensitivity : MiceAimSensitivity;
     }
-
+    
+    // TODO: Move to dedicated script
     private void OnDrawGizmosSelected()
     {
         if (groundCheckOrigin == null) return;

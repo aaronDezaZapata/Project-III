@@ -19,154 +19,147 @@ public class FallingPlatformController : MonoBehaviour
     [Tooltip("Time before platform respawns")]
     public float timeBeforeRespawn = 3.0f;
     public float movementSpeed = 2.0f;
-    
-    public PlatformState CurrentState => currentState;
-    
+
+    public PlatformState CurrentState => _currentState;
+
     [Header("Debug")]
-    [SerializeField] private float currentTimer;
-    [SerializeField] private bool isCountdownActive;
-    [SerializeField] private bool isPlayerOnPlatform;
-    [SerializeField] private Vector3 originalPosition;
-    [SerializeField] private PlatformState currentState = PlatformState.Idle;
-    
-    private Vector3 targetFallPosition;
-    private float respawnTimer = 0f;
-    
+    [SerializeField] private float _currentTimer;
+    [SerializeField] private bool _isCountdownActive;
+    [SerializeField] private bool _isPlayerOnPlatform;
+    [SerializeField] private Vector3 _originalPosition;
+    [SerializeField] private PlatformState _currentState = PlatformState.Idle;
+
+    private Vector3 _targetFallPosition;
+    private float _respawnTimer;
+
     private void Start()
     {
-        originalPosition = transform.position;
-        targetFallPosition = originalPosition + new Vector3(0, -3f, 0);
+        _originalPosition = transform.position;
+        _targetFallPosition = _originalPosition + new Vector3(0, -3f, 0);
     }
-    
+
     private void Update()
     {
-        switch (currentState)
+        switch (_currentState)
         {
             case PlatformState.Countdown:
                 UpdateCountdown();
                 break;
-                
             case PlatformState.WaitingToRespawn:
                 UpdateWaitingToRespawn();
                 break;
         }
-        
-        if (fallsOnStay && currentState == PlatformState.Countdown && !isPlayerOnPlatform)
+
+        if (fallsOnStay && _currentState == PlatformState.Countdown && !_isPlayerOnPlatform)
             CancelCountdown();
     }
-    
+
     private void FixedUpdate()
     {
-        switch (currentState)
+        switch (_currentState)
         {
             case PlatformState.Falling:
                 UpdateFalling();
                 break;
-                
             case PlatformState.Rising:
                 UpdateRising();
                 break;
         }
     }
-    
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            isPlayerOnPlatform = true;
-            
-            if (!fallsOnStay && currentState == PlatformState.Idle || 
-                fallsOnStay && currentState == PlatformState.Idle)
+            _isPlayerOnPlatform = true;
+
+            if (_currentState == PlatformState.Idle)
                 StartCountdown();
         }
     }
-    
+
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
-        {
-            isPlayerOnPlatform = false;
-        }
+            _isPlayerOnPlatform = false;
     }
-    
+
     private void StartCountdown()
     {
-        currentState = PlatformState.Countdown;
-        currentTimer = timeBeforeFalling;
-        isCountdownActive = true;
+        _currentState = PlatformState.Countdown;
+        _currentTimer = timeBeforeFalling;
+        _isCountdownActive = true;
     }
-    
+
     private void CancelCountdown()
     {
-        currentState = PlatformState.Idle;
-        currentTimer = 0f;
-        isCountdownActive = false;
+        _currentState = PlatformState.Idle;
+        _currentTimer = 0f;
+        _isCountdownActive = false;
     }
-    
+
     private void UpdateCountdown()
     {
-        currentTimer -= Time.deltaTime;
-        
-        if (currentTimer <= 0f)
+        _currentTimer -= Time.deltaTime;
+
+        if (_currentTimer <= 0f)
         {
-            currentTimer = 0f;
-            isCountdownActive = false;
-            currentState = PlatformState.Falling;
+            _currentTimer = 0f;
+            _isCountdownActive = false;
+            _currentState = PlatformState.Falling;
         }
     }
-    
+
     private void UpdateFalling()
     {
         transform.position = Vector3.MoveTowards(
             transform.position,
-            targetFallPosition,
+            _targetFallPosition,
             movementSpeed * Time.fixedDeltaTime
         );
-        
 
-        if (Vector3.Distance(transform.position, targetFallPosition) < 0.01f)
+        if (Vector3.Distance(transform.position, _targetFallPosition) < 0.01f)
         {
-            transform.position = targetFallPosition;
-
-            currentState = PlatformState.WaitingToRespawn;
-            respawnTimer = timeBeforeRespawn;
+            transform.position = _targetFallPosition;
+            _currentState = PlatformState.WaitingToRespawn;
+            _respawnTimer = timeBeforeRespawn;
         }
     }
-    
+
     private void UpdateWaitingToRespawn()
     {
-        respawnTimer -= Time.deltaTime;
-        
-        if (respawnTimer <= 0f)
+        _respawnTimer -= Time.deltaTime;
+
+        if (_respawnTimer <= 0f)
         {
-            respawnTimer = 0f;
-            currentState = PlatformState.Rising;
+            _respawnTimer = 0f;
+            _currentState = PlatformState.Rising;
         }
     }
-    
+
     private void UpdateRising()
     {
         transform.position = Vector3.MoveTowards(
             transform.position,
-            originalPosition,
+            _originalPosition,
             movementSpeed * Time.fixedDeltaTime
         );
-        
-        if (Vector3.Distance(transform.position, originalPosition) < 0.01f)
+
+        if (Vector3.Distance(transform.position, _originalPosition) < 0.01f)
         {
-            transform.position = originalPosition;
-            currentState = PlatformState.Idle;
-            currentTimer = 0f;
+            transform.position = _originalPosition;
+            _currentState = PlatformState.Idle;
+            _currentTimer = 0f;
         }
     }
-    
+
     public void ResetPlatform()
     {
-        transform.position = originalPosition;
-        currentState = PlatformState.Idle;
-        currentTimer = 0f;
-        respawnTimer = 0f;
-        isCountdownActive = false;
-        isPlayerOnPlatform = false;
+        transform.position = _originalPosition;
+        _currentState = PlatformState.Idle;
+        _currentTimer = 0f;
+        _respawnTimer = 0f;
+        _isCountdownActive = false;
+        _isPlayerOnPlatform = false;
     }
 }

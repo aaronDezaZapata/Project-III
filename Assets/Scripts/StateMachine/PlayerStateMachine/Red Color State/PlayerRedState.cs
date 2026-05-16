@@ -1,10 +1,3 @@
-using UnityEngine;
-
-/// <summary>
-/// Player Red State
-/// - Basic Movement
-/// - Can Shoot ink
-/// </summary>
 public class PlayerRedState : PlayerWhiteState
 {
     public PlayerRedState(PlayerStateMachine stateMachine) : base(stateMachine)
@@ -14,7 +7,6 @@ public class PlayerRedState : PlayerWhiteState
     protected override void SetPlayerState()
     {
         stateMachine.playerState = PlayerStates.RED;
-
     }
     
     protected override bool CheckColorSpecificActions(float deltaTime)
@@ -26,5 +18,4 @@ public class PlayerRedState : PlayerWhiteState
         }
         return false;
     }
-
 }

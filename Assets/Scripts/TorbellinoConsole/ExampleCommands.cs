@@ -2,9 +2,6 @@ using UnityEngine;
 
 namespace TorbellinoConsoleSystem.Examples
 {
-    /// <summary>
-    /// Example commands for TorbellinoConsole.
-    /// </summary>
     public static class ExampleCommands
     {
         [ConsoleCommand("hello", "Says hello to the world")]
@@ -97,9 +94,9 @@ namespace TorbellinoConsoleSystem.Examples
         {
             if (PlayerPrefs.HasKey(key))
             {
-                if (PlayerPrefs.GetInt(key, int.MinValue) != int.MinValue)   return $"{key} = {PlayerPrefs.GetInt(key)}";
+                if (PlayerPrefs.GetInt(key, int.MinValue) != int.MinValue)            return $"{key} = {PlayerPrefs.GetInt(key)}";
                 else if (PlayerPrefs.GetFloat(key, float.MinValue) != float.MinValue) return $"{key} = {PlayerPrefs.GetFloat(key)}";
-                else return $"{key} = {PlayerPrefs.GetString(key)}";
+                else                                                                   return $"{key} = {PlayerPrefs.GetString(key)}";
             }
             return $"Key '{key}' not found in PlayerPrefs";
         }

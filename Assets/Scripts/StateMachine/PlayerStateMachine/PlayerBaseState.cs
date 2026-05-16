@@ -5,24 +5,25 @@ using UnityEngine;
 
 public abstract class PlayerBaseState : State
 {
+    #region Variables
+
     protected PlayerStateMachine stateMachine;
 
     private Vector3 _currentMovementVelocity;
     private Vector3 _movementVelocitySmoothRef;
     
-    private Vector3 _lastMovementDirection;
-    private bool _isQuickStopping = false;
-    private float _quickStopTimer = 0f;
+    private bool _isQuickStopping;
     
-    private float _timeSinceLeftGround = 0f;
-    private bool _wasGroundedLastFrame = false;
+    private float _timeSinceLeftGround;
+    private bool _wasGroundedLastFrame;
     
     private bool _doubleJumpAvailable = true;
-    private bool _hasUsedDoubleJump = false;
+    private bool _hasUsedDoubleJump;
     
     protected readonly int JumpTriggered = Animator.StringToHash("JumpTriggered");
     protected readonly int DoubleJumpTriggered = Animator.StringToHash("DoubleJumpTriggered");
-    
+
+    #endregion
 
     public PlayerBaseState(PlayerStateMachine stateMachine)
     {
@@ -33,14 +34,11 @@ public abstract class PlayerBaseState : State
 
     protected void Move(Vector3 motion, float deltaTime)
     {
-        // Actualizar coyote time
         UpdateCoyoteTime(deltaTime);
         
         Vector3 horizontalMotion = new Vector3(motion.x, 0, motion.z);
         Vector3 verticalMotion = new Vector3(0, motion.y, 0);
-
-        // eliminar el input horizontal para que la velocidad no
-        // se acumule contra la pared y bloquee la gravedad.
+        
         bool hasSideCollision = (stateMachine.Controller.collisionFlags & CollisionFlags.Sides) != 0;
         bool isTouchingWallInAir = hasSideCollision && !stateMachine.isGrounded;
         if (isTouchingWallInAir)
@@ -49,8 +47,7 @@ public abstract class PlayerBaseState : State
             _currentMovementVelocity = Vector3.zero;
             _movementVelocitySmoothRef = Vector3.zero;
         }
-
-        // Detectar cambio brusco de dirección
+        
         float directionChangeAngle = 0f;
         bool hasInput = horizontalMotion.magnitude > 0.01f;
         bool isMoving = _currentMovementVelocity.magnitude > 0.5f;
@@ -61,24 +58,18 @@ public abstract class PlayerBaseState : State
             Vector3 newDir = horizontalMotion.normalized;
             directionChangeAngle = Vector3.Angle(currentDir, newDir);
             
-            // Si el ángulo es mayor a 90 grados, es un cambio brusco
             if (directionChangeAngle > stateMachine.DirectionChangeThreshold && !_isQuickStopping)
             {
                 _isQuickStopping = true;
-                _quickStopTimer = 0f;
             }
         }
         
-        // Determinar el smooth time basado en el estado
         float smoothTime;
         
         if (_isQuickStopping)
         {
-            // Durante el frenado rápido, usar un tiempo muy corto
             smoothTime = stateMachine.QuickStopTime;
-            _quickStopTimer += deltaTime;
             
-            // Si la velocidad es muy baja, salir del estado de frenado
             if (_currentMovementVelocity.magnitude < stateMachine.QuickStopSpeedThreshold)
             {
                 _isQuickStopping = false;
@@ -86,7 +77,6 @@ public abstract class PlayerBaseState : State
                 _movementVelocitySmoothRef = Vector3.zero;
             }
             
-            // Forzar el target a cero durante el frenado
             horizontalMotion = Vector3.zero;
         }
         else if (hasInput)
@@ -104,12 +94,6 @@ public abstract class PlayerBaseState : State
             ref _movementVelocitySmoothRef,
             smoothTime
         );
-
-        // Guardar la última dirección de movimiento
-        if (_currentMovementVelocity.magnitude > 0.01f)
-        {
-            _lastMovementDirection = _currentMovementVelocity.normalized;
-        }
         
         Vector3 finalMovement = _currentMovementVelocity + verticalMotion + stateMachine.ForceReceiver.Movement;
         
@@ -119,30 +103,6 @@ public abstract class PlayerBaseState : State
         {
             stateMachine.ForceReceiver.ResetVerticalVelocity();
         }
-    }
-    
-    protected void MoveNoInertia(Vector3 motion, float deltaTime)
-    {
-        _currentMovementVelocity = motion;
-        _movementVelocitySmoothRef = Vector3.zero;
-
-        stateMachine.Controller.Move((motion + stateMachine.ForceReceiver.Movement) * deltaTime);
-    }
-
-    protected void Move(float deltaTime)
-    {
-        Move(Vector3.zero, deltaTime);
-    }
-    
-    protected void FaceTarget(Transform target)
-    {
-        if(target == null) { return; }
-
-        Vector3 enemyDirection = (target.transform.position - stateMachine.transform.position);
-
-        enemyDirection.y = 0f;
-
-        stateMachine.transform.rotation = Quaternion.LookRotation(enemyDirection * stateMachine.RotationSpeed);
     }
     
     #endregion
@@ -199,16 +159,8 @@ public abstract class PlayerBaseState : State
         {
             stateMachine.ForceReceiver.Jump(stateMachine.JumpForce);
             stateMachine.PlayerAudio?.PlayJump();
-
-            // Consumimos el coyote time para evitar que se vuelva a entrar
-            // por esta rama mientras seguimos en el aire.
+            
             _timeSinceLeftGround = stateMachine.CoyoteTime + 1f;
-
-            // NO reseteamos _doubleJumpAvailable ni _hasUsedDoubleJump aquí.
-            // UpdateCoyoteTime() ya los resetea correctamente cuando el jugador
-            // aterriza (isGrounded == true). Hacerlo aquí provocaba que, en casos
-            // de borde con el coyote time, las flags se resetearan en el aire y
-            // permitieran un tercer salto.
             
             stateMachine.Animator.SetTrigger(JumpTriggered);
         }

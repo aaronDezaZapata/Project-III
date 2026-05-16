@@ -14,8 +14,7 @@ public class PlayerStateMachineEditor : Editor
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
-
-        // ESTADO PRINCIPAL
+        
         EditorGUILayout.Space(10);
         DrawHeader("MAIN CONFIGURATION", Color.white);
         DrawBackingProperty("playerState");
@@ -37,8 +36,7 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("AimXAxisInverted");
         DrawBackingProperty("Health");
         DrawBackingProperty("Mat_Player");
-
-        // MOVIMIENTO BASE 
+        
         EditorGUILayout.Space(10);
         DrawHeader("BASE MOVEMENT", Color.white);
         DrawBackingProperty("FreeLookMovementSpeed");
@@ -55,8 +53,7 @@ public class PlayerStateMachineEditor : Editor
         
         DrawBackingProperty("CoyoteTime");
         DrawBackingProperty("ShadowDrop");
-
-        //Ground Check
+        
         EditorGUILayout.Space(10);
         DrawHeader("Ground Check", Color.white);
         DrawBackingProperty("groundCheckDistance");
@@ -64,16 +61,14 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("groundMask");
         DrawBackingProperty("groundCheckOrigin");
         DrawBackingProperty("isGrounded");
-
-        // PARTICLES
+        
         EditorGUILayout.Space(10);
         DrawHeader("Particles", Color.white);
         DrawBackingProperty("FootstepParticles1");
         DrawBackingProperty("FootstepParticles2");
         DrawBackingProperty("LandingParticles");
         DrawBackingProperty("MinFallVelocityToPlayLandingParticle");
-
-        // COMMON SPLATOON & SHOOTING
+        
         EditorGUILayout.Space(10);
         DrawHeader("SPLATOON & SHOOTING", Color.cyan);
         DrawBackingProperty("SwimSpeed");
@@ -85,17 +80,14 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("reticle");
         DrawBackingProperty("OriginalMesh");
         DrawBackingProperty("SharkFinMesh");
-
-        // Referencias de disparo
+        
         DrawBackingProperty("FirePoint");
         DrawBackingProperty("ProjectilePrefab");
         DrawBackingProperty("FireCooldown");
         DrawBackingProperty("ReticleTransform");
-
-        // LOGICA CONDICIONAL POR COLOR
+        
         EditorGUILayout.Space(20);
-
-        //  GREEN LOGIC
+        
         if (targetScript.playerState == PlayerStates.GREEN)
         {
             DrawHeader("--- GREEN STATE (GRAPPLE/WHIP) ---", Color.green);
@@ -126,10 +118,9 @@ public class PlayerStateMachineEditor : Editor
             DrawBackingProperty("WhipCaptureSpeed");
 
             EditorGUILayout.EndVertical();
-            GUI.backgroundColor = Color.white; // Restaurar color
+            GUI.backgroundColor = Color.white;
         }
-
-        // BLUE LOGIC (GEYSER)
+        
         if (targetScript.playerState == PlayerStates.BLUE)
         {
             DrawHeader("--- BLUE STATE (GEYSER) ---", Color.blue);
@@ -144,8 +135,7 @@ public class PlayerStateMachineEditor : Editor
             DrawHeader("Force Variable Config", Color.white);
             DrawBackingProperty("HoverForce");
             DrawBackingProperty("aerialMoveSpeed");
-
-            // Particles related to blue/water go here
+            
             DrawBackingProperty("Water_JetParticle");
             DrawBackingProperty("WaterGeyserParticle");
             DrawBackingProperty("WaterGeyserParticleSecond");
@@ -153,96 +143,32 @@ public class PlayerStateMachineEditor : Editor
             EditorGUILayout.EndVertical();
             GUI.backgroundColor = Color.white;
         }
-
-        // TODO: Remove
-        // No existe estado grey
-        // GRAY LOGIC 
-        /*if (targetScript.playerState == PlayerStates.GREY)
-        {
-            DrawHeader("--- GRAY STATE ---", Color.gray);
-            GUI.backgroundColor = new Color(0.8f, 0.8f, 0.8f);
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-
-            DrawBackingProperty("HasGrayAbility");
-            DrawBackingProperty("AbsorbableLayer");
-            DrawBackingProperty("GrayAbsorbRange");
-            DrawBackingProperty("GrayAbsorbAngle");
-            DrawBackingProperty("GrayAbsorbSpeed");
-            DrawBackingProperty("GrayMaxSimultaneousAbsorb");
-            DrawBackingProperty("GrayHoldHeight");
-            DrawBackingProperty("GrayHoldDistance");
-            DrawBackingProperty("GrayProjectileSpeedMultiplier");
-            DrawBackingProperty("GrayAbsorbParticles");
-
-            // Lista normal
-            SerializedProperty listProp = serializedObject.FindProperty("absorbedObjects");
-            EditorGUILayout.PropertyField(listProp, true);
-
-            EditorGUILayout.EndVertical();
-            GUI.backgroundColor = Color.white;
-        }*/
-
-        // BLACK LOGIC
-        if (targetScript.playerState == PlayerStates.BLACK)
-        {
-            DrawHeader("--- BLACK STATE ---", Color.black);
-            GUI.backgroundColor = new Color(0.4f, 0.4f, 0.4f); // Gris oscuro
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-
-            
-            DrawBackingProperty("HasDashAttack");
-            DrawBackingProperty("DashAttackSpeed");
-            DrawBackingProperty("DashAttackMaxRange");
-            DrawBackingProperty("DashAttackCollisionRadius");
-            DrawBackingProperty("DashAttackKnockbackForce");
-            DrawBackingProperty("DashAttackVerticalKnockback");
-            DrawBackingProperty("DashAttackDamage");
-
-            EditorGUILayout.EndVertical();
-            GUI.backgroundColor = Color.white;
-        }
-
+        
         serializedObject.ApplyModifiedProperties();
     }
-
-    // HELPER FUNCTIONS
-
-    //header con color
+    
     private void DrawHeader(string title, Color color)
     {
         GUIStyle style = new GUIStyle(EditorStyles.boldLabel);
         style.normal.textColor = color;
-        // Si el color es negro uso blanco para que se lea en Unity, o negro en clara.
+        
         if (color == Color.black && EditorGUIUtility.isProSkin) style.normal.textColor = Color.white;
 
         EditorGUILayout.LabelField(title, style);
-
-        // Linea separadora coloreada
+        
         Rect rect = EditorGUILayout.GetControlRect(false, 1);
         EditorGUI.DrawRect(rect, color);
         EditorGUILayout.Space(5);
     }
-
-    // Busca propiedades generadas por "field: SerializeField" (<Nombre>k__BackingField)
+    
     private void DrawBackingProperty(string propertyName)
     {
-        // Intentamos buscar la propiedad con el nombre exacto (por si cambias a variables normales)
         SerializedProperty prop = serializedObject.FindProperty(propertyName);
-
-        // Si es null, buscamos el formato de backing field autom�tico
+        
         if (prop == null)
-        {
             prop = serializedObject.FindProperty($"<{propertyName}>k__BackingField");
-        }
-
+        
         if (prop != null)
-        {
             EditorGUILayout.PropertyField(prop, new GUIContent(propertyName));
-        }
-        else
-        {
-            // Avisar si no encuentra algo 
-            // EditorGUILayout.LabelField($"Error: {propertyName} not found", EditorStyles.miniLabel);
-        }
     }
 }

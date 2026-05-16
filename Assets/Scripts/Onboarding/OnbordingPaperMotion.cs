@@ -14,84 +14,80 @@ public class OnboardingPaperMotion : MonoBehaviour
     }
 
     [Header("General")]
-    [SerializeField] private MotionType motionType = MotionType.Jump;
-    [SerializeField] private bool playOnEnable = true;
-    [SerializeField] private bool loop = true;
-    [SerializeField] private float speed = 1f;
-    [SerializeField] private float loopDelay = 0.2f;
+    [SerializeField] private MotionType _motionType = MotionType.Jump;
+    [SerializeField] private bool  _playOnEnable = true;
+    [SerializeField] private bool  _loop         = true;
+    [SerializeField] private float _speed        = 1f;
+    [SerializeField] private float _loopDelay    = 0.2f;
 
     [Header("Movement Amounts")]
-    [SerializeField] private float horizontalDistance = 1f;
-    [SerializeField] private float verticalDistance = 1f;
-    [SerializeField] private float bounceStrength = 0.25f;
-    [SerializeField] private float sineAmplitude = 0.25f;
-    [SerializeField] private float sineFrequency = 2f;
+    [SerializeField] private float _horizontalDistance = 1f;
+    [SerializeField] private float _verticalDistance   = 1f;
+    [SerializeField] private float _bounceStrength     = 0.25f;
+    [SerializeField] private float _sineAmplitude      = 0.25f;
+    [SerializeField] private float _sineFrequency      = 2f;
 
     [Header("Pull Popup")]
-    [SerializeField] private float pullDistance = 1f;
-    [SerializeField] private float pullShakeStrength = 0.08f;
-    [SerializeField] private float pullShakeFrequency = 20f;
+    [SerializeField] private float _pullDistance        = 1f;
+    [SerializeField] private float _pullShakeStrength   = 0.08f;
+    [SerializeField] private float _pullShakeFrequency  = 20f;
 
     [Header("Optional Rotation")]
-    [SerializeField] private bool useRotation = false;
-    [SerializeField] private Vector3 rotationAxis = new Vector3(0f, 0f, 1f);
-    [SerializeField] private float rotationAmount = 10f;
+    [SerializeField] private bool  _useRotation    = false;
+    [SerializeField] private Vector3 _rotationAxis = new Vector3(0f, 0f, 1f);
+    [SerializeField] private float _rotationAmount = 10f;
 
     [Header("Auto Flip")]
-    [SerializeField] private bool useAutoFlip = true;
-    [SerializeField] private float flipEverySeconds = 2f;
-    [SerializeField] private bool startFacingRight = true;
+    [SerializeField] private bool  _useAutoFlip      = true;
+    [SerializeField] private float _flipEverySeconds = 2f;
+    [SerializeField] private bool  _startFacingRight = true;
 
-    private Vector3 startPos;
-    private Quaternion startRot;
-    private Vector3 startScale;
+    private Vector3    _startPos;
+    private Quaternion _startRot;
+    private Vector3    _startScale;
 
-    private float timer;
-    private bool isPlaying;
-    private bool waitingLoop;
-    private float loopWaitTimer;
+    private float _timer;
+    private bool  _isPlaying;
+    private bool  _waitingLoop;
+    private float _loopWaitTimer;
 
-    private float flipTimer;
-    private bool isFacingRight;
+    private float _flipTimer;
+    private bool  _isFacingRight;
 
-    private Vector3 currentAnchorPos;
-    private bool walkForward = true;
+    private Vector3 _currentAnchorPos;
+    private bool    _walkForward = true;
 
     private void Awake()
     {
-        startPos = transform.localPosition;
-        startRot = transform.localRotation;
-        startScale = transform.localScale;
+        _startPos   = transform.localPosition;
+        _startRot   = transform.localRotation;
+        _startScale = transform.localScale;
 
-        currentAnchorPos = startPos;
+        _currentAnchorPos = _startPos;
     }
 
     private void OnEnable()
     {
-        isFacingRight = startFacingRight;
+        _isFacingRight = _startFacingRight;
         ApplyFacingDirection();
 
-        if (playOnEnable)
-        {
+        if (_playOnEnable)
             Play();
-        }
         else
-        {
             ResetTransform();
-        }
     }
 
     public void Play()
     {
-        timer = 0f;
-        isPlaying = true;
-        waitingLoop = false;
-        loopWaitTimer = 0f;
-        flipTimer = 0f;
+        _timer         = 0f;
+        _isPlaying     = true;
+        _waitingLoop   = false;
+        _loopWaitTimer = 0f;
+        _flipTimer     = 0f;
 
-        isFacingRight = startFacingRight;
-        walkForward = true;
-        currentAnchorPos = startPos;
+        _isFacingRight    = _startFacingRight;
+        _walkForward      = true;
+        _currentAnchorPos = _startPos;
 
         ResetTransform();
         ApplyFacingDirection();
@@ -99,15 +95,15 @@ public class OnboardingPaperMotion : MonoBehaviour
 
     public void Stop()
     {
-        isPlaying = false;
-        waitingLoop = false;
+        _isPlaying   = false;
+        _waitingLoop = false;
         ResetTransform();
     }
 
     public void ResetTransform()
     {
-        transform.localPosition = currentAnchorPos;
-        transform.localRotation = startRot;
+        transform.localPosition = _currentAnchorPos;
+        transform.localRotation = _startRot;
         ApplyFacingDirection();
     }
 
@@ -115,123 +111,92 @@ public class OnboardingPaperMotion : MonoBehaviour
     {
         HandleAutoFlip();
 
-        if (!isPlaying)
-            return;
+        if (!_isPlaying) return;
 
-        if (waitingLoop)
+        if (_waitingLoop)
         {
-            loopWaitTimer += Time.deltaTime;
-            if (loopWaitTimer >= loopDelay)
+            _loopWaitTimer += Time.deltaTime;
+            if (_loopWaitTimer >= _loopDelay)
             {
-                waitingLoop = false;
-                timer = 0f;
+                _waitingLoop   = false;
+                _timer         = 0f;
             }
             return;
         }
 
-        timer += Time.deltaTime * speed;
+        _timer += Time.deltaTime * _speed;
 
         bool finished = false;
 
-        switch (motionType)
+        switch (_motionType)
         {
-            case MotionType.Jump:
-                finished = AnimateJump();
-                break;
-
-            case MotionType.DoubleJump:
-                finished = AnimateDoubleJump();
-                break;
-
-            case MotionType.Walk:
-                finished = AnimateWalk();
-                break;
-
-            case MotionType.HeiserFloat:
-                finished = AnimateHeiserFloat();
-                break;
-
-            case MotionType.Whip:
-                finished = AnimateWhip();
-                break;
-
-            case MotionType.PaintBounce:
-                finished = AnimatePaintBounce();
-                break;
-
-            case MotionType.PullPopup:
-                finished = AnimatePullPopup();
-                break;
+            case MotionType.Jump:        finished = AnimateJump();        break;
+            case MotionType.DoubleJump:  finished = AnimateDoubleJump();  break;
+            case MotionType.Walk:        finished = AnimateWalk();        break;
+            case MotionType.HeiserFloat: finished = AnimateHeiserFloat(); break;
+            case MotionType.Whip:        finished = AnimateWhip();        break;
+            case MotionType.PaintBounce: finished = AnimatePaintBounce(); break;
+            case MotionType.PullPopup:   finished = AnimatePullPopup();   break;
         }
 
-        if (finished)
-        {
-            if (motionType == MotionType.Walk ||
-        motionType == MotionType.Jump ||
-        motionType == MotionType.DoubleJump ||
-        motionType == MotionType.Whip)
-                return;
+        if (!finished) return;
 
-            if (loop)
-            {
-                waitingLoop = true;
-                loopWaitTimer = 0f;
-                ResetTransform();
-            }
-            else
-            {
-                isPlaying = false;
-            }
+        if (_motionType == MotionType.Walk      ||
+            _motionType == MotionType.Jump      ||
+            _motionType == MotionType.DoubleJump ||
+            _motionType == MotionType.Whip)
+            return;
+
+        if (_loop)
+        {
+            _waitingLoop   = true;
+            _loopWaitTimer = 0f;
+            ResetTransform();
+        }
+        else
+        {
+            _isPlaying = false;
         }
     }
 
     private void HandleAutoFlip()
     {
-        if (!useAutoFlip || flipEverySeconds <= 0f)
-            return;
+        if (!_useAutoFlip || _flipEverySeconds <= 0f) return;
 
-        flipTimer += Time.deltaTime;
+        _flipTimer += Time.deltaTime;
 
-        if (flipTimer >= flipEverySeconds)
+        if (_flipTimer >= _flipEverySeconds)
         {
-            flipTimer = 0f;
-            isFacingRight = !isFacingRight;
+            _flipTimer     = 0f;
+            _isFacingRight = !_isFacingRight;
             ApplyFacingDirection();
         }
     }
 
     private void ApplyFacingDirection()
     {
-        Vector3 newScale = startScale;
-        newScale.x = Mathf.Abs(startScale.x) * (isFacingRight ? 1f : -1f);
+        Vector3 newScale = _startScale;
+        newScale.x = Mathf.Abs(_startScale.x) * (_isFacingRight ? 1f : -1f);
         transform.localScale = newScale;
     }
 
     private bool AnimateJump()
     {
-        float duration = 1f;
-        float t = Mathf.Clamp01(timer / duration);
-
-        float targetX = walkForward ? horizontalDistance : -horizontalDistance;
-
-        float x = Mathf.Lerp(0f, targetX, t);
-
-        // arco de salto
-        float y = 4f * verticalDistance * t * (1f - t);
-
-        float rot = Mathf.Sin(t * Mathf.PI) * rotationAmount;
+        float t        = Mathf.Clamp01(_timer / 1f);
+        float targetX  = _walkForward ? _horizontalDistance : -_horizontalDistance;
+        float x        = Mathf.Lerp(0f, targetX, t);
+        float y        = 4f * _verticalDistance * t * (1f - t);
+        float rot      = Mathf.Sin(t * Mathf.PI) * _rotationAmount;
 
         ApplyTransform(new Vector3(x, y, 0f), rot);
 
         if (t >= 1f)
         {
-            currentAnchorPos += new Vector3(targetX, 0f, 0f);
-
-            walkForward = !walkForward;
-            isFacingRight = walkForward;
+            _currentAnchorPos += new Vector3(targetX, 0f, 0f);
+            _walkForward       = !_walkForward;
+            _isFacingRight     = _walkForward;
             ApplyFacingDirection();
-
-            timer = 0f;
+            _timer = 0f;
         }
 
         return false;
@@ -240,36 +205,32 @@ public class OnboardingPaperMotion : MonoBehaviour
     private bool AnimateDoubleJump()
     {
         float duration = 1.4f;
-        float t = Mathf.Clamp01(timer / duration);
+        float t        = Mathf.Clamp01(_timer / duration);
+        float targetX  = _walkForward ? _horizontalDistance : -_horizontalDistance;
+        float x        = Mathf.Lerp(0f, targetX, t);
 
-        float targetX = walkForward ? horizontalDistance : -horizontalDistance;
-        float x = Mathf.Lerp(0f, targetX, t);
-
-        float y = 0f;
-
+        float y;
         if (t < 0.5f)
         {
             float localT = t / 0.5f;
-            y = 4f * verticalDistance * localT * (1f - localT);
+            y = 4f * _verticalDistance * localT * (1f - localT);
         }
         else
         {
             float localT = (t - 0.5f) / 0.5f;
-            y = 4f * verticalDistance * 0.85f * localT * (1f - localT) + verticalDistance * 0.2f;
+            y = 4f * _verticalDistance * 0.85f * localT * (1f - localT) + _verticalDistance * 0.2f;
         }
 
-        float rot = Mathf.Sin(t * Mathf.PI * 2f) * rotationAmount;
+        float rot = Mathf.Sin(t * Mathf.PI * 2f) * _rotationAmount;
         ApplyTransform(new Vector3(x, y, 0f), rot);
 
         if (t >= 1f)
         {
-            currentAnchorPos += new Vector3(targetX, 0f, 0f);
-
-            walkForward = !walkForward;
-            isFacingRight = walkForward;
+            _currentAnchorPos += new Vector3(targetX, 0f, 0f);
+            _walkForward       = !_walkForward;
+            _isFacingRight     = _walkForward;
             ApplyFacingDirection();
-
-            timer = 0f;
+            _timer = 0f;
         }
 
         return false;
@@ -277,26 +238,21 @@ public class OnboardingPaperMotion : MonoBehaviour
 
     private bool AnimateWalk()
     {
-        float duration = 1f;
-        float t = Mathf.Clamp01(timer / duration);
+        float t       = Mathf.Clamp01(_timer / 1f);
+        float targetX = _walkForward ? _horizontalDistance : -_horizontalDistance;
+        float x       = Mathf.Lerp(0f, targetX, t);
+        float y       = Mathf.Sin(t * Mathf.PI * 2f) * 0.03f;
+        float rot     = Mathf.Sin(t * Mathf.PI * 2f) * _rotationAmount * 0.2f;
 
-        float targetX = walkForward ? horizontalDistance : -horizontalDistance;
-
-        float x = Mathf.Lerp(0f, targetX, t);
-        float y = Mathf.Sin(t * Mathf.PI * 2f) * 0.03f;
-
-        float rot = Mathf.Sin(t * Mathf.PI * 2f) * rotationAmount * 0.2f;
         ApplyTransform(new Vector3(x, y, 0f), rot);
 
         if (t >= 1f)
         {
-            currentAnchorPos += new Vector3(targetX, 0f, 0f);
-
-            walkForward = !walkForward;
-            isFacingRight = walkForward;
+            _currentAnchorPos += new Vector3(targetX, 0f, 0f);
+            _walkForward       = !_walkForward;
+            _isFacingRight     = _walkForward;
             ApplyFacingDirection();
-
-            timer = 0f;
+            _timer = 0f;
         }
 
         return false;
@@ -304,36 +260,31 @@ public class OnboardingPaperMotion : MonoBehaviour
 
     private bool AnimateHeiserFloat()
     {
-        float y = Mathf.Sin(timer * sineFrequency) * sineAmplitude;
-        float rot = Mathf.Sin(timer * sineFrequency) * rotationAmount * 0.5f;
+        float y   = Mathf.Sin(_timer * _sineFrequency) * _sineAmplitude;
+        float rot = Mathf.Sin(_timer * _sineFrequency) * _rotationAmount * 0.5f;
 
-        ApplyTransform(new Vector3(0f, verticalDistance + y, 0f), rot);
-
+        ApplyTransform(new Vector3(0f, _verticalDistance + y, 0f), rot);
         return false;
     }
 
     private bool AnimateWhip()
     {
         float duration = 0.55f;
-        float t = Mathf.Clamp01(timer / duration);
+        float t        = Mathf.Clamp01(_timer / duration);
+        float targetX  = _walkForward ? _horizontalDistance : -_horizontalDistance;
+        float x        = Mathf.Lerp(0f, targetX, t);
+        float y        = Mathf.Sin(t * Mathf.PI) * _sineAmplitude;
+        float rot      = Mathf.Sin(t * Mathf.PI) * _rotationAmount;
 
-        float targetX = walkForward ? horizontalDistance : -horizontalDistance;
-
-        float x = Mathf.Lerp(0f, targetX, t);
-        float y = Mathf.Sin(t * Mathf.PI) * sineAmplitude;
-
-        float rot = Mathf.Sin(t * Mathf.PI) * rotationAmount;
         ApplyTransform(new Vector3(x, y, 0f), rot);
 
         if (t >= 1f)
         {
-            currentAnchorPos += new Vector3(targetX, 0f, 0f);
-
-            walkForward = !walkForward;
-            isFacingRight = walkForward;
+            _currentAnchorPos += new Vector3(targetX, 0f, 0f);
+            _walkForward       = !_walkForward;
+            _isFacingRight     = _walkForward;
             ApplyFacingDirection();
-
-            timer = 0f;
+            _timer = 0f;
         }
 
         return false;
@@ -342,43 +293,32 @@ public class OnboardingPaperMotion : MonoBehaviour
     private bool AnimatePaintBounce()
     {
         float duration = 0.45f;
-        float t = Mathf.Clamp01(timer / duration);
+        float t        = Mathf.Clamp01(_timer / duration);
+        float y        = Mathf.Sin(t * Mathf.PI) * _bounceStrength;
 
-        float y = Mathf.Sin(t * Mathf.PI) * bounceStrength;
-
-        ApplyTransform(new Vector3(0f, y, 0f), Mathf.Sin(t * Mathf.PI) * rotationAmount * 0.4f);
-
+        ApplyTransform(new Vector3(0f, y, 0f), Mathf.Sin(t * Mathf.PI) * _rotationAmount * 0.4f);
         return t >= 1f;
     }
 
     private bool AnimatePullPopup()
     {
-        float duration = 1f;
-        float t = Mathf.Clamp01(timer / duration);
-
-        float direction = isFacingRight ? 1f : -1f;
-
-        float x = Mathf.Lerp(0f, pullDistance * direction, t);
-        float shakeY = Mathf.Sin(t * pullShakeFrequency) * pullShakeStrength * (1f - t);
-        float shakeRot = Mathf.Sin(t * pullShakeFrequency * 0.75f) * rotationAmount * 0.5f * (1f - t);
+        float t         = Mathf.Clamp01(_timer / 1f);
+        float direction = _isFacingRight ? 1f : -1f;
+        float x         = Mathf.Lerp(0f, _pullDistance * direction, t);
+        float shakeY    = Mathf.Sin(t * _pullShakeFrequency) * _pullShakeStrength * (1f - t);
+        float shakeRot  = Mathf.Sin(t * _pullShakeFrequency * 0.75f) * _rotationAmount * 0.5f * (1f - t);
 
         ApplyTransform(new Vector3(x, shakeY, 0f), shakeRot);
-
         return t >= 1f;
     }
 
     private void ApplyTransform(Vector3 localOffset, float rotAmount)
     {
-        transform.localPosition = currentAnchorPos + localOffset;
+        transform.localPosition = _currentAnchorPos + localOffset;
 
-        if (useRotation)
-        {
-            transform.localRotation = startRot * Quaternion.AngleAxis(rotAmount, rotationAxis.normalized);
-        }
-        else
-        {
-            transform.localRotation = startRot;
-        }
+        transform.localRotation = _useRotation
+            ? _startRot * Quaternion.AngleAxis(rotAmount, _rotationAxis.normalized)
+            : _startRot;
 
         ApplyFacingDirection();
     }

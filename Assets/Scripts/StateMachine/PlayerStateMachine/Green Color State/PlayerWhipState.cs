@@ -1,18 +1,14 @@
 using UnityEngine;
-using UnityEngine.AI;
 
 public class PlayerWhipState : PlayerBaseState
 {
+    #region Variables
+
     private enum WhipMode { None, ObjectWhip, GrappleSwing }
     private WhipMode currentMode = WhipMode.None;
-
-    #region Animation Variables
-
+    
     private readonly int IsOnWhipGrab = Animator.StringToHash("IsOnWhipGrab");
-
-    #endregion
-
-    #region Object Whip Variables
+    
     private Transform capturedObject;
     private Rigidbody capturedRigidbody;
 
@@ -21,12 +17,10 @@ public class PlayerWhipState : PlayerBaseState
     private bool isCapturing;
     private float captureProgress;
     private Vector3 captureStartPosition;
-    #endregion
-
-    #region Grapple Swing Variables
+    
     private GrapplePoint currentGrapplePoint;
     private Vector3 grapplePosition;
-
+    
     private float swingCurrentAngle;
     private float angularVelocity;
     private Vector3 swingPlaneNormal;
@@ -36,6 +30,7 @@ public class PlayerWhipState : PlayerBaseState
     private const float Damping = 1.0f;
     private const float EnergyBoost = 0.2f;
     private const float MinAngularVelocity = 1.5f;
+
     #endregion
 
     // Audio
@@ -46,7 +41,6 @@ public class PlayerWhipState : PlayerBaseState
 
     public override void Enter()
     {
-        
         stateMachine.mainCamera.Priority = 10;
         spinAudioStarted = false;
         swingLoopAudioStarted = false;
@@ -596,8 +590,6 @@ public class PlayerWhipState : PlayerBaseState
         }
         ExitWhipState();
     }
-
-
 
     #endregion
 }

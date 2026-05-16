@@ -2,77 +2,71 @@ using UnityEngine;
 
 public class CoinController : MonoBehaviour
 {
-    public int coinValue = 1;
-
-    public float minPitch = 0.5f;
-    public float maxPitch = 2f;
-    public AudioClip getCoinSound;
+    [SerializeField] private int _coinValue = 1;
+    [SerializeField] private AudioClip _collectSound;
 
     [Header("Attraction")]
-    public float attractionDistance = 6f;
-    public float attractionSpeed = 12f;
-    public float targetHeight = 1f;
-    public GameObject grabParticleSystem;
-    private Transform player;
-    private bool collected;
+    [SerializeField] private float _attractionDistance = 6f;
+    [SerializeField] private float _attractionSpeed    = 12f;
+    [SerializeField] private float _targetHeight       = 1f;
+    [SerializeField] private GameObject _grabParticleSystem;
 
-    private Renderer[] allRenderers;
-    private Animator[] allAnimators;
-    private ParticleSystem[] allParticles;
-    private Collider[] allColliders;
+    private Transform _player;
+    private bool _isCollected;
+
+    private Renderer[] _allRenderers;
+    private Animator[] _allAnimators;
+    private ParticleSystem[] _allParticles;
+    private Collider[] _allColliders;
 
     private void Start()
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
-        {
-            player = playerObj.transform;
-        }
-        
+            _player = playerObj.transform;
 
-        allRenderers = GetComponentsInChildren<Renderer>(true);
-        allAnimators = GetComponentsInChildren<Animator>(true);
-        allParticles = GetComponentsInChildren<ParticleSystem>(true);
-        allColliders = GetComponentsInChildren<Collider>(true);
+        _allRenderers = GetComponentsInChildren<Renderer>(true);
+        _allAnimators = GetComponentsInChildren<Animator>(true);
+        _allParticles = GetComponentsInChildren<ParticleSystem>(true);
+        _allColliders = GetComponentsInChildren<Collider>(true);
     }
 
     private void FixedUpdate()
     {
-        if (collected) return;
-        if (player == null) return;
+        if (_isCollected || _player == null) return;
 
-        Vector3 targetPos = player.position + Vector3.up * targetHeight;
-        float distance = Vector3.Distance(transform.position, targetPos);
+        Vector3 targetPos = _player.position + Vector3.up * _targetHeight;
+        float distance    = Vector3.Distance(transform.position, targetPos);
 
-        if (distance <= attractionDistance)
+        if (distance <= _attractionDistance)
         {
             transform.position = Vector3.MoveTowards(
                 transform.position,
                 targetPos,
-                attractionSpeed * Time.fixedDeltaTime
+                _attractionSpeed * Time.fixedDeltaTime
             );
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (collected) return;
-        if (!other.CompareTag("Player")) return;
+        if (_isCollected || !other.CompareTag("Player")) return;
 
-        collected = true;
+        _isCollected = true;
 
-        GameManager.Instance.AddCoin(coinValue);
-        Instantiate(grabParticleSystem,transform.position,Quaternion.identity);
-        foreach (Collider c in allColliders)
+        GameManager.Instance.AddCoin(_coinValue);
+        Instantiate(_grabParticleSystem, transform.position, Quaternion.identity);
+
+        foreach (Collider c in _allColliders)
             c.enabled = false;
 
-        foreach (Renderer r in allRenderers)
+        foreach (Renderer r in _allRenderers)
             r.enabled = false;
 
-        foreach (Animator a in allAnimators)
+        foreach (Animator a in _allAnimators)
             a.enabled = false;
 
-        foreach (ParticleSystem ps in allParticles)
+        foreach (ParticleSystem ps in _allParticles)
         {
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             ps.Clear();

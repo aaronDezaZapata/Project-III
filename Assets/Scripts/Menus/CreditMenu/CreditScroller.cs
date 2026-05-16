@@ -1,52 +1,49 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;  
+using UnityEngine.SceneManagement;
 
 public class CreditScroller : MonoBehaviour
 {
-    [SerializeField] float scrollSpeed = 50f;
-    [SerializeField] RectTransform contenedor;
-    [SerializeField] RectTransform panel; // arrastra el PanelCreditos aquí
+    [SerializeField] private float _scrollSpeed = 50f;
+    [SerializeField] private RectTransform _scrollContent;
+    [SerializeField] private RectTransform _panel;
+    [SerializeField] private float _endPositionY = 373f;
 
-    float startPositionY;
-    [SerializeField] float endPositionY = 373f;
-    bool scrolling = false;
+    private float _startPositionY;
+    private bool _isScrolling;
 
-    IEnumerator Start()
+    private IEnumerator Start()
     {
-        yield return null; // espera a que el Content Size Fitter calcule
+        yield return null;
 
-        startPositionY = contenedor.anchoredPosition.y;
-
-        Debug.Log($"Start: {startPositionY} | End: {endPositionY} | Height: {contenedor.rect.height}");
-
+        _startPositionY = _scrollContent.anchoredPosition.y;
         StartCredits();
     }
 
-    public void StartCredits() => scrolling = true;
+    public void StartCredits() => _isScrolling = true;
 
-    void Update()
+    private void Update()
     {
-        if (!scrolling) return;
+        if (!_isScrolling) return;
 
-        contenedor.anchoredPosition += Vector2.up * scrollSpeed * Time.deltaTime;
+        _scrollContent.anchoredPosition += Vector2.up * _scrollSpeed * Time.deltaTime;
 
-        if (contenedor.anchoredPosition.y >= endPositionY)
+        if (_scrollContent.anchoredPosition.y >= _endPositionY)
         {
-            contenedor.anchoredPosition = new Vector2(contenedor.anchoredPosition.x, endPositionY);
-            scrolling = false;
+            _scrollContent.anchoredPosition = new Vector2(_scrollContent.anchoredPosition.x, _endPositionY);
+            _isScrolling = false;
             OnCreditsFinished();
         }
     }
 
-    void OnCreditsFinished()
+    private void OnCreditsFinished()
     {
         SceneManager.LoadScene("1 - MainMenu");
     }
 
     public void ResetCredits()
     {
-        scrolling = false;
-        contenedor.anchoredPosition = new Vector2(contenedor.anchoredPosition.x, startPositionY);
+        _isScrolling = false;
+        _scrollContent.anchoredPosition = new Vector2(_scrollContent.anchoredPosition.x, _startPositionY);
     }
 }

@@ -1,80 +1,73 @@
 using System;
 using System.Collections.Generic;
 using Unity.Cinemachine;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private Transform player;
-    
-    public static GameManager Instance;
-    
-    public List<GameObject> levelDecals;
+    public static GameManager Instance { get; private set; }
 
-    public GameObject paintBeacon;
+    [SerializeField] private Transform _player;
+    [SerializeField] private List<GameObject> _levelDecals;
 
-    private Transform currentCheckPoint;
+    private GameObject _paintBeacon;
+    public GameObject PaintBeacon
+    {
+        get => _paintBeacon;
+        set => _paintBeacon = value;
+    }
+
+    private Transform _currentCheckPoint;
 
     public Action<string> OnLeverActivated;
 
-    // Cinemática portal
-    [SerializeField] private CinemachineCamera gameplayCamera;
-    [SerializeField] private CinemachineCamera portalCinematicCamera;
-    [SerializeField] private int gameplayCameraPriority = 10;
-    [SerializeField] private int portalCameraPriority = 20;
-    [SerializeField] private float delayBeforePortalOpens = 1f;
-    [SerializeField] private float cinematicDuration = 3f;
+    [SerializeField] private CinemachineCamera _gameplayCamera;
+    [SerializeField] private CinemachineCamera _portalCinematicCamera;
+    [SerializeField] private int _gameplayCameraPriority = 10;
+    [SerializeField] private int _portalCameraPriority = 20;
+    [SerializeField] private float _delayBeforePortalOpens = 1f;
+    [SerializeField] private float _cinematicDuration = 3f;
 
     [Header("Portal Camera Movement")]
-    [SerializeField] private Transform portalCameraMoveTransform;
-    [SerializeField] private Vector3 portalCameraStartOffset = new Vector3(0f, 1.5f, -1.5f);
-    [SerializeField] private Vector3 portalCameraEndOffset = new Vector3(0f, -0.3f, 0.4f);
-    [SerializeField] private float cameraMoveDuration = 2f;
+    [SerializeField] private Transform _portalCameraMoveTransform;
+    [SerializeField] private Vector3 _portalCameraStartOffset = new Vector3(0f, 1.5f, -1.5f);
+    [SerializeField] private Vector3 _portalCameraEndOffset   = new Vector3(0f, -0.3f, 0.4f);
+    [SerializeField] private float _cameraMoveDuration = 2f;
 
-    private bool isPortalCinematicPlaying = false;
-    private bool portalHasOpenedDuringCinematic = false;
-    private float portalCinematicTimer = 0f;
-    private Vector3 portalCameraBasePosition;
-    private bool hasPortalCameraBasePosition = false;
+    private bool _isPortalCinematicPlaying;
+    private bool _portalHasOpenedDuringCinematic;
+    private float _portalCinematicTimer;
+    private Vector3 _portalCameraBasePosition;
+    private bool _hasPortalCameraBasePosition;
 
-    // Coins
-    private int coinsCollected = 0;
+    private int _coinsCollected;
 
+    [SerializeField] private int _totalStarsNeeded = 6;
+    [SerializeField] private int _starsCollected;
+    [SerializeField] private PortalController _portal;
 
-    [SerializeField] private int totalStarsNeeded = 6;
-    [SerializeField] private int starsCollected = 0;
-    [SerializeField] private PortalController portal;
-
-
-    private bool portalOpened = false;
-    
+    private bool _portalOpened;
 
     private void Awake()
     {
         if (Instance == null)
-        {
             Instance = this;
-        }
         else
         {
             Destroy(this);
             return;
         }
 
-        if (currentCheckPoint == null) return;
-        GetNewCheckPoint(currentCheckPoint);
+        if (_currentCheckPoint == null) return;
+        GetNewCheckPoint(_currentCheckPoint);
     }
 
-    public Transform GetPlayer()
-    {
-        return player;
-    }
+    public Transform GetPlayer() => _player;
 
     public State GetPlayerState()
     {
-        return GetPlayer().GetComponent<StateMachine>().GetCurrentState(); // ya existe en StateMachine.cs
+        return GetPlayer().GetComponent<StateMachine>().GetCurrentState();
     }
 
     public void SetPlayerState<T>() where T : State
@@ -84,175 +77,152 @@ public class GameManager : MonoBehaviour
 
     public void RemoveCurrentDecals()
     {
-        foreach (GameObject decal in levelDecals)
-        {
+        foreach (GameObject decal in _levelDecals)
             Destroy(decal);
-        }
-        
-        levelDecals.Clear();
+
+        _levelDecals.Clear();
     }
-    
+
     public void GetNewCheckPoint(Transform newCheckPoint)
     {
-        currentCheckPoint = newCheckPoint;
+        _currentCheckPoint = newCheckPoint;
     }
 
     public void AddCoin(int amount)
     {
-        coinsCollected += amount;
+        _coinsCollected += amount;
     }
 
     public void CollectStar(int amount)
     {
-        starsCollected += amount;
-        Debug.Log("Stars Collected: " + starsCollected + "/" + totalStarsNeeded);
+        _starsCollected += amount;
+        Debug.Log("Stars Collected: " + _starsCollected + "/" + _totalStarsNeeded);
 
-        if (!portalOpened && starsCollected >= totalStarsNeeded)
+        if (!_portalOpened && _starsCollected >= _totalStarsNeeded)
         {
-            portalOpened = true;
+            _portalOpened = true;
 
-            if (portal != null)
-            {
+            if (_portal != null)
                 StartPortalUnlockCinematic();
-            }
             else
-            {
                 Debug.LogWarning("Portal no asignado en el GameManager.");
-            }
         }
     }
 
     private void StartPortalUnlockCinematic()
     {
-        isPortalCinematicPlaying = true;
-        portalHasOpenedDuringCinematic = false;
-        portalCinematicTimer = 0f;
+        _isPortalCinematicPlaying = true;
+        _portalHasOpenedDuringCinematic = false;
+        _portalCinematicTimer = 0f;
 
-        if (player != null)
+        if (_player != null)
         {
-            PlayerStateMachine playerStateMachine = player.GetComponent<PlayerStateMachine>();
-
+            PlayerStateMachine playerStateMachine = _player.GetComponent<PlayerStateMachine>();
             if (playerStateMachine != null)
                 playerStateMachine.enabled = false;
 
-            Rigidbody rb = player.GetComponent<Rigidbody>();
-
+            Rigidbody rb = _player.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                rb.linearVelocity = Vector3.zero;
+                rb.linearVelocity  = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
             }
         }
 
-        if (gameplayCamera != null)
-            gameplayCamera.Priority = 0;
+        if (_gameplayCamera != null)
+            _gameplayCamera.Priority = 0;
 
-        if (portalCinematicCamera != null)
-            portalCinematicCamera.Priority = portalCameraPriority;
+        if (_portalCinematicCamera != null)
+            _portalCinematicCamera.Priority = _portalCameraPriority;
 
-        if (portalCameraMoveTransform != null)
+        if (_portalCameraMoveTransform != null)
         {
-            portalCameraBasePosition = portalCameraMoveTransform.position;
-            hasPortalCameraBasePosition = true;
-
-            portalCameraMoveTransform.position = portalCameraBasePosition + portalCameraStartOffset;
+            _portalCameraBasePosition = _portalCameraMoveTransform.position;
+            _hasPortalCameraBasePosition = true;
+            _portalCameraMoveTransform.position = _portalCameraBasePosition + _portalCameraStartOffset;
         }
     }
 
     private void UpdatePortalUnlockCinematic()
     {
-        if (!isPortalCinematicPlaying) return;
+        if (!_isPortalCinematicPlaying) return;
 
-        portalCinematicTimer += Time.deltaTime;
+        _portalCinematicTimer += Time.deltaTime;
 
         UpdatePortalCameraMovement();
 
-        if (!portalHasOpenedDuringCinematic && portalCinematicTimer >= delayBeforePortalOpens)
+        if (!_portalHasOpenedDuringCinematic && _portalCinematicTimer >= _delayBeforePortalOpens)
         {
-            portalHasOpenedDuringCinematic = true;
-            portal.OpenPortal();
+            _portalHasOpenedDuringCinematic = true;
+            _portal.OpenPortal();
         }
 
-        if (portalHasOpenedDuringCinematic && portal != null && portal.IsRevealFinished)
+        if (_portalHasOpenedDuringCinematic && _portal != null && _portal.IsRevealFinished)
         {
-            if (portalCinematicTimer >= delayBeforePortalOpens + cinematicDuration)
-            {
+            if (_portalCinematicTimer >= _delayBeforePortalOpens + _cinematicDuration)
                 EndPortalUnlockCinematic();
-            }
         }
     }
 
     private void UpdatePortalCameraMovement()
     {
-        if (portalCameraMoveTransform == null) return;
-        if (!hasPortalCameraBasePosition) return;
+        if (_portalCameraMoveTransform == null || !_hasPortalCameraBasePosition) return;
 
-        float t = portalCinematicTimer / cameraMoveDuration;
-        t = Mathf.Clamp01(t);
+        float t = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(_portalCinematicTimer / _cameraMoveDuration));
 
-        t = Mathf.SmoothStep(0f, 1f, t);
+        Vector3 startPosition = _portalCameraBasePosition + _portalCameraStartOffset;
+        Vector3 endPosition   = _portalCameraBasePosition + _portalCameraEndOffset;
 
-        Vector3 startPosition = portalCameraBasePosition + portalCameraStartOffset;
-        Vector3 endPosition = portalCameraBasePosition + portalCameraEndOffset;
-
-        portalCameraMoveTransform.position = Vector3.Lerp(startPosition, endPosition, t);
+        _portalCameraMoveTransform.position = Vector3.Lerp(startPosition, endPosition, t);
     }
 
     private void EndPortalUnlockCinematic()
     {
-        if (portalCinematicCamera != null)
-            portalCinematicCamera.Priority = 0;
+        if (_portalCinematicCamera != null)
+            _portalCinematicCamera.Priority = 0;
 
-        if (gameplayCamera != null)
-            gameplayCamera.Priority = gameplayCameraPriority;
+        if (_gameplayCamera != null)
+            _gameplayCamera.Priority = _gameplayCameraPriority;
 
-        // Esconder shards 
-        if (portal != null)
-            portal.HideShards();
+        if (_portal != null)
+            _portal.HideShards();
 
-        if (player != null)
+        if (_player != null)
         {
-            PlayerStateMachine playerStateMachine = player.GetComponent<PlayerStateMachine>();
-
+            PlayerStateMachine playerStateMachine = _player.GetComponent<PlayerStateMachine>();
             if (playerStateMachine != null)
                 playerStateMachine.enabled = true;
         }
 
-        isPortalCinematicPlaying = false;
+        _isPortalCinematicPlaying = false;
     }
-
 
     public void ResetCoinAmount()
     {
-        coinsCollected = 0;
+        _coinsCollected = 0;
     }
 
     private void Update()
     {
         UpdatePortalUnlockCinematic();
 
-        if (isPortalCinematicPlaying) return;
+        if (_isPortalCinematicPlaying) return;
 
-        // L3 + R3 simultáneamente es toggle FlyState debug
-        bool leftStick = Input.GetKeyDown(KeyCode.JoystickButton8);
+        bool leftStick  = Input.GetKeyDown(KeyCode.JoystickButton8);
         bool rightStick = Input.GetKey(KeyCode.JoystickButton9);
 
         if (leftStick && rightStick)
         {
             if (GetPlayerState() is PlayerFlyState)
-            {
-                player.GetComponent<PlayerStateMachine>().ReturnToMainState();
-            }
+                _player.GetComponent<PlayerStateMachine>().ReturnToMainState();
             else
-            {
                 SetPlayerState<PlayerFlyState>();
-            }
         }
     }
 
     public void PlayerDeath()
     {
-        player.transform.position = currentCheckPoint.transform.position;
-        player.transform.rotation = currentCheckPoint.transform.rotation;
+        _player.transform.position = _currentCheckPoint.transform.position;
+        _player.transform.rotation = _currentCheckPoint.transform.rotation;
     }
 }

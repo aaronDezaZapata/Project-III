@@ -1,12 +1,4 @@
-using UnityEngine;
 
-/// <summary>
-/// Player Blue State
-/// - Basic Movement
-/// - Geyser se activa en el 3er salto
-///   manteniendo el botón de salto
-/// - Una vez salido del Geyser en el aire, no se puede re-entrar hasta tocar suelo
-/// </summary>
 public class PlayerBlueState : PlayerWhiteState
 {
     private bool geyserReady;

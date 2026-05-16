@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 namespace TorbellinoConsoleSystem.Game
 {
@@ -76,7 +76,6 @@ namespace TorbellinoConsoleSystem.Game
             if (sm == null)
                 return $"<color=red>No StateMachine found on player.</color>";
 
-            // Buscar el tipo en los assemblies
             System.Type stateType = null;
             foreach (var assembly in System.AppDomain.CurrentDomain.GetAssemblies())
             {
@@ -91,8 +90,6 @@ namespace TorbellinoConsoleSystem.Game
             
             if (!typeof(State).IsAssignableFrom(stateType))
                 return $"<color=red>'{stateTypeName}' exists but is not a State subclass.</color>";
-
-            // Verificar que el estado esté registrado en el diccionario ANTES de intentar cambiar
             var method = sm.GetType().GetMethod("HasState");
             if (method != null)
             {

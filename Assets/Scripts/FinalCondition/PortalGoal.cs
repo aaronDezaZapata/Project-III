@@ -3,16 +3,15 @@ using UnityEngine.SceneManagement;
 
 public class PortalGoal : MonoBehaviour
 {
-    [SerializeField] private string endingSceneName = "EndingVideo";
+    [SerializeField] private string _endingSceneName = "EndingVideo";
 
-    private bool used = false;
+    private bool _isUsed;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (used) return;
-        if (!other.CompareTag("Player")) return;
+        if (_isUsed || !other.CompareTag("Player")) return;
 
-        used = true;
-        SceneManager.LoadScene(endingSceneName);
+        _isUsed = true;
+        SceneManager.LoadScene(_endingSceneName);
     }
 }

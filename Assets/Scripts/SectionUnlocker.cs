@@ -1,20 +1,15 @@
-using System;
 using System.Collections.Generic;
-using NUnit.Framework;
 using UnityEngine;
 
 public class SectionUnlocker : MonoBehaviour
 {
-    public List<GameObject> objectsToDisable = new List<GameObject>();
+    [SerializeField] private List<GameObject> _objectsToDisable = new List<GameObject>();
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
-        {
-            foreach (GameObject obj in objectsToDisable)
-            {
-                obj.SetActive(false);
-            }
-        }
+        if (!other.CompareTag("Player")) return;
+
+        foreach (GameObject obj in _objectsToDisable)
+            obj.SetActive(false);
     }
 }

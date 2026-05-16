@@ -1,87 +1,63 @@
 using UnityEngine;
-using UnityEngine.AI;
 
 public class ForceReceiver : MonoBehaviour
 {
-    [SerializeField] CharacterController controller;
+    [SerializeField] private CharacterController _controller;
+    [SerializeField] private float _drag = 0.4f;
+    [SerializeField] private float _playerGravity;
 
-    [SerializeField] float drag = 0.4f;
+    private Vector3 _dampingVelocity;
+    private Vector3 _impact;
+    private float _verticalVelocity;
+    private bool _useGravity = true;
 
-    Vector3 dampingVelocity;
-
-    Vector3 impact;
-
-    float verticalVelocity;
-
-    [SerializeField] float playerGravity;
-
-    private bool useGravity = true;
-
-    public float VerticalVelocity => verticalVelocity;
-
-    public Vector3 Movement => impact + Vector3.up * verticalVelocity;
+    public float VerticalVelocity => _verticalVelocity;
+    public Vector3 Movement => _impact + Vector3.up * _verticalVelocity;
 
     private void Update()
     {
-        //controller.isGrounded puede ser true cuando se toca una pared lateral,
-        // reseteando la gravedad a -2f y puede el jugador se quede pegado.
-        // Solo reseteamos la gravedad si también hay colisión por abajo.
-        bool actuallyGrounded = controller.isGrounded && (controller.collisionFlags & CollisionFlags.Below) != 0;
+        bool actuallyGrounded = _controller.isGrounded && (_controller.collisionFlags & CollisionFlags.Below) != 0;
 
-        if (verticalVelocity < 0f && actuallyGrounded)
-        {
-            // verticalVelocity = playerGravity * Time.deltaTime;
-            verticalVelocity = -2f;
-        }
+        if (_verticalVelocity < 0f && actuallyGrounded)
+            _verticalVelocity = -2f;
         else
-        {
-            verticalVelocity += playerGravity * Time.deltaTime;
-        }
+            _verticalVelocity += _playerGravity * Time.deltaTime;
 
-        impact = Vector3.SmoothDamp(impact, Vector3.zero, ref dampingVelocity, drag);
-
-        // controller.Move(Movement * Time.deltaTime);
+        _impact = Vector3.SmoothDamp(_impact, Vector3.zero, ref _dampingVelocity, _drag);
     }
 
-    
-    // Base Jump
     public void Jump(float jumpForce)
     {
-        verticalVelocity = jumpForce;
+        _verticalVelocity = jumpForce;
     }
-    
-    // Resets vertical velocity
+
     public void ResetVerticalVelocity()
     {
-        if (verticalVelocity > 0f)
-        {
-            verticalVelocity = 0f;
-        }
+        if (_verticalVelocity > 0f)
+            _verticalVelocity = 0f;
     }
-    
+
     public void AddForce(Vector3 force)
     {
-        impact += force;
+        _impact += force;
     }
-    
+
     public void SetUseGravity(bool value)
     {
-        useGravity = value;
+        _useGravity = value;
 
         if (!value)
-        {
-            verticalVelocity = 0f;
-        }
+            _verticalVelocity = 0f;
     }
 
     public void ForceMovement()
     {
-        controller.Move(Movement * Time.deltaTime);
+        _controller.Move(Movement * Time.deltaTime);
     }
 
     public void Reset()
     {
-        impact = Vector3.zero;
-        verticalVelocity = 0f;
+        _impact = Vector3.zero;
+        _verticalVelocity = 0f;
     }
 }
