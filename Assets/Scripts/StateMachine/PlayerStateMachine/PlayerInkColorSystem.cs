@@ -25,7 +25,7 @@ public class PlayerInkColorSystem : MonoBehaviour
 
     public void RotateColors()
     {
-        var mat = _player.MatPlayer.material;
+        Material mat = _player.MatPlayer.material;
 
         Color tempColor = mat.GetColor("_ColorA");
         float tempFill  = mat.GetFloat("_FillA");
@@ -44,7 +44,7 @@ public class PlayerInkColorSystem : MonoBehaviour
 
     public void StartFill(Color newColor)
     {
-        var mat = _player.MatPlayer.material;
+        Material mat = _player.MatPlayer.material;
 
         if (ColorsAreClose(mat.GetColor("_ColorA"), newColor) && mat.GetFloat("_FillA") > 0.01f && mat.GetFloat("_FillA") < 0.999f)
         {
@@ -114,7 +114,7 @@ public class PlayerInkColorSystem : MonoBehaviour
 
     private IEnumerator FillRoutine(string fillProperty)
     {
-        var mat = _player.MatPlayer.material;
+        Material mat = _player.MatPlayer.material;
         while (mat.GetFloat(fillProperty) < 1f)
         {
             float newFill = Mathf.Clamp01(mat.GetFloat(fillProperty) + Time.deltaTime * _fillSpeed);
@@ -127,7 +127,7 @@ public class PlayerInkColorSystem : MonoBehaviour
 
     public void UseColor(float reduceFill)
     {
-        var mat = _player.MatPlayer.material;
+        Material mat = _player.MatPlayer.material;
         if (mat.GetFloat("_FillC") >= 0.1f)
             StartCoroutine(EmptyColorRoutine(reduceFill, "_FillC"));
         else if (mat.GetFloat("_FillB") >= 0.1f)
@@ -138,7 +138,7 @@ public class PlayerInkColorSystem : MonoBehaviour
 
     private IEnumerator EmptyColorRoutine(float reduceFill, string fillProperty)
     {
-        var mat = _player.MatPlayer.material;
+        Material mat = _player.MatPlayer.material;
         float targetFill = mat.GetFloat(fillProperty) - reduceFill;
 
         if (targetFill < 0.1f)
@@ -160,7 +160,7 @@ public class PlayerInkColorSystem : MonoBehaviour
 
     public void CheckAndSwitchColorState()
     {
-        var mat = _player.MatPlayer.material;
+        Material mat = _player.MatPlayer.material;
 
         if (mat.GetFloat("_FillC") >= 0.1f) { SwitchToStateByColor(mat.GetColor("_ColorC")); return; }
         if (mat.GetFloat("_FillB") >= 0.1f) { SwitchToStateByColor(mat.GetColor("_ColorB")); return; }

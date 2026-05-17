@@ -1,9 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// Script helper para configurar automáticamente el visual de la cuerda del gancho.
-/// Adjunta este script al Player y presiona el botón "Setup Grapple Rope" en el Inspector.
-/// </summary>
 [ExecuteInEditMode]
 public class GrappleRopeSetup : MonoBehaviour
 {

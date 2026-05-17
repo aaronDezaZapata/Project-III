@@ -1,24 +1,12 @@
-using UnityEngine;
-
-/// <summary>
-/// Player Green State
-/// - Basic Movement
-/// - Can do Whip
-/// </summary>
 public class PlayerGreenState : PlayerWhiteState
 {
     public PlayerGreenState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
     }
-
     
     protected override void SetPlayerState()
     {
         stateMachine.playerState = PlayerStates.GREEN;
-    }
-    
-    protected override void SetMaterialColor()
-    {
     }
     
     protected override void SubscribeToInputEvents()
@@ -38,17 +26,13 @@ public class PlayerGreenState : PlayerWhiteState
         if (stateMachine.isOnEvent) return;
         
         if (!stateMachine.WhipFailedLastAttempt)
-        {
             stateMachine.SwitchState(typeof(PlayerWhipState));
-        }
     }
 
     protected override bool CheckColorSpecificActions(float deltaTime)
     {
         if (!stateMachine.InputReader.isColorActing)
-        {
             stateMachine.WhipFailedLastAttempt = false;
-        }
         
         return false;
     }
