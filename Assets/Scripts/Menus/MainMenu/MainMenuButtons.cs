@@ -88,13 +88,11 @@ public class MainMenuButtons : MonoBehaviour
 
         if (_objectToMove == null)
         {
-            Debug.LogError("No hay objectToMove asignado en MainMenuButtons.");
             return;
         }
 
         if (targetPosition == null)
         {
-            Debug.LogError("No hay targetPosition asignado en MainMenuButtons.");
             return;
         }
 
@@ -146,7 +144,6 @@ public class MainMenuButtons : MonoBehaviour
     {
         if (string.IsNullOrEmpty(_playScenePath))
         {
-            Debug.LogError("No hay escena asignada en MainMenuButtons.");
             return;
         }
 
