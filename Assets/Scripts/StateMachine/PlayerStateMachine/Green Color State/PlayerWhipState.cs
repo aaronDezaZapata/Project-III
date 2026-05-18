@@ -27,7 +27,7 @@ public class PlayerWhipState : PlayerBaseState
             stateMachine.SwitchState(typeof(PlayerGreenState));
             return;
         }
-
+        
         stateMachine.PlayerAudio?.PlayWhipThrow();
         StartGrappleSwingMode();
         stateMachine.UseColor(0.5f);
@@ -52,7 +52,7 @@ public class PlayerWhipState : PlayerBaseState
 
         if (stateMachine.GrappleRope != null)
             stateMachine.GrappleRope.enabled = false;
-
+        
         ExitGrappleSwing();
     }
 
@@ -258,6 +258,8 @@ public class PlayerWhipState : PlayerBaseState
 
     private void ExitGrappleSwing()
     {
+        if (!_isAttached) return;
+
         float currentY = stateMachine.transform.eulerAngles.y;
         stateMachine.transform.rotation = Quaternion.Euler(0f, currentY, 0f);
 
@@ -294,7 +296,10 @@ public class PlayerWhipState : PlayerBaseState
             baseState.ResetDoubleJump();
     }
 
-    private void OnColorActionToggle() => ExitWhipState();
+    private void OnColorActionToggle()
+    {
+        ExitWhipState();
+    }
 
     private void OnJump()
     {
