@@ -119,11 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!4 &49012038 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6667932239836967162, guid: 5ee5c5a7ea33eda46ba832f8150e4629, type: 3}
-  m_PrefabInstance: {fileID: 5146496468766266934}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &63996574
 GameObject:
   m_ObjectHideFlags: 0
@@ -494,11 +489,6 @@ MonoBehaviour:
 --- !u!1 &308495162 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6326514180263284245, guid: 5ee5c5a7ea33eda46ba832f8150e4629, type: 3}
-  m_PrefabInstance: {fileID: 5146496468766266934}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &308495163 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6667468799876322479, guid: 5ee5c5a7ea33eda46ba832f8150e4629, type: 3}
   m_PrefabInstance: {fileID: 5146496468766266934}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &308495167
@@ -1045,7 +1035,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 278577f292038df43aaa7ad68035e557, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  brokenObject: {fileID: 0}
+  _brokenObject: {fileID: 0}
 --- !u!64 &577657879
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3670,16 +3660,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f01eb59d5ab136545accddf144a7ae7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectToMove: {fileID: 0}
-  mainMenu: {fileID: 0}
-  playPosition: {fileID: 1973426403}
-  settingsCanvas: {fileID: 3971883330756680834}
-  theater: {fileID: 49012038}
-  book: {fileID: 308495163}
-  moveSpeed: 0.5
-  rotationSpeed: 7
-  playScene: {fileID: 102900000, guid: 943e17a2d4b3beb40a4b10cebb533550, type: 3}
-  playScenePath: Assets/Scenes/BUILD/3 - Level.unity
+  _objectToMove: {fileID: 0}
+  _mainMenu: {fileID: 0}
+  _playPosition: {fileID: 0}
+  _settingsCanvas: {fileID: 0}
+  _theater: {fileID: 0}
+  _book: {fileID: 0}
+  _moveSpeed: 1.5
+  _rotationSpeed: 4
+  _playScene: {fileID: 102900000, guid: 485260e7894928f4da327a2996040416, type: 3}
+  _playScenePath: Assets/Scenes/BUILD/2 - VideoPlayer.unity
 --- !u!1 &48238520846119618
 GameObject:
   m_ObjectHideFlags: 0
