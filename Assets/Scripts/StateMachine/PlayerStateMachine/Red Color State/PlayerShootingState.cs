@@ -117,7 +117,7 @@ public class PlayerShootingState : PlayerBaseState
         proj.linearVelocity = direction * _speed;
         proj.useGravity = true;
 
-        var inkProjectile = proj.GetComponent<InkProjectile>();
+        InkProjectile inkProjectile = proj.GetComponent<InkProjectile>();
         if (inkProjectile != null)
         {
             inkProjectile.Initialize(stateMachine); 

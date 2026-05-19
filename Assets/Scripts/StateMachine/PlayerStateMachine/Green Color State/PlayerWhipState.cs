@@ -89,7 +89,7 @@ public class PlayerWhipState : PlayerBaseState
         float closestDist = float.MaxValue;
         Vector3 playerPos = stateMachine.transform.position;
 
-        foreach (var point in allPoints)
+        foreach (GrapplePoint point in allPoints)
         {
             if (!point.IsActive) continue;
 

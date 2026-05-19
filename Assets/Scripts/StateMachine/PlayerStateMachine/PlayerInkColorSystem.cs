@@ -173,7 +173,7 @@ public class PlayerInkColorSystem : MonoBehaviour
     {
         Type targetState = null;
 
-        foreach (var kvp in _colorToStateDic)
+        foreach (KeyValuePair<Color, Type> kvp in _colorToStateDic)
         {
             if (ColorsAreClose(kvp.Key, c))
             {

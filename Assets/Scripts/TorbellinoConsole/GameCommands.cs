@@ -77,9 +77,9 @@ namespace TorbellinoConsoleSystem.Game
                 return $"<color=red>No StateMachine found on player.</color>";
 
             System.Type stateType = null;
-            foreach (var assembly in System.AppDomain.CurrentDomain.GetAssemblies())
+            foreach (System.Reflection.Assembly assembly in System.AppDomain.CurrentDomain.GetAssemblies())
             {
-                foreach (var t in assembly.GetTypes())
+                foreach (System.Type t in assembly.GetTypes())
                     if (t.Name == stateTypeName) { stateType = t; break; }
                 if (stateType != null) break;
             }
@@ -90,7 +90,7 @@ namespace TorbellinoConsoleSystem.Game
             
             if (!typeof(State).IsAssignableFrom(stateType))
                 return $"<color=red>'{stateTypeName}' exists but is not a State subclass.</color>";
-            var method = sm.GetType().GetMethod("HasState");
+            System.Reflection.MethodInfo method = sm.GetType().GetMethod("HasState");
             if (method != null)
             {
                 bool hasState = (bool)method.Invoke(sm, new object[] { stateType });
