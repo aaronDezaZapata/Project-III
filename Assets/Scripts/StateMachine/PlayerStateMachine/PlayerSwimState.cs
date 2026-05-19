@@ -46,7 +46,7 @@ public class PlayerSwimState : PlayerBaseState
         stateMachine.ForceReceiver.enabled = false;
 
         
-        if (!stateMachine.IsOnInk)
+        if (!stateMachine._isOnInk)
         {
             timeWithoutInk += deltaTime;
             
@@ -84,7 +84,7 @@ public class PlayerSwimState : PlayerBaseState
     private void HandleSwimMovement(float deltaTime)
     {
         Vector2 input = stateMachine.InputReader.MoveVector;
-        Vector3 surfaceNormal = stateMachine.CurrentInkNormal;
+        Vector3 surfaceNormal = stateMachine.currentInkNormal;
         
         Vector3 surfaceUp = Vector3.ProjectOnPlane(Vector3.up, surfaceNormal);
         
@@ -135,7 +135,7 @@ public class PlayerSwimState : PlayerBaseState
 
     private void PerformInkJump()
     {
-        Vector3 surfaceNormal = stateMachine.CurrentInkNormal;
+        Vector3 surfaceNormal = stateMachine.currentInkNormal;
         
         float surfaceAngle = Vector3.Angle(surfaceNormal, Vector3.up);
         

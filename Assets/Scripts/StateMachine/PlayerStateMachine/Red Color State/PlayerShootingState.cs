@@ -6,7 +6,8 @@ using UnityEngine.Rendering.Universal;
 public class PlayerShootingState : PlayerBaseState
 {
     public static Action<bool> OnAiming;
-    private static readonly int IsOnShooting = Animator.StringToHash("IsOnShooting");
+    
+    private static readonly int _isOnShooting = Animator.StringToHash("IsOnShooting");
     
     private float _speed = 100f;
     private float _nextFireTime;
@@ -16,8 +17,7 @@ public class PlayerShootingState : PlayerBaseState
     private float _currentDirX;
     private float _currentDirY;
 
-    //Audio
-    private bool wasFiringAudio;
+    private bool _wasFiringAudio;
 
     public PlayerShootingState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
@@ -29,13 +29,13 @@ public class PlayerShootingState : PlayerBaseState
         
         stateMachine.AimCamera.Priority = 10;
         
-        stateMachine.Animator.SetBool(IsOnShooting, true);
+        stateMachine.Animator.SetBool(_isOnShooting, true);
         
         OnAiming?.Invoke(true);
         
         _rotationX = stateMachine.transform.eulerAngles.y;
         _rotationY = 0f;
-        wasFiringAudio = false;
+        _wasFiringAudio = false;
     }
 
     public override void Tick(float deltaTime)
@@ -56,15 +56,15 @@ public class PlayerShootingState : PlayerBaseState
         stateMachine.Animator.SetFloat("DirX", _currentDirX);
         stateMachine.Animator.SetFloat("DirY", _currentDirY);
         
-        Vector3 movement = stateMachine.CalculateMovement();
+        stateMachine.CalculateMovement();
 
         if (stateMachine.InputReader.IsFiring)
         {
-            if (!wasFiringAudio)
+            if (!_wasFiringAudio)
             {
                 stateMachine.PlayerAudio?.PlayPaintStart();
                 stateMachine.PlayerAudio?.StartPaintLoop();
-                wasFiringAudio = true;
+                _wasFiringAudio = true;
             }
 
             if (Time.time >= _nextFireTime)
@@ -89,16 +89,16 @@ public class PlayerShootingState : PlayerBaseState
         
         OnAiming?.Invoke(false);
         
-        stateMachine.Animator.SetBool(IsOnShooting, false);
+        stateMachine.Animator.SetBool(_isOnShooting, false);
     }
 
     private void StopPaintAudio()
     {
-        if (!wasFiringAudio) return;
+        if (!_wasFiringAudio) return;
 
         stateMachine.PlayerAudio?.StopPaintLoop();
         stateMachine.PlayerAudio?.PlayPaintEnd();
-        wasFiringAudio = false;
+        _wasFiringAudio = false;
     }
 
     private void Shoot()

@@ -69,17 +69,17 @@ public class PlayerTriggerHandler : MonoBehaviour
 
         if (hitColliders.Length > 0)
         {
-            _player.IsOnInk = true;
+            _player._isOnInk = true;
 
             if (Physics.Raycast(detectionOrigin, -_player.transform.up, out RaycastHit hit, 1.5f, _player.inkLayer))
-                _player.CurrentInkNormal = hit.normal;
+                _player.currentInkNormal = hit.normal;
             else
-                _player.CurrentInkNormal = hitColliders[0].transform.forward * -1f;
+                _player.currentInkNormal = hitColliders[0].transform.forward * -1f;
         }
         else
         {
-            _player.IsOnInk = false;
-            _player.CurrentInkNormal = Vector3.up;
+            _player._isOnInk = false;
+            _player.currentInkNormal = Vector3.up;
         }
     }
 

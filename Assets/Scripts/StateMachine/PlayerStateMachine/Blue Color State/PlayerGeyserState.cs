@@ -99,7 +99,7 @@ public class PlayerGeyserState : PlayerBaseState
             );
         }
         
-        Vector3 velocity = moveDir * stateMachine.aerialMoveSpeed;
+        Vector3 velocity = moveDir * stateMachine.AerialMoveSpeed;
         
         Vector3 finalMovement = velocity + stateMachine.ForceReceiver.Movement;
         

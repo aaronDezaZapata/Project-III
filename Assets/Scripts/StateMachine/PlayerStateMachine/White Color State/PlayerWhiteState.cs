@@ -205,8 +205,8 @@ public class PlayerWhiteState : PlayerBaseState
     protected virtual void OnDiveEnter()
     {        
         stateMachine.CheckForInk();
-        if (stateMachine.IsOnInk)
-        if (stateMachine.IsOnInk || stateMachine.isOnEvent)
+        if (stateMachine._isOnInk)
+        if (stateMachine._isOnInk || stateMachine.isOnEvent)
             stateMachine.SwitchState(typeof(PlayerSwimState));
     }
 

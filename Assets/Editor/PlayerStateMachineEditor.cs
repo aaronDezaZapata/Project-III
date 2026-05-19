@@ -46,7 +46,6 @@ public class PlayerStateMachineEditor : Editor
         EditorGUILayout.Space(10);
         DrawHeader("BASE MOVEMENT", Color.white);
         DrawBackingProperty("FreeLookMovementSpeed");
-        DrawBackingProperty("AbsorbingMovementSpeed");
         DrawBackingProperty("RotationSpeed");
         DrawBackingProperty("JumpForce");
         DrawBackingProperty("AccelerationTime");
@@ -123,19 +122,6 @@ public class PlayerStateMachineEditor : Editor
             DrawBackingProperty("GrappleRope");
             DrawBackingProperty("GrappleRopeOrigin");
 
-            EditorGUILayout.Space(5);
-            EditorGUILayout.LabelField("Whip Object Attack", EditorStyles.boldLabel);
-            DrawBackingProperty("WhipObjectLayer");
-            DrawBackingProperty("WhipThrowForceMin");
-            DrawBackingProperty("WhipThrowForceMax");
-            DrawBackingProperty("WhipObjectDetectionRange");
-            DrawBackingProperty("WhipStartSpinSpeed");
-            DrawBackingProperty("WhipSpinAcceleration");
-            DrawBackingProperty("WhipMaxSpinSpeed");
-            DrawBackingProperty("WhipHoldRadius");
-            DrawBackingProperty("WhipHoldHeight");
-            DrawBackingProperty("WhipCaptureSpeed");
-
             EditorGUILayout.EndVertical();
             GUI.backgroundColor = Color.white;
         }
@@ -148,7 +134,7 @@ public class PlayerStateMachineEditor : Editor
 
             DrawBackingProperty("GeyserCooldownTime");
             DrawBackingProperty("HoverForce");
-            DrawBackingProperty("aerialMoveSpeed");
+            DrawBackingProperty("AerialMoveSpeed");
 
             EditorGUILayout.EndVertical();
             GUI.backgroundColor = Color.white;

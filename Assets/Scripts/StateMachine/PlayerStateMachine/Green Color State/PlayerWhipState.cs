@@ -23,7 +23,7 @@ public class PlayerWhipState : PlayerBaseState
 
         if (!TryFindGrapplePoint())
         {
-            stateMachine.WhipFailedLastAttempt = true;
+            stateMachine.whipFailedLastAttempt = true;
             stateMachine.SwitchState(typeof(PlayerGreenState));
             return;
         }
@@ -303,7 +303,7 @@ public class PlayerWhipState : PlayerBaseState
 
     private void OnJump()
     {
-        stateMachine.WhipFailedLastAttempt = true;
+        stateMachine.whipFailedLastAttempt = true;
         ExitWhipState();
     }
 }

@@ -25,14 +25,14 @@ public class PlayerGreenState : PlayerWhiteState
     {
         if (stateMachine.isOnEvent) return;
         
-        if (!stateMachine.WhipFailedLastAttempt)
+        if (!stateMachine.whipFailedLastAttempt)
             stateMachine.SwitchState(typeof(PlayerWhipState));
     }
 
     protected override bool CheckColorSpecificActions(float deltaTime)
     {
         if (!stateMachine.InputReader.isColorActing)
-            stateMachine.WhipFailedLastAttempt = false;
+            stateMachine.whipFailedLastAttempt = false;
         
         return false;
     }
