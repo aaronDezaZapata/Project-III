@@ -9,72 +9,66 @@ using UnityEditor;
 public class MainMenuButtons : MonoBehaviour
 {
     [Header("Camera / Object To Move")]
-    [SerializeField] private Transform objectToMove;
+    [SerializeField] private Transform _objectToMove;
 
     [Header("Menu Positions")]
-    [SerializeField] private GameObject mainMenu;
-    [SerializeField] private Transform playPosition;
-    [SerializeField] private GameObject settingsCanvas;
+    [SerializeField] private GameObject _mainMenu;
+    [SerializeField] private Transform _playPosition;
+    [SerializeField] private GameObject _settingsCanvas;
 
     [Header("Points Of Interest")]
-    [SerializeField] private Transform theater;
-    [SerializeField] private Transform book;
+    [SerializeField] private Transform _theater;
+    [SerializeField] private Transform _book;
 
     [Header("Movement")]
-    [SerializeField] private float moveSpeed = 1.5f;
-    [SerializeField] private float rotationSpeed = 4f;
+    [SerializeField] private float _moveSpeed      = 1.5f;
+    [SerializeField] private float _rotationSpeed  = 4f;
 
     [Header("Scene")]
 #if UNITY_EDITOR
-    [SerializeField] private SceneAsset playScene;
+    [SerializeField] private SceneAsset _playScene;
 #endif
 
-    [SerializeField, HideInInspector] private string playScenePath;
+    [SerializeField, HideInInspector] private string _playScenePath;
 
-    private bool isMoving;
-    private Coroutine moveCoroutine;
+    private bool _isMoving;
+    private Coroutine _moveCoroutine;
 
     private void Start()
     {
         Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        Cursor.visible   = true;
 
-        if (objectToMove == null && Camera.main != null)
-            objectToMove = Camera.main.transform;
+        if (_objectToMove == null && Camera.main != null)
+            _objectToMove = Camera.main.transform;
     }
 
 #if UNITY_EDITOR
     private void OnValidate()
     {
-        if (playScene != null)
-        {
-            playScenePath = AssetDatabase.GetAssetPath(playScene);
-        }
+        if (_playScene != null)
+            _playScenePath = AssetDatabase.GetAssetPath(_playScene);
     }
 #endif
 
     public void PlayButton()
     {
         AudioManager.Instance?.PlayUIMenuConfirm();
-        
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-        //MoveToPosition(playPosition, book, LoadGame);
     }
 
     public void SettingsButton()
     {
         AudioManager.Instance?.PlayUIMenuConfirm();
-        if(!settingsCanvas.activeSelf) settingsCanvas.SetActive(true);
-        if(mainMenu.activeSelf) settingsCanvas.SetActive(false);
-        //MoveToPosition(settingsPosition, theater, null);
+        if (!_settingsCanvas.activeSelf) _settingsCanvas.SetActive(true);
+        if (_mainMenu.activeSelf)        _settingsCanvas.SetActive(false);
     }
 
     public void BackButton()
     {
         AudioManager.Instance?.PlayUIMenuBack();
-        if (settingsCanvas.activeSelf) settingsCanvas.SetActive(false);
-        if (!mainMenu.activeSelf) settingsCanvas.SetActive(true);
-
+        if (_settingsCanvas.activeSelf)  _settingsCanvas.SetActive(false);
+        if (!_mainMenu.activeSelf)       _settingsCanvas.SetActive(true);
     }
 
     public void ExitButton()
@@ -90,81 +84,69 @@ public class MainMenuButtons : MonoBehaviour
 
     private void MoveToPosition(Transform targetPosition, Transform lookTarget, System.Action onArrive)
     {
-        if (isMoving) return;
+        if (_isMoving) return;
 
-        if (objectToMove == null)
+        if (_objectToMove == null)
         {
-            Debug.LogError("No hay objectToMove asignado en MainMenuButtons.");
             return;
         }
 
         if (targetPosition == null)
         {
-            Debug.LogError("No hay targetPosition asignado en MainMenuButtons.");
             return;
         }
 
-        if (moveCoroutine != null)
-            StopCoroutine(moveCoroutine);
+        if (_moveCoroutine != null)
+            StopCoroutine(_moveCoroutine);
 
-        moveCoroutine = StartCoroutine(MoveRoutine(targetPosition, lookTarget, onArrive));
+        _moveCoroutine = StartCoroutine(MoveRoutine(targetPosition, lookTarget, onArrive));
     }
 
     private IEnumerator MoveRoutine(Transform targetPosition, Transform lookTarget, System.Action onArrive)
     {
-        isMoving = true;
+        _isMoving = true;
 
-        Vector3 startPosition = objectToMove.position;
-        Quaternion startRotation = objectToMove.rotation;
-
-        Vector3 finalPosition = targetPosition.position;
+        Vector3    startPosition = _objectToMove.position;
+        Quaternion startRotation = _objectToMove.rotation;
+        Vector3    finalPosition = targetPosition.position;
         Quaternion finalRotation = targetPosition.rotation;
 
         if (lookTarget != null)
         {
             Vector3 direction = lookTarget.position - finalPosition;
-
             if (direction != Vector3.zero)
                 finalRotation = Quaternion.LookRotation(direction.normalized, Vector3.up);
         }
 
         float distance = Vector3.Distance(startPosition, finalPosition);
-        float duration = distance / moveSpeed;
-
-        if (duration <= 0.01f)
-            duration = 0.01f;
-
-        float timer = 0f;
+        float duration = Mathf.Max(distance / _moveSpeed, 0.01f);
+        float timer    = 0f;
 
         while (timer < duration)
         {
             timer += Time.deltaTime;
+            float t = Mathf.SmoothStep(0f, 1f, timer / duration);
 
-            float t = timer / duration;
-            t = Mathf.SmoothStep(0f, 1f, t);
-
-            objectToMove.position = Vector3.Lerp(startPosition, finalPosition, t);
-            objectToMove.rotation = Quaternion.Slerp(startRotation, finalRotation, t);
+            _objectToMove.position = Vector3.Lerp(startPosition, finalPosition, t);
+            _objectToMove.rotation = Quaternion.Slerp(startRotation, finalRotation, t);
 
             yield return null;
         }
 
-        objectToMove.position = finalPosition;
-        objectToMove.rotation = finalRotation;
+        _objectToMove.position = finalPosition;
+        _objectToMove.rotation = finalRotation;
 
-        isMoving = false;
-
+        _isMoving = false;
         onArrive?.Invoke();
     }
 
     private void LoadGame()
     {
-        if (string.IsNullOrEmpty(playScenePath))
+        if (string.IsNullOrEmpty(_playScenePath))
         {
-            Debug.LogError("No hay escena asignada en MainMenuButtons.");
             return;
         }
 
-        SceneManager.LoadScene(playScenePath);
+        SceneManager.LoadScene(_playScenePath);
     }
 }

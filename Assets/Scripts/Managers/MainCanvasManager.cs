@@ -1,5 +1,4 @@
 using System;
-using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
@@ -7,56 +6,40 @@ using UnityEngine.UI;
 
 public class MainCanvasManager : MonoBehaviour
 {
-    #region Variables
+    private bool _isOnPause;
 
-    // Game Pause State
-    [SerializeField] private bool isOnPause;
-
-    /// Game Panels ///
     [Header("Panels")]
-    [SerializeField] private GameObject inGamePanel;
-    [SerializeField] private GameObject crosshairPanel;
-    [SerializeField] private GameObject pausePanel;
-    [SerializeField] private GameObject settingsPanel;
-    
-    /// Sliders ///
+    [SerializeField] private GameObject _inGamePanel;
+    [SerializeField] private GameObject _crosshairPanel;
+    [SerializeField] private GameObject _pausePanel;
+    [SerializeField] private GameObject _settingsPanel;
+
     [Header("Sliders")]
-    // Camera
     [SerializeField] private Slider _gamepadSlider;
     [SerializeField] private Slider _mouseSlider;
     [Space(5f)]
-    // Aim Camera
     [SerializeField] private Slider _aimGamepadSlider;
     [SerializeField] private Slider _aimMouseSlider;
-    
     [Space(10f)]
-    
-    // Audio Sliders
-    [SerializeField] private Slider musicSlider;
-    [SerializeField] private Slider sfxSlider;
-    
+    [SerializeField] private Slider _musicSlider;
+    [SerializeField] private Slider _sfxSlider;
+
     [Space(10f)]
     [Header("Toggles")]
-    [SerializeField] private Toggle _XInvertToggle;
+    [SerializeField] private Toggle _xInvertToggle;
     [SerializeField] private Toggle _aimXInvertToggle;
 
-    
-    ///  Default Camera Sense ///
-    private float defaultGamepadSense = 1f;
-    private float defaultMiceSense = 1f;
-    
-    ///  Default Aim Camera Sense ///
-    private float defaultAimGamepadSense;
-    private float defaultAimMiceSense;
-    
-    [SerializeField] private AudioMixer _audioMixer;
-    
-    private PlayerStateMachine _player;
-    
-    public static Action<float> OnMiceSliderAction;
-    public static Action<float> OnGamepadSliderAction;
+    private float _defaultGamepadSensitivity = 1f;
+    private float _defaultMouseSensitivity   = 1f;
+    private float _defaultAimGamepadSensitivity;
+    private float _defaultAimMouseSensitivity;
 
-    #endregion
+    [SerializeField] private AudioMixer _audioMixer;
+
+    private PlayerStateMachine _player;
+
+    public static Action<float> OnMouseSliderAction;
+    public static Action<float> OnGamepadSliderAction;
 
     private void Awake()
     {
@@ -86,7 +69,7 @@ public class MainCanvasManager : MonoBehaviour
 
     public void IdlePanelConfig()
     {
-        isOnPause = false;
+        _isOnPause = false;
 
         Time.timeScale = 1f;
         AudioManager.Instance?.SetPaused(false);
@@ -94,15 +77,15 @@ public class MainCanvasManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        crosshairPanel.SetActive(false);
-        pausePanel.SetActive(false);
-        settingsPanel.SetActive(false);
-        inGamePanel.SetActive(true);
+        _crosshairPanel.SetActive(false);
+        _pausePanel.SetActive(false);
+        _settingsPanel.SetActive(false);
+        _inGamePanel.SetActive(true);
     }
 
     public void PauseOpen()
     {
-        isOnPause = true;
+        _isOnPause = true;
 
         Time.timeScale = 0f;
         AudioManager.Instance?.SetPaused(true);
@@ -110,115 +93,99 @@ public class MainCanvasManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        inGamePanel.SetActive(false);
-        crosshairPanel.SetActive(false);
-        settingsPanel.SetActive(false);
-        pausePanel.SetActive(true);
+        _inGamePanel.SetActive(false);
+        _crosshairPanel.SetActive(false);
+        _settingsPanel.SetActive(false);
+        _pausePanel.SetActive(true);
     }
 
     private void CrosshairOpen()
     {
-        inGamePanel.SetActive(false);
-        pausePanel.SetActive(false);
-        settingsPanel.SetActive(false);
-        crosshairPanel.SetActive(true);
+        _inGamePanel.SetActive(false);
+        _pausePanel.SetActive(false);
+        _settingsPanel.SetActive(false);
+        _crosshairPanel.SetActive(true);
     }
 
     #endregion
 
     #region Settings Methods
 
-    // Camera Settings //
     private void OnGamepadSlider(float mult)
     {
-        float sensitivity = mult * defaultGamepadSense;
+        float sensitivity = mult * _defaultGamepadSensitivity;
         OnGamepadSliderAction?.Invoke(sensitivity);
     }
 
-    private void OnMiceSlider(float mult)
+    private void OnMouseSlider(float mult)
     {
-        float sensitivity = mult * defaultMiceSense;
-        OnMiceSliderAction?.Invoke(sensitivity);
+        float sensitivity = mult * _defaultMouseSensitivity;
+        OnMouseSliderAction?.Invoke(sensitivity);
     }
-    
-    // Aim Camera Settings //
+
     private void OnAimGamepadSlider(float mult)
     {
-        float sensitivity = mult * defaultAimGamepadSense;
-        _player.GamepadAimSensitivity = sensitivity;
+        _player.GamepadAimSensitivity = mult * _defaultAimGamepadSensitivity;
     }
-    
-    private void OnAimMiceSlider(float mult)
+
+    private void OnAimMouseSlider(float mult)
     {
-        float sensitivity = mult * defaultAimMiceSense;
-        _player.MiceAimSensitivity = sensitivity;
+        _player.MiceAimSensitivity = mult * _defaultAimMouseSensitivity;
     }
 
     private void OnAimXInvertToggle(bool value)
     {
         _player.AimXAxisInverted = value;
     }
-    
-    // Audio Settings //
+
     public void SetMasterVolume(float level)
     {
         _audioMixer.SetFloat("masterVolume", Mathf.Log10(level) * 20f);
     }
-    
+
     public void SetSoundFXVolume(float level)
     {
         _audioMixer.SetFloat("soundFXVolume", Mathf.Log10(level) * 20f);
     }
-    
+
     public void SetMusicVolume(float level)
     {
         _audioMixer.SetFloat("musicVolume", Mathf.Log10(level) * 20f);
     }
 
     #endregion
-    
+
     private void PauseHandler()
     {
-        if (isOnPause)
+        if (_isOnPause)
             IdlePanelConfig();
         else
             PauseOpen();
     }
-    
-    // Crosshair settings
+
     private void HandleShooting(bool isAiming)
     {
-        if (isOnPause) return;
-        
+        if (_isOnPause) return;
+
         if (isAiming) CrosshairOpen();
         else IdlePanelConfig();
     }
 
     private void GetInitialSettings()
     {
-        /// CAMERA Default Settings ///
-        defaultMiceSense = _player.MiceSensitivity;
-        defaultGamepadSense = _player.GamepadSensitivity;
-        
-        /// AIM Default Settings ///
-        defaultAimMiceSense = _player.MiceAimSensitivity;
-        defaultAimGamepadSense = _player.GamepadAimSensitivity;
+        _defaultMouseSensitivity       = _player.MiceSensitivity;
+        _defaultGamepadSensitivity     = _player.GamepadSensitivity;
+        _defaultAimMouseSensitivity    = _player.MiceAimSensitivity;
+        _defaultAimGamepadSensitivity  = _player.GamepadAimSensitivity;
     }
 
     private void SetSettingsListeners()
     {
-        /// Sliders Listeners ///
         _gamepadSlider.onValueChanged.AddListener(OnGamepadSlider);
-        _mouseSlider.onValueChanged.AddListener(OnMiceSlider);
+        _mouseSlider.onValueChanged.AddListener(OnMouseSlider);
         _aimGamepadSlider.onValueChanged.AddListener(OnAimGamepadSlider);
-        _aimMouseSlider.onValueChanged.AddListener(OnAimMiceSlider);
-        
-        /// Toggles Listeners ///
-        // _XInvertToggle.onValueChanged.AddListener(); // TBD
+        _aimMouseSlider.onValueChanged.AddListener(OnAimMouseSlider);
         _aimXInvertToggle.onValueChanged.AddListener(OnAimXInvertToggle);
-        // TBD
-        /*musicAudioSlider.onValueChanged.AddListener();
-        sfxAudioSlider.onValueChanged.AddListener();*/
     }
 
     public void ExitToMainMenu()

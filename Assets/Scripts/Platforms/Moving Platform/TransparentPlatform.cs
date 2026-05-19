@@ -1,65 +1,60 @@
 using UnityEngine;
 
 public class TransparentPlatform : MonoBehaviour
-{  
-    private BoxCollider solidCollider;
-
+{
     [Header("Shooting Configuration")]
-    public int timesToBeShooted;
-    private int shootedTimes;
+    [SerializeField] private int _hitsRequired;
+    [SerializeField] private string _bulletTag = "Obstacle";
 
     [Header("Transparency")]
-    [Range(0f, 1f)] public float transparentAlpha = 0.2f;
-    [Range(0f, 1f)] public float opaqueAlpha = 1f;
+    [SerializeField, Range(0f, 1f)] private float _transparentAlpha = 0.2f;
+    [SerializeField, Range(0f, 1f)] private float _opaqueAlpha = 1f;
 
     [Header("Materials")]
-    public Material transparentMaterial; 
-    public Material opaqueMaterial;
+    [SerializeField] private Material _transparentMaterial;
+    [SerializeField] private Material _opaqueMaterial;
 
-    private Renderer rend;
-    private bool isPainted = false;
+    private BoxCollider _solidCollider;
+    private Renderer _renderer;
+    private int _hitCount;
+    private bool _isPainted;
 
-    public string tagBullet = "Obstacle";
-
-    void Start()
+    private void Start()
     {
-        solidCollider = GetComponent<BoxCollider>();
-        rend = GetComponent<Renderer>();
+        _solidCollider = GetComponent<BoxCollider>();
+        _renderer      = GetComponent<Renderer>();
 
-        solidCollider.enabled = false;
+        _solidCollider.enabled = false;
+        _renderer.material     = _transparentMaterial;
 
-        rend.material = transparentMaterial;
-
-        SetAlpha(transparentAlpha);
+        SetAlpha(_transparentAlpha);
     }
 
-    
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(tagBullet)) 
+        if (other.CompareTag(_bulletTag))
             OnInked();
     }
 
     public void OnInked()
     {
-        if (isPainted) return;
-        
-        shootedTimes++;
-        
-        if (shootedTimes < timesToBeShooted) return;
-        
-        isPainted = true;
-        solidCollider.enabled = true;
+        if (_isPainted) return;
 
-        rend.material = opaqueMaterial;
+        _hitCount++;
 
-        SetAlpha(opaqueAlpha);
+        if (_hitCount < _hitsRequired) return;
+
+        _isPainted             = true;
+        _solidCollider.enabled = true;
+        _renderer.material     = _opaqueMaterial;
+
+        SetAlpha(_opaqueAlpha);
     }
 
-    void SetAlpha(float alpha)
+    private void SetAlpha(float alpha)
     {
-        Color c = rend.material.color;
+        Color c = _renderer.material.color;
         c.a = alpha;
-        rend.material.color = c;
+        _renderer.material.color = c;
     }
 }

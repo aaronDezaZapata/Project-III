@@ -5,18 +5,18 @@ using UnityEngine;
 
 public class AmbientDetailEmitter : MonoBehaviour
 {
-    [SerializeField] private EventReference ambienceEvent;
-    [SerializeField] private bool playOnEnable = true;
+    [SerializeField] private EventReference _ambienceEvent;
+    [SerializeField] private bool _playOnEnable = true;
 
-    private EventInstance instance;
+    private EventInstance _instance;
 
     private void OnEnable()
     {
-        if (!playOnEnable || ambienceEvent.IsNull) return;
+        if (!_playOnEnable || _ambienceEvent.IsNull) return;
 
-        instance = RuntimeManager.CreateInstance(ambienceEvent);
-        RuntimeManager.AttachInstanceToGameObject(instance, transform);
-        instance.start();
+        _instance = RuntimeManager.CreateInstance(_ambienceEvent);
+        RuntimeManager.AttachInstanceToGameObject(_instance, transform);
+        _instance.start();
     }
 
     private void OnDisable()
@@ -31,10 +31,10 @@ public class AmbientDetailEmitter : MonoBehaviour
 
     private void StopInstance()
     {
-        if (instance.isValid())
+        if (_instance.isValid())
         {
-            instance.stop(STOP_MODE.ALLOWFADEOUT);
-            instance.release();
+            _instance.stop(STOP_MODE.ALLOWFADEOUT);
+            _instance.release();
         }
     }
 }

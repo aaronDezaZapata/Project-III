@@ -2,39 +2,33 @@ using UnityEngine;
 
 public class MovingPlatformPassenger : MonoBehaviour
 {
-    [SerializeField] private Transform platformRoot;
+    [SerializeField] private Transform _platformRoot;
 
-    private Transform originalParent;
-    private Vector3 originalScale;
+    private Transform _originalParent;
+    private Vector3 _originalScale;
 
     private void Awake()
     {
-        if (platformRoot == null)
-        {
-            platformRoot = transform.root;
-        }
+        if (_platformRoot == null)
+            _platformRoot = transform.root;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player")) return;
 
-        originalParent = other.transform.parent;
-        originalScale = other.transform.localScale;
+        _originalParent = other.transform.parent;
+        _originalScale  = other.transform.localScale;
 
-        other.transform.SetParent(platformRoot, true);
-        other.transform.localScale = originalScale;
-
-        Debug.Log("Player subido a plataforma");
+        other.transform.SetParent(_platformRoot, true);
+        other.transform.localScale = _originalScale;
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (!other.CompareTag("Player")) return;
 
-        other.transform.SetParent(originalParent, true);
-        other.transform.localScale = originalScale;
-
-        Debug.Log("Player salió de plataforma");
+        other.transform.SetParent(_originalParent, true);
+        other.transform.localScale = _originalScale;
     }
 }

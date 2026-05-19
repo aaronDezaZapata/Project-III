@@ -2,36 +2,31 @@ using UnityEngine;
 
 public class RotatingCollectible : MonoBehaviour
 {
-    [Header("Rotación")]
-    [SerializeField] private float rotationSpeed = 120f;
-    [SerializeField] private Vector3 rotationAxis = Vector3.up;
+    [Header("Rotation")]
+    [SerializeField] private float _rotationSpeed = 120f;
+    [SerializeField] private Vector3 _rotationAxis = Vector3.up;
 
-    [Header("Recogida")]
-    [SerializeField] private string playerTag = "Player";
+    [Header("Collection")]
+    [SerializeField] private string _playerTag = "Player";
 
-    [Header("Opcional")]
-    [SerializeField] private GameObject collectVFX;
+    [Header("Optional")]
+    [SerializeField] private GameObject _collectVFX;
 
     private void Update()
     {
-        transform.Rotate(rotationAxis * rotationSpeed * Time.deltaTime, Space.Self);
+        transform.Rotate(_rotationAxis * _rotationSpeed * Time.deltaTime, Space.Self);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag(playerTag))
-            return;
-
+        if (!other.CompareTag(_playerTag)) return;
         Collect();
     }
 
     private void Collect()
     {
-
-        if (collectVFX != null)
-        {
-            Instantiate(collectVFX, transform.position, Quaternion.identity);
-        }
+        if (_collectVFX != null)
+            Instantiate(_collectVFX, transform.position, Quaternion.identity);
 
         Destroy(gameObject);
     }

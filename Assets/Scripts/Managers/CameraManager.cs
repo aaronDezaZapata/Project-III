@@ -3,55 +3,46 @@ using Unity.Cinemachine;
 
 public class CameraManager : MonoBehaviour
 {
-    public static CameraManager Instance;
+    public static CameraManager Instance { get; private set; }
 
-    public float normalRadiusTop = 3f;
-    public float normalRadiusCenter = 3f;
-    public float normalRadiusBottom = 3f;
+    [SerializeField] private CinemachineOrbitalFollow _orbital;
+    [SerializeField] private float _swimRadius = 5f;
 
-    public float swimRadius = 5f;
+    private float _normalRadiusTop;
+    private float _normalRadiusCenter;
+    private float _normalRadiusBottom;
 
-    public CinemachineOrbitalFollow orbital;
-    float targetRadius;
-
-    void Awake()
+    private void Awake()
     {
         if (Instance == null)
-        {
             Instance = this;
-        }
         else
         {
             Destroy(this);
             return;
         }
 
-        if(orbital == null)
-        {
-            orbital = GameManager.Instance.GetPlayer().GetComponentInChildren<CinemachineOrbitalFollow>();
-        }
-        
+        if (_orbital == null)
+            _orbital = GameManager.Instance.GetPlayer().GetComponentInChildren<CinemachineOrbitalFollow>();
 
-        normalRadiusTop = orbital.Orbits.Top.Radius;
-        normalRadiusCenter = orbital.Orbits.Center.Radius; 
-        normalRadiusBottom = orbital.Orbits.Bottom.Radius;
+        _normalRadiusTop    = _orbital.Orbits.Top.Radius;
+        _normalRadiusCenter = _orbital.Orbits.Center.Radius;
+        _normalRadiusBottom = _orbital.Orbits.Bottom.Radius;
     }
 
-   
     public void ChangeCameraSwimming(bool isSwimming)
     {
         if (isSwimming)
         {
-            orbital.Orbits.Top.Radius+= swimRadius ;
-            orbital.Orbits.Center.Radius += swimRadius;
-            orbital.Orbits.Bottom.Radius += swimRadius;
+            _orbital.Orbits.Top.Radius    += _swimRadius;
+            _orbital.Orbits.Center.Radius += _swimRadius;
+            _orbital.Orbits.Bottom.Radius += _swimRadius;
         }
         else
         {
-            orbital.Orbits.Top.Radius = normalRadiusTop;
-            orbital.Orbits.Center.Radius = normalRadiusCenter;
-            orbital.Orbits.Bottom.Radius = normalRadiusBottom;
-
+            _orbital.Orbits.Top.Radius    = _normalRadiusTop;
+            _orbital.Orbits.Center.Radius = _normalRadiusCenter;
+            _orbital.Orbits.Bottom.Radius = _normalRadiusBottom;
         }
     }
 }

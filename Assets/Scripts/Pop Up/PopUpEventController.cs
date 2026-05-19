@@ -4,19 +4,19 @@ using UnityEngine;
 public class PopUpEventController : MonoBehaviour
 {
     [Header("Pop Up Event Settings")]
-    public GameObject movingPlatform;
-    public GameObject targetStateObject;
-    public GameObject eventVisuals;
-    public CinemachineCamera eventCamera;
+    [SerializeField] private GameObject _movingPlatform;
+    [SerializeField] private GameObject _targetStateObject;
+    [SerializeField] private GameObject _eventVisuals;
+    [SerializeField] private CinemachineCamera _eventCamera;
 
     [Header("Player Movement Settings")]
-    public float maxDistance = 5f;
+    [SerializeField] private float _maxDistance = 5f;
 
     [Header("Debug")]
-    [SerializeField] private bool canBeTriggered;
-    [SerializeField] private bool eventActive;
-    [SerializeField] private bool eventDone;
-    [SerializeField] private float currentDistance;
+    [SerializeField] private bool _canBeTriggered;
+    [SerializeField] private bool _eventActive;
+    [SerializeField] private bool _eventDone;
+    [SerializeField] private float _currentDistance;
     [SerializeField] private PlayerStateMachine _player;
 
     private Vector3 _platformStartPos;
@@ -40,18 +40,18 @@ public class PopUpEventController : MonoBehaviour
 
     private void Start()
     {
-        if (targetStateObject != null)
+        if (_targetStateObject != null)
         {
-            _targetPos = targetStateObject.transform.position;
-            _targetRot = targetStateObject.transform.rotation;
-            _targetScale = targetStateObject.transform.localScale;
+            _targetPos   = _targetStateObject.transform.position;
+            _targetRot   = _targetStateObject.transform.rotation;
+            _targetScale = _targetStateObject.transform.localScale;
         }
 
-        if (movingPlatform != null)
+        if (_movingPlatform != null)
         {
-            _platformStartPos = movingPlatform.transform.position;
-            _platformStartRot = movingPlatform.transform.rotation;
-            _platformStartScale = movingPlatform.transform.localScale;
+            _platformStartPos   = _movingPlatform.transform.position;
+            _platformStartRot   = _movingPlatform.transform.rotation;
+            _platformStartScale = _movingPlatform.transform.localScale;
         }
 
         _forwardDirection = transform.forward;
@@ -61,133 +61,114 @@ public class PopUpEventController : MonoBehaviour
 
     private void Update()
     {
-        if (eventActive)
-        {
-            CalculateDistance();
-            UpdatePlatform();
+        if (!_eventActive) return;
 
-            if (currentDistance >= maxDistance)
-            {
-                EventCompleted();
-            }
-        }
+        CalculateDistance();
+        UpdatePlatform();
+
+        if (_currentDistance >= _maxDistance)
+            EventCompleted();
     }
 
     private void CalculateDistance()
     {
-        Vector3 toPlayer = _player.transform.position - _playerStartPos;
+        Vector3 toPlayer     = _player.transform.position - _playerStartPos;
         float signedDistance = Vector3.Dot(toPlayer, _forwardDirection);
 
-        if (signedDistance < 0)
-            currentDistance = Mathf.Abs(signedDistance);
-        else
-            currentDistance = 0f;
+        _currentDistance = signedDistance < 0 ? Mathf.Abs(signedDistance) : 0f;
     }
 
     private void UpdatePlatform()
     {
-        if (movingPlatform == null || targetStateObject == null) return;
+        if (_movingPlatform == null || _targetStateObject == null) return;
 
-        float progress = Mathf.Clamp01(currentDistance / maxDistance);
+        float progress = Mathf.Clamp01(_currentDistance / _maxDistance);
 
-        movingPlatform.transform.position = Vector3.Lerp(_platformStartPos, _targetPos, progress);
-        movingPlatform.transform.rotation = Quaternion.Slerp(_platformStartRot, _targetRot, progress);
-        movingPlatform.transform.localScale = Vector3.Lerp(_platformStartScale, _targetScale, progress);
+        _movingPlatform.transform.position   = Vector3.Lerp(_platformStartPos, _targetPos, progress);
+        _movingPlatform.transform.rotation   = Quaternion.Slerp(_platformStartRot, _targetRot, progress);
+        _movingPlatform.transform.localScale = Vector3.Lerp(_platformStartScale, _targetScale, progress);
     }
 
-    private void UpdatePlayerEventState(bool active)
+    private void SetPlayerEventState(bool active)
     {
-        if (_player != null)
-        {
-            _player.isOnEvent = active;
-            _player.isRestrictedToForwardBackward = active;
-            _player.eventForwardDirection = active ? _forwardDirection : Vector3.zero;
-        }
+        if (_player == null) return;
+
+        _player.isOnEvent                  = active;
+        _player.isRestrictedToForwardBackward = active;
+        _player.eventForwardDirection      = active ? _forwardDirection : Vector3.zero;
     }
 
     private void HandleInteraction()
     {
-        if (eventDone || _player == null) return;
+        if (_eventDone || _player == null) return;
 
-        if (!_player.isOnEvent && canBeTriggered)
+        if (!_player.isOnEvent && _canBeTriggered)
             StartEvent();
-        else if (_player.isOnEvent && eventActive)
+        else if (_player.isOnEvent && _eventActive)
             CancelEvent();
     }
 
     private void StartEvent()
     {
-        _playerStartPos = _player.transform.position;
-        currentDistance = 0f;
-        eventActive = true;
+        _playerStartPos   = _player.transform.position;
+        _currentDistance  = 0f;
+        _eventActive      = true;
 
-        _platformStartPos = movingPlatform.transform.position;
-        _platformStartRot = movingPlatform.transform.rotation;
-        _platformStartScale = movingPlatform.transform.localScale;
+        _platformStartPos   = _movingPlatform.transform.position;
+        _platformStartRot   = _movingPlatform.transform.rotation;
+        _platformStartScale = _movingPlatform.transform.localScale;
 
-        UpdatePlayerEventState(true);
+        SetPlayerEventState(true);
 
-        if (eventCamera != null)
-            eventCamera.Priority = 10;
-
-        if (eventVisuals != null)
-            eventVisuals.SetActive(true);
+        if (_eventCamera != null) _eventCamera.Priority = 10;
+        if (_eventVisuals != null) _eventVisuals.SetActive(true);
     }
 
     private void CancelEvent()
     {
-        eventActive = false;
+        _eventActive = false;
 
-        if (movingPlatform != null)
+        if (_movingPlatform != null)
         {
-            movingPlatform.transform.position = _platformStartPos;
-            movingPlatform.transform.rotation = _platformStartRot;
-            movingPlatform.transform.localScale = _platformStartScale;
+            _movingPlatform.transform.position   = _platformStartPos;
+            _movingPlatform.transform.rotation   = _platformStartRot;
+            _movingPlatform.transform.localScale = _platformStartScale;
         }
 
-        UpdatePlayerEventState(false);
+        SetPlayerEventState(false);
 
-        if (eventCamera != null)
-            eventCamera.Priority = -1;
-
-        if (eventVisuals != null)
-            eventVisuals.SetActive(false);
+        if (_eventCamera != null) _eventCamera.Priority = -1;
+        if (_eventVisuals != null) _eventVisuals.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         _player = other.GetComponentInChildren<PlayerStateMachine>();
         if (_player != null)
-        {
-            canBeTriggered = true;
-        }
+            _canBeTriggered = true;
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (_player == null) return;
-
-        canBeTriggered = false;
+        _canBeTriggered = false;
     }
 
     private void EventCompleted()
     {
-        eventDone = true;
-        eventActive = false;
+        _eventDone   = true;
+        _eventActive = false;
 
-        if (movingPlatform != null)
+        if (_movingPlatform != null)
         {
-            movingPlatform.transform.position = _targetPos;
-            movingPlatform.transform.rotation = _targetRot;
-            movingPlatform.transform.localScale = _targetScale;
+            _movingPlatform.transform.position   = _targetPos;
+            _movingPlatform.transform.rotation   = _targetRot;
+            _movingPlatform.transform.localScale = _targetScale;
         }
 
-        UpdatePlayerEventState(false);
+        SetPlayerEventState(false);
 
-        if (eventCamera != null)
-            eventCamera.Priority = -1;
-
-        if (eventVisuals != null)
-            eventVisuals.SetActive(false);
+        if (_eventCamera != null) _eventCamera.Priority = -1;
+        if (_eventVisuals != null) _eventVisuals.SetActive(false);
     }
 }

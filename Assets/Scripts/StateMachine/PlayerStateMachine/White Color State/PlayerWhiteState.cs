@@ -83,10 +83,10 @@ public class PlayerWhiteState : PlayerBaseState
     // Default Camera Setup
     protected virtual void SetupCamera()
     {
-        if (stateMachine.mainCamera.Priority <= 9)
+        if (stateMachine.MainCamera.Priority <= 9)
         {
             CameraRecenter();
-            stateMachine.mainCamera.Priority = 10;
+            stateMachine.MainCamera.Priority = 10;
         }
     }
     
@@ -157,19 +157,7 @@ public class PlayerWhiteState : PlayerBaseState
     // Color actions scheme changed.
     // Maybe this needs to be removed???
     // Actually can be and needs to be overrided
-    protected virtual bool CheckColorSpecificActions(float deltaTime)
-    {
-        // White state: Dash Attack
-        if (stateMachine.InputReader.isColorActing && stateMachine.HasDashAttack)
-        {
-            if (HasNearbyPaintedEnemy())
-            {
-                stateMachine.SwitchState(typeof(PlayerDashAttackState));
-                return true;
-            }
-        }
-        return false;
-    }
+    protected virtual bool CheckColorSpecificActions(float deltaTime) { return false; }
     
     protected virtual void UpdateAnimatorParameters(Vector3 movement, float currentInputMagnitude, float deltaTime)
     {
@@ -200,18 +188,6 @@ public class PlayerWhiteState : PlayerBaseState
         InputHandler.InteractionEvent -= stateMachine.HandlePuddleInteraction;
     }
     
-    // TODO: Check
-    // Not being used right now
-    protected virtual void CleanupCamera()
-    {
-        stateMachine.mainCamera.Priority = -1;
-    }
-    
-    protected bool HasNearbyPaintedEnemy()
-    {
-        return GameManager.Instance.paintBeacon;
-    }
-    
     protected virtual void FaceMovementDirection(Vector3 movement, float deltaTime)
     {
         stateMachine.transform.rotation = Quaternion.Lerp(
@@ -229,14 +205,14 @@ public class PlayerWhiteState : PlayerBaseState
     protected virtual void OnDiveEnter()
     {        
         stateMachine.CheckForInk();
-        if (stateMachine.IsOnInk)
-        if (stateMachine.IsOnInk || stateMachine.isOnEvent)
+        if (stateMachine._isOnInk)
+        if (stateMachine._isOnInk || stateMachine.isOnEvent)
             stateMachine.SwitchState(typeof(PlayerSwimState));
     }
 
     protected void CameraRecenter()
     {
-        CinemachineOrbitalFollow orbitalFollow = stateMachine.mainCamera.gameObject.GetComponent<CinemachineOrbitalFollow>();
+        CinemachineOrbitalFollow orbitalFollow = stateMachine.MainCamera.gameObject.GetComponent<CinemachineOrbitalFollow>();
         
         float playerYaw = stateMachine.transform.eulerAngles.y;
         orbitalFollow.HorizontalAxis.Value = playerYaw;

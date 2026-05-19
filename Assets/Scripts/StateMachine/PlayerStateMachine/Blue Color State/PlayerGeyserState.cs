@@ -1,18 +1,11 @@
 using UnityEngine;
 
-/// <summary>
-/// Player Geyser State (Blue Ability)
-/// - Vertical Movement
-/// - Deactivates at grounded or when jump button is released
-/// - Cooldown before reusing the ability
-/// </summary>
 public class PlayerGeyserState : PlayerBaseState
 {
-    private readonly int IsOnGeyser = Animator.StringToHash("IsOnGeyser");
-    private const float CrossFadeDuration = 0.1f;
+    private readonly int _isOnGeyser = Animator.StringToHash("IsOnGeyser");
     private const float AirControlSfxInterval = 0.20f;
 
-    private float airControlSfxTimer;
+    private float _airControlSfxTimer;
 
     public PlayerGeyserState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
@@ -22,7 +15,6 @@ public class PlayerGeyserState : PlayerBaseState
     {
         Jump();
         
-        // Reset down velocity 
         if (stateMachine.ForceReceiver.VerticalVelocity < 0f)
         {
             stateMachine.ForceReceiver.Jump(0f);
@@ -31,14 +23,14 @@ public class PlayerGeyserState : PlayerBaseState
         stateMachine.UseColor(0.5f);
         stateMachine.WaterGeyserParticle.gameObject.SetActive(true);
         stateMachine.WaterGeyserParticleSecond.gameObject.SetActive(true);
-        stateMachine.mainCamera.Priority = 10;
+        stateMachine.MainCamera.Priority = 10;
 
         stateMachine.PlayerAudio?.PlayBlueActivate();
         stateMachine.PlayerAudio?.PlayBlueBoost();
 
-        airControlSfxTimer = 0f;
+        _airControlSfxTimer = 0f;
         
-        stateMachine.Animator.SetBool(IsOnGeyser, true);
+        stateMachine.Animator.SetBool(_isOnGeyser, true);
     }
 
     public override void Tick(float deltaTime)
@@ -58,16 +50,16 @@ public class PlayerGeyserState : PlayerBaseState
 
         if (stateMachine.InputReader.MoveVector.sqrMagnitude > 0.01f)
         {
-            airControlSfxTimer -= deltaTime;
-            if (airControlSfxTimer <= 0f)
+            _airControlSfxTimer -= deltaTime;
+            if (_airControlSfxTimer <= 0f)
             {
                 stateMachine.PlayerAudio?.PlayBlueAirControl();
-                airControlSfxTimer = AirControlSfxInterval;
+                _airControlSfxTimer = AirControlSfxInterval;
             }
         }
         else
         {
-            airControlSfxTimer = 0f;
+            _airControlSfxTimer = 0f;
         }
 
         stateMachine.ForceReceiver.AddForce(Vector3.up * stateMachine.HoverForce * deltaTime);
@@ -78,12 +70,11 @@ public class PlayerGeyserState : PlayerBaseState
     {
         stateMachine.isGeyserOnCooldown = true;
         stateMachine.geyserCooldownTimer = stateMachine.GeyserCooldownTime;
-        stateMachine.wasJumpButtonReleased = false;
         
         stateMachine.WaterGeyserParticle.gameObject.SetActive(false);
         stateMachine.WaterGeyserParticleSecond.gameObject.SetActive(false);
         
-        stateMachine.Animator.SetBool(IsOnGeyser, false);
+        stateMachine.Animator.SetBool(_isOnGeyser, false);
     }
     
     private void MoveHoverDirect(float deltaTime)
@@ -108,7 +99,7 @@ public class PlayerGeyserState : PlayerBaseState
             );
         }
         
-        Vector3 velocity = moveDir * stateMachine.aerialMoveSpeed;
+        Vector3 velocity = moveDir * stateMachine.AerialMoveSpeed;
         
         Vector3 finalMovement = velocity + stateMachine.ForceReceiver.Movement;
         

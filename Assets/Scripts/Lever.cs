@@ -1,51 +1,39 @@
 using UnityEngine;
 
-/// <summary>
-/// Palanca interactuable.
-/// Se suscribe al InteractionEvent del InputHandler cuando el jugador entra en el trigger,
-/// y se desuscribe cuando sale. Sin Update, sin polling.
-/// </summary>
 public class Lever : MonoBehaviour
 {
-    [Header("Identificador")]
-    [Tooltip("ID único que ha de coincidir con el leverID de la plataforma que controla.")]
-    public string leverID = "lever_01";
+    [Header("Identifier")]
+    [Tooltip("Unique ID that must match the leverID of the platform it controls.")]
+    [SerializeField] private string _leverId = "lever_01";
 
-    [Tooltip("Si es true, la palanca solo se puede activar una vez.")]
-    public bool oneShot = false;
+    [Tooltip("If true, the lever can only be activated once.")]
+    [SerializeField] private bool _oneShot;
 
-    [Tooltip("Si es true alterna entre activar/desactivar (útil para loop).")]
-    public bool toggle = false;
+    [Tooltip("If true, toggles between activate/deactivate (useful for looping platforms).")]
+    [SerializeField] private bool _toggle;
 
-    // ── Estado interno ──────────────────────────────────────────────────────
-    private bool _used = false;
-    private bool _isOn = false;
+    private bool _used;
+    private bool _isOn;
 
-    // ── Trigger ─────────────────────────────────────────────────────────────
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player")) return;
-
         InputHandler.InteractionEvent += Activate;
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (!other.CompareTag("Player")) return;
-
         InputHandler.InteractionEvent -= Activate;
     }
 
-    // ── Lógica ──────────────────────────────────────────────────────────────
     private void Activate()
     {
-        if (oneShot && _used) return;
+        if (_oneShot && _used) return;
 
-        if (toggle)
-            _isOn = !_isOn;
+        if (_toggle) _isOn = !_isOn;
 
         _used = true;
-        GameManager.Instance.OnLeverActivated?.Invoke(leverID);
-
+        GameManager.Instance.OnLeverActivated?.Invoke(_leverId);
     }
 }

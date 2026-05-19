@@ -34,7 +34,6 @@ namespace TorbellinoConsoleSystem.Editor
 
             consoleRoot.AddComponent<GraphicRaycaster>();
 
-            // Panel
             GameObject panel = new GameObject("Panel");
             panel.transform.SetParent(consoleRoot.transform, false);
             Image panelImage = panel.AddComponent<Image>();
@@ -45,7 +44,6 @@ namespace TorbellinoConsoleSystem.Editor
             panelRect.offsetMin = Vector2.zero;
             panelRect.offsetMax = Vector2.zero;
 
-            // ScrollView
             GameObject scrollView = new GameObject("ScrollView");
             scrollView.transform.SetParent(panel.transform, false);
             RectTransform scrollRect = scrollView.AddComponent<RectTransform>();
@@ -63,7 +61,6 @@ namespace TorbellinoConsoleSystem.Editor
             Image scrollBg = scrollView.AddComponent<Image>();
             scrollBg.color = new Color(0, 0, 0, 0.3f);
 
-            // Viewport
             GameObject viewport = new GameObject("Viewport");
             viewport.transform.SetParent(scrollView.transform, false);
             RectTransform viewportRect = viewport.AddComponent<RectTransform>();
@@ -76,7 +73,6 @@ namespace TorbellinoConsoleSystem.Editor
             viewport.AddComponent<RectMask2D>();
             scrollComponent.viewport = viewportRect;
 
-            // Content
             GameObject content = new GameObject("Content");
             content.transform.SetParent(viewport.transform, false);
             RectTransform contentRect = content.AddComponent<RectTransform>();
@@ -87,7 +83,6 @@ namespace TorbellinoConsoleSystem.Editor
             contentRect.sizeDelta = new Vector2(0, 300);
             scrollComponent.content = contentRect;
 
-            // Output text
             GameObject outputTextObj = new GameObject("OutputText");
             outputTextObj.transform.SetParent(content.transform, false);
             TextMeshProUGUI outputText = outputTextObj.AddComponent<TextMeshProUGUI>();
@@ -116,7 +111,6 @@ namespace TorbellinoConsoleSystem.Editor
             outputRect.offsetMin = new Vector2(10, 10);
             outputRect.offsetMax = new Vector2(-10, -10);
 
-            // Suggestions
             GameObject suggestionsObj = new GameObject("Suggestions");
             suggestionsObj.transform.SetParent(panel.transform, false);
             TextMeshProUGUI suggestionsText = suggestionsObj.AddComponent<TextMeshProUGUI>();
@@ -130,7 +124,6 @@ namespace TorbellinoConsoleSystem.Editor
             suggestRect.offsetMin = Vector2.zero;
             suggestRect.offsetMax = Vector2.zero;
 
-            // Input field
             GameObject inputObj = new GameObject("InputField");
             inputObj.transform.SetParent(panel.transform, false);
             Image inputBg = inputObj.AddComponent<Image>();
@@ -165,7 +158,6 @@ namespace TorbellinoConsoleSystem.Editor
             inputField.textComponent = inputTextComponent;
             inputField.fontAsset = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
 
-            // TorbellinoConsole component
             TorbellinoConsole console = consoleRoot.AddComponent<TorbellinoConsole>();
             SerializedObject serializedConsole = new SerializedObject(console);
             serializedConsole.FindProperty("consolePanel").objectReferenceValue = panel;

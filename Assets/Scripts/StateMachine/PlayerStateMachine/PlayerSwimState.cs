@@ -19,21 +19,18 @@ public class PlayerSwimState : PlayerBaseState
         stateMachine.Animator.CrossFadeInFixedTime(DiveAnim, CrossFadeDuration);
         stateMachine.InputReader.DiveEvent += OnDiveExit;
         stateMachine.InputReader.JumpEvent += PerformInkJump;
-
-        // Camera
-        stateMachine.mainCamera.Priority = 10;
+        
+        stateMachine.MainCamera.Priority = 10;
 
         originalHeight = stateMachine.Controller.height;
         originalCenter = stateMachine.Controller.center;
-
-        // Forma de calamar
+        
         stateMachine.Controller.height = 0.5f;
         stateMachine.Controller.center = new Vector3(0, 0.25f, 0);
 
         swimVelocity = Vector3.zero;
         timeWithoutInk = 0f;
-
-        //Camera Pull Back
+        
         CameraManager.Instance.ChangeCameraSwimming(true);
 
 
@@ -49,7 +46,7 @@ public class PlayerSwimState : PlayerBaseState
         stateMachine.ForceReceiver.enabled = false;
 
         
-        if (!stateMachine.IsOnInk)
+        if (!stateMachine._isOnInk)
         {
             timeWithoutInk += deltaTime;
             
@@ -69,20 +66,15 @@ public class PlayerSwimState : PlayerBaseState
 
     public override void Exit()
     {
-        // Input Events
         stateMachine.InputReader.DiveEvent -= OnDiveExit;
         stateMachine.InputReader.JumpEvent -= PerformInkJump;
         
         stateMachine.Controller.height = originalHeight;
         stateMachine.Controller.center = originalCenter;
-
-        // Al salir, rotamos suavemente hacia arriba global
+        
         stateMachine.transform.rotation = Quaternion.FromToRotation(stateMachine.transform.up, Vector3.up) * stateMachine.transform.rotation;
-
-        //Camera Pull Front
+        
         CameraManager.Instance.ChangeCameraSwimming(false);
-
-        // stateMachine.ForceReceiver.enabled = true;
 
         TogglePlayerMesh(false);
         stateMachine.PlayerAudio?.PlaySwimExit();
@@ -92,44 +84,37 @@ public class PlayerSwimState : PlayerBaseState
     private void HandleSwimMovement(float deltaTime)
     {
         Vector2 input = stateMachine.InputReader.MoveVector;
-        Vector3 surfaceNormal = stateMachine.CurrentInkNormal;
-
-        // "Subir" en la superficie = world up proyectado sobre el plano de la tinta.
-        // Esto hace que W siempre suba por paredes y S baje, independientemente de dónde mire la cámara.
+        Vector3 surfaceNormal = stateMachine.currentInkNormal;
+        
         Vector3 surfaceUp = Vector3.ProjectOnPlane(Vector3.up, surfaceNormal);
-
-        // Si la superficie es casi horizontal (suelo/techo), world up se colapsa → usamos camera forward
+        
         if (surfaceUp.sqrMagnitude < 0.1f)
             surfaceUp = Vector3.ProjectOnPlane(Camera.main.transform.forward, surfaceNormal);
 
         surfaceUp = surfaceUp.normalized;
-
-        // Eje lateral: camera right proyectado sobre el plano
+        
         Vector3 surfaceRight = Vector3.ProjectOnPlane(Camera.main.transform.right, surfaceNormal);
-
-        // Fallback si camera right es casi paralelo a la normal (colapsaría a cero)
+        
         if (surfaceRight.sqrMagnitude < 0.01f)
             surfaceRight = Vector3.Cross(surfaceNormal, surfaceUp);
 
         surfaceRight = surfaceRight.normalized;
-
-        // input.y → sube/baja por la superficie  |  input.x → izquierda/derecha
+        
         Vector3 moveDir = (surfaceUp * input.y + surfaceRight * input.x);
         
         if (moveDir.sqrMagnitude > 0.01f)
-        {
             moveDir.Normalize();
-        }
+        
         else
-        {
             moveDir = Vector3.zero;
-        }
+        
 
         if (moveDir != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(moveDir, surfaceNormal);
             stateMachine.transform.rotation = Quaternion.Slerp(stateMachine.transform.rotation, targetRotation, deltaTime * 20f);
         }
+        
         else
         {
             Quaternion targetRotation = Quaternion.FromToRotation(stateMachine.transform.up, surfaceNormal) * stateMachine.transform.rotation;
@@ -137,16 +122,11 @@ public class PlayerSwimState : PlayerBaseState
         }
 
         if (moveDir.magnitude > 0.1f)
-        {
             swimVelocity = Vector3.MoveTowards(swimVelocity, moveDir * stateMachine.SwimSpeed, 60f * deltaTime);
-        }
-        else
-        {
-            swimVelocity = Vector3.MoveTowards(swimVelocity, Vector3.zero, 40f * deltaTime);
-        }
         
-        // Si el CharacterController ya está tocando geometría lateral (esquina, pared adyacente),
-        // eliminamos el stickForce para que no quede encallado entre la tinta y esa geometría.
+        else
+            swimVelocity = Vector3.MoveTowards(swimVelocity, Vector3.zero, 40f * deltaTime);
+        
         bool hittingSideGeometry = (stateMachine.Controller.collisionFlags & CollisionFlags.Sides) != 0;
         Vector3 stickForce = hittingSideGeometry ? Vector3.zero : -surfaceNormal * 5f;
 
@@ -155,7 +135,7 @@ public class PlayerSwimState : PlayerBaseState
 
     private void PerformInkJump()
     {
-        Vector3 surfaceNormal = stateMachine.CurrentInkNormal;
+        Vector3 surfaceNormal = stateMachine.currentInkNormal;
         
         float surfaceAngle = Vector3.Angle(surfaceNormal, Vector3.up);
         

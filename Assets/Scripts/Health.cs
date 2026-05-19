@@ -7,36 +7,33 @@ public class Health : MonoBehaviour
     [SerializeField] private int maxHealth = 100;
 
     public int health;
-    private bool isInvulnerable;
+    private bool _isInvulnerable;
 
     public event Action OnTakeDamage;
     public event Action OnDie;
-    public event Action OnHealthChanged; 
+    public event Action OnHealthChanged;
 
     public bool IsDead => health == 0;
-    public int MaxHealth => maxHealth; 
+    public int MaxHealth => maxHealth;
 
-    void Start()
+    private void Start()
     {
         health = maxHealth;
-        OnHealthChanged?.Invoke(); 
+        OnHealthChanged?.Invoke();
     }
-    
-    // TODO: Check
-    // Evaluar si es necesario
-    // No es usa ni en el God Mode
+
     public void SetInvulnerable(bool isInvulnerable)
     {
-        this.isInvulnerable = isInvulnerable;
+        _isInvulnerable = isInvulnerable;
     }
 
     public void DealDamage(int damage)
     {
-        if (health == 0 || isInvulnerable) { return; }
+        if (health == 0 || _isInvulnerable) return;
 
         health = Mathf.Max(health - damage, 0);
 
-        OnHealthChanged?.Invoke(); 
+        OnHealthChanged?.Invoke();
         OnTakeDamage?.Invoke();
 
         if (health <= 0)

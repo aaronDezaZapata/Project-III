@@ -1,30 +1,25 @@
-using System;
 using UnityEngine;
 
 public class RotatingPlatformController : MonoBehaviour
 {
-    public enum RotationAxis
-    {
-        X, Y, Z
-    }
-    public bool positiveRotation;
-    public RotationAxis axis;
-    
-    public float speed = 2f;
-    public GameObject platform;
+    public enum RotationAxis { X, Y, Z }
+
+    [SerializeField] private RotationAxis _axis;
+    [SerializeField] private float _speed = 2f;
+    [SerializeField] private GameObject _platform;
 
     private void Update()
     {
-        switch (axis)
+        switch (_axis)
         {
             case RotationAxis.X:
-                platform.transform.Rotate(Vector3.right * speed * Time.deltaTime);
+                _platform.transform.Rotate(Vector3.right * _speed * Time.deltaTime);
                 break;
             case RotationAxis.Y:
-                platform.transform.Rotate(Vector3.up * speed * Time.deltaTime);
+                _platform.transform.Rotate(Vector3.up * _speed * Time.deltaTime);
                 break;
             case RotationAxis.Z:
-                platform.transform.Rotate(Vector3.forward * speed * Time.deltaTime);
+                _platform.transform.Rotate(Vector3.forward * _speed * Time.deltaTime);
                 break;
         }
     }

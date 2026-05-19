@@ -1,16 +1,8 @@
-using UnityEngine;
 
-/// <summary>
-/// Player Blue State
-/// - Basic Movement
-/// - Geyser se activa en el 3er salto
-///   manteniendo el botón de salto
-/// - Una vez salido del Geyser en el aire, no se puede re-entrar hasta tocar suelo
-/// </summary>
 public class PlayerBlueState : PlayerWhiteState
 {
-    private bool geyserReady;
-    private bool geyserUsedThisAirTime;
+    private bool _geyserReady;
+    private bool _geyserUsedThisAirTime;
     
     public PlayerBlueState(PlayerStateMachine stateMachine) : base(stateMachine)
     { }
@@ -24,24 +16,19 @@ public class PlayerBlueState : PlayerWhiteState
     {
         UpdateGeyserCooldown(deltaTime);
         
-       
         if (stateMachine.isGrounded)
         {
-            geyserReady = false;
-            geyserUsedThisAirTime = false;
+            _geyserReady = false;
+            _geyserUsedThisAirTime = false;
         }
-        
-        
+
         if (!stateMachine.InputReader.isJumpHeld)
-        {
-            geyserReady = false;
-        }
+            _geyserReady = false;
         
-        
-        if (geyserReady && !geyserUsedThisAirTime && stateMachine.InputReader.isJumpHeld)
+        if (_geyserReady && !_geyserUsedThisAirTime && stateMachine.InputReader.isJumpHeld)
         {
-            geyserUsedThisAirTime = true;
-            geyserReady = false;
+            _geyserUsedThisAirTime = true;
+            _geyserReady = false;
             
             stateMachine.SwitchState(typeof(PlayerGeyserState));
             return true;
@@ -73,9 +60,8 @@ public class PlayerBlueState : PlayerWhiteState
             stateMachine.Animator.SetTrigger(JumpTriggered);
             Jump();
         }
-        else if (!stateMachine.isGrounded && !geyserUsedThisAirTime)
-        {
-            geyserReady = true;
-        }
+        
+        else if (!stateMachine.isGrounded && !_geyserUsedThisAirTime)
+            _geyserReady = true;
     }
 }

@@ -2,14 +2,13 @@ using UnityEngine;
 
 public class DestructibleGlass : MonoBehaviour
 {
-    [SerializeField] GameObject brokenObject;
+    [SerializeField] private GameObject _brokenObject;
 
     private void OnCollisionEnter(Collision collision)
     {
-       if(collision.transform.CompareTag("Enemy"))
-        {
-            brokenObject.SetActive(true);
-            Destroy(gameObject);
-        }
+        if (!collision.transform.CompareTag("Enemy")) return;
+
+        _brokenObject.SetActive(true);
+        Destroy(gameObject);
     }
 }

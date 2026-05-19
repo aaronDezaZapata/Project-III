@@ -2,35 +2,34 @@ using UnityEngine;
 
 public class ThrownObjectImpact : MonoBehaviour
 {
-    [SerializeField] private float minImpactSpeed = 4f;
+    [SerializeField] private float _minImpactSpeed = 4f;
 
-    private PlayerAudio playerAudio;
-    private Rigidbody rb;
-    private bool hasPlayed;
+    private PlayerAudio _playerAudio;
+    private Rigidbody   _rigidbody;
+    private bool        _hasPlayed;
 
     public void Initialize(PlayerAudio audio, float minSpeed = 4f)
     {
-        playerAudio = audio;
-        minImpactSpeed = minSpeed;
+        _playerAudio    = audio;
+        _minImpactSpeed = minSpeed;
     }
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        _rigidbody = GetComponent<Rigidbody>();
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (hasPlayed) return;
-        if (rb == null) return;
-        if (rb.linearVelocity.magnitude < minImpactSpeed) return;
+        if (_hasPlayed || _rigidbody == null) return;
+        if (_rigidbody.linearVelocity.magnitude < _minImpactSpeed) return;
 
         Vector3 impactPoint = collision.contacts.Length > 0
             ? collision.contacts[0].point
             : transform.position;
 
-        playerAudio?.PlayObjectImpact(impactPoint);
-        hasPlayed = true;
+        _playerAudio?.PlayObjectImpact(impactPoint);
+        _hasPlayed = true;
 
         Destroy(this, 0.05f);
     }

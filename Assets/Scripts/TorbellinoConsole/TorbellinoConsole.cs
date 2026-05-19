@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
@@ -49,7 +50,6 @@ namespace TorbellinoConsoleSystem
             RegisterDefaultCommands();
             ScanForCommands();
 
-            // Apply saved theme
             string savedTheme = PlayerPrefs.GetString(THEME_PREFS_KEY, "dark");
             ApplyTheme(ConsoleTheme.Get(savedTheme));
 
@@ -88,7 +88,7 @@ namespace TorbellinoConsoleSystem
                             inputField.ActivateInputField();
                         }
                     }
-                    catch { /* Silently ignore focus errors */ }
+                    catch { }
                 }
 
                 HandleHistoryNavigation();
@@ -103,8 +103,7 @@ namespace TorbellinoConsoleSystem
             bool isActive = !consolePanel.activeSelf;
             consolePanel.SetActive(isActive);
 
-            // Disable/enable PlayerInput so WASD doesn't bleed into the console
-            var playerInput = FindPlayerInput();
+            PlayerInput playerInput = FindPlayerInput();
             if (playerInput != null)
                 playerInput.enabled = !isActive;
 
@@ -116,10 +115,6 @@ namespace TorbellinoConsoleSystem
             }
         }
 
-        /// <summary>
-        /// Finds the PlayerInput component in the scene.
-        /// Change PLAYER_NAME if your GameObject has a different name.
-        /// </summary>
         private const string PLAYER_NAME = "Player";
         private UnityEngine.InputSystem.PlayerInput FindPlayerInput()
         {
@@ -180,8 +175,6 @@ namespace TorbellinoConsoleSystem
             }
         }
 
-        // ── History navigation ────────────────────────────────────────
-
         private void HandleHistoryNavigation()
         {
             if (Input.GetKeyDown(KeyCode.UpArrow))
@@ -208,7 +201,7 @@ namespace TorbellinoConsoleSystem
         {
             if (Input.GetKeyDown(KeyCode.Tab) && !string.IsNullOrWhiteSpace(currentInput))
             {
-                var suggestions = commandRegistry.GetSuggestions(currentInput);
+                List<string> suggestions = commandRegistry.GetSuggestions(currentInput);
                 if (suggestions.Count == 1)
                 {
                     inputField.text = suggestions[0];
@@ -227,7 +220,7 @@ namespace TorbellinoConsoleSystem
                 return;
             }
 
-            var suggestions = commandRegistry.GetSuggestions(currentInput);
+            List<string> suggestions = commandRegistry.GetSuggestions(currentInput);
             suggestionText.text = suggestions.Count > 0
                 ? "Suggestions: " + string.Join(", ", suggestions.Take(5))
                 : "";
@@ -316,10 +309,10 @@ namespace TorbellinoConsoleSystem
         {
             activeTheme = theme;
 
-            var panelImage = consolePanel != null ? consolePanel.GetComponent<Image>() : null;
+            Image panelImage = consolePanel != null ? consolePanel.GetComponent<Image>() : null;
             if (panelImage != null) panelImage.color = theme.BackgroundColor;
 
-            var inputImage = inputField != null ? inputField.GetComponent<Image>() : null;
+            Image inputImage = inputField != null ? inputField.GetComponent<Image>() : null;
             if (inputImage != null) inputImage.color = theme.InputBackgroundColor;
 
             if (outputText   != null) outputText.color = theme.OutputTextColor;
@@ -341,8 +334,6 @@ namespace TorbellinoConsoleSystem
             Log(message, consoleType);
         }
 
-        // ── Command parsing ───────────────────────────────────────────
-
         private string[] ParseCommandLine(string commandLine)
         {
             List<string> parts = new List<string>();
@@ -363,15 +354,13 @@ namespace TorbellinoConsoleSystem
             return parts.ToArray();
         }
 
-        // ── Default commands ──────────────────────────────────────────
-
         private void RegisterDefaultCommands()
         {
             commandRegistry.Register("help", "Shows all available commands", (args) =>
             {
-                var commands = commandRegistry.GetAllCommands();
+                List<CommandInfo> commands = commandRegistry.GetAllCommands();
                 string result = "Available Commands:\n";
-                foreach (var cmd in commands.OrderBy(c => c.Name))
+                foreach (CommandInfo cmd in commands.OrderBy(c => c.Name))
                     result += $"  <color=#00FFFF>{cmd.Name}</color> - {cmd.Description}\n";
                 return result;
             });
@@ -425,31 +414,29 @@ namespace TorbellinoConsoleSystem
                     consoleHistory.Clear();
                     return "History cleared.";
                 }
-                var all = consoleHistory.GetAll();
+                List<string> all = consoleHistory.GetAll();
                 return all.Count == 0 ? "No history yet." : string.Join("\n", all);
             });
         }
 
-        // ── Attribute command scanner ─────────────────────────────────
-
         private void ScanForCommands()
         {
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 try
                 {
-                    foreach (var type in assembly.GetTypes())
+                    foreach (Type type in assembly.GetTypes())
                     {
-                        var methods = type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-                        foreach (var method in methods)
+                        MethodInfo[] methods = type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                        foreach (MethodInfo method in methods)
                         {
-                            var attribute = method.GetCustomAttribute<ConsoleCommandAttribute>();
+                            ConsoleCommandAttribute attribute = method.GetCustomAttribute<ConsoleCommandAttribute>();
                             if (attribute != null)
                                 RegisterAttributeCommand(method, attribute);
                         }
                     }
                 }
-                catch (ReflectionTypeLoadException) { /* Skip unloadable assemblies */ }
+                catch (ReflectionTypeLoadException) { }
             }
         }
 
@@ -463,7 +450,7 @@ namespace TorbellinoConsoleSystem
             {
                 try
                 {
-                    var parameters = method.GetParameters();
+                    ParameterInfo[] parameters = method.GetParameters();
                     object[] invokeArgs;
 
                     if (parameters.Length == 1 && parameters[0].ParameterType == typeof(string[]))
@@ -485,7 +472,7 @@ namespace TorbellinoConsoleSystem
 
         private object[] ConvertArguments(string[] args, ParameterInfo[] parameters)
         {
-            object[] result = new object[parameters.Length];
+            var result = new object[parameters.Length];
             for (int i = 0; i < parameters.Length; i++)
             {
                 result[i] = i >= args.Length
@@ -494,8 +481,6 @@ namespace TorbellinoConsoleSystem
             }
             return result;
         }
-
-        // ── Static API ────────────────────────────────────────────────
 
         public static void RegisterCommand(string name, string description, Func<string[], string> action)
         {

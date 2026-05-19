@@ -6,9 +6,10 @@ using UnityEngine.Rendering.Universal;
 public class PlayerShootingState : PlayerBaseState
 {
     public static Action<bool> OnAiming;
-    private static readonly int IsOnShooting = Animator.StringToHash("IsOnShooting");
     
-    private float speed = 100f;
+    private static readonly int _isOnShooting = Animator.StringToHash("IsOnShooting");
+    
+    private float _speed = 100f;
     private float _nextFireTime;
     private float _rotationX;
     private float _rotationY;
@@ -16,8 +17,7 @@ public class PlayerShootingState : PlayerBaseState
     private float _currentDirX;
     private float _currentDirY;
 
-    //Audio
-    private bool wasFiringAudio;
+    private bool _wasFiringAudio;
 
     public PlayerShootingState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
@@ -25,23 +25,17 @@ public class PlayerShootingState : PlayerBaseState
 
     public override void Enter()
     {
-        // Sincronizar la dirección de la cámara de apuntado con la orbital
         SyncAimCameraWithOrbital();
         
-        // CAMERA IN
-        stateMachine.aimCamera.Priority = 10;
+        stateMachine.AimCamera.Priority = 10;
         
-        stateMachine.Animator.SetBool(IsOnShooting, true);
-
-        if (stateMachine.ReticleTransform != null)
-            stateMachine.ReticleTransform.gameObject.SetActive(true);
+        stateMachine.Animator.SetBool(_isOnShooting, true);
         
-        // Aim Panel
         OnAiming?.Invoke(true);
         
         _rotationX = stateMachine.transform.eulerAngles.y;
         _rotationY = 0f;
-        wasFiringAudio = false;
+        _wasFiringAudio = false;
     }
 
     public override void Tick(float deltaTime)
@@ -61,17 +55,16 @@ public class PlayerShootingState : PlayerBaseState
         
         stateMachine.Animator.SetFloat("DirX", _currentDirX);
         stateMachine.Animator.SetFloat("DirY", _currentDirY);
-
-        // Actualizar la velocidad de movimiento en el animator
-        Vector3 movement = stateMachine.CalculateMovement();
+        
+        stateMachine.CalculateMovement();
 
         if (stateMachine.InputReader.IsFiring)
         {
-            if (!wasFiringAudio)
+            if (!_wasFiringAudio)
             {
                 stateMachine.PlayerAudio?.PlayPaintStart();
                 stateMachine.PlayerAudio?.StartPaintLoop();
-                wasFiringAudio = true;
+                _wasFiringAudio = true;
             }
 
             if (Time.time >= _nextFireTime)
@@ -89,27 +82,23 @@ public class PlayerShootingState : PlayerBaseState
     public override void Exit()
     {
         StopPaintAudio();
-
-        // Sincronizar la cámara orbital con la dirección de la cámara de apuntado
+        
         SyncOrbitalWithAimCamera();
         
-        stateMachine.aimCamera.Priority = -1;
+        stateMachine.AimCamera.Priority = -1;
         
         OnAiming?.Invoke(false);
         
-        if (stateMachine.ReticleTransform != null)
-            stateMachine.ReticleTransform.gameObject.SetActive(false);
-        
-        stateMachine.Animator.SetBool(IsOnShooting, false);
+        stateMachine.Animator.SetBool(_isOnShooting, false);
     }
 
     private void StopPaintAudio()
     {
-        if (!wasFiringAudio) return;
+        if (!_wasFiringAudio) return;
 
         stateMachine.PlayerAudio?.StopPaintLoop();
         stateMachine.PlayerAudio?.PlayPaintEnd();
-        wasFiringAudio = false;
+        _wasFiringAudio = false;
     }
 
     private void Shoot()
@@ -125,10 +114,10 @@ public class PlayerShootingState : PlayerBaseState
         Vector3 direction = Camera.main.transform.forward;
         stateMachine.UseColor(0.1f);
 
-        proj.linearVelocity = direction * speed;
+        proj.linearVelocity = direction * _speed;
         proj.useGravity = true;
 
-        var inkProjectile = proj.GetComponent<InkProjectile>();
+        InkProjectile inkProjectile = proj.GetComponent<InkProjectile>();
         if (inkProjectile != null)
         {
             inkProjectile.Initialize(stateMachine); 
@@ -140,15 +129,15 @@ public class PlayerShootingState : PlayerBaseState
         Vector2 lookInput = stateMachine.InputReader.LookVector;
         
         float currentSensitivity = stateMachine.GetCurrentCameraSensitivity();
-        float hSens = stateMachine.HorizontalSensitivity * currentSensitivity;
-        float vSens = stateMachine.VerticalSensitivity * currentSensitivity;
+        float hSens = stateMachine.horizontalSensitivity * currentSensitivity;
+        float vSens = stateMachine.verticalSensitivity * currentSensitivity;
         
         _rotationX += lookInput.x * hSens * deltaTime;
         
         stateMachine.transform.rotation = Quaternion.Euler(0f, _rotationX, 0f);
         
         _rotationY -= lookInput.y * vSens * deltaTime;
-        _rotationY = Mathf.Clamp(_rotationY, stateMachine.MinVerticalAngle, stateMachine.MaxVerticalAngle);
+        _rotationY = Mathf.Clamp(_rotationY, stateMachine.minVerticalAngle, stateMachine.maxVerticalAngle);
     }
 
     private void HandleAimMovement(float deltaTime)
@@ -164,13 +153,13 @@ public class PlayerShootingState : PlayerBaseState
 
         Vector3 moveDir = (forward * movementInput.z + right * movementInput.x);
 
-        Move(moveDir * stateMachine.AimMovementSpeed, deltaTime);
+        Move(moveDir * stateMachine.aimMovementSpeed, deltaTime);
 
     }
 
     private void SyncAimCameraWithOrbital()
     {
-        Vector3 orbitalForward = stateMachine.mainCamera.transform.forward;
+        Vector3 orbitalForward = stateMachine.MainCamera.transform.forward;
         
         Vector3 forwardFlat = new Vector3(orbitalForward.x, 0f, orbitalForward.z).normalized;
         if (forwardFlat != Vector3.zero)
@@ -183,25 +172,24 @@ public class PlayerShootingState : PlayerBaseState
         
         float pitchAngle = -Mathf.Asin(orbitalForward.y) * Mathf.Rad2Deg;
         
-        if (stateMachine.aimCameraPitchControl != null)
+        if (stateMachine.AimCameraPitchControl != null)
         {
-            stateMachine.aimCameraPitchControl.SetPitch(pitchAngle);
+            stateMachine.AimCameraPitchControl.SetPitch(pitchAngle);
         }
     }
     
     private void SyncOrbitalWithAimCamera()
     {
-        CinemachineOrbitalFollow orbitalFollow = stateMachine.mainCamera.gameObject.GetComponent<CinemachineOrbitalFollow>();
+        CinemachineOrbitalFollow orbitalFollow = stateMachine.MainCamera.gameObject.GetComponent<CinemachineOrbitalFollow>();
         if (orbitalFollow == null) return;
         
         float playerYaw = stateMachine.transform.eulerAngles.y;
         orbitalFollow.HorizontalAxis.Value = playerYaw;
         
-        Vector3 aimForward = stateMachine.aimCamera.transform.forward;
+        Vector3 aimForward = stateMachine.AimCamera.transform.forward;
         
         float pitchAngle = -Mathf.Asin(aimForward.y) * Mathf.Rad2Deg;
         
-        // Cinemachine 3 OrbitalFollow VerticalAxis expects degrees, not a 0-1 normalized value.
         orbitalFollow.VerticalAxis.Value = pitchAngle;
     }
 }

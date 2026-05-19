@@ -2,97 +2,52 @@ using UnityEngine;
 
 public class LookAtPlayerInRange : MonoBehaviour
 {
-    [Header("Referencias")]
-    [SerializeField] private Transform player;
-
-    [Header("Rango")]
-    [SerializeField] private float detectionRange = 4f;
-
-    [Header("Rotación")]
     [SerializeField] private float rotationSpeed = 5f;
-
-    [Header("Ejes permitidos")]
-    [SerializeField] private bool rotateX = false;
+    [SerializeField] private bool rotateX;
     [SerializeField] private bool rotateY = true;
-    [SerializeField] private bool rotateZ = false;
+    [SerializeField] private bool rotateZ;
+    
+    private Transform _player;
+    private Quaternion _initialRotation;
+    private bool _playerInRange;
 
-    [Header("Opciones")]
-    [SerializeField] private bool invertLookDirection = false;
-
-    private Quaternion initialRotation;
-
-    private void Start()
+    private void Awake()
     {
-        initialRotation = transform.rotation;
-
-        if (player == null)
-        {
-            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-
-            if (playerObj != null)
-            {
-                player = playerObj.transform;
-            }
-        }
+        _initialRotation = transform.rotation;
     }
 
     private void Update()
     {
-        if (player == null) return;
+        if (!_playerInRange && Quaternion.Angle(transform.rotation, _initialRotation) < 0.01f) return;
 
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-        if (distanceToPlayer <= detectionRange)
-        {
-            LookAtPlayer();
-        }
-        else
-        {
-            ReturnToInitialRotation();
-        }
+        Quaternion target = _playerInRange ? GetLookRotation() : _initialRotation;
+        transform.rotation = Quaternion.Slerp(transform.rotation, target, rotationSpeed * Time.deltaTime);
     }
 
-    private void LookAtPlayer()
+    private void OnTriggerEnter(Collider other)
     {
-        Vector3 direction = player.position - transform.position;
+        _player = other.transform;
+        _playerInRange = true;
+    }
 
-        if (invertLookDirection)
-        {
-            direction = -direction;
-        }
+    private void OnTriggerExit(Collider other)
+    {
+        _player = null;
+        _playerInRange = false;
+    }
 
-        if (direction == Vector3.zero) return;
+    private Quaternion GetLookRotation()
+    {
+        Vector3 direction = _player.position - transform.position;
+        if (direction == Vector3.zero) return transform.rotation;
 
-        Quaternion lookRotation = Quaternion.LookRotation(direction);
-
-        Vector3 targetEuler = lookRotation.eulerAngles;
+        Vector3 targetEuler = Quaternion.LookRotation(direction).eulerAngles;
         Vector3 currentEuler = transform.rotation.eulerAngles;
 
-        float finalX = rotateX ? targetEuler.x : currentEuler.x;
-        float finalY = rotateY ? targetEuler.y : currentEuler.y;
-        float finalZ = rotateZ ? targetEuler.z : currentEuler.z;
-
-        Quaternion targetRotation = Quaternion.Euler(finalX, finalY, finalZ);
-
-        transform.rotation = Quaternion.Slerp(
-            transform.rotation,
-            targetRotation,
-            rotationSpeed * Time.deltaTime
+        return Quaternion.Euler(
+            rotateX ? targetEuler.x : currentEuler.x,
+            rotateY ? targetEuler.y : currentEuler.y,
+            rotateZ ? targetEuler.z : currentEuler.z
         );
-    }
-
-    private void ReturnToInitialRotation()
-    {
-        transform.rotation = Quaternion.Slerp(
-            transform.rotation,
-            initialRotation,
-            rotationSpeed * Time.deltaTime
-        );
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, detectionRange);
     }
 }
