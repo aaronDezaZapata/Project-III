@@ -110,5 +110,26 @@ namespace TorbellinoConsoleSystem.Game
             playerName = string.Join(" ", args);
             return $"<color=#00FF88>Player name set to '{playerName}'</color>";
         }
+
+        [ConsoleCommand("addcoll", "Adds collectibles to the player. Usage: addcoll <amount>")]
+        public static string AddCollectible(string[] args)
+        {
+            int amount = 1;
+
+            if (args.Length > 0)
+            {
+                if (!int.TryParse(args[0], out amount) || amount <= 0)
+                    return $"<color=red>Invalid amount '{args[0]}'. Must be a positive integer.</color>";
+            }
+
+            if (GameManager.Instance == null)
+                return "<color=red>GameManager instance not found.</color>";
+
+            for (int i = 0; i < amount; i++)
+                GameManager.Instance.CollectStar(1);
+
+            return $"<color=#00FF88>Added {amount} collectible{(amount > 1 ? "s" : "")}.</color>";
+        }
+
     }
 }
