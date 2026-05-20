@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -49,6 +50,10 @@ public class GameManager : MonoBehaviour
 
     private bool _portalOpened;
 
+    [SerializeField] TextMeshPro _currentCollectibles;
+    [SerializeField] TextMeshPro _totalCollectibles;
+    
+
     private void Awake()
     {
         if (Instance == null)
@@ -61,6 +66,8 @@ public class GameManager : MonoBehaviour
 
         if (_currentCheckPoint == null) return;
         GetNewCheckPoint(_currentCheckPoint);
+        _currentCollectibles.text = _starsCollected.ToString();
+        _totalCollectibles.text = _totalStarsNeeded.ToString();
     }
 
     public Transform GetPlayer() => _player;
@@ -96,6 +103,7 @@ public class GameManager : MonoBehaviour
     public void CollectStar(int amount)
     {
         _starsCollected += amount;
+        _currentCollectibles.text = _starsCollected.ToString();
         Debug.Log("Stars Collected: " + _starsCollected + "/" + _totalStarsNeeded);
 
         if (!_portalOpened && _starsCollected >= _totalStarsNeeded)
