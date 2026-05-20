@@ -3,11 +3,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody), typeof(Collider))]
 public class InkProjectile : MonoBehaviour
 {
-    [SerializeField] private int _hitsToDie;
     [SerializeField] private LayerMask _decalLayerMask = ~0;
 
     private PlayerStateMachine _stateMachine;
-    private int  _currentHits;
     private bool _hasImpacted;
 
     public void Initialize(PlayerStateMachine machineRef)
