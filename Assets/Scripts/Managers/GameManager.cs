@@ -50,8 +50,8 @@ public class GameManager : MonoBehaviour
 
     private bool _portalOpened;
 
-    [SerializeField] TextMeshPro _currentCollectibles;
-    [SerializeField] TextMeshPro _totalCollectibles;
+    [SerializeField] private TextMeshProUGUI _currentCollectibles;
+    [SerializeField] private TextMeshProUGUI _totalCollectibles;
     
 
     private void Awake()
