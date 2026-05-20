@@ -1,3 +1,4 @@
+using System.Collections;
 using FMOD.Studio;
 using FMODUnity;
 using STOP_MODE = FMOD.Studio.STOP_MODE;
@@ -33,10 +34,19 @@ public class AudioManager : MonoBehaviour
     [Header("Pause Snapshot")]
     [SerializeField] private EventReference pauseSnapshot;
 
+    [Header("Music Transitions")]
+    [SerializeField] private float musicFadeDuration = 1.5f;
+    [SerializeField] private float ambienceFadeDuration = 1.0f;
+
     private EventInstance pauseSnapshotInstance;
 
     private EventInstance currentMusicInstance;
+    private EventInstance outgoingMusicInstance;
     private EventInstance currentAmbienceInstance;
+    private EventInstance outgoingAmbienceInstance;
+
+    private Coroutine musicFadeCoroutine;
+    private Coroutine ambienceFadeCoroutine;
 
     private ZoneType currentZone;
     private InkStateType currentInkState = InkStateType.Base;
@@ -65,34 +75,33 @@ public class AudioManager : MonoBehaviour
 
     public void SetZone(ZoneType zone)
     {
+        if (zone == currentZone && currentMusicInstance.isValid()) return;
+
         currentZone = zone;
 
-        StopMusic();
-        StopAmbience();
+        if (musicFadeCoroutine != null) StopCoroutine(musicFadeCoroutine);
+        if (ambienceFadeCoroutine != null) StopCoroutine(ambienceFadeCoroutine);
 
-        EventReference musicEvent = GetMusicEvent(zone);
-        EventReference ambienceEvent = GetAmbienceEvent(zone);
+        musicFadeCoroutine = StartCoroutine(CrossfadeMusic(GetMusicEvent(zone)));
+        ambienceFadeCoroutine = StartCoroutine(CrossfadeAmbience(GetAmbienceEvent(zone)));
+    }
 
-        if (!musicEvent.IsNull)
-        {
-            currentMusicInstance = RuntimeManager.CreateInstance(musicEvent);
-            currentMusicInstance.start();
-        }
+    public void FadeOutMusic()
+    {
+        if (musicFadeCoroutine != null) StopCoroutine(musicFadeCoroutine);
+        musicFadeCoroutine = StartCoroutine(CrossfadeMusic(default));
+    }
 
-        if (!ambienceEvent.IsNull)
-        {
-            currentAmbienceInstance = RuntimeManager.CreateInstance(ambienceEvent);
-            currentAmbienceInstance.start();
-        }
-
-        UpdateGlobalParameters();
+    public void FadeOutAmbience()
+    {
+        if (ambienceFadeCoroutine != null) StopCoroutine(ambienceFadeCoroutine);
+        ambienceFadeCoroutine = StartCoroutine(CrossfadeAmbience(default));
     }
 
     public void SetInkState(InkStateType inkState)
     {
         currentInkState = inkState;
         UpdateGlobalParameters();
-
         RuntimeManager.PlayOneShot(uiInkChange);
     }
 
@@ -126,68 +135,165 @@ public class AudioManager : MonoBehaviour
     public void PlayUIMenuConfirm() => RuntimeManager.PlayOneShot(uiMenuConfirm);
     public void PlayUIPause() => RuntimeManager.PlayOneShot(uiPause);
 
+    private IEnumerator CrossfadeMusic(EventReference newEvent)
+    {
+        if (outgoingMusicInstance.isValid())
+        {
+            outgoingMusicInstance.stop(STOP_MODE.IMMEDIATE);
+            outgoingMusicInstance.release();
+        }
+
+        outgoingMusicInstance = currentMusicInstance;
+
+        if (!newEvent.IsNull)
+        {
+            currentMusicInstance = RuntimeManager.CreateInstance(newEvent);
+            currentMusicInstance.setVolume(0f);
+            currentMusicInstance.start();
+            ApplyParametersToMusic();
+        }
+        else
+        {
+            currentMusicInstance = default;
+        }
+
+        float startVolume = 1f;
+        if (outgoingMusicInstance.isValid())
+            outgoingMusicInstance.getVolume(out startVolume, out _);
+
+        float elapsed = 0f;
+        while (elapsed < musicFadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / musicFadeDuration;
+
+            if (outgoingMusicInstance.isValid())
+                outgoingMusicInstance.setVolume(Mathf.Lerp(startVolume, 0f, t));
+            if (currentMusicInstance.isValid())
+                currentMusicInstance.setVolume(Mathf.Lerp(0f, 1f, t));
+
+            yield return null;
+        }
+
+        if (outgoingMusicInstance.isValid())
+        {
+            outgoingMusicInstance.stop(STOP_MODE.IMMEDIATE);
+            outgoingMusicInstance.release();
+            outgoingMusicInstance = default;
+        }
+
+        if (currentMusicInstance.isValid())
+            currentMusicInstance.setVolume(1f);
+
+        musicFadeCoroutine = null;
+    }
+
+    private IEnumerator CrossfadeAmbience(EventReference newEvent)
+    {
+        if (outgoingAmbienceInstance.isValid())
+        {
+            outgoingAmbienceInstance.stop(STOP_MODE.IMMEDIATE);
+            outgoingAmbienceInstance.release();
+        }
+
+        outgoingAmbienceInstance = currentAmbienceInstance;
+
+        if (!newEvent.IsNull)
+        {
+            currentAmbienceInstance = RuntimeManager.CreateInstance(newEvent);
+            currentAmbienceInstance.setVolume(0f);
+            currentAmbienceInstance.start();
+            ApplyParametersToAmbience();
+        }
+        else
+        {
+            currentAmbienceInstance = default;
+        }
+
+        float startVolume = 1f;
+        if (outgoingAmbienceInstance.isValid())
+            outgoingAmbienceInstance.getVolume(out startVolume, out _);
+
+        float elapsed = 0f;
+        while (elapsed < ambienceFadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / ambienceFadeDuration;
+
+            if (outgoingAmbienceInstance.isValid())
+                outgoingAmbienceInstance.setVolume(Mathf.Lerp(startVolume, 0f, t));
+            if (currentAmbienceInstance.isValid())
+                currentAmbienceInstance.setVolume(Mathf.Lerp(0f, 1f, t));
+
+            yield return null;
+        }
+
+        if (outgoingAmbienceInstance.isValid())
+        {
+            outgoingAmbienceInstance.stop(STOP_MODE.IMMEDIATE);
+            outgoingAmbienceInstance.release();
+            outgoingAmbienceInstance = default;
+        }
+
+        if (currentAmbienceInstance.isValid())
+            currentAmbienceInstance.setVolume(1f);
+
+        ambienceFadeCoroutine = null;
+    }
+
     private void UpdateGlobalParameters()
     {
-        if (currentMusicInstance.isValid())
-        {
-            currentMusicInstance.setParameterByName(PARAM_ZONE, (float)currentZone);
-            currentMusicInstance.setParameterByName(PARAM_INKSTATE, (float)currentInkState);
-            currentMusicInstance.setParameterByName(PARAM_UNDERINK, underInk ? 1f : 0f);
-        }
-
-        if (currentAmbienceInstance.isValid())
-        {
-            currentAmbienceInstance.setParameterByName(PARAM_ZONE, (float)currentZone);
-            currentAmbienceInstance.setParameterByName(PARAM_INKSTATE, (float)currentInkState);
-            currentAmbienceInstance.setParameterByName(PARAM_UNDERINK, underInk ? 1f : 0f);
-        }
+        ApplyParametersToMusic();
+        ApplyParametersToAmbience();
     }
 
-    private EventReference GetMusicEvent(ZoneType zone)
+    private void ApplyParametersToMusic()
     {
-        switch (zone)
-        {
-            case ZoneType.Beach: return beachMusic;
-            case ZoneType.Forest: return forestMusic;
-            case ZoneType.Volcano: return volcanoMusic;
-            case ZoneType.Desk: return deskMusic;
-            default: return default;
-        }
+        if (!currentMusicInstance.isValid()) return;
+        currentMusicInstance.setParameterByName(PARAM_ZONE, (float)currentZone);
+        currentMusicInstance.setParameterByName(PARAM_INKSTATE, (float)currentInkState);
+        currentMusicInstance.setParameterByName(PARAM_UNDERINK, underInk ? 1f : 0f);
     }
 
-    private EventReference GetAmbienceEvent(ZoneType zone)
+    private void ApplyParametersToAmbience()
     {
-        switch (zone)
-        {
-            case ZoneType.Beach: return beachAmbience;
-            case ZoneType.Forest: return forestAmbience;
-            case ZoneType.Volcano: return volcanoAmbience;
-            case ZoneType.Desk: return deskAmbience;
-            default: return default;
-        }
+        if (!currentAmbienceInstance.isValid()) return;
+        currentAmbienceInstance.setParameterByName(PARAM_ZONE, (float)currentZone);
+        currentAmbienceInstance.setParameterByName(PARAM_INKSTATE, (float)currentInkState);
+        currentAmbienceInstance.setParameterByName(PARAM_UNDERINK, underInk ? 1f : 0f);
     }
 
-    private void StopMusic()
+    private EventReference GetMusicEvent(ZoneType zone) => zone switch
     {
-        if (currentMusicInstance.isValid())
-        {
-            currentMusicInstance.stop(STOP_MODE.ALLOWFADEOUT);
-            currentMusicInstance.release();
-        }
-    }
+        ZoneType.Beach   => beachMusic,
+        ZoneType.Forest  => forestMusic,
+        ZoneType.Volcano => volcanoMusic,
+        ZoneType.Desk    => deskMusic,
+        _                => default
+    };
 
-    private void StopAmbience()
+    private EventReference GetAmbienceEvent(ZoneType zone) => zone switch
     {
-        if (currentAmbienceInstance.isValid())
-        {
-            currentAmbienceInstance.stop(STOP_MODE.ALLOWFADEOUT);
-            currentAmbienceInstance.release();
-        }
-    }
+        ZoneType.Beach   => beachAmbience,
+        ZoneType.Forest  => forestAmbience,
+        ZoneType.Volcano => volcanoAmbience,
+        ZoneType.Desk    => deskAmbience,
+        _                => default
+    };
 
     private void OnDestroy()
     {
-        StopMusic();
-        StopAmbience();
+        ForceStop(ref currentMusicInstance);
+        ForceStop(ref outgoingMusicInstance);
+        ForceStop(ref currentAmbienceInstance);
+        ForceStop(ref outgoingAmbienceInstance);
+    }
+
+    private static void ForceStop(ref EventInstance instance)
+    {
+        if (!instance.isValid()) return;
+        instance.stop(STOP_MODE.IMMEDIATE);
+        instance.release();
+        instance = default;
     }
 }

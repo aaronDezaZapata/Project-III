@@ -69,7 +69,7 @@ MonoBehaviour:
   Path: Audio/Blot/Build/Desktop/amb.bank
   Name: amb
   StudioPath: bank:/amb
-  lastModified: 639132607948620612
+  lastModified: 639148295854080610
   FileSizes:
   - Name: Desktop
     Value: 1051712
@@ -313,10 +313,10 @@ MonoBehaviour:
   Path: Audio/Blot/Build/Desktop/player.bank
   Name: player
   StudioPath: bank:/player
-  lastModified: 639132647616750905
+  lastModified: 639148295854347017
   FileSizes:
   - Name: Desktop
-    Value: 118176
+    Value: 135072
   Exists: 1
 --- !u!114 &-4826475559612817689
 MonoBehaviour:
@@ -345,32 +345,6 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &-4544683560508864658
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/footsteps_system/PlayerSpeed
-  m_EditorClassIdentifier: 
-  Name: PlayerSpeed
-  StudioPath: 
-  Min: 0
-  Max: 1
-  Default: 0
-  ID:
-    data1: 3079474309
-    data2: 651837784
-  Type: 2
-  IsGlobal: 1
-  Labels:
-  - Walk
-  - Run
-  Exists: 1
 --- !u!114 &-4361280354128633201
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -414,7 +388,8 @@ MonoBehaviour:
   IsStream: 0
   Is3D: 0
   IsOneShot: 0
-  Parameters: []
+  Parameters:
+  - {fileID: -3002805765623963330}
   MinDistance: 1
   MaxDistance: 20
   Length: 5139
@@ -445,6 +420,30 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-3002805765623963330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/swim_loop/movement
+  m_EditorClassIdentifier: 
+  Name: movement
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 3051593860
+    data2: 310417879
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
 --- !u!114 &-2936316567951198220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -492,6 +491,33 @@ MonoBehaviour:
     Data4: -688479470
   Banks:
   - {fileID: 119228371442799281}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &-2727694985184756477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/player/footsteps/wood
+  m_EditorClassIdentifier: 
+  Path: event:/player/footsteps/wood
+  Guid:
+    Data1: -1309914670
+    Data2: 1264576282
+    Data3: -973347650
+    Data4: -1932391724
+  Banks:
+  - {fileID: -4993922810490107572}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -675,10 +701,10 @@ MonoBehaviour:
   Path: Audio/Blot/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639132639304362318
+  lastModified: 639148295854010460
   FileSizes:
   - Name: Desktop
-    Value: 3210
+    Value: 3450
   Exists: 1
 --- !u!114 &-2012904241228989026
 MonoBehaviour:
@@ -813,7 +839,6 @@ MonoBehaviour:
   IsOneShot: 1
   Parameters:
   - {fileID: -1525589589189590338}
-  - {fileID: -4544683560508864658}
   MinDistance: 1
   MaxDistance: 20
   Length: 0
@@ -846,6 +871,33 @@ MonoBehaviour:
   - sand
   - wood
   Exists: 1
+--- !u!114 &-1031283001330046409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/player/footsteps/ink
+  m_EditorClassIdentifier: 
+  Path: event:/player/footsteps/ink
+  Guid:
+    Data1: 958865026
+    Data2: 1096138003
+    Data3: -1143494729
+    Data4: -1873436986
+  Banks:
+  - {fileID: -4993922810490107572}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &-935834818339092597
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -942,7 +994,7 @@ MonoBehaviour:
   Path: Audio/Blot/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639132639304353003
+  lastModified: 639130229537848806
   FileSizes:
   - Name: Desktop
     Value: 1464
@@ -1206,6 +1258,11 @@ MonoBehaviour:
   - {fileID: 6335511461997876573}
   - {fileID: -2103853633678869161}
   - {fileID: 135047236638863217}
+  - {fileID: 941018498017744879}
+  - {fileID: -1031283001330046409}
+  - {fileID: 6690539956992913569}
+  - {fileID: -2727694985184756477}
+  - {fileID: 8108482549505620916}
   EditorParameters:
   - {fileID: 3417943063311627765}
   - {fileID: 8074535884100202521}
@@ -1214,7 +1271,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: -2026104031856590043}
   cacheVersion: 131858
-  cacheTime: 639132648583103880
+  cacheTime: 639148295854367033
   SerializableEventsDict:
   - key: event:/amb/volcano
     index: 0
@@ -1312,6 +1369,16 @@ MonoBehaviour:
     index: 46
   - key: event:/interaction/inkwell
     index: 47
+  - key: event:/player/footsteps/rock
+    index: 48
+  - key: event:/player/footsteps/ink
+    index: 49
+  - key: event:/player/footsteps/leaves
+    index: 50
+  - key: event:/player/footsteps/wood
+    index: 51
+  - key: event:/player/footsteps/sand
+    index: 52
 --- !u!114 &119228371442799281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1327,10 +1394,10 @@ MonoBehaviour:
   Path: Audio/Blot/Build/Desktop/ink.bank
   Name: ink
   StudioPath: bank:/ink
-  lastModified: 639132648583103880
+  lastModified: 639148295854135750
   FileSizes:
   - Name: Desktop
-    Value: 99552
+    Value: 419680
   Exists: 1
 --- !u!114 &135047236638863217
 MonoBehaviour:
@@ -1406,6 +1473,33 @@ MonoBehaviour:
     Data4: 1565095145
   Banks:
   - {fileID: 119228371442799281}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &941018498017744879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/player/footsteps/rock
+  m_EditorClassIdentifier: 
+  Path: event:/player/footsteps/rock
+  Guid:
+    Data1: 1651299636
+    Data2: 1115843357
+    Data3: -435449464
+    Data4: 1780474756
+  Banks:
+  - {fileID: -4993922810490107572}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -1537,7 +1631,7 @@ MonoBehaviour:
   Path: Audio/Blot/Build/Desktop/interaction.bank
   Name: interaction
   StudioPath: bank:/interaction
-  lastModified: 639132639304550180
+  lastModified: 639148295854145744
   FileSizes:
   - Name: Desktop
     Value: 103232
@@ -1612,7 +1706,7 @@ MonoBehaviour:
   Path: Audio/Blot/Build/Desktop/ui.bank
   Name: ui
   StudioPath: bank:/ui
-  lastModified: 639132607964372766
+  lastModified: 639148295854367033
   FileSizes:
   - Name: Desktop
     Value: 4070
@@ -1821,10 +1915,10 @@ MonoBehaviour:
   Path: Audio/Blot/Build/Desktop/music.bank
   Name: music
   StudioPath: bank:/music
-  lastModified: 639132607963885239
+  lastModified: 639148295854324319
   FileSizes:
   - Name: Desktop
-    Value: 2653984
+    Value: 2264288
   Exists: 1
 --- !u!114 &5848157529081913275
 MonoBehaviour:
@@ -1988,6 +2082,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &6690539956992913569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/player/footsteps/leaves
+  m_EditorClassIdentifier: 
+  Path: event:/player/footsteps/leaves
+  Guid:
+    Data1: -1519890760
+    Data2: 1233016714
+    Data3: 272852406
+    Data4: 156309868
+  Banks:
+  - {fileID: -4993922810490107572}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &7152979701205972485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2076,14 +2197,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/ink/paint_impact
   Guid:
-    Data1: 1540142889
-    Data2: 1261438081
-    Data3: -319199081
-    Data4: 1209669176
+    Data1: 1925566773
+    Data2: 1212993720
+    Data3: -1230826620
+    Data4: 814697125
   Banks:
   - {fileID: 119228371442799281}
   IsStream: 0
-  Is3D: 0
+  Is3D: 1
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
@@ -2145,6 +2266,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 84000
+--- !u!114 &8108482549505620916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/player/footsteps/sand
+  m_EditorClassIdentifier: 
+  Path: event:/player/footsteps/sand
+  Guid:
+    Data1: 1367738099
+    Data2: 1134889510
+    Data3: 1766154378
+    Data4: -1396276558
+  Banks:
+  - {fileID: -4993922810490107572}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &8292991930646366063
 MonoBehaviour:
   m_ObjectHideFlags: 0

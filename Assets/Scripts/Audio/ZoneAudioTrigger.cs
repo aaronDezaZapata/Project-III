@@ -9,10 +9,4 @@ public class ZoneAudioTrigger : MonoBehaviour
         if (!other.CompareTag("Player")) return;
         AudioManager.Instance?.SetZone(zoneToSet);
     }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (!other.CompareTag("Player")) return;
-        AudioManager.Instance?.SetZone(zoneToSet);
-    }
 }
