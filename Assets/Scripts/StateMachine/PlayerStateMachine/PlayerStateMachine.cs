@@ -221,7 +221,7 @@ public class PlayerStateMachine : StateMachine
     
     public void CheckGrounded()           => _groundChecker.CheckGrounded();
     public void ApplySlopeSlide()         => _groundChecker.ApplySlopeSlide();
-    public void PlayFootstepParticle()    => _groundChecker.PlayFootstepParticle(); // TODO: Mirar
+    public void PlayFootstepParticle()    => _groundChecker.PlayFootstepParticle();
     public void AddShadowDrop()           => _groundChecker.AddShadowDrop();
 
     public void RotateColors()                        => _inkColorSystem.RotateColors();

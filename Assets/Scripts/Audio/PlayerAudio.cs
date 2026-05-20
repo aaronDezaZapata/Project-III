@@ -11,6 +11,10 @@ public class PlayerAudio : MonoBehaviour
     [SerializeField] private EventReference fallEvent;
     [SerializeField] private EventReference heavyImpactEvent;
     [SerializeField] private EventReference footstepsEvent;
+    [SerializeField] private EventReference leavesEvent;
+    [SerializeField] private EventReference rockEvent;
+    [SerializeField] private EventReference sandEvent;
+    [SerializeField] private EventReference woodEvent;
     [SerializeField] private EventReference landingEvent;
 
     [Header("Paint / Ink")]
@@ -45,14 +49,10 @@ public class PlayerAudio : MonoBehaviour
 
     private EventInstance blackMasteryInstance;
 
-    private EventInstance footstepsInstance;
     private EventInstance paintLoopInstance;
     private EventInstance swimLoopInstance;
     private EventInstance objectSpinInstance;
     private EventInstance whipSwingInstance;
-
-    private const string PARAM_PLAYER_SPEED = "PlayerSpeed";
-    private const string PARAM_SURFACE_TYPE = "SurfaceType";
 
     private void Start()
     {
@@ -247,40 +247,18 @@ public class PlayerAudio : MonoBehaviour
 
     public void PlayFootstep(FootstepSurfaceType surfaceType, FootstepSpeedType speedType)
     {
-        if (footstepsEvent.IsNull) return;
-
-        EventInstance footstepInstance = RuntimeManager.CreateInstance(footstepsEvent);
-
-        footstepInstance.set3DAttributes(RuntimeUtils.To3DAttributes(transform));
-
-        footstepInstance.setParameterByNameWithLabel(PARAM_SURFACE_TYPE, GetSurfaceLabel(surfaceType));
-        footstepInstance.setParameterByNameWithLabel(PARAM_PLAYER_SPEED, GetSpeedLabel(speedType));
-
-        footstepInstance.start();
-        footstepInstance.release();
-    }
-
-    private string GetSurfaceLabel(FootstepSurfaceType surfaceType)
-    {
-        return surfaceType switch
+        EventReference ev = surfaceType switch
         {
-            FootstepSurfaceType.Ink => "ink",
-            FootstepSurfaceType.Leaves => "leaves",
-            FootstepSurfaceType.Rock => "rock",
-            FootstepSurfaceType.Sand => "sand",
-            FootstepSurfaceType.Wood => "wood",
-            _ => "ink"
+            FootstepSurfaceType.Leaves => leavesEvent,
+            FootstepSurfaceType.Rock   => rockEvent,
+            FootstepSurfaceType.Sand   => sandEvent,
+            FootstepSurfaceType.Wood   => woodEvent,
+            _                          => default
         };
-    }
 
-    private string GetSpeedLabel(FootstepSpeedType speedType)
-    {
-        return speedType switch
-        {
-            FootstepSpeedType.Walk => "Walk",
-            FootstepSpeedType.Run => "Run",
-            _ => "Walk"
-        };
+        if (ev.IsNull) return;
+
+        RuntimeManager.PlayOneShot(ev, transform.position);
     }
 
     private void OnDestroy()
