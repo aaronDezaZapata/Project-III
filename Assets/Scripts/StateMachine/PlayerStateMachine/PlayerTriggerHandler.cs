@@ -88,7 +88,8 @@ public class PlayerTriggerHandler : MonoBehaviour
         if (_player.inkDecalPrefab == null) return;
 
         Quaternion alignmentRotation = Quaternion.FromToRotation(Vector3.up, normal);
-        Quaternion finalRotation = alignmentRotation * Quaternion.Euler(90f, 0f, 0f);
+        float randomZ = Random.Range(0f, 360f);
+        Quaternion finalRotation = alignmentRotation * Quaternion.Euler(90f, 0f, randomZ);
 
         GameObject splat = Instantiate(_player.inkDecalPrefab, point, finalRotation);
         splat.transform.position += normal * _player.ReticleSurfaceOffset;
