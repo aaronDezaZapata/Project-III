@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerSwimState : PlayerBaseState
 {
@@ -85,54 +85,116 @@ public class PlayerSwimState : PlayerBaseState
     {
         Vector2 input = stateMachine.InputReader.MoveVector;
         Vector3 surfaceNormal = stateMachine.currentInkNormal;
-        
+
         Vector3 surfaceUp = Vector3.ProjectOnPlane(Vector3.up, surfaceNormal);
-        
         if (surfaceUp.sqrMagnitude < 0.1f)
             surfaceUp = Vector3.ProjectOnPlane(Camera.main.transform.forward, surfaceNormal);
-
         surfaceUp = surfaceUp.normalized;
-        
+
         Vector3 surfaceRight = Vector3.ProjectOnPlane(Camera.main.transform.right, surfaceNormal);
-        
         if (surfaceRight.sqrMagnitude < 0.01f)
             surfaceRight = Vector3.Cross(surfaceNormal, surfaceUp);
-
         surfaceRight = surfaceRight.normalized;
-        
+
         Vector3 moveDir = (surfaceUp * input.y + surfaceRight * input.x);
-        
         if (moveDir.sqrMagnitude > 0.01f)
             moveDir.Normalize();
-        
         else
             moveDir = Vector3.zero;
-        
+
+        // Bloquear si el destino no tiene tinta
+        if (moveDir != Vector3.zero)
+            moveDir = ClampToInkBoundary(moveDir, surfaceNormal, deltaTime);
 
         if (moveDir != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(moveDir, surfaceNormal);
-            stateMachine.transform.rotation = Quaternion.Slerp(stateMachine.transform.rotation, targetRotation, deltaTime * 20f);
+            stateMachine.transform.rotation = Quaternion.Slerp(
+                stateMachine.transform.rotation, targetRotation, deltaTime * 20f);
         }
-        
         else
         {
-            Quaternion targetRotation = Quaternion.FromToRotation(stateMachine.transform.up, surfaceNormal) * stateMachine.transform.rotation;
-            stateMachine.transform.rotation = Quaternion.Slerp(stateMachine.transform.rotation, targetRotation, deltaTime * 10f);
+            Quaternion targetRotation = Quaternion.FromToRotation(
+                stateMachine.transform.up, surfaceNormal) * stateMachine.transform.rotation;
+            stateMachine.transform.rotation = Quaternion.Slerp(
+                stateMachine.transform.rotation, targetRotation, deltaTime * 10f);
         }
 
         if (moveDir.magnitude > 0.1f)
-            swimVelocity = Vector3.MoveTowards(swimVelocity, moveDir * stateMachine.SwimSpeed, 60f * deltaTime);
-        
+            swimVelocity = Vector3.MoveTowards(
+                swimVelocity, moveDir * stateMachine.SwimSpeed, 60f * deltaTime);
         else
             swimVelocity = Vector3.MoveTowards(swimVelocity, Vector3.zero, 40f * deltaTime);
-        
+
         bool hittingSideGeometry = (stateMachine.Controller.collisionFlags & CollisionFlags.Sides) != 0;
         Vector3 stickForce = hittingSideGeometry ? Vector3.zero : -surfaceNormal * 5f;
 
         stateMachine.Controller.Move((swimVelocity + stickForce) * deltaTime);
     }
 
+    private Vector3 ClampToInkBoundary(Vector3 moveDir, Vector3 surfaceNormal, float deltaTime)
+    {
+        float lookahead = stateMachine.SwimSpeed * deltaTime * 6f;
+        float checkOffset = 0.3f;
+
+        // Punto adelante del jugador, ligeramente elevado sobre la superficie
+        Vector3 futurePos = stateMachine.transform.position
+                          + moveDir * lookahead
+                          + surfaceNormal * checkOffset;
+
+        // Raycast hacia la superficie para ver si hay tinta allí
+        bool inkAhead = Physics.Raycast(
+            futurePos,
+            -surfaceNormal,
+            out RaycastHit hit,
+            checkOffset * 3f,
+            stateMachine.inkLayer
+        );
+
+        // Hay tinta delante: movimiento libre
+        if (inkAhead)
+            return moveDir;
+
+        // No hay tinta: intentar moverse solo en la dirección lateral (strafe)
+        // Separamos moveDir en componente "hacia el borde" y componente lateral
+        Vector3 boundaryNormal = Vector3.ProjectOnPlane(moveDir, surfaceNormal).normalized;
+        Vector3 lateralDir = Vector3.Cross(surfaceNormal, boundaryNormal).normalized;
+
+        // Conservamos cuánto del input original va en lateral
+        float lateralAmount = Vector3.Dot(
+            new Vector3(stateMachine.InputReader.MoveVector.x,
+                        0,
+                        stateMachine.InputReader.MoveVector.y),
+            lateralDir
+        );
+
+        Vector3 lateralMove = lateralDir * lateralAmount;
+
+        if (lateralMove.sqrMagnitude > 0.01f)
+        {
+            // Verificamos que la dirección lateral sí tenga tinta
+            Vector3 lateralFuturePos = stateMachine.transform.position
+                                     + lateralMove.normalized * lookahead
+                                     + surfaceNormal * checkOffset;
+
+            bool inkLateral = Physics.Raycast(
+                lateralFuturePos,
+                -surfaceNormal,
+                checkOffset * 3f,
+                stateMachine.inkLayer
+            );
+
+            if (inkLateral)
+            {
+                swimVelocity = Vector3.ProjectOnPlane(swimVelocity, boundaryNormal);
+                return lateralMove.normalized;
+            }
+        }
+
+        // Sin salida: frenar y parar
+        swimVelocity = Vector3.MoveTowards(swimVelocity, Vector3.zero, 80f * deltaTime);
+        return Vector3.zero;
+    }
     private void PerformInkJump()
     {
         Vector3 surfaceNormal = stateMachine.currentInkNormal;
