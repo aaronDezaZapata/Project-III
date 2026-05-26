@@ -22,19 +22,14 @@ public class MainCanvasManager : MonoBehaviour
     [Space(5f)]
     [SerializeField] private Slider _aimGamepadSlider;
     [SerializeField] private Slider _aimMouseSlider;
-    
-    [Space(10f)]
-    [SerializeField] private Slider _masterSlider;
-    [SerializeField] private Slider _musicSlider;
-    [SerializeField] private Slider _sfxSlider;
     [Space(10f)]
     [Header("Toggles")]
     [SerializeField] private Toggle _xInvertToggle;
     [SerializeField] private Toggle _aimXInvertToggle;
     [Space(10f)]
-    
+    [Header("Audio Settings")]
     [SerializeField] private string _masterBusName;
-    [SerializeField] private string _musicVCAName;
+    [SerializeField] private string _musicVcaName;
     [SerializeField] private string _sfxVcaName;
     [SerializeField] private string _ambVcaName;
     
@@ -49,8 +44,6 @@ public class MainCanvasManager : MonoBehaviour
     private VCA _musicVca;
     private VCA _sfxVca;
     private VCA _ambVca;
-    
-    
     
     public static Action<float> OnMouseSliderAction;
     public static Action<float> OnGamepadSliderAction;
@@ -216,7 +209,7 @@ public class MainCanvasManager : MonoBehaviour
     private void InitialAudioDeclaration()
     {
         _masterBus = RuntimeManager.GetBus(_masterBusName);
-        _musicVca = RuntimeManager.GetVCA(_musicVCAName);
+        _musicVca = RuntimeManager.GetVCA(_musicVcaName);
         _sfxVca = RuntimeManager.GetVCA(_sfxVcaName);
         _ambVca = RuntimeManager.GetVCA(_ambVcaName);
     }
