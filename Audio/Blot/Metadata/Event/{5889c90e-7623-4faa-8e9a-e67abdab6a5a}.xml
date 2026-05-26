@@ -53,6 +53,9 @@
 		</relationship>
 	</object>
 	<object class="MixerInput" id="{dcd34178-0e19-4306-ac63-e111df20594a}">
+		<relationship name="masters">
+			<destination>{6fc181b4-b768-4422-92f3-c23209820d93}</destination>
+		</relationship>
 		<relationship name="effectChain">
 			<destination>{7552a8aa-be53-4d1b-aa82-f7a607a1d9bc}</destination>
 		</relationship>
@@ -333,7 +336,7 @@
 			<value>0</value>
 		</property>
 		<property name="value">
-			<value>-80</value>
+			<value>0</value>
 		</property>
 		<property name="curveShape">
 			<value>-0.249556512</value>
@@ -344,7 +347,7 @@
 			<value>1</value>
 		</property>
 		<property name="value">
-			<value>0</value>
+			<value>10</value>
 		</property>
 	</object>
 </objects>
