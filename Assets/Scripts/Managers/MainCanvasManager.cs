@@ -1,4 +1,6 @@
 using System;
+using FMOD.Studio;
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
@@ -21,23 +23,28 @@ public class MainCanvasManager : MonoBehaviour
     [SerializeField] private Slider _aimGamepadSlider;
     [SerializeField] private Slider _aimMouseSlider;
     [Space(10f)]
-    [SerializeField] private Slider _musicSlider;
-    [SerializeField] private Slider _sfxSlider;
-
-    [Space(10f)]
     [Header("Toggles")]
     [SerializeField] private Toggle _xInvertToggle;
     [SerializeField] private Toggle _aimXInvertToggle;
+    [Space(10f)]
+    [Header("Audio Settings")]
+    [SerializeField] private string _masterBusName;
+    [SerializeField] private string _musicVcaName;
+    [SerializeField] private string _sfxVcaName;
+    [SerializeField] private string _ambVcaName;
+    
+    private PlayerStateMachine _player;
 
     private float _defaultGamepadSensitivity = 1f;
     private float _defaultMouseSensitivity   = 1f;
     private float _defaultAimGamepadSensitivity;
     private float _defaultAimMouseSensitivity;
-
-    [SerializeField] private AudioMixer _audioMixer;
-
-    private PlayerStateMachine _player;
-
+    
+    private Bus _masterBus;
+    private VCA _musicVca;
+    private VCA _sfxVca;
+    private VCA _ambVca;
+    
     public static Action<float> OnMouseSliderAction;
     public static Action<float> OnGamepadSliderAction;
 
@@ -51,6 +58,7 @@ public class MainCanvasManager : MonoBehaviour
         IdlePanelConfig();
         GetInitialSettings();
         SetSettingsListeners();
+        InitialAudioDeclaration();
     }
 
     private void OnEnable()
@@ -140,17 +148,22 @@ public class MainCanvasManager : MonoBehaviour
 
     public void SetMasterVolume(float level)
     {
-        _audioMixer.SetFloat("masterVolume", Mathf.Log10(level) * 20f);
+        _masterBus.setVolume(level);
     }
 
     public void SetSoundFXVolume(float level)
     {
-        _audioMixer.SetFloat("soundFXVolume", Mathf.Log10(level) * 20f);
+        _sfxVca.setVolume(level);
     }
 
     public void SetMusicVolume(float level)
     {
-        _audioMixer.SetFloat("musicVolume", Mathf.Log10(level) * 20f);
+        _musicVca.setVolume(level);
+    }
+    
+    public void SetAmbientVolume(float level)
+    {
+        _ambVca.setVolume(level);
     }
 
     #endregion
@@ -191,5 +204,13 @@ public class MainCanvasManager : MonoBehaviour
     public void ExitToMainMenu()
     {
         SceneManager.LoadScene("1 - MainMenu");
+    }
+
+    private void InitialAudioDeclaration()
+    {
+        _masterBus = RuntimeManager.GetBus(_masterBusName);
+        _musicVca = RuntimeManager.GetVCA(_musicVcaName);
+        _sfxVca = RuntimeManager.GetVCA(_sfxVcaName);
+        _ambVca = RuntimeManager.GetVCA(_ambVcaName);
     }
 }
