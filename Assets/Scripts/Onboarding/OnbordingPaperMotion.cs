@@ -37,6 +37,10 @@ public class OnboardingPaperMotion : MonoBehaviour
     [SerializeField] private Vector3 _rotationAxis = new Vector3(0f, 0f, 1f);
     [SerializeField] private float _rotationAmount = 10f;
 
+    [Header("Whip Pendulum")]
+    [SerializeField] private float _swingAngle = 120f;
+    [SerializeField] private Transform _flipTarget;
+
     [Header("Auto Flip")]
     [SerializeField] private bool  _useAutoFlip      = true;
     [SerializeField] private float _flipEverySeconds = 2f;
@@ -143,8 +147,7 @@ public class OnboardingPaperMotion : MonoBehaviour
 
         if (_motionType == MotionType.Walk      ||
             _motionType == MotionType.Jump      ||
-            _motionType == MotionType.DoubleJump ||
-            _motionType == MotionType.Whip)
+            _motionType == MotionType.DoubleJump)
             return;
 
         if (_loop)
@@ -269,24 +272,19 @@ public class OnboardingPaperMotion : MonoBehaviour
 
     private bool AnimateWhip()
     {
-        float duration = 0.55f;
-        float t        = Mathf.Clamp01(_timer / duration);
-        float targetX  = _walkForward ? _horizontalDistance : -_horizontalDistance;
-        float x        = Mathf.Lerp(0f, targetX, t);
-        float y        = Mathf.Sin(t * Mathf.PI) * _sineAmplitude;
-        float rot      = Mathf.Sin(t * Mathf.PI) * _rotationAmount;
-
-        ApplyTransform(new Vector3(x, y, 0f), rot);
-
-        if (t >= 1f)
+        float prevDeriv = Mathf.Cos((_timer - Time.deltaTime * _speed) * _sineFrequency);
+        float currDeriv = Mathf.Cos(_timer * _sineFrequency);
+        if (prevDeriv * currDeriv < 0f)
         {
-            _currentAnchorPos += new Vector3(targetX, 0f, 0f);
-            _walkForward       = !_walkForward;
-            _isFacingRight     = _walkForward;
+            _isFacingRight = !_isFacingRight;
             ApplyFacingDirection();
-            _timer = 0f;
         }
 
+        float t = (Mathf.Sin(_timer * _sineFrequency) + 1f) * 0.5f;
+        float angle = Mathf.Lerp(0f, _swingAngle, t);
+
+        transform.localRotation = _startRot * Quaternion.AngleAxis(angle, Vector3.forward);
+        transform.localPosition = _currentAnchorPos;
         return false;
     }
 
