@@ -43,6 +43,7 @@ Transform:
   - {fileID: 5445480121851282294}
   - {fileID: 4801120994838869504}
   - {fileID: 5035744126652875163}
+  - {fileID: 3186749536390363108}
   - {fileID: 7205995717628041244}
   - {fileID: 6407040872542274184}
   - {fileID: 854463500892220026}
@@ -118,25 +119,20 @@ MonoBehaviour:
   <Controller>k__BackingField: {fileID: 6987920545998890324}
   <ForceReceiver>k__BackingField: {fileID: 5816333734058023856}
   <Animator>k__BackingField: {fileID: 3442740892796968807}
-  <mainCamera>k__BackingField: {fileID: 2303076394716410090}
-  <aimCamera>k__BackingField: {fileID: 819250276293194355}
-  <aimCameraPitchControl>k__BackingField: {fileID: 2445659124891050709}
-  <Health>k__BackingField: {fileID: 2416829624496613863}
-  <Mat_Player>k__BackingField: {fileID: 7736418791936549280}
+  <MainCamera>k__BackingField: {fileID: 0}
+  <AimCamera>k__BackingField: {fileID: 0}
+  <AimCameraPitchControl>k__BackingField: {fileID: 0}
+  <MatPlayer>k__BackingField: {fileID: 0}
   <PlayerAudio>k__BackingField: {fileID: 0}
   <OriginalMesh>k__BackingField: {fileID: 1300542799201220170}
-  <SharkFinMesh>k__BackingField: {fileID: 5668165195572697889}
+  <SharkFinMesh>k__BackingField: {fileID: 5742470886626019589}
   <MiceSensitivity>k__BackingField: 1
   <GamepadSensitivity>k__BackingField: 3
-  <XAxisInverted>k__BackingField: 0
   <MiceAimSensitivity>k__BackingField: 0.1
   <GamepadAimSensitivity>k__BackingField: 1.5
   <AimXAxisInverted>k__BackingField: 0
   <FreeLookMovementSpeed>k__BackingField: 12
-  <AbsorbingMovementSpeed>k__BackingField: 7
   <RotationSpeed>k__BackingField: 10
-  <DashDuration>k__BackingField: 0.22
-  <DashLength>k__BackingField: 0.63
   <JumpForce>k__BackingField: 18
   <HasDoubleJump>k__BackingField: 1
   <DoubleJumpForce>k__BackingField: 15
@@ -162,15 +158,13 @@ MonoBehaviour:
   <SwimSpeed>k__BackingField: 12
   <WallJumpForce>k__BackingField: 30
   <WallJumpAngle>k__BackingField: 30
-  InkDecalPrefab: {fileID: 6003062172566789636, guid: 4936e89ea5ec69143bb964a143f192b9, type: 3}
-  InkLayer:
+  inkDecalPrefab: {fileID: 0}
+  inkLayer:
     serializedVersion: 2
-    m_Bits: 128
-  GunOrigin: {fileID: 5445480121851282294}
-  IsOnInk: 0
-  CurrentInkNormal: {x: 0, y: 1, z: 0}
-  WhipFailedLastAttempt: 0
-  <HasGreenAbility>k__BackingField: 1
+    m_Bits: 0
+  _isOnInk: 0
+  currentInkNormal: {x: 0, y: 1, z: 0}
+  whipFailedLastAttempt: 0
   <MaxGrappleDistance>k__BackingField: 5
   <SwingRadius>k__BackingField: 5
   <MinSwingSpeed>k__BackingField: 2
@@ -181,73 +175,25 @@ MonoBehaviour:
     m_Bits: 4294967295
   <GrappleRope>k__BackingField: {fileID: 4545791103584817385}
   <GrappleRopeOrigin>k__BackingField: {fileID: 7205995717628041244}
-  <WhipObjectLayer>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 16384
-  <WhipThrowForceMin>k__BackingField: 15
-  <WhipThrowForceMax>k__BackingField: 40
-  <WhipObjectDetectionRange>k__BackingField: 15
-  <WhipStartSpinSpeed>k__BackingField: 500
-  <WhipSpinAcceleration>k__BackingField: 500
-  <WhipMaxSpinSpeed>k__BackingField: 720
-  <WhipHoldRadius>k__BackingField: 2.5
-  <WhipHoldHeight>k__BackingField: 2
-  <WhipCaptureSpeed>k__BackingField: 20
   <MaxDistance>k__BackingField: 25
-  <ScaleNear>k__BackingField: 0.6
-  <ScaleFar>k__BackingField: 1.4
-  <AlphaNear>k__BackingField: 0.95
-  <AlphaFar>k__BackingField: 0.15
   <OffsetY>k__BackingField: 0.02
   <ShadowDrop>k__BackingField: {fileID: 2823485732524153245}
-  <HasGrayAbility>k__BackingField: 1
-  <AbsorbableLayer>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 1032
-  <GrayAbsorbRange>k__BackingField: 8
-  <GrayAbsorbAngle>k__BackingField: 90
-  <GrayAbsorbSpeed>k__BackingField: 5
-  <GrayMaxSimultaneousAbsorb>k__BackingField: 3
-  <GrayHoldHeight>k__BackingField: 1.5
-  <GrayHoldDistance>k__BackingField: 2
-  <GrayProjectileSpeedMultiplier>k__BackingField: 1.5
-  <GrayAbsorbParticles>k__BackingField: {fileID: 0}
-  absorbedObjects: []
   <FirePoint>k__BackingField: {fileID: 5445480121851282294}
-  <Water_JetParticle>k__BackingField: {fileID: 0}
   <WaterGeyserParticle>k__BackingField: {fileID: 2538796581859691256}
   <WaterGeyserParticleSecond>k__BackingField: {fileID: 2938504528476204852}
   <ProjectilePrefab>k__BackingField: {fileID: 1614819613750782360, guid: 8b08db91edd674949bcfa6d5ad89a16f, type: 3}
   <FireCooldown>k__BackingField: 0.15
-  <ProjectileFlightTime>k__BackingField: 0.6
-  <PaintableLayer>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  AimMovementSpeed: 3
-  HorizontalSensitivity: 150
-  VerticalSensitivity: 100
-  MinVerticalAngle: -60
-  MaxVerticalAngle: 60
-  <ReticleTransform>k__BackingField: {fileID: 0}
-  <MaxAimDistance>k__BackingField: 80
-  <AimLayerMask>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 1407
+  aimMovementSpeed: 3
+  horizontalSensitivity: 150
+  verticalSensitivity: 100
+  minVerticalAngle: -60
+  maxVerticalAngle: 60
   <ReticleSurfaceOffset>k__BackingField: 0.02
   <HoverForce>k__BackingField: 90
-  <aerialMoveSpeed>k__BackingField: 10
-  <GeyserActivationTime>k__BackingField: 0.5
-  <GeyserInitialBoostForce>k__BackingField: 10
+  <AerialMoveSpeed>k__BackingField: 10
   <GeyserCooldownTime>k__BackingField: 1
   geyserCooldownTimer: 0
   isGeyserOnCooldown: 0
-  wasJumpButtonReleased: 1
-  <HasDashAttack>k__BackingField: 1
-  <DashAttackSpeed>k__BackingField: 45
-  <DashAttackMaxRange>k__BackingField: 20
-  <DashAttackCollisionRadius>k__BackingField: 1.5
-  <DashAttackKnockbackForce>k__BackingField: 8
-  <DashAttackVerticalKnockback>k__BackingField: 5
 --- !u!114 &5816333734058023856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -260,9 +206,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b38ae42443eef674daac0acf7da6f8df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 6987920545998890324}
-  drag: 0.4
-  playerGravity: -40
+  _controller: {fileID: 0}
+  _drag: 0.4
+  _playerGravity: 0
 --- !u!114 &7967625473166846616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -320,7 +266,6 @@ MonoBehaviour:
   ropeColor: {r: 0.2, g: 1, b: 0.3, a: 1}
   ropeWidth: 0.05
   ropeMaterial: {fileID: 0}
-  setupComplete: 1
 --- !u!114 &5015236084790180000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -368,6 +313,34 @@ MonoBehaviour:
       Data3: -287190597
       Data4: -1413235126
     Path: event:/player/footsteps_system
+  leavesEvent:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  rockEvent:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  sandEvent:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  woodEvent:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   landingEvent:
     Guid:
       Data1: 188241289
@@ -814,7 +787,7 @@ Transform:
   m_GameObject: {fileID: 2387398348442301700}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1, y: 0.7099991, z: -2.7599945}
+  m_LocalPosition: {x: 1, y: 0.710001, z: -2.7599945}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1172,6 +1145,92 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6052489448859817048}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5742470886626019589
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3186749536390363108}
+  - component: {fileID: 7890584770905427597}
+  - component: {fileID: 947868880108885548}
+  m_Layer: 0
+  m_Name: plumaCopy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &3186749536390363108
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742470886626019589}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.015756192, y: 0.000747551, z: -0.0473857, w: 0.9987521}
+  m_LocalPosition: {x: 0, y: -0.521, z: 0.128}
+  m_LocalScale: {x: 1.1077352, y: 2.5400002, z: 2.5399997}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6052489448859817048}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &7890584770905427597
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742470886626019589}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: d0447625f4dead844b1506ebf1bac57a, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &947868880108885548
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5742470886626019589}
+  m_Mesh: {fileID: 4673524560926653743, guid: b9f1459a4e50e9d48942523ef5872151, type: 3}
 --- !u!1 &5961326301069653407
 GameObject:
   m_ObjectHideFlags: 0
@@ -1345,10 +1404,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28339bb09e28d7d429af3bc9c194f85f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 8526194884507870142}
-  baseSensitivity: 120
-  minPitch: -60
-  maxPitch: 80
+  _player: {fileID: 0}
+  _baseSensitivity: 120
+  _minPitch: -60
+  _maxPitch: 80
 --- !u!1 &7575750637447163079
 GameObject:
   m_ObjectHideFlags: 0
@@ -1378,8 +1437,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7575750637447163079}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.21239233, y: 0.000000023283777, z: -0.000000005060759, w: 0.9771845}
-  m_LocalPosition: {x: -0.0000038146973, y: 4.119999, z: -9.03006}
+  m_LocalRotation: {x: 0.10638109, y: 0.406502, z: -0.047721352, w: 0.90617985}
+  m_LocalPosition: {x: -4.493078, y: 1.4321861, z: -4.000244}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1462,7 +1521,7 @@ MonoBehaviour:
     SplineCurvature: 0
   RecenteringTarget: 3
   HorizontalAxis:
-    Value: 0
+    Value: 48.320915
     Center: 0
     Range: {x: -180, y: 180}
     Wrap: 1
@@ -1472,7 +1531,7 @@ MonoBehaviour:
       Time: 2
     Restrictions: 0
   VerticalAxis:
-    Value: 17.5
+    Value: 1.7773631
     Center: 17.5
     Range: {x: -10, y: 45}
     Wrap: 0
@@ -1598,7 +1657,7 @@ MonoBehaviour:
         LegacyInput: 
         LegacyGain: 1
         CancelDeltaTime: 0
-      InputValue: 0
+      InputValue: -0
       Driver:
         AccelTime: 0.2
         DecelTime: 0.2
@@ -1611,7 +1670,7 @@ MonoBehaviour:
         LegacyInput: 
         LegacyGain: 1
         CancelDeltaTime: 0
-      InputValue: 0
+      InputValue: -0
       Driver:
         AccelTime: 0
         DecelTime: 0
@@ -1930,11 +1989,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 03051b5d38dcbce4797b160b85591198, type: 3}
   m_PrefabInstance: {fileID: 4785136070270051952}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &5668165195572697889 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 03051b5d38dcbce4797b160b85591198, type: 3}
-  m_PrefabInstance: {fileID: 4785136070270051952}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6889289071236715108
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2016,11 +2070,6 @@ Animator:
 --- !u!4 &6407040872542274184 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 536432286372008172, guid: 6728bc0d1afa5d349aa93892ccebeed3, type: 3}
-  m_PrefabInstance: {fileID: 6889289071236715108}
-  m_PrefabAsset: {fileID: 0}
---- !u!137 &7736418791936549280 stripped
-SkinnedMeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 3802986480788534212, guid: 6728bc0d1afa5d349aa93892ccebeed3, type: 3}
   m_PrefabInstance: {fileID: 6889289071236715108}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &8751218960680116279 stripped
