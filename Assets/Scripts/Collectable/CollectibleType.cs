@@ -6,6 +6,7 @@ public enum CollectibleType
     Feather,
     Lamp,
     Pea,
+    Perla,
     Ros,
     Shoe
 }
