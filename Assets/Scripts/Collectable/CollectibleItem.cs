@@ -9,7 +9,6 @@ public class CollectibleItem : MonoBehaviour
         if (!other.CompareTag("Player")) return;
 
         CollectibleUIManager.Instance?.CollectItem(_type);
-        GameManager.Instance?.CollectStar(1);
         Destroy(gameObject);
     }
 }
