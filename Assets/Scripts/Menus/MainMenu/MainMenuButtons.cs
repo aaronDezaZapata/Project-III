@@ -1,4 +1,7 @@
+using System;
 using System.Collections;
+using FMOD.Studio;
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -23,6 +26,10 @@ public class MainMenuButtons : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float _moveSpeed      = 1.5f;
     [SerializeField] private float _rotationSpeed  = 4f;
+    
+    [Header("Audio")]
+    [SerializeField] private EventReference _introSongClip;
+    [SerializeField] private float volume = 1f;
 
     [Header("Scene")]
 #if UNITY_EDITOR
@@ -33,6 +40,8 @@ public class MainMenuButtons : MonoBehaviour
 
     private bool _isMoving;
     private Coroutine _moveCoroutine;
+    
+    private EventInstance _introSongInstance;
 
     private void Start()
     {
@@ -41,6 +50,10 @@ public class MainMenuButtons : MonoBehaviour
 
         if (_objectToMove == null && Camera.main != null)
             _objectToMove = Camera.main.transform;
+        
+        _introSongInstance = RuntimeManager.CreateInstance(_introSongClip);
+        _introSongInstance.setVolume(volume);
+        _introSongInstance.start();
     }
 
 #if UNITY_EDITOR
@@ -51,10 +64,17 @@ public class MainMenuButtons : MonoBehaviour
     }
 #endif
 
+    private void OnDestroy()
+    {
+        _introSongInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        _introSongInstance.release();
+    }
+
     public void PlayButton()
     {
         AudioManager.Instance?.PlayUIMenuConfirm();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        _introSongInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
     }
 
     public void SettingsButton()
