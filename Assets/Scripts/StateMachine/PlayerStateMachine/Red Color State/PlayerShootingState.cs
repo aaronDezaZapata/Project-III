@@ -111,6 +111,8 @@ public class PlayerShootingState : PlayerBaseState
             Quaternion.identity
         );
         
+        stateMachine.PlayerAudio?.PlayRedShoot();
+
         Vector3 direction = Camera.main.transform.forward;
         stateMachine.UseColor(0.1f);
 

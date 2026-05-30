@@ -16,6 +16,8 @@ public class InkProjectile : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         if (_hasImpacted) return;
+        
+        AudioManager.Instance.PlayRedImpact(transform.position);
 
         if ((_decalLayerMask.value & (1 << collision.gameObject.layer)) == 0)
         {

@@ -24707,8 +24707,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 194241471}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.10638145, y: 0.4065016, z: -0.047721464, w: 0.90617996}
-  m_LocalPosition: {x: -375.09308, y: 21.232185, z: 221.49976}
+  m_LocalRotation: {x: 0.10638118, y: 0.40650168, z: -0.047721352, w: 0.90617996}
+  m_LocalPosition: {x: -155.84308, y: 9.712186, z: 48.129753}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -120068,15 +120068,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4048448452662245505, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -370.6
+      value: -151.35
       objectReference: {fileID: 0}
     - target: {fileID: 4048448452662245505, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 19.8
+      value: 8.28
       objectReference: {fileID: 0}
     - target: {fileID: 4048448452662245505, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 225.5
+      value: 52.13
       objectReference: {fileID: 0}
     - target: {fileID: 4048448452662245505, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalRotation.w
@@ -120125,6 +120125,10 @@ PrefabInstance:
     - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: inkwellEvent.Path
       value: event:/interaction/inkwell
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: redShootEvent.Path
+      value: event:/ink/paint_loop
       objectReference: {fileID: 0}
     - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: greenSwingEvent.Path
@@ -120223,6 +120227,22 @@ PrefabInstance:
       value: event:/ink/blue_air_control
       objectReference: {fileID: 0}
     - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: redShootEvent.Guid.Data1
+      value: 257032508
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: redShootEvent.Guid.Data2
+      value: 1274124679
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: redShootEvent.Guid.Data3
+      value: 487280560
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: redShootEvent.Guid.Data4
+      value: -688479470
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: greenSwingEvent.Guid.Data1
       value: -720955048
       objectReference: {fileID: 0}
@@ -120308,19 +120328,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6948610711239408795, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.90617996
+      value: 0.90618
       objectReference: {fileID: 0}
     - target: {fileID: 6948610711239408795, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.10638146
+      value: 0.10638118
       objectReference: {fileID: 0}
     - target: {fileID: 6948610711239408795, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.40650162
+      value: 0.40650168
       objectReference: {fileID: 0}
     - target: {fileID: 6948610711239408795, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.047721468
+      value: -0.04772135
       objectReference: {fileID: 0}
     - target: {fileID: 7736418791936549280, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -256564,6 +256584,46 @@ PrefabInstance:
     - target: {fileID: 2453600244783502394, guid: c6ac4973158fb134ebdbef7dd92d1e8f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5961551806876951096, guid: c6ac4973158fb134ebdbef7dd92d1e8f, type: 3}
+      propertyPath: coinGetEvent.Path
+      value: event:/interaction/inkwell
+      objectReference: {fileID: 0}
+    - target: {fileID: 5961551806876951096, guid: c6ac4973158fb134ebdbef7dd92d1e8f, type: 3}
+      propertyPath: redImpactEvent.Path
+      value: event:/ink/paint_impact
+      objectReference: {fileID: 0}
+    - target: {fileID: 5961551806876951096, guid: c6ac4973158fb134ebdbef7dd92d1e8f, type: 3}
+      propertyPath: coinGetEvent.Guid.Data1
+      value: 74313386
+      objectReference: {fileID: 0}
+    - target: {fileID: 5961551806876951096, guid: c6ac4973158fb134ebdbef7dd92d1e8f, type: 3}
+      propertyPath: coinGetEvent.Guid.Data2
+      value: 1316107647
+      objectReference: {fileID: 0}
+    - target: {fileID: 5961551806876951096, guid: c6ac4973158fb134ebdbef7dd92d1e8f, type: 3}
+      propertyPath: coinGetEvent.Guid.Data3
+      value: -959394117
+      objectReference: {fileID: 0}
+    - target: {fileID: 5961551806876951096, guid: c6ac4973158fb134ebdbef7dd92d1e8f, type: 3}
+      propertyPath: coinGetEvent.Guid.Data4
+      value: -1796045017
+      objectReference: {fileID: 0}
+    - target: {fileID: 5961551806876951096, guid: c6ac4973158fb134ebdbef7dd92d1e8f, type: 3}
+      propertyPath: redImpactEvent.Guid.Data1
+      value: 1925566773
+      objectReference: {fileID: 0}
+    - target: {fileID: 5961551806876951096, guid: c6ac4973158fb134ebdbef7dd92d1e8f, type: 3}
+      propertyPath: redImpactEvent.Guid.Data2
+      value: 1212993720
+      objectReference: {fileID: 0}
+    - target: {fileID: 5961551806876951096, guid: c6ac4973158fb134ebdbef7dd92d1e8f, type: 3}
+      propertyPath: redImpactEvent.Guid.Data3
+      value: -1230826620
+      objectReference: {fileID: 0}
+    - target: {fileID: 5961551806876951096, guid: c6ac4973158fb134ebdbef7dd92d1e8f, type: 3}
+      propertyPath: redImpactEvent.Guid.Data4
+      value: 814697125
       objectReference: {fileID: 0}
     - target: {fileID: 6181340494604377450, guid: c6ac4973158fb134ebdbef7dd92d1e8f, type: 3}
       propertyPath: m_Name

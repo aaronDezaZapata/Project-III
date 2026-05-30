@@ -47,6 +47,7 @@ public class PlayerAudio : MonoBehaviour
     [SerializeField] private EventReference paintSurfaceImpactEvent;
     [SerializeField] private EventReference blueActivateEvent;
     [SerializeField] private EventReference blueGeyserLoopEvent;
+    [SerializeField] private EventReference redShootEvent;
     [SerializeField] private EventReference objectThrowEvent;
     [SerializeField] private EventReference blackMasteryEvent;
     [SerializeField] private EventReference inkwellEvent;
@@ -349,6 +350,12 @@ public class PlayerAudio : MonoBehaviour
         blueGeyserLoopInstance.release();
         blueGeyserLoopInstance = default;
         _geyserFadeCoroutine = null;
+    }
+
+    public void PlayRedShoot()
+    {
+        if (!redShootEvent.IsNull)
+            RuntimeManager.PlayOneShot(redShootEvent, transform.position);
     }
 
     public void PlayBlueActivate()

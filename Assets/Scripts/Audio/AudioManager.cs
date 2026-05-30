@@ -36,6 +36,7 @@ public class AudioManager : MonoBehaviour
     
     [Header("SFX")]
     [SerializeField] private EventReference coinGetEvent;
+    [SerializeField] private EventReference redImpactEvent;
 
     [Header("Music Transitions")]
     [SerializeField] private float musicFadeDuration = 1.5f;
@@ -309,5 +310,11 @@ public class AudioManager : MonoBehaviour
     {
         if (!coinGetEvent.IsNull)
             RuntimeManager.PlayOneShot(coinGetEvent, GameManager.Instance.GetPlayer().position);
+    }
+
+    public void PlayRedImpact(Vector3 position)
+    {
+        if (!redImpactEvent.IsNull)
+            RuntimeManager.PlayOneShot(redImpactEvent, position);
     }
 }
