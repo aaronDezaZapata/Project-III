@@ -1,3 +1,4 @@
+using System.Collections;
 using FMOD.Studio;
 using FMODUnity;
 using STOP_MODE = FMOD.Studio.STOP_MODE;
@@ -42,13 +43,10 @@ public class PlayerAudio : MonoBehaviour
     [SerializeField] private EventReference blackActivateEvent;
     [SerializeField] private EventReference paintSurfaceImpactEvent;
     [SerializeField] private EventReference blueActivateEvent;
-    [SerializeField] private EventReference blueAirControlEvent;
+    [SerializeField] private EventReference blueGeyserLoopEvent;
     [SerializeField] private EventReference objectThrowEvent;
     [SerializeField] private EventReference blackMasteryEvent;
     [SerializeField] private EventReference inkwellEvent;
-    
-    [Header("Single Events")]
-    [SerializeField] private EventReference coinGetEvent;
 
     private EventInstance blackMasteryInstance;
 
@@ -56,12 +54,30 @@ public class PlayerAudio : MonoBehaviour
     private EventInstance swimLoopInstance;
     private EventInstance objectSpinInstance;
     private EventInstance whipSwingInstance;
+    private EventInstance blueGeyserLoopInstance;
+    private Coroutine _geyserFadeCoroutine;
+    private const float GeyserFadeDuration = 0.25f;
     
-    private EventInstance coinGetInstance;
+    
 
     private void Start()
     {
         InitInstances();
+    }
+
+    private void OnDisable()
+    {
+        if (_geyserFadeCoroutine != null)
+        {
+            StopCoroutine(_geyserFadeCoroutine);
+            _geyserFadeCoroutine = null;
+        }
+        if (blueGeyserLoopInstance.isValid())
+        {
+            blueGeyserLoopInstance.stop(STOP_MODE.IMMEDIATE);
+            blueGeyserLoopInstance.release();
+            blueGeyserLoopInstance = default;
+        }
     }
 
     private void InitInstances()
@@ -80,9 +96,7 @@ public class PlayerAudio : MonoBehaviour
 
         if (!whipSwingEvent.IsNull)
             whipSwingInstance = RuntimeManager.CreateInstance(whipSwingEvent);
-        
-        if (!coinGetEvent.IsNull)
-            coinGetInstance = RuntimeManager.CreateInstance(coinGetEvent);
+
     }
     
 
@@ -247,6 +261,9 @@ public class PlayerAudio : MonoBehaviour
         ReleaseInstance(objectSpinInstance);
         ReleaseInstance(blackMasteryInstance);
         ReleaseInstance(whipSwingInstance);
+
+        if (_geyserFadeCoroutine != null) StopCoroutine(_geyserFadeCoroutine);
+        ReleaseInstance(blueGeyserLoopInstance);
     }
 
     private void ReleaseInstance(EventInstance instance)
@@ -270,27 +287,57 @@ public class PlayerAudio : MonoBehaviour
             RuntimeManager.PlayOneShot(paintSurfaceImpactEvent, transform.position);
     }
 
+    public void StartBlueGeyserLoop()
+    {
+        if (blueGeyserLoopEvent.IsNull) return;
+
+        if (_geyserFadeCoroutine != null)
+        {
+            StopCoroutine(_geyserFadeCoroutine);
+            _geyserFadeCoroutine = null;
+        }
+        if (blueGeyserLoopInstance.isValid())
+        {
+            blueGeyserLoopInstance.stop(STOP_MODE.IMMEDIATE);
+            blueGeyserLoopInstance.release();
+        }
+
+        blueGeyserLoopInstance = RuntimeManager.CreateInstance(blueGeyserLoopEvent);
+        blueGeyserLoopInstance.start();
+    }
+
+    public void StopBlueGeyserLoop()
+    {
+        if (!blueGeyserLoopInstance.isValid()) return;
+        if (_geyserFadeCoroutine != null) StopCoroutine(_geyserFadeCoroutine);
+        _geyserFadeCoroutine = StartCoroutine(FadeOutGeyserLoop());
+    }
+
+    private IEnumerator FadeOutGeyserLoop()
+    {
+        float elapsed = 0f;
+        while (elapsed < GeyserFadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            blueGeyserLoopInstance.setVolume(Mathf.Lerp(1f, 0f, elapsed / GeyserFadeDuration));
+            yield return null;
+        }
+
+        blueGeyserLoopInstance.stop(STOP_MODE.IMMEDIATE);
+        blueGeyserLoopInstance.release();
+        blueGeyserLoopInstance = default;
+        _geyserFadeCoroutine = null;
+    }
+
     public void PlayBlueActivate()
     {
         if (!blueActivateEvent.IsNull)
             RuntimeManager.PlayOneShot(blueActivateEvent, transform.position);
     }
 
-    public void PlayBlueAirControl()
-    {
-        if (!blueAirControlEvent.IsNull)
-            RuntimeManager.PlayOneShot(blueAirControlEvent, transform.position);
-    }
-    
     public void PlayInkwell()
     {
         if (!inkwellEvent.IsNull)
             RuntimeManager.PlayOneShot(inkwellEvent, transform.position);
-    }
-    
-    public void PlayCoinGet()
-    {
-        if (coinGetInstance.isValid())
-            coinGetInstance.start();
     }
 }

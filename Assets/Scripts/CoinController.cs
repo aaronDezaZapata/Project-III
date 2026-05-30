@@ -3,7 +3,6 @@ using UnityEngine;
 public class CoinController : MonoBehaviour
 {
     [SerializeField] private int _coinValue = 1;
-    [SerializeField] private AudioClip _collectSound;
 
     [Header("Attraction")]
     [SerializeField] private float _attractionDistance = 6f;
@@ -53,7 +52,7 @@ public class CoinController : MonoBehaviour
         if (_isCollected || !other.CompareTag("Player")) return;
 
         _isCollected = true;
-
+        
         GameManager.Instance.AddCoin(_coinValue);
         Instantiate(_grabParticleSystem, transform.position, Quaternion.identity);
 
@@ -71,6 +70,8 @@ public class CoinController : MonoBehaviour
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             ps.Clear();
         }
+        
+        AudioManager.Instance.PlayCoinGet();
 
         Destroy(gameObject, 0.05f);
     }

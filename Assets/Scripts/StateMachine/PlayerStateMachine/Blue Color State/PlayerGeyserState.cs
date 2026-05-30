@@ -3,9 +3,6 @@ using UnityEngine;
 public class PlayerGeyserState : PlayerBaseState
 {
     private readonly int _isOnGeyser = Animator.StringToHash("IsOnGeyser");
-    private const float AirControlSfxInterval = 0.20f;
-
-    private float _airControlSfxTimer;
 
     public PlayerGeyserState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
@@ -27,9 +24,8 @@ public class PlayerGeyserState : PlayerBaseState
 
         stateMachine.PlayerAudio?.PlayBlueActivate();
         stateMachine.PlayerAudio?.PlayBlueBoost();
+        stateMachine.PlayerAudio?.StartBlueGeyserLoop();
 
-        _airControlSfxTimer = 0f;
-        
         stateMachine.Animator.SetBool(_isOnGeyser, true);
     }
 
@@ -48,20 +44,6 @@ public class PlayerGeyserState : PlayerBaseState
             return;
         }
 
-        if (stateMachine.InputReader.MoveVector.sqrMagnitude > 0.01f)
-        {
-            _airControlSfxTimer -= deltaTime;
-            if (_airControlSfxTimer <= 0f)
-            {
-                stateMachine.PlayerAudio?.PlayBlueAirControl();
-                _airControlSfxTimer = AirControlSfxInterval;
-            }
-        }
-        else
-        {
-            _airControlSfxTimer = 0f;
-        }
-
         stateMachine.ForceReceiver.AddForce(Vector3.up * stateMachine.HoverForce * deltaTime);
         MoveHoverDirect(deltaTime);
     }
@@ -73,7 +55,9 @@ public class PlayerGeyserState : PlayerBaseState
         
         stateMachine.WaterGeyserParticle.gameObject.SetActive(false);
         stateMachine.WaterGeyserParticleSecond.gameObject.SetActive(false);
-        
+
+        stateMachine.PlayerAudio?.StopBlueGeyserLoop();
+
         stateMachine.Animator.SetBool(_isOnGeyser, false);
     }
     

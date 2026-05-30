@@ -33,6 +33,9 @@ public class AudioManager : MonoBehaviour
 
     [Header("Pause Snapshot")]
     [SerializeField] private EventReference pauseSnapshot;
+    
+    [Header("SFX")]
+    [SerializeField] private EventReference coinGetEvent;
 
     [Header("Music Transitions")]
     [SerializeField] private float musicFadeDuration = 1.5f;
@@ -44,6 +47,8 @@ public class AudioManager : MonoBehaviour
     private EventInstance outgoingMusicInstance;
     private EventInstance currentAmbienceInstance;
     private EventInstance outgoingAmbienceInstance;
+    
+    private EventInstance coinGetInstance;
 
     private Coroutine musicFadeCoroutine;
     private Coroutine ambienceFadeCoroutine;
@@ -71,6 +76,9 @@ public class AudioManager : MonoBehaviour
     private void Start()
     {
         SetZone(startingZone);
+        
+        if (!coinGetEvent.IsNull)
+            coinGetInstance = RuntimeManager.CreateInstance(coinGetEvent);
     }
 
     public void SetZone(ZoneType zone)
@@ -295,5 +303,11 @@ public class AudioManager : MonoBehaviour
         instance.stop(STOP_MODE.IMMEDIATE);
         instance.release();
         instance = default;
+    }
+    
+    public void PlayCoinGet()
+    {
+        if (!coinGetEvent.IsNull)
+            RuntimeManager.PlayOneShot(coinGetEvent, GameManager.Instance.GetPlayer().position);
     }
 }
