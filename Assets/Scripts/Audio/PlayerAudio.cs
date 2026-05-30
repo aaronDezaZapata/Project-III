@@ -40,6 +40,9 @@ public class PlayerAudio : MonoBehaviour
     [SerializeField] private EventReference whipAttachEvent;
     [SerializeField] private EventReference whipSwingEvent;
     [SerializeField] private EventReference whipReleaseEvent;
+    [SerializeField] private EventReference greenThrowEvent;
+    [SerializeField] private EventReference greenSwingEvent;
+    [SerializeField] private EventReference greenReleaseEvent;
     [SerializeField] private EventReference blackActivateEvent;
     [SerializeField] private EventReference paintSurfaceImpactEvent;
     [SerializeField] private EventReference blueActivateEvent;
@@ -57,6 +60,10 @@ public class PlayerAudio : MonoBehaviour
     private EventInstance blueGeyserLoopInstance;
     private Coroutine _geyserFadeCoroutine;
     private const float GeyserFadeDuration = 0.25f;
+
+    private EventInstance greenSwingInstance;
+    private Coroutine _greenSwingFadeCoroutine;
+    private const float GreenSwingFadeDuration = 0.2f;
     
     
 
@@ -77,6 +84,18 @@ public class PlayerAudio : MonoBehaviour
             blueGeyserLoopInstance.stop(STOP_MODE.IMMEDIATE);
             blueGeyserLoopInstance.release();
             blueGeyserLoopInstance = default;
+        }
+
+        if (_greenSwingFadeCoroutine != null)
+        {
+            StopCoroutine(_greenSwingFadeCoroutine);
+            _greenSwingFadeCoroutine = null;
+        }
+        if (greenSwingInstance.isValid())
+        {
+            greenSwingInstance.stop(STOP_MODE.IMMEDIATE);
+            greenSwingInstance.release();
+            greenSwingInstance = default;
         }
     }
 
@@ -264,6 +283,9 @@ public class PlayerAudio : MonoBehaviour
 
         if (_geyserFadeCoroutine != null) StopCoroutine(_geyserFadeCoroutine);
         ReleaseInstance(blueGeyserLoopInstance);
+
+        if (_greenSwingFadeCoroutine != null) StopCoroutine(_greenSwingFadeCoroutine);
+        ReleaseInstance(greenSwingInstance);
     }
 
     private void ReleaseInstance(EventInstance instance)
@@ -333,6 +355,60 @@ public class PlayerAudio : MonoBehaviour
     {
         if (!blueActivateEvent.IsNull)
             RuntimeManager.PlayOneShot(blueActivateEvent, transform.position);
+    }
+
+    public void PlayGreenThrow()
+    {
+        if (!greenThrowEvent.IsNull)
+            RuntimeManager.PlayOneShot(greenThrowEvent, transform.position);
+    }
+
+    public void StartGreenSwing()
+    {
+        if (greenSwingEvent.IsNull) return;
+
+        if (_greenSwingFadeCoroutine != null)
+        {
+            StopCoroutine(_greenSwingFadeCoroutine);
+            _greenSwingFadeCoroutine = null;
+        }
+        if (greenSwingInstance.isValid())
+        {
+            greenSwingInstance.stop(STOP_MODE.IMMEDIATE);
+            greenSwingInstance.release();
+        }
+
+        greenSwingInstance = RuntimeManager.CreateInstance(greenSwingEvent);
+        greenSwingInstance.start();
+    }
+
+    public void StopGreenSwing()
+    {
+        if (!greenSwingInstance.isValid()) return;
+        if (_greenSwingFadeCoroutine != null) StopCoroutine(_greenSwingFadeCoroutine);
+        _greenSwingFadeCoroutine = StartCoroutine(FadeOutGreenSwing());
+    }
+
+    private IEnumerator FadeOutGreenSwing()
+    {
+        float elapsed = 0f;
+        while (elapsed < GreenSwingFadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            greenSwingInstance.setVolume(Mathf.Lerp(1f, 0f, elapsed / GreenSwingFadeDuration));
+            yield return null;
+        }
+
+        greenSwingInstance.stop(STOP_MODE.IMMEDIATE);
+        greenSwingInstance.release();
+        greenSwingInstance = default;
+        _greenSwingFadeCoroutine = null;
+    }
+
+    public void PlayGreenRelease()
+    {
+        if (!greenReleaseEvent.IsNull)
+            RuntimeManager.PlayOneShot(greenReleaseEvent, transform.position);
     }
 
     public void PlayInkwell()

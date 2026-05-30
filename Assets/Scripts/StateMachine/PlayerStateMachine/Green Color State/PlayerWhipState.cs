@@ -29,7 +29,9 @@ public class PlayerWhipState : PlayerBaseState
         }
         
         stateMachine.PlayerAudio?.PlayWhipThrow();
+        stateMachine.PlayerAudio?.PlayGreenThrow();
         StartGrappleSwingMode();
+        stateMachine.PlayerAudio?.StartGreenSwing();
         stateMachine.UseColor(0.5f);
 
         if (stateMachine.GrappleRope != null)
@@ -264,7 +266,9 @@ public class PlayerWhipState : PlayerBaseState
         stateMachine.transform.rotation = Quaternion.Euler(0f, currentY, 0f);
 
         stateMachine.PlayerAudio?.StopWhipSwing();
+        stateMachine.PlayerAudio?.StopGreenSwing();
         stateMachine.PlayerAudio?.PlayWhipRelease();
+        stateMachine.PlayerAudio?.PlayGreenRelease();
 
         stateMachine.ForceReceiver.enabled = true;
         ApplySwingMomentum();

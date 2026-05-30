@@ -24707,8 +24707,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 194241471}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.106381066, y: 0.40650198, z: -0.047721338, w: 0.90617985}
-  m_LocalPosition: {x: -65.653076, y: 34.13219, z: 129.00975}
+  m_LocalRotation: {x: 0.10638145, y: 0.4065016, z: -0.047721464, w: 0.90617996}
+  m_LocalPosition: {x: -375.09308, y: 21.232185, z: 221.49976}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -120068,15 +120068,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4048448452662245505, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -61.16
+      value: -370.6
       objectReference: {fileID: 0}
     - target: {fileID: 4048448452662245505, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 32.7
+      value: 19.8
       objectReference: {fileID: 0}
     - target: {fileID: 4048448452662245505, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 133.01
+      value: 225.5
       objectReference: {fileID: 0}
     - target: {fileID: 4048448452662245505, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalRotation.w
@@ -120127,6 +120127,14 @@ PrefabInstance:
       value: event:/interaction/inkwell
       objectReference: {fileID: 0}
     - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: greenSwingEvent.Path
+      value: event:/ink/whip_swing
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: greenThrowEvent.Path
+      value: event:/ink/whip_throw
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: rockEvent.Guid.Data1
       value: 1651299636
       objectReference: {fileID: 0}
@@ -120175,6 +120183,10 @@ PrefabInstance:
       value: -1932391724
       objectReference: {fileID: 0}
     - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: greenReleaseEvent.Path
+      value: event:/ink/whip_release
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: leavesEvent.Guid.Data1
       value: -1519890760
       objectReference: {fileID: 0}
@@ -120209,6 +120221,54 @@ PrefabInstance:
     - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: blueGeyserLoopEvent.Path
       value: event:/ink/blue_air_control
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: greenSwingEvent.Guid.Data1
+      value: -720955048
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: greenSwingEvent.Guid.Data2
+      value: 1191171363
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: greenSwingEvent.Guid.Data3
+      value: 854024327
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: greenSwingEvent.Guid.Data4
+      value: 385935876
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: greenThrowEvent.Guid.Data1
+      value: -813806988
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: greenThrowEvent.Guid.Data2
+      value: 1127752465
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: greenThrowEvent.Guid.Data3
+      value: -1383007322
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: greenThrowEvent.Guid.Data4
+      value: 1197130131
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: greenReleaseEvent.Guid.Data1
+      value: -2106473696
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: greenReleaseEvent.Guid.Data2
+      value: 1224444854
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: greenReleaseEvent.Guid.Data3
+      value: 1416960141
+      objectReference: {fileID: 0}
+    - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
+      propertyPath: greenReleaseEvent.Guid.Data4
+      value: -1089982617
       objectReference: {fileID: 0}
     - target: {fileID: 5015236084790180000, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: blueGeyserLoopEvent.Guid.Data1
@@ -120248,19 +120308,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6948610711239408795, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.90617985
+      value: 0.90617996
       objectReference: {fileID: 0}
     - target: {fileID: 6948610711239408795, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.10638106
+      value: 0.10638146
       objectReference: {fileID: 0}
     - target: {fileID: 6948610711239408795, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.40650195
+      value: 0.40650162
       objectReference: {fileID: 0}
     - target: {fileID: 6948610711239408795, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.047721338
+      value: -0.047721468
       objectReference: {fileID: 0}
     - target: {fileID: 7736418791936549280, guid: 86445b94e2e1bf34280d17aecc6ab406, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
