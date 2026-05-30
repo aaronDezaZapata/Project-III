@@ -5,8 +5,14 @@ using UnityEngine.UI;
 
 public class CanvasImageFollow : MonoBehaviour
 {
-    [SerializeField] private Transform _camera;
     [SerializeField] private Image _image;
+    
+    private Transform _camera;
+
+    private void Awake()
+    {
+        if (Camera.main != null) _camera = Camera.main.transform;
+    }
 
     private void Start()
     {
