@@ -46,6 +46,9 @@ public class PlayerAudio : MonoBehaviour
     [SerializeField] private EventReference objectThrowEvent;
     [SerializeField] private EventReference blackMasteryEvent;
     [SerializeField] private EventReference inkwellEvent;
+    
+    [Header("Single Events")]
+    [SerializeField] private EventReference coinGetEvent;
 
     private EventInstance blackMasteryInstance;
 
@@ -53,8 +56,15 @@ public class PlayerAudio : MonoBehaviour
     private EventInstance swimLoopInstance;
     private EventInstance objectSpinInstance;
     private EventInstance whipSwingInstance;
+    
+    private EventInstance coinGetInstance;
 
     private void Start()
+    {
+        InitInstances();
+    }
+
+    private void InitInstances()
     {
         if (!paintLoopEvent.IsNull)
             paintLoopInstance = RuntimeManager.CreateInstance(paintLoopEvent);
@@ -70,7 +80,11 @@ public class PlayerAudio : MonoBehaviour
 
         if (!whipSwingEvent.IsNull)
             whipSwingInstance = RuntimeManager.CreateInstance(whipSwingEvent);
+        
+        if (!coinGetEvent.IsNull)
+            coinGetInstance = RuntimeManager.CreateInstance(coinGetEvent);
     }
+    
 
     public void PlayJump()
     {
@@ -133,18 +147,6 @@ public class PlayerAudio : MonoBehaviour
             RuntimeManager.PlayOneShot(tpMarkEvent, transform.position);
     }
 
-    public void PlayTpTravel()
-    {
-        if (!tpTravelEvent.IsNull)
-            RuntimeManager.PlayOneShot(tpTravelEvent, transform.position);
-    }
-
-    public void PlayTpImpact()
-    {
-        if (!tpImpactEvent.IsNull)
-            RuntimeManager.PlayOneShot(tpImpactEvent, transform.position);
-    }
-
     public void StartSwimLoop()
     {
         if (swimLoopInstance.isValid())
@@ -184,24 +186,7 @@ public class PlayerAudio : MonoBehaviour
         if (!blueBoostEvent.IsNull)
             RuntimeManager.PlayOneShot(blueBoostEvent, transform.position);
     }
-
-    public void PlayObjectGrab()
-    {
-        if (!objectGrabEvent.IsNull)
-            RuntimeManager.PlayOneShot(objectGrabEvent, transform.position);
-    }
-
-    public void StartObjectSpin()
-    {
-        if (objectSpinInstance.isValid())
-            objectSpinInstance.start();
-    }
-
-    public void StopObjectSpin()
-    {
-        if (objectSpinInstance.isValid())
-            objectSpinInstance.stop(STOP_MODE.ALLOWFADEOUT);
-    }
+    
 
     public void PlayObjectImpact(Vector3 position)
     {
@@ -237,12 +222,6 @@ public class PlayerAudio : MonoBehaviour
     {
         if (!whipReleaseEvent.IsNull)
             RuntimeManager.PlayOneShot(whipReleaseEvent, transform.position);
-    }
-
-    public void PlayBlackActivate()
-    {
-        if (!blackActivateEvent.IsNull)
-            RuntimeManager.PlayOneShot(blackActivateEvent, transform.position);
     }
 
     public void PlayFootstep(FootstepSurfaceType surfaceType, FootstepSpeedType speedType)
@@ -302,27 +281,16 @@ public class PlayerAudio : MonoBehaviour
         if (!blueAirControlEvent.IsNull)
             RuntimeManager.PlayOneShot(blueAirControlEvent, transform.position);
     }
-
-    public void PlayObjectThrow()
-    {
-        if (!objectThrowEvent.IsNull)
-            RuntimeManager.PlayOneShot(objectThrowEvent, transform.position);
-    }
-
-    public void StartBlackMastery()
-    {
-        if (blackMasteryInstance.isValid())
-            blackMasteryInstance.start();
-    }
-
-    public void StopBlackMastery()
-    {
-        if (blackMasteryInstance.isValid())
-            blackMasteryInstance.stop(STOP_MODE.ALLOWFADEOUT);
-    }
+    
     public void PlayInkwell()
     {
         if (!inkwellEvent.IsNull)
             RuntimeManager.PlayOneShot(inkwellEvent, transform.position);
+    }
+    
+    public void PlayCoinGet()
+    {
+        if (coinGetInstance.isValid())
+            coinGetInstance.start();
     }
 }
