@@ -20,7 +20,7 @@ public class CoinController : MonoBehaviour
 
     private void Start()
     {
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        GameObject playerObj = GameManager.Instance.GetPlayer().gameObject;
         if (playerObj != null)
             _player = playerObj.transform;
 

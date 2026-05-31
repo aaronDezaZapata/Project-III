@@ -20,6 +20,8 @@ public class CollectibleUIManager : MonoBehaviour
     [Range(0f, 255f)][SerializeField] private float _uncollectedAlpha = 14f;
     [Range(0f, 255f)][SerializeField] private float _collectedAlpha = 255f;
 
+    private Dictionary<CollectibleType, Image> _iconsByType;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -30,15 +32,18 @@ public class CollectibleUIManager : MonoBehaviour
 
     private void InitializeIcons()
     {
-        foreach (var entry in _entries)
+        _iconsByType = new Dictionary<CollectibleType, Image>();
+        foreach (CollectibleUIEntry entry in _entries)
+        {
+            _iconsByType[entry.type] = entry.icon;
             SetAlpha(entry.icon, _uncollectedAlpha / 255f);
+        }
     }
 
     public void CollectItem(CollectibleType type)
     {
-        var entry = _entries.Find(e => e.type == type);
-        if (entry != null)
-            SetAlpha(entry.icon, _collectedAlpha / 255f);
+        if (_iconsByType.TryGetValue(type, out Image icon))
+            SetAlpha(icon, _collectedAlpha / 255f);
     }
 
     private void SetAlpha(Image icon, float alpha)
