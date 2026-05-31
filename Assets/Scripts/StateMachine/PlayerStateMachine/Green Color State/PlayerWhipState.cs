@@ -54,8 +54,6 @@ public class PlayerWhipState : PlayerBaseState
     {
         stateMachine.InputReader.JumpEvent -= OnJump;
         stateMachine.InputReader.ColorActionEvent -= OnColorActionToggle;
-        
-        _currentGrapplePoint.PlayerOnGrapple(false);
 
         if (stateMachine.GrappleRope != null)
             stateMachine.GrappleRope.enabled = false;
@@ -254,7 +252,7 @@ public class PlayerWhipState : PlayerBaseState
         ApplySwingMomentum();
         _isAttached = false;
 
-        _currentGrapplePoint.PlayerOnGrapple(false);
+        _currentGrapplePoint?.PlayerOnGrapple(false);
         
         stateMachine.Animator.SetBool(_isOnWhipGrab, false);
     }

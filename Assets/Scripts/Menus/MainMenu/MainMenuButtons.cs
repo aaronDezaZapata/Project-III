@@ -17,7 +17,7 @@ public class MainMenuButtons : MonoBehaviour
     [Header("Menu Positions")]
     [SerializeField] private GameObject _mainMenu;
     [SerializeField] private Transform _playPosition;
-    [SerializeField] private GameObject _settingsCanvas;
+    [SerializeField] private GameObject _creditsCanvas;
 
     [Header("Points Of Interest")]
     [SerializeField] private Transform _theater;
@@ -34,6 +34,7 @@ public class MainMenuButtons : MonoBehaviour
     [Header("Scene")]
 #if UNITY_EDITOR
     [SerializeField] private SceneAsset _playScene;
+    [SerializeField] private SceneAsset _creditScene;
 #endif
 
     [SerializeField, HideInInspector] private string _playScenePath;
@@ -77,18 +78,18 @@ public class MainMenuButtons : MonoBehaviour
         _introSongInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
     }
 
-    public void SettingsButton()
+    public void CreditButton()
     {
         AudioManager.Instance?.PlayUIMenuConfirm();
-        if (!_settingsCanvas.activeSelf) _settingsCanvas.SetActive(true);
-        if (_mainMenu.activeSelf)        _settingsCanvas.SetActive(false);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 4);
+        _introSongInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
     }
 
     public void BackButton()
     {
         AudioManager.Instance?.PlayUIMenuBack();
-        if (_settingsCanvas.activeSelf)  _settingsCanvas.SetActive(false);
-        if (!_mainMenu.activeSelf)       _settingsCanvas.SetActive(true);
+        if (_creditsCanvas.activeSelf) _creditsCanvas.SetActive(false);
+        if (!_mainMenu.activeSelf) _creditsCanvas.SetActive(true);
     }
 
     public void ExitButton()

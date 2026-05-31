@@ -2053,7 +2053,7 @@ GameObject:
   - component: {fileID: 1582880351}
   - component: {fileID: 1582880354}
   m_Layer: 5
-  m_Name: Settings_BTN
+  m_Name: Credits_BTN
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2125,7 +2125,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2140440542}
         m_TargetAssemblyTypeName: MainMenuButtons, Assembly-CSharp
-        m_MethodName: SettingsButton
+        m_MethodName: CreditButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2685,7 +2685,7 @@ GameObject:
   - component: {fileID: 1925282973}
   - component: {fileID: 1925282972}
   m_Layer: 5
-  m_Name: Settings
+  m_Name: Credits
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2730,7 +2730,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Settings
+  m_text: Credits
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: fdff97a1fc16d634e94126db64e8ee17, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: fdff97a1fc16d634e94126db64e8ee17, type: 2}
@@ -3663,7 +3663,7 @@ MonoBehaviour:
   _objectToMove: {fileID: 0}
   _mainMenu: {fileID: 0}
   _playPosition: {fileID: 0}
-  _settingsCanvas: {fileID: 0}
+  _creditsCanvas: {fileID: 0}
   _theater: {fileID: 0}
   _book: {fileID: 0}
   _moveSpeed: 1.5
@@ -3677,6 +3677,7 @@ MonoBehaviour:
     Path: event:/music/intro_song
   volume: 1
   _playScene: {fileID: 102900000, guid: 485260e7894928f4da327a2996040416, type: 3}
+  _creditScene: {fileID: 102900000, guid: dc46dfe706a06bd438c79ebbbe0aa739, type: 3}
   _playScenePath: Assets/Scenes/BUILD/2 - VideoPlayer.unity
 --- !u!1 &48238520846119618
 GameObject:
