@@ -100,10 +100,6 @@ public class PlayerStateMachine : StateMachine
     [field: SerializeField] public LineRenderer GrappleRope { get; private set; }
     [field: SerializeField] public Transform GrappleRopeOrigin { get; private set; }
 
-    [field: SerializeField] public float MaxDistance { get; private set; } = 25f;
-    [field: SerializeField] public float OffsetY { get; private set; } = 0.02f;
-    [field: SerializeField] public Transform ShadowDrop { get; private set; }
-
     [Header("References")]
     [field: SerializeField] public Transform FirePoint { get; private set; }
     [field: SerializeField] public Transform WaterGeyserParticle { get; private set; }
@@ -236,7 +232,6 @@ public class PlayerStateMachine : StateMachine
     public void CheckGrounded()           => _groundChecker.CheckGrounded();
     public void ApplySlopeSlide()         => _groundChecker.ApplySlopeSlide();
     public void PlayFootstepParticle()    => _groundChecker.PlayFootstepParticle();
-    public void AddShadowDrop()           => _groundChecker.AddShadowDrop();
 
     public void RotateColors()                        => _inkColorSystem.RotateColors();
     public void StartFill(Color newColor)             => _inkColorSystem.StartFill(newColor);

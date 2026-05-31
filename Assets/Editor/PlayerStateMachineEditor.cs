@@ -60,12 +60,6 @@ public class PlayerStateMachineEditor : Editor
         DrawBackingProperty("QuickStopTime");
         DrawBackingProperty("QuickStopSpeedThreshold");
 
-        EditorGUILayout.Space(5);
-        DrawHeader("Shadow Drop", Color.white);
-        DrawBackingProperty("ShadowDrop");
-        DrawBackingProperty("MaxDistance");
-        DrawBackingProperty("OffsetY");
-
         EditorGUILayout.Space(10);
         DrawHeader("Ground Check", Color.white);
         DrawBackingProperty("groundCheckDistance");

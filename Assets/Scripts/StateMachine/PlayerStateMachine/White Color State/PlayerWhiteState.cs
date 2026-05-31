@@ -90,17 +90,6 @@ public class PlayerWhiteState : PlayerBaseState
         }
         
         Move(movement * stateMachine.FreeLookMovementSpeed, deltaTime);
-
-        if(stateMachine.ShadowDrop != null && !stateMachine.isGrounded)
-        {
-            if (!stateMachine.ShadowDrop.gameObject.activeSelf) { stateMachine.ShadowDrop.gameObject.SetActive(true); }
-
-            stateMachine.AddShadowDrop();
-        }
-        else
-        {
-            stateMachine.ShadowDrop.gameObject.SetActive(false);
-        }
     }
 
     protected virtual bool CheckColorSpecificActions(float deltaTime) { return false; }

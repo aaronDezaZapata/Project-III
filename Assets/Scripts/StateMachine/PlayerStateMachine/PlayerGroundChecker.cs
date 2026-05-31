@@ -159,18 +159,4 @@ public class PlayerGroundChecker : MonoBehaviour
 
         return FootstepSurfaceType.Ink;
     }
-
-    public void AddShadowDrop()
-    {
-        Ray ray = new Ray(_player.transform.position, Vector3.down);
-
-        if (!Physics.Raycast(ray, out RaycastHit hit, _player.MaxDistance, _player.groundMask))
-        {
-            _player.ShadowDrop.gameObject.SetActive(false);
-            return;
-        }
-
-        _player.ShadowDrop.gameObject.SetActive(true);
-        _player.ShadowDrop.position = hit.point + new Vector3(0f, _player.OffsetY, 0f);
-    }
 }
