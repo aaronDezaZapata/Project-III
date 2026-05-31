@@ -1,12 +1,13 @@
-using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class CanvasImageFollow : MonoBehaviour
 {
+    private static readonly int UnityGuizTestMode = Shader.PropertyToID("unity_GUIZTestMode");
+
     [SerializeField] private Image _image;
-    
+
     private Transform _camera;
 
     private void Awake()
@@ -17,7 +18,7 @@ public class CanvasImageFollow : MonoBehaviour
     private void Start()
     {
         Material mat = Instantiate(_image.material);
-        mat.SetInt("unity_GUIZTestMode", (int)CompareFunction.Always);
+        mat.SetInt(UnityGuizTestMode, (int)CompareFunction.Always);
         _image.material = mat;
     }
 

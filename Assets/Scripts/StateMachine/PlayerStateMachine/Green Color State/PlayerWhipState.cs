@@ -4,6 +4,7 @@ public class PlayerWhipState : PlayerBaseState
 {
     private readonly int _isOnWhipGrab = Animator.StringToHash("IsOnWhipGrab");
 
+    private GrapplePoint _currentGrapplePoint;
     private Vector3 _grapplePosition;
     private float _swingCurrentAngle;
     private float _angularVelocity;
@@ -33,6 +34,8 @@ public class PlayerWhipState : PlayerBaseState
         StartGrappleSwingMode();
         stateMachine.PlayerAudio?.StartGreenSwing();
         stateMachine.UseColor(0.5f);
+        
+        _currentGrapplePoint.PlayerOnGrapple(true);
 
         if (stateMachine.GrappleRope != null)
             stateMachine.GrappleRope.enabled = true;
@@ -51,6 +54,8 @@ public class PlayerWhipState : PlayerBaseState
     {
         stateMachine.InputReader.JumpEvent -= OnJump;
         stateMachine.InputReader.ColorActionEvent -= OnColorActionToggle;
+        
+        _currentGrapplePoint.PlayerOnGrapple(false);
 
         if (stateMachine.GrappleRope != null)
             stateMachine.GrappleRope.enabled = false;
@@ -86,38 +91,13 @@ public class PlayerWhipState : PlayerBaseState
 
     private bool TryFindGrapplePoint()
     {
-        GrapplePoint[] allPoints = Object.FindObjectsByType<GrapplePoint>(FindObjectsSortMode.None);
-        GrapplePoint closest = null;
-        float closestDist = float.MaxValue;
-        Vector3 playerPos = stateMachine.transform.position;
-
-        foreach (GrapplePoint point in allPoints)
+        if (stateMachine.GetGrapplePoint() != null)
         {
-            if (!point.IsActive) continue;
-
-            float dist = Vector3.Distance(playerPos, point.Position);
-            if (dist > stateMachine.MaxGrappleDistance) continue;
-            if (IsPathBlocked(playerPos, point.Position)) continue;
-
-            if (dist < closestDist)
-            {
-                closestDist = dist;
-                closest = point;
-            }
+            _currentGrapplePoint = stateMachine.GetGrapplePoint();
+            _grapplePosition = _currentGrapplePoint.transform.position;
+            return true;
         }
-
-        if (closest == null) return false;
-
-        _grapplePosition = closest.Position;
-        return true;
-    }
-
-    private bool IsPathBlocked(Vector3 from, Vector3 to)
-    {
-        Vector3 dir = to - from;
-        if (Physics.Raycast(from, dir.normalized, out RaycastHit hit, dir.magnitude, stateMachine.GrappleObstacleLayer))
-            return hit.transform.GetComponent<GrapplePoint>() == null;
-
+        
         return false;
     }
 
@@ -274,6 +254,8 @@ public class PlayerWhipState : PlayerBaseState
         ApplySwingMomentum();
         _isAttached = false;
 
+        _currentGrapplePoint.PlayerOnGrapple(false);
+        
         stateMachine.Animator.SetBool(_isOnWhipGrab, false);
     }
 

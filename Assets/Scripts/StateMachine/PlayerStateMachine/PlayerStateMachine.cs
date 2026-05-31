@@ -130,7 +130,21 @@ public class PlayerStateMachine : StateMachine
     private PlayerGroundChecker _groundChecker;
     private PlayerInkColorSystem _inkColorSystem;
     private PlayerTriggerHandler _triggerHandler;
-    
+    private GrapplePoint _grapplePoint;
+    private GrapplePoint _secondaryGrapplePoint;
+
+    public GrapplePoint SecondaryGrapplePoint
+    {
+        get => _secondaryGrapplePoint;
+        set => _secondaryGrapplePoint = value;
+    }
+
+    public GrapplePoint GrapplePoint
+    {
+        get => _grapplePoint;
+        set => _grapplePoint = value;
+    }
+
     #endregion
     
     private void Awake()
@@ -199,7 +213,7 @@ public class PlayerStateMachine : StateMachine
         if (hit.transform.CompareTag("Insta"))
             GameManager.Instance.PlayerDeath();
     }
-
+    
     public Vector3 CalculateMovement()
     {
         Vector3 forward = Camera.main.transform.forward;
@@ -231,4 +245,33 @@ public class PlayerStateMachine : StateMachine
     public void HandlePuddleInteraction()                       => _triggerHandler.HandlePuddleInteraction();
     public void CheckForInk()                                   => _triggerHandler.CheckForInk();
     public void PaintSurface(Vector3 point, Vector3 normal)     => _triggerHandler.PaintSurface(point, normal);
+
+    public void SetGrapplePoint(GrapplePoint grapplePoint)
+    {
+        if (GrapplePoint == null)
+        {
+            GrapplePoint = grapplePoint;
+        }
+        else
+        {
+            SecondaryGrapplePoint = grapplePoint;
+        }
+    }
+
+    public GrapplePoint GetGrapplePoint()
+    {
+        if (_grapplePoint)
+            return _grapplePoint;
+        if (_secondaryGrapplePoint)
+            return _secondaryGrapplePoint;
+        return null;
+    }
+    
+    public void RemoveGrapplePoint(GrapplePoint grapplePoint)
+    {
+        if (_grapplePoint == grapplePoint)
+            _grapplePoint = null;
+        if (_secondaryGrapplePoint == grapplePoint)
+            _secondaryGrapplePoint = null;
+    }
 }

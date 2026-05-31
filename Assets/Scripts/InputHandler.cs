@@ -40,23 +40,27 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public void OnAttack(InputAction.CallbackContext context)
     {
+        CheckDeviceChange(context);
         if (context.performed) IsFiring = true;
         else if (context.canceled) IsFiring = false;
     }
 
     public void OnInteract(InputAction.CallbackContext context)
     {
+        CheckDeviceChange(context);
         if (context.started) InteractionEvent?.Invoke();
     }
 
     public void OnDive(InputAction.CallbackContext context)
     {
+        CheckDeviceChange(context);
         if (!context.performed) return;
         DiveEvent?.Invoke();
     }
 
     public void OnJump(InputAction.CallbackContext context)
     {
+        CheckDeviceChange(context);
         if (context.performed)
         {
             isJumpHeld = true;
@@ -85,6 +89,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public void OnMove(InputAction.CallbackContext context)
     {
+        CheckDeviceChange(context);
         MoveVector = context.ReadValue<Vector2>();
     }
 
@@ -111,6 +116,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public void OnColorAction(InputAction.CallbackContext context)
     {
+        CheckDeviceChange(context);
         if (context.performed)
         {
             isColorActing = true;
@@ -124,7 +130,19 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public void OnColorSwitch(InputAction.CallbackContext context)
     {
+        CheckDeviceChange(context);
         if (!context.performed) return;
         SwitchColorEvent?.Invoke();
+    }
+
+    private void CheckDeviceChange(InputAction.CallbackContext context)
+    {
+        bool wasUsingGamepad = IsUsingGamepad;
+        if (context.control.device is Mouse || context.control.device is Keyboard)
+            IsUsingGamepad = false;
+        else if (context.control.device is Gamepad)
+            IsUsingGamepad = true;
+        if (wasUsingGamepad != IsUsingGamepad)
+            OnInputDeviceChanged?.Invoke(IsUsingGamepad);
     }
 }

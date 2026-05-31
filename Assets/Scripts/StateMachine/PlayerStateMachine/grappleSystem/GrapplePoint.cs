@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GrapplePoint : MonoBehaviour
 {
@@ -7,18 +8,14 @@ public class GrapplePoint : MonoBehaviour
     private static readonly int IsOnInitialRange = Animator.StringToHash("IsOnInitialRange");
 
     [Header("Visual Feedback")]
-    [SerializeField] private bool showGizmo = true;
-    [SerializeField] private Color gizmoColor = Color.green;
-    [SerializeField] private float gizmoRadius = 0.5f;
-    [Space(5f)]
     [SerializeField] private CanvasImageFollow feedbackImage;
+    [SerializeField] private Image _image;
+    [SerializeField] private Sprite _keyboardSprite;
+    [SerializeField] private Sprite _controllerSprite;
 
     [Header("Point Info")]
-    [SerializeField] private bool isActive = true;
+    [SerializeField] private bool _isActive = true;
 
-    public bool IsActive => isActive;
-    public Vector3 Position => transform.position;
-    
     private Animator _animator;
 
     private void Awake()
@@ -26,22 +23,21 @@ public class GrapplePoint : MonoBehaviour
         _animator = GetComponent<Animator>();
     }
 
-    // TODO: REMOVE
-    private void OnDrawGizmos()
+    private void Start()
     {
-        if (!showGizmo) return;
+        var inputHandler = GameManager.Instance?.GetPlayer()?.GetComponent<InputHandler>();
+        if (inputHandler != null)
+            SetImage(inputHandler.IsUsingGamepad);
+    }
 
-        Gizmos.color = isActive ? gizmoColor : Color.gray;
-        Gizmos.DrawWireSphere(transform.position, gizmoRadius);
-        
-        Gizmos.DrawLine(
-            transform.position + Vector3.up * gizmoRadius,
-            transform.position - Vector3.up * gizmoRadius
-        );
-        Gizmos.DrawLine(
-            transform.position + Vector3.right * gizmoRadius,
-            transform.position - Vector3.right * gizmoRadius
-        );
+    private void OnEnable()
+    {
+        InputHandler.OnInputDeviceChanged += SetImage;
+    }
+
+    private void OnDisable()
+    {
+        InputHandler.OnInputDeviceChanged -= SetImage;
     }
 
     public void InitializeGrapple()
@@ -59,11 +55,15 @@ public class GrapplePoint : MonoBehaviour
     public void OnGripEnter()
     {
         _animator.SetBool(IsOnRange, true);
+        GameManager.Instance.GetPlayer().GetComponent<PlayerStateMachine>().SetGrapplePoint(this);
+        _isActive = true;
     }
     
     public void OnGripExit()
     {
         _animator.SetBool(IsOnRange, false);
+        GameManager.Instance.GetPlayer().GetComponent<PlayerStateMachine>().RemoveGrapplePoint(this);
+        _isActive = false;
     }
     
     public void PlayerOnGrapple(bool isOnGrapple)
@@ -72,5 +72,10 @@ public class GrapplePoint : MonoBehaviour
             feedbackImage.gameObject.SetActive(false);
         else
             feedbackImage.gameObject.SetActive(true);
+    }
+
+    public void SetImage(bool isController)
+    {
+        _image.sprite = isController ? _controllerSprite : _keyboardSprite;
     }
 }
