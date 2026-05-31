@@ -1,0 +1,426 @@
+using System.Collections;
+using FMOD.Studio;
+using FMODUnity;
+using STOP_MODE = FMOD.Studio.STOP_MODE;
+using UnityEngine;
+
+public class PlayerAudio : MonoBehaviour
+{
+    [Header("Movement")]
+    [SerializeField] private EventReference jumpEvent;
+    [SerializeField] private EventReference doubleJumpEvent;
+    [SerializeField] private EventReference fallEvent;
+    [SerializeField] private EventReference heavyImpactEvent;
+    [SerializeField] private EventReference footstepsEvent;
+    [SerializeField] private EventReference leavesEvent;
+    [SerializeField] private EventReference rockEvent;
+    [SerializeField] private EventReference sandEvent;
+    [SerializeField] private EventReference woodEvent;
+    [SerializeField] private EventReference landingEvent;
+
+    [Header("Paint / Ink")]
+    [SerializeField] private EventReference paintSpreadEvent;
+    [SerializeField] public float paintSpreadCooldown = 0.08f;
+    private float lastPaintSpreadTime;
+    [SerializeField] private EventReference paintStartEvent;
+    [SerializeField] private EventReference paintLoopEvent;
+    [SerializeField] private EventReference paintEndEvent;
+    [SerializeField] private EventReference tpMarkEvent;
+    [SerializeField] private EventReference tpTravelEvent;
+    [SerializeField] private EventReference tpImpactEvent;
+    [SerializeField] private EventReference swimLoopEvent;
+    [SerializeField] private EventReference swimEnterEvent;
+    [SerializeField] private EventReference swimExitEvent;
+    [SerializeField] private EventReference swimBoostEvent;
+    [SerializeField] private EventReference blueBoostEvent;
+    [SerializeField] private EventReference objectGrabEvent;
+    [SerializeField] private EventReference objectSpinEvent;
+    [SerializeField] private EventReference objectImpactEvent;
+    [SerializeField] private EventReference whipThrowEvent;
+    [SerializeField] private EventReference whipAttachEvent;
+    [SerializeField] private EventReference whipSwingEvent;
+    [SerializeField] private EventReference whipReleaseEvent;
+    [SerializeField] private EventReference greenThrowEvent;
+    [SerializeField] private EventReference greenSwingEvent;
+    [SerializeField] private EventReference greenReleaseEvent;
+    [SerializeField] private EventReference blackActivateEvent;
+    [SerializeField] private EventReference paintSurfaceImpactEvent;
+    [SerializeField] private EventReference blueActivateEvent;
+    [SerializeField] private EventReference blueGeyserLoopEvent;
+    [SerializeField] private EventReference redShootEvent;
+    [SerializeField] private EventReference objectThrowEvent;
+    [SerializeField] private EventReference blackMasteryEvent;
+    [SerializeField] private EventReference inkwellEvent;
+
+    private EventInstance blackMasteryInstance;
+
+    private EventInstance paintLoopInstance;
+    private EventInstance swimLoopInstance;
+    private EventInstance objectSpinInstance;
+    private EventInstance whipSwingInstance;
+    private EventInstance blueGeyserLoopInstance;
+    private Coroutine _geyserFadeCoroutine;
+    private const float GeyserFadeDuration = 0.25f;
+
+    private EventInstance greenSwingInstance;
+    private Coroutine _greenSwingFadeCoroutine;
+    private const float GreenSwingFadeDuration = 0.2f;
+    
+    
+
+    private void Start()
+    {
+        InitInstances();
+    }
+
+    private void OnDisable()
+    {
+        if (_geyserFadeCoroutine != null)
+        {
+            StopCoroutine(_geyserFadeCoroutine);
+            _geyserFadeCoroutine = null;
+        }
+        if (blueGeyserLoopInstance.isValid())
+        {
+            blueGeyserLoopInstance.stop(STOP_MODE.IMMEDIATE);
+            blueGeyserLoopInstance.release();
+            blueGeyserLoopInstance = default;
+        }
+
+        if (_greenSwingFadeCoroutine != null)
+        {
+            StopCoroutine(_greenSwingFadeCoroutine);
+            _greenSwingFadeCoroutine = null;
+        }
+        if (greenSwingInstance.isValid())
+        {
+            greenSwingInstance.stop(STOP_MODE.IMMEDIATE);
+            greenSwingInstance.release();
+            greenSwingInstance = default;
+        }
+    }
+
+    private void InitInstances()
+    {
+        if (!paintLoopEvent.IsNull)
+            paintLoopInstance = RuntimeManager.CreateInstance(paintLoopEvent);
+
+        if (!swimLoopEvent.IsNull)
+            swimLoopInstance = RuntimeManager.CreateInstance(swimLoopEvent);
+
+        if (!objectSpinEvent.IsNull)
+            objectSpinInstance = RuntimeManager.CreateInstance(objectSpinEvent);
+
+        if (!blackMasteryEvent.IsNull)
+            blackMasteryInstance = RuntimeManager.CreateInstance(blackMasteryEvent);
+
+        if (!whipSwingEvent.IsNull)
+            whipSwingInstance = RuntimeManager.CreateInstance(whipSwingEvent);
+
+    }
+    
+
+    public void PlayJump()
+    {
+        if (!jumpEvent.IsNull)
+            RuntimeManager.PlayOneShot(jumpEvent, transform.position);
+    }
+
+    public void PlayDoubleJump()
+    {
+        if (!doubleJumpEvent.IsNull)
+            RuntimeManager.PlayOneShot(doubleJumpEvent, transform.position);
+    }
+
+    public void PlayFall()
+    {
+        if (!fallEvent.IsNull)
+            RuntimeManager.PlayOneShot(fallEvent, transform.position);
+    }
+
+    public void PlayHeavyImpact()
+    {
+        RuntimeManager.PlayOneShot(heavyImpactEvent, transform.position);
+    }
+
+    public void PlayLanding()
+    {
+        RuntimeManager.PlayOneShot(landingEvent, transform.position);
+    }
+
+    public void PlayPaintSpread()
+    {
+        if (paintSpreadEvent.IsNull) return;
+        if (Time.time < lastPaintSpreadTime + paintSpreadCooldown) return;
+
+        lastPaintSpreadTime = Time.time;
+        RuntimeManager.PlayOneShot(paintSpreadEvent, transform.position);
+    }
+
+    public void PlayPaintStart()
+    {
+        if (!paintStartEvent.IsNull)
+            RuntimeManager.PlayOneShot(paintStartEvent, transform.position);
+    }
+
+    public void StartPaintLoop()
+    {
+        if (paintLoopInstance.isValid())
+            paintLoopInstance.start();
+    }
+
+    public void StopPaintLoop()
+    {
+        if (paintLoopInstance.isValid())
+            paintLoopInstance.stop(STOP_MODE.ALLOWFADEOUT);
+    }
+
+    public void PlayTpMark()
+    {
+        if (!tpMarkEvent.IsNull)
+            RuntimeManager.PlayOneShot(tpMarkEvent, transform.position);
+    }
+
+    public void StartSwimLoop()
+    {
+        if (swimLoopInstance.isValid())
+            swimLoopInstance.start();
+
+        AudioManager.Instance?.SetUnderInk(true);
+    }
+
+    public void StopSwimLoop()
+    {
+        if (swimLoopInstance.isValid())
+            swimLoopInstance.stop(STOP_MODE.ALLOWFADEOUT);
+
+        AudioManager.Instance?.SetUnderInk(false);
+    }
+
+    public void PlaySwimEnter()
+    {
+        if (!swimEnterEvent.IsNull)
+            RuntimeManager.PlayOneShot(swimEnterEvent, transform.position);
+    }
+
+    public void PlaySwimExit()
+    {
+        if (!swimExitEvent.IsNull)
+            RuntimeManager.PlayOneShot(swimExitEvent, transform.position);
+    }
+
+    public void PlaySwimBoost()
+    {
+        if (!swimBoostEvent.IsNull)
+            RuntimeManager.PlayOneShot(swimBoostEvent, transform.position);
+    }
+
+    public void PlayBlueBoost()
+    {
+        if (!blueBoostEvent.IsNull)
+            RuntimeManager.PlayOneShot(blueBoostEvent, transform.position);
+    }
+    
+
+    public void PlayObjectImpact(Vector3 position)
+    {
+        if (!objectImpactEvent.IsNull)
+            RuntimeManager.PlayOneShot(objectImpactEvent, position);
+    }
+
+    public void PlayWhipThrow()
+    {
+        if (!whipThrowEvent.IsNull)
+            RuntimeManager.PlayOneShot(whipThrowEvent, transform.position);
+    }
+
+    public void PlayWhipAttach()
+    {
+        if (!whipAttachEvent.IsNull)
+            RuntimeManager.PlayOneShot(whipAttachEvent, transform.position);
+    }
+
+    public void StartWhipSwing()
+    {
+        if (whipSwingInstance.isValid())
+            whipSwingInstance.start();
+    }
+
+    public void StopWhipSwing()
+    {
+        if (whipSwingInstance.isValid())
+            whipSwingInstance.stop(STOP_MODE.ALLOWFADEOUT);
+    }
+
+    public void PlayWhipRelease()
+    {
+        if (!whipReleaseEvent.IsNull)
+            RuntimeManager.PlayOneShot(whipReleaseEvent, transform.position);
+    }
+
+    public void PlayFootstep(FootstepSurfaceType surfaceType, FootstepSpeedType speedType)
+    {
+        EventReference ev = surfaceType switch
+        {
+            FootstepSurfaceType.Leaves => leavesEvent,
+            FootstepSurfaceType.Rock   => rockEvent,
+            FootstepSurfaceType.Sand   => sandEvent,
+            FootstepSurfaceType.Wood   => woodEvent,
+            _                          => default
+        };
+
+        if (ev.IsNull) return;
+
+        RuntimeManager.PlayOneShot(ev, transform.position);
+    }
+
+    private void OnDestroy()
+    {
+        ReleaseInstance(paintLoopInstance);
+        ReleaseInstance(swimLoopInstance);
+        ReleaseInstance(objectSpinInstance);
+        ReleaseInstance(blackMasteryInstance);
+        ReleaseInstance(whipSwingInstance);
+
+        if (_geyserFadeCoroutine != null) StopCoroutine(_geyserFadeCoroutine);
+        ReleaseInstance(blueGeyserLoopInstance);
+
+        if (_greenSwingFadeCoroutine != null) StopCoroutine(_greenSwingFadeCoroutine);
+        ReleaseInstance(greenSwingInstance);
+    }
+
+    private void ReleaseInstance(EventInstance instance)
+    {
+        if (instance.isValid())
+        {
+            instance.stop(STOP_MODE.IMMEDIATE);
+            instance.release();
+        }
+    }
+
+    public void PlayPaintEnd()
+    {
+        if (!paintEndEvent.IsNull)
+            RuntimeManager.PlayOneShot(paintEndEvent, transform.position);
+    }
+
+    public void PlayPaintSurfaceImpact()
+    {
+        if (!paintSurfaceImpactEvent.IsNull)
+            RuntimeManager.PlayOneShot(paintSurfaceImpactEvent, transform.position);
+    }
+
+    public void StartBlueGeyserLoop()
+    {
+        if (blueGeyserLoopEvent.IsNull) return;
+
+        if (_geyserFadeCoroutine != null)
+        {
+            StopCoroutine(_geyserFadeCoroutine);
+            _geyserFadeCoroutine = null;
+        }
+        if (blueGeyserLoopInstance.isValid())
+        {
+            blueGeyserLoopInstance.stop(STOP_MODE.IMMEDIATE);
+            blueGeyserLoopInstance.release();
+        }
+
+        blueGeyserLoopInstance = RuntimeManager.CreateInstance(blueGeyserLoopEvent);
+        blueGeyserLoopInstance.start();
+    }
+
+    public void StopBlueGeyserLoop()
+    {
+        if (!blueGeyserLoopInstance.isValid()) return;
+        if (_geyserFadeCoroutine != null) StopCoroutine(_geyserFadeCoroutine);
+        _geyserFadeCoroutine = StartCoroutine(FadeOutGeyserLoop());
+    }
+
+    private IEnumerator FadeOutGeyserLoop()
+    {
+        float elapsed = 0f;
+        while (elapsed < GeyserFadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            blueGeyserLoopInstance.setVolume(Mathf.Lerp(1f, 0f, elapsed / GeyserFadeDuration));
+            yield return null;
+        }
+
+        blueGeyserLoopInstance.stop(STOP_MODE.IMMEDIATE);
+        blueGeyserLoopInstance.release();
+        blueGeyserLoopInstance = default;
+        _geyserFadeCoroutine = null;
+    }
+
+    public void PlayRedShoot()
+    {
+        if (!redShootEvent.IsNull)
+            RuntimeManager.PlayOneShot(redShootEvent, transform.position);
+    }
+
+    public void PlayBlueActivate()
+    {
+        if (!blueActivateEvent.IsNull)
+            RuntimeManager.PlayOneShot(blueActivateEvent, transform.position);
+    }
+
+    public void PlayGreenThrow()
+    {
+        if (!greenThrowEvent.IsNull)
+            RuntimeManager.PlayOneShot(greenThrowEvent, transform.position);
+    }
+
+    public void StartGreenSwing()
+    {
+        if (greenSwingEvent.IsNull) return;
+
+        if (_greenSwingFadeCoroutine != null)
+        {
+            StopCoroutine(_greenSwingFadeCoroutine);
+            _greenSwingFadeCoroutine = null;
+        }
+        if (greenSwingInstance.isValid())
+        {
+            greenSwingInstance.stop(STOP_MODE.IMMEDIATE);
+            greenSwingInstance.release();
+        }
+
+        greenSwingInstance = RuntimeManager.CreateInstance(greenSwingEvent);
+        greenSwingInstance.start();
+    }
+
+    public void StopGreenSwing()
+    {
+        if (!greenSwingInstance.isValid()) return;
+        if (_greenSwingFadeCoroutine != null) StopCoroutine(_greenSwingFadeCoroutine);
+        _greenSwingFadeCoroutine = StartCoroutine(FadeOutGreenSwing());
+    }
+
+    private IEnumerator FadeOutGreenSwing()
+    {
+        float elapsed = 0f;
+        while (elapsed < GreenSwingFadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            greenSwingInstance.setVolume(Mathf.Lerp(1f, 0f, elapsed / GreenSwingFadeDuration));
+            yield return null;
+        }
+
+        greenSwingInstance.stop(STOP_MODE.IMMEDIATE);
+        greenSwingInstance.release();
+        greenSwingInstance = default;
+        _greenSwingFadeCoroutine = null;
+    }
+
+    public void PlayGreenRelease()
+    {
+        if (!greenReleaseEvent.IsNull)
+            RuntimeManager.PlayOneShot(greenReleaseEvent, transform.position);
+    }
+
+    public void PlayInkwell()
+    {
+        if (!inkwellEvent.IsNull)
+            RuntimeManager.PlayOneShot(inkwellEvent, transform.position);
+    }
+}
