@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerFlyState : PlayerBaseState
 {
-    private float velocidad = 10f;
+    private float velocidad = 30f;
     public PlayerFlyState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
     }
