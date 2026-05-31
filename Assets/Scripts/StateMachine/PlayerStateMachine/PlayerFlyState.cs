@@ -1,10 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// Debug State: Player Fly State
-/// - Only used on debug mode
-/// - Player Fly to the desired position
-/// </summary>
 public class PlayerFlyState : PlayerBaseState
 {
     private float velocidad = 10f;

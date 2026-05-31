@@ -114,8 +114,6 @@ public class PlayerGroundChecker : MonoBehaviour
         FootstepSurfaceType surfaceType = DetectFootstepSurface();
         FootstepSpeedType speedType = DetectFootstepSpeed();
 
-        Debug.Log("FOOTSTEP: " + surfaceType + " / " + speedType);
-
         _player.PlayerAudio?.PlayFootstep(surfaceType, speedType);
     }
 
