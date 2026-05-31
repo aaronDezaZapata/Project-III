@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -9,6 +10,12 @@ public class CheatsOptionsController : MonoBehaviour
     [SerializeField] private Image _flyModeButton;
     [SerializeField] private Color _onFlyModeColor;
     [SerializeField] private Color _offFlyModeColor;
+    
+    [Header("Checkpoints")]
+    [SerializeField] private List<GameObject> _checkpointsList = new List<GameObject>();
+    
+    [Header("Debug")]
+    [SerializeField] private bool _showDebugInfo;
     
     private bool _isFlyMode;
 
@@ -37,5 +44,10 @@ public class CheatsOptionsController : MonoBehaviour
             GameManager.Instance.GetPlayer().GetComponent<PlayerStateMachine>().ReturnToMainState();
             _flyModeButton.color = _offFlyModeColor;
         }
+    }
+
+    public void GoToCheckpoint(int id)
+    {
+        GameManager.Instance.GetPlayer().transform.position = _checkpointsList[id].transform.position;
     }
 }
