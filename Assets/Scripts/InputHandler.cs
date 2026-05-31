@@ -23,6 +23,7 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public event Action SwitchColorEvent;
 
     public static event Action OnPauseGameEvent;
+    public static event Action OnCheatsEvent;
     public static event Action<bool> OnInputDeviceChanged;
     public static event Action InteractionEvent;
 
@@ -133,6 +134,11 @@ public class InputHandler : MonoBehaviour, InputSystem_Actions.IPlayerActions
         CheckDeviceChange(context);
         if (!context.performed) return;
         SwitchColorEvent?.Invoke();
+    }
+
+    public void OnTriggerCheats(InputAction.CallbackContext context)
+    {
+        OnCheatsEvent?.Invoke();
     }
 
     private void CheckDeviceChange(InputAction.CallbackContext context)

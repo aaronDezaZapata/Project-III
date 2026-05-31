@@ -15,6 +15,7 @@ public class MainCanvasManager : MonoBehaviour
     [SerializeField] private GameObject _crosshairPanel;
     [SerializeField] private GameObject _pausePanel;
     [SerializeField] private GameObject _settingsPanel;
+    [SerializeField] private GameObject _cheatsPanel;
 
     [Header("Sliders")]
     [SerializeField] private Slider _gamepadSlider;
@@ -32,6 +33,9 @@ public class MainCanvasManager : MonoBehaviour
     [SerializeField] private string _musicVcaName;
     [SerializeField] private string _sfxVcaName;
     [SerializeField] private string _ambVcaName;
+    
+    [Header("Scene")]
+    [SerializeField] private int _sceneIdToReturn;
     
     private PlayerStateMachine _player;
 
@@ -65,12 +69,14 @@ public class MainCanvasManager : MonoBehaviour
     {
         PlayerShootingState.OnAiming += HandleShooting;
         InputHandler.OnPauseGameEvent += PauseHandler;
+        InputHandler.OnCheatsEvent += CheatsHandler;
     }
 
     private void OnDisable()
     {
         PlayerShootingState.OnAiming -= HandleShooting;
         InputHandler.OnPauseGameEvent -= PauseHandler;
+        InputHandler.OnCheatsEvent -= CheatsHandler;
     }
 
     #region Panel States
@@ -88,6 +94,7 @@ public class MainCanvasManager : MonoBehaviour
         _crosshairPanel.SetActive(false);
         _pausePanel.SetActive(false);
         _settingsPanel.SetActive(false);
+        _cheatsPanel.SetActive(false);
         _inGamePanel.SetActive(true);
     }
 
@@ -104,6 +111,7 @@ public class MainCanvasManager : MonoBehaviour
         _inGamePanel.SetActive(false);
         _crosshairPanel.SetActive(false);
         _settingsPanel.SetActive(false);
+        _cheatsPanel.SetActive(false);
         _pausePanel.SetActive(true);
     }
 
@@ -112,7 +120,25 @@ public class MainCanvasManager : MonoBehaviour
         _inGamePanel.SetActive(false);
         _pausePanel.SetActive(false);
         _settingsPanel.SetActive(false);
+        _cheatsPanel.SetActive(false);
         _crosshairPanel.SetActive(true);
+    }
+    
+    private void CheatsOpen()
+    {
+        _isOnPause = true;
+
+        Time.timeScale = 0f;
+        AudioManager.Instance?.SetPaused(true);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        
+        _inGamePanel.SetActive(false);
+        _pausePanel.SetActive(false);
+        _settingsPanel.SetActive(false);
+        _crosshairPanel.SetActive(false);
+        _cheatsPanel.SetActive(true);
     }
 
     #endregion
@@ -176,6 +202,14 @@ public class MainCanvasManager : MonoBehaviour
             PauseOpen();
     }
 
+    private void CheatsHandler()
+    {
+        if (_isOnPause)
+            IdlePanelConfig();
+        else
+            CheatsOpen();       
+    }
+
     private void HandleShooting(bool isAiming)
     {
         if (_isOnPause) return;
@@ -203,7 +237,7 @@ public class MainCanvasManager : MonoBehaviour
 
     public void ExitToMainMenu()
     {
-        SceneManager.LoadScene("1 - MainMenu");
+        SceneManager.LoadScene(_sceneIdToReturn);
     }
 
     private void InitialAudioDeclaration()

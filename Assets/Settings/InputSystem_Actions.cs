@@ -217,6 +217,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TriggerCheats"",
+                    ""type"": ""Button"",
+                    ""id"": ""9ed0b5a4-02d2-432c-96d5-6c1d520dc172"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -648,6 +657,50 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""action"": ""ColorSwitch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e0a77c61-4b93-49d9-996e-33796a6c24b9"",
+                    ""path"": ""<Keyboard>/backquote"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""TriggerCheats"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""3d7fd5f0-044c-4902-b585-0087a62c7bc1"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TriggerCheats"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""f5d3c342-20ed-4d37-a273-7ec7accee7fa"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""TriggerCheats"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""e77a4bc5-56d2-4509-9354-00e769d33f5d"",
+                    ""path"": ""<Gamepad>/rightStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""TriggerCheats"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -1247,6 +1300,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_DColorChange = m_Player.FindAction("DColorChange", throwIfNotFound: true);
         m_Player_PauseGame = m_Player.FindAction("PauseGame", throwIfNotFound: true);
         m_Player_ColorSwitch = m_Player.FindAction("ColorSwitch", throwIfNotFound: true);
+        m_Player_TriggerCheats = m_Player.FindAction("TriggerCheats", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1354,6 +1408,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_DColorChange;
     private readonly InputAction m_Player_PauseGame;
     private readonly InputAction m_Player_ColorSwitch;
+    private readonly InputAction m_Player_TriggerCheats;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1422,6 +1477,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @ColorSwitch => m_Wrapper.m_Player_ColorSwitch;
         /// <summary>
+        /// Provides access to the underlying input action "Player/TriggerCheats".
+        /// </summary>
+        public InputAction @TriggerCheats => m_Wrapper.m_Player_TriggerCheats;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1489,6 +1548,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @ColorSwitch.started += instance.OnColorSwitch;
             @ColorSwitch.performed += instance.OnColorSwitch;
             @ColorSwitch.canceled += instance.OnColorSwitch;
+            @TriggerCheats.started += instance.OnTriggerCheats;
+            @TriggerCheats.performed += instance.OnTriggerCheats;
+            @TriggerCheats.canceled += instance.OnTriggerCheats;
         }
 
         /// <summary>
@@ -1542,6 +1604,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @ColorSwitch.started -= instance.OnColorSwitch;
             @ColorSwitch.performed -= instance.OnColorSwitch;
             @ColorSwitch.canceled -= instance.OnColorSwitch;
+            @TriggerCheats.started -= instance.OnTriggerCheats;
+            @TriggerCheats.performed -= instance.OnTriggerCheats;
+            @TriggerCheats.canceled -= instance.OnTriggerCheats;
         }
 
         /// <summary>
@@ -1940,6 +2005,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnColorSwitch(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "TriggerCheats" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTriggerCheats(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

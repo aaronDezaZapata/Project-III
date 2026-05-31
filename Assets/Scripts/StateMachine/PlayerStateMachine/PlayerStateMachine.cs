@@ -187,6 +187,7 @@ public class PlayerStateMachine : StateMachine
             case PlayerStates.RED:   SwitchState(typeof(PlayerRedState));   break;
             case PlayerStates.BLUE:  SwitchState(typeof(PlayerBlueState));  break;
             case PlayerStates.GREEN: SwitchState(typeof(PlayerGreenState)); break;
+            case PlayerStates.FLY: SwitchState(typeof(PlayerWhiteState)); break;
         }
     }
 
