@@ -100,11 +100,10 @@ public class GameManager : MonoBehaviour
         _coinsCollected += amount;
     }
 
-    public void CollectStar(int amount)
+    public void CollectStar()
     {
-        _starsCollected += amount;
+        _starsCollected++;
         _currentCollectibles.text = _starsCollected.ToString();
-        Debug.Log("Stars Collected: " + _starsCollected + "/" + _totalStarsNeeded);
 
         if (!_portalOpened && _starsCollected >= _totalStarsNeeded)
         {
@@ -112,8 +111,6 @@ public class GameManager : MonoBehaviour
 
             if (_portal != null)
                 StartPortalUnlockCinematic();
-            else
-                Debug.LogWarning("Portal no asignado en el GameManager.");
         }
     }
 

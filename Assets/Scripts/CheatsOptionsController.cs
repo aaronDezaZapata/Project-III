@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class CheatsOptionsController : MonoBehaviour
@@ -49,5 +50,18 @@ public class CheatsOptionsController : MonoBehaviour
     public void GoToCheckpoint(int id)
     {
         GameManager.Instance.GetPlayer().transform.position = _checkpointsList[id].transform.position;
+    }
+    
+    public void ResetScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void GetAllCollectables()
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            GameManager.Instance.CollectStar();
+        }
     }
 }
