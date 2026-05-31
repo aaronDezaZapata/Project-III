@@ -15,7 +15,6 @@ public class PlayerWhiteState : PlayerBaseState
     
     protected float currentSpeed;
     
-    private bool fallAudioPlayed;
 
 
     public PlayerWhiteState(PlayerStateMachine stateMachine) : base(stateMachine)
@@ -36,7 +35,6 @@ public class PlayerWhiteState : PlayerBaseState
 
         InitializeAnimator();
         
-        fallAudioPlayed = false;
     }
 
     protected virtual void SetPlayerState()
