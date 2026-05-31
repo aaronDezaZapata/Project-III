@@ -2,17 +2,8 @@ using FMOD.Studio;
 using Unity.Cinemachine;
 using UnityEngine;
 
-/// <summary>
-/// Player White State (Default)
-/// - Movement
-/// - Jump
-/// - Blend Trees
-/// - Swim transition
-/// </summary>
 public class PlayerWhiteState : PlayerBaseState
 {
-    /// Animation Hashes ///
-    // Movement
     protected readonly int SpeedX = Animator.StringToHash("SpeedX");
     protected readonly int AimSpeedX = Animator.StringToHash("AimSpeed");
     protected readonly int SpeedY = Animator.StringToHash("SpeedY");
@@ -22,18 +13,9 @@ public class PlayerWhiteState : PlayerBaseState
     protected const float RunThreshold = 0.7f;
     protected const float IdleThreshold = 0.05f;
     
-    // Movement Tracking
     protected float currentSpeed;
-    protected float smoothSpeed;
     
-    // State tracking
-    protected float lastSpeed = 0f;
-    protected float lastInputMagnitude = 0f;
-
-    //Audio 
-    private bool audioWasGrounded;
     private bool fallAudioPlayed;
-    private float lastVerticalVelocity;
 
 
     public PlayerWhiteState(PlayerStateMachine stateMachine) : base(stateMachine)
@@ -53,25 +35,18 @@ public class PlayerWhiteState : PlayerBaseState
         UpdateAnimatorParameters(movement, movement.magnitude, Time.deltaTime);
 
         InitializeAnimator();
-
-        audioWasGrounded = stateMachine.isGrounded;
+        
         fallAudioPlayed = false;
-        lastVerticalVelocity = stateMachine.Controller.velocity.y;
-
     }
 
-    // Default player state
-    // Overridden in other states
     protected virtual void SetPlayerState()
     {
     }
     
-    // Initial material color config
     protected virtual void SetMaterialColor()
     {
     }
     
-    // Input events to subscribe
     protected virtual void SubscribeToInputEvents()
     {
         stateMachine.InputReader.JumpEvent += OnJump;
@@ -80,27 +55,12 @@ public class PlayerWhiteState : PlayerBaseState
         InputHandler.InteractionEvent += stateMachine.HandlePuddleInteraction;
     }
     
-    // Default Camera Setup
-    protected virtual void SetupCamera()
-    {
-        if (stateMachine.MainCamera.Priority <= 9)
-        {
-            CameraRecenter();
-            stateMachine.MainCamera.Priority = 10;
-        }
-    }
-    
     protected virtual void InitializeAnimator()
     {
-        float currentSpeed = stateMachine.Animator.GetFloat(SpeedX);
-        
         if (stateMachine.isGrounded)
         {
             stateMachine.Animator.SetBool(IsGrounded, true);
         }
-        
-        lastInputMagnitude = currentSpeed;
-        lastSpeed = currentSpeed;
     }
 
     public override void Tick(float deltaTime)
@@ -116,24 +76,19 @@ public class PlayerWhiteState : PlayerBaseState
         stateMachine.CheckGrounded();
         stateMachine.ApplySlopeSlide();
         
-        // Check for color-specific actions
         if (CheckColorSpecificActions(deltaTime)) return; 
         
-
-        // Calculate movement
+        
         Vector3 movement = stateMachine.CalculateMovement();
         float currentInputMagnitude = movement.magnitude;
-
-        // Update animator parameters
+        
         UpdateAnimatorParameters(movement, currentInputMagnitude, deltaTime);
-
-        // Face movement direction if running
+        
         if (currentInputMagnitude > RunThreshold)
         {
             FaceMovementDirection(movement, deltaTime);
         }
-
-        // Apply movement
+        
         Move(movement * stateMachine.FreeLookMovementSpeed, deltaTime);
 
         if(stateMachine.ShadowDrop != null && !stateMachine.isGrounded)
@@ -146,17 +101,8 @@ public class PlayerWhiteState : PlayerBaseState
         {
             stateMachine.ShadowDrop.gameObject.SetActive(false);
         }
-
-        // Update state tracking
-        lastSpeed = currentInputMagnitude;
-        lastInputMagnitude = currentInputMagnitude;
     }
-    
-    
-    // TODO: Check
-    // Color actions scheme changed.
-    // Maybe this needs to be removed???
-    // Actually can be and needs to be overrided
+
     protected virtual bool CheckColorSpecificActions(float deltaTime) { return false; }
     
     protected virtual void UpdateAnimatorParameters(Vector3 movement, float currentInputMagnitude, float deltaTime)
@@ -210,27 +156,11 @@ public class PlayerWhiteState : PlayerBaseState
             stateMachine.SwitchState(typeof(PlayerSwimState));
     }
 
-    protected void CameraRecenter()
-    {
-        CinemachineOrbitalFollow orbitalFollow = stateMachine.MainCamera.gameObject.GetComponent<CinemachineOrbitalFollow>();
-        
-        float playerYaw = stateMachine.transform.eulerAngles.y;
-        orbitalFollow.HorizontalAxis.Value = playerYaw;
-        
-        orbitalFollow.VerticalAxis.Value = orbitalFollow.VerticalAxis.Center;
-        
-        orbitalFollow.RadialAxis.Value = orbitalFollow.RadialAxis.Center;
-    }
-
     protected void HandleEventMovement(float deltaTime)
     {
-        Vector3 movement = stateMachine.CalculateMovement();
-        
         Vector3 forward = stateMachine.eventForwardDirection;
-        Vector3 right = Vector3.Cross(forward, Vector3.up);
         
         float forwardInput = stateMachine.InputReader.MoveVector.y;
-        float rightInput = stateMachine.InputReader.MoveVector.x;
         
         Vector3 restrictedMovement = (forward * forwardInput) * stateMachine.FreeLookMovementSpeed;
         
