@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class CheatsOptionsController : MonoBehaviour
@@ -9,7 +11,18 @@ public class CheatsOptionsController : MonoBehaviour
     [SerializeField] private Color _offFlyModeColor;
     
     private bool _isFlyMode;
-    
+
+    private void Awake()
+    {
+        Debug.developerConsoleEnabled = false;
+    }
+
+    private void OnEnable()
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(_flyModeButton.gameObject);
+    }
+
     public void TriggerPlayerFlyMode()
     {
         _isFlyMode = !_isFlyMode;
